@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import { useTranslations, localizePath } from '../../i18n/utils';
+import { externalLinks, type Lang } from '../../i18n/ui';
+
+import heroIllustration from '../../assets/images/hero-illustration.png';
+import moonlightLogo from '../../assets/images/moonlight-logo.png';
+import moonlightApp from '../../assets/images/moonlight-app.jpg';
+import traceLogo from '../../assets/images/trace-logo.png';
+import traceApp from '../../assets/images/trace-app.jpg';
+import awardUnicorn from '../../assets/images/award-unicorn.png';
+import awardStartup from '../../assets/images/award-startup.png';
+import recsysArticle from '../../assets/images/recsys-article.png';
+import partners from '../../assets/images/partners.png';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const h = t.home;
+const br = (s: string) => s.replace(/\n/g, '<br />');
+---
+
+<!-- ============================ Hero ============================ -->
+<section class="relative overflow-hidden bg-brand text-white">
+  <div class="container-c relative flex flex-col items-center gap-10 py-16 text-center lg:min-h-[760px] lg:items-start lg:justify-center lg:py-0 lg:text-left">
+    <div class="lg:max-w-[640px]">
+      <h1
+        class="text-[34px] font-semibold leading-[1.18] tracking-tight sm:text-[44px] lg:text-[52px]"
+        set:html={br(h.heroTitle)}
+      />
+      <p class="mt-6 text-[16px] leading-relaxed text-white lg:text-[19px]" set:html={br(h.heroSubtitle)} />
+    </div>
+    <Image
+      src={heroIllustration}
+      alt=""
+      widths={[440, 820, 1640]}
+      sizes="(min-width: 1024px) 60vw, 88vw"
+      loading="eager"
+      class="pointer-events-none w-[90%] max-w-[440px] select-none lg:absolute lg:bottom-0 lg:right-0 lg:mx-0 lg:w-[60%] lg:max-w-[820px]"
+    />
+  </div>
+</section>
+
+<!-- ========================== Moonlight ========================== -->
+<section class="bg-white">
+  <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
+    <div class="order-first">
+      <Image
+        src={moonlightApp}
+        alt="Moonlight app screenshot"
+        widths={[560, 900]}
+        sizes="(min-width: 1024px) 45vw, 90vw"
+        class="w-full rounded-2xl shadow-[var(--shadow-card)]"
+      />
+    </div>
+    <div>
+      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} class="h-[52px] w-auto" />
+      <h2 class="mt-5 text-[26px] font-semibold leading-snug lg:text-[30px]">{h.moonlightHeading}</h2>
+      <p class="mt-5 text-[15px] leading-relaxed text-ink-soft lg:text-[16px]">{h.moonlightBody}</p>
+      <a href={localizePath('/moonlight', lang)} class="btn-pill mt-8 border-transparent bg-[#6b6580] text-white hover:bg-[#565068]">{h.readMore}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Trace ============================ -->
+<section class="bg-lavender">
+  <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
+    <div class="order-first lg:order-last">
+      <Image
+        src={traceApp}
+        alt="Trace app screenshot"
+        widths={[560, 900]}
+        sizes="(min-width: 1024px) 45vw, 90vw"
+        class="w-full rounded-2xl shadow-[var(--shadow-card)]"
+      />
+    </div>
+    <div>
+      <Image src={traceLogo} alt="Trace" width={190} height={57} class="h-[52px] w-auto" />
+      <h2 class="mt-5 text-[26px] font-semibold leading-snug lg:text-[30px]">{h.traceHeading}</h2>
+      <p class="mt-5 text-[15px] leading-relaxed text-ink-soft lg:text-[16px]">{h.traceBody}</p>
+      <a href={localizePath('/trace', lang)} class="btn-pill mt-8 border-transparent bg-[#6257cc] text-white hover:bg-[#514799]">{h.readMore}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== Baby Unicorn award ===================== -->
+<section class="bg-white">
+  <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-24">
+    <div class="order-first">
+      <div class="mx-auto flex max-w-[440px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
+        <p class="text-[20px] font-semibold text-brand">{h.babyUnicornBadge}</p>
+        <Image src={awardUnicorn} alt="" width={260} height={83} class="w-[62%] max-w-[240px]" />
+        <Image src={awardStartup} alt="" width={320} height={64} class="w-[80%] max-w-[300px]" />
+      </div>
+    </div>
+    <div>
+      <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.babyUnicornHeading)} />
+      <a href={externalLinks.babyUnicornArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RecSys ============================ -->
+<section class="bg-white">
+  <div class="container-c grid items-center gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+    <div>
+      <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.recsysHeading)} />
+      <a href={externalLinks.recsysArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
+    </div>
+    <div class="order-first lg:order-last">
+      <div class="rounded-2xl bg-[#f4f0fb] px-6 py-8 sm:px-10">
+        <div class="text-center">
+          <p class="text-[14px] text-ink-soft lg:text-[15px]">{h.recsysCaptionTop}</p>
+          <p class="mt-2 text-[20px] font-bold lg:text-[22px]">{h.recsysEvent}</p>
+          <p class="mt-2 text-[20px] font-bold text-brand lg:text-[22px]">{h.recsysRank}</p>
+        </div>
+        <Image
+          src={recsysArticle}
+          alt="Corca featured in ACM RecSys Challenge 2023 news article"
+          widths={[560, 900]}
+          sizes="(min-width: 1024px) 45vw, 90vw"
+          class="mt-6 w-full rounded-xl shadow-[var(--shadow-card)]"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== Partners =========================== -->
+<section class="bg-white">
+  <div class="container-c grid items-center gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+    <div class="order-first">
+      <Image
+        src={partners}
+        alt="Corca partners and clients"
+        widths={[560, 1000]}
+        sizes="(min-width: 1024px) 45vw, 90vw"
+        class="w-full"
+      />
+    </div>
+    <div>
+      <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.partnersHeading)} />
+    </div>
+  </div>
+</section>
+
+<!-- ========================= Closing CTA ========================= -->
+<section class="bg-brand text-white">
+  <div class="container-c flex flex-col items-center gap-5 py-24 text-center lg:py-32">
+    <h2 class="text-[28px] font-semibold leading-snug lg:text-[40px]">{h.closingHeading}</h2>
+    <p class="max-w-2xl text-[15px] leading-relaxed text-white lg:text-[17px]">{h.closingSubtitle}</p>
+  </div>
+</section>

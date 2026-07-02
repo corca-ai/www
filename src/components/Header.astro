@@ -1,0 +1,194 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/images/logo.png';
+import { useTranslations, localizePath } from '../i18n/utils';
+import {
+  externalLinks,
+  languageShort,
+  languageNames,
+  locales,
+  type Lang,
+} from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  basePath: string;
+}
+const { lang, basePath } = Astro.props;
+const t = useTranslations(lang);
+
+const menuLabel = lang === 'ja' ? 'メニュー' : lang === 'en' ? 'Menu' : '메뉴';
+const primaryNavLabel = lang === 'ja' ? 'メインナビゲーション' : lang === 'en' ? 'Primary' : '주요 메뉴';
+const home = localizePath('/', lang);
+
+const productItems = [
+  { label: 'Moonlight', href: localizePath('/moonlight', lang) },
+  { label: 'Trace', href: localizePath('/trace', lang) },
+];
+const aboutItems = [
+  { label: t.nav.vision, href: localizePath('/about-corca', lang) },
+  { label: t.nav.howWeWork, href: localizePath('/how-we-work', lang) },
+  { label: t.nav.news, href: localizePath('/news', lang) },
+  { label: t.nav.colleagues, href: localizePath('/colleagues', lang) },
+];
+const langOptions = locales.map((l) => ({
+  code: l,
+  short: languageShort[l],
+  name: languageNames[l],
+  href: localizePath(basePath, l),
+  active: l === lang,
+}));
+---
+
+<header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur">
+  <div class="container-c flex h-[66px] items-center justify-between gap-4">
+    <!-- Logo -->
+    <a href={home} class="flex shrink-0 items-center" aria-label="Corca home">
+      <Image src={logo} alt="Corca" width={104} height={30} loading="eager" class="h-[30px] w-auto" />
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="hidden items-center gap-8 lg:flex" aria-label={primaryNavLabel}>
+      <!-- Products -->
+      <div class="group relative">
+        <button
+          type="button"
+          class="flex items-center gap-1 py-5 text-[15px] font-medium text-ink transition-colors group-hover:text-brand"
+        >
+          {t.nav.products}
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+          {productItems.map((item) => (
+            <a href={item.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-brand/8 hover:text-brand">{item.label}</a>
+          ))}
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="group relative">
+        <button
+          type="button"
+          class="flex items-center gap-1 py-5 text-[15px] font-medium text-ink transition-colors group-hover:text-brand"
+        >
+          {t.nav.about}
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+          {aboutItems.map((item) => (
+            <a href={item.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-brand/8 hover:text-brand">{item.label}</a>
+          ))}
+        </div>
+      </div>
+
+      <a href={externalLinks.careers} target="_blank" rel="noopener" class="py-5 text-[15px] font-medium text-ink transition-colors hover:text-brand">{t.nav.careers}</a>
+      <a href={externalLinks.blog} target="_blank" rel="noopener" class="py-5 text-[15px] font-medium text-ink transition-colors hover:text-brand">{t.nav.blog}</a>
+    </nav>
+
+    <!-- Right side: language switcher (desktop) + hamburger (mobile) -->
+    <div class="flex items-center gap-2">
+      <details class="lang-switch relative hidden lg:block">
+        <summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-[13px] font-medium text-ink" aria-label={t.langLabel}>
+          {languageShort[lang]}
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </summary>
+        <ul class="absolute right-0 top-full mt-2 min-w-[130px] overflow-hidden rounded-xl border border-black/5 bg-white py-1 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)]">
+          {langOptions.map((o) => (
+            <li>
+              <a href={o.href} class:list={["block px-4 py-2 text-[14px] transition-colors hover:bg-brand/8", o.active ? "font-semibold text-brand" : "text-ink-soft"]}>{o.name}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+
+      <!-- Mobile hamburger (JS-enhanced, keyboard accessible) -->
+      <button
+        type="button"
+        id="menu-btn"
+        class="flex cursor-pointer items-center p-2 lg:hidden"
+        aria-label={menuLabel}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg class="menu-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <svg class="menu-icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <!-- Mobile menu panel -->
+      <div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white lg:hidden">
+        <nav class="container-c flex flex-col py-2" aria-label={menuLabel}>
+          <details class="border-b border-black/5">
+            <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-[16px] font-medium">{t.nav.products}<span class="text-ink-soft">+</span></summary>
+            <div class="pb-2">
+              {productItems.map((item) => (
+                <a href={item.href} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
+              ))}
+            </div>
+          </details>
+          <details class="border-b border-black/5">
+            <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-[16px] font-medium">{t.nav.about}<span class="text-ink-soft">+</span></summary>
+            <div class="pb-2">
+              {aboutItems.map((item) => (
+                <a href={item.href} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
+              ))}
+            </div>
+          </details>
+          <a href={externalLinks.careers} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.careers}</a>
+          <a href={externalLinks.blog} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.blog}</a>
+          <div class="flex gap-2 py-4">
+            {langOptions.map((o) => (
+              <a href={o.href} class:list={["rounded-full border px-4 py-1.5 text-[14px]", o.active ? "border-brand font-semibold text-brand" : "border-black/15 text-ink-soft"]}>{o.short}</a>
+            ))}
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Hide the default disclosure triangle on <summary> for the language switcher. */
+  .lang-switch > summary::-webkit-details-marker { display: none; }
+  details > summary { list-style: none; }
+</style>
+
+<script>
+  // Progressive enhancement for the mobile menu: accessible toggle button
+  // with aria-expanded, Escape-to-close, and auto-close on desktop resize.
+  const btn = document.getElementById('menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  if (btn && menu) {
+    const openIcon = btn.querySelector('.menu-icon-open');
+    const closeIcon = btn.querySelector('.menu-icon-close');
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      (menu as HTMLElement).hidden = !open;
+      openIcon?.classList.toggle('hidden', open);
+      closeIcon?.classList.toggle('hidden', !open);
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    btn.addEventListener('click', () => setOpen((menu as HTMLElement).hidden));
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !(menu as HTMLElement).hidden) {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024 && !(menu as HTMLElement).hidden) setOpen(false);
+    });
+  }
+</script>

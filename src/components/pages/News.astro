@@ -1,0 +1,44 @@
+---
+import type { Lang } from '../../i18n/ui';
+import { newsItems } from '../../i18n/content/news';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const P = '/images/pages/';
+const items = newsItems;
+
+const heading = {
+  ko: { eyebrow: 'News', title: '뉴스기사로 보는 코르카의 성과', newWindow: '(새 창에서 열림)' },
+  en: { eyebrow: 'Press Release', title: 'News & Articles', newWindow: '(opens in a new window)' },
+  ja: { eyebrow: 'News', title: 'ニュースで見るコルカの成果', newWindow: '(新しいウィンドウで開く)' },
+}[lang];
+---
+
+<section class="bg-white">
+  <div class="container-c py-16 lg:py-20">
+    <p class="text-[14px] font-semibold uppercase tracking-wide text-brand">{heading.eyebrow}</p>
+    <h1 class="mt-2 text-[28px] font-semibold text-[#1a2352] lg:text-[38px]">{heading.title}</h1>
+
+    <ul role="list" class="mt-12 grid list-none gap-x-8 gap-y-12 p-0 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((n) => (
+        <li>
+          <a href={n.h} target="_blank" rel="noopener" class="group block">
+            <div class="overflow-hidden rounded-xl bg-black/5">
+              <img
+                src={`${P}${n.img}.webp`}
+                alt=""
+                loading="lazy"
+                class="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              />
+            </div>
+            <h2 class="mt-4 line-clamp-2 text-[16px] font-medium leading-snug text-ink transition-colors group-hover:text-brand">{n.t[lang]}</h2>
+            <p class="mt-2 text-[13px] text-ink-soft">{n.d}</p>
+            <span class="sr-only">{heading.newWindow}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

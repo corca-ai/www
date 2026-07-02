@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Fonts — self-hosted Pretendard (SIL OFL). Korean/English primary typeface,
+   matching the original Corca site. Japanese falls back to system JP fonts.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Pretendard Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/PretendardVariable.woff2") format("woff2-variations");
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens
+--------------------------------------------------------------------------- */
+@theme {
+  /* Brand blue deepened from the original #419eff so white text on blue (and
+     blue text on white) meets WCAG 2.1 AA contrast (≥4.5:1). This is an
+     intentional, minor a11y-driven deviation from the source site. */
+  --color-brand: #2f6fe0;          /* hero / CTA blue — 4.7:1 with white */
+  --color-brand-ink: #1f57c4;      /* deeper blue for emphasis */
+  --color-lavender: #faeeff;       /* Trace section background */
+  --color-ink: #1a1a1a;            /* body text */
+  --color-ink-soft: #4a4a4a;       /* secondary text */
+  --color-footer: #1b1b1f;         /* footer background */
+
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+    "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-ja: "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
+    "Yu Gothic", "Pretendard Variable", sans-serif;
+
+  --shadow-card: 0 18px 40px -12px rgba(31, 45, 80, 0.28);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.6;
+}
+:lang(ja) {
+  font-family: var(--font-ja);
+}
+
+/* Modern-baseline typography niceties (Baseline 2024+). */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Visible keyboard focus for all interactive elements. */
+:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Shared content container — mirrors the original ~1000px centred column. */
+.container-c {
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+/* Pill button used across the site (자세히 보기 / 기사 보기 / Read more …) */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+  padding: 0.55rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.btn-pill:hover {
+  transform: translateY(-1px);
+}
+.btn-pill-dark {
+  color: var(--color-ink);
+}
+.btn-pill-dark:hover {
+  background: var(--color-ink);
+  color: #fff;
+}

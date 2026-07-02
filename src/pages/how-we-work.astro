@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HowWeWork from '../components/pages/HowWeWork.astro';
+import { pageMeta } from '../i18n/pageMeta';
+
+const lang = 'ko' as const;
+const m = pageMeta['how-we-work'][lang];
+---
+
+<BaseLayout lang={lang} title={m.title} description={m.description} basePath="/how-we-work">
+  <HowWeWork lang={lang} />
+</BaseLayout>

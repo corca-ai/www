@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import About from '../../components/pages/About.astro';
+import { pageMeta } from '../../i18n/pageMeta';
+
+const lang = 'en' as const;
+const m = pageMeta['about-corca'][lang];
+---
+
+<BaseLayout lang={lang} title={m.title} description={m.description} basePath="/about-corca">
+  <About lang={lang} />
+</BaseLayout>

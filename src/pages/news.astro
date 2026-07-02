@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import News from '../components/pages/News.astro';
+import { pageMeta } from '../i18n/pageMeta';
+
+const lang = 'ko' as const;
+const m = pageMeta.news[lang];
+---
+
+<BaseLayout lang={lang} title={m.title} description={m.description} basePath="/news">
+  <News lang={lang} />
+</BaseLayout>

@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Trace from '../../components/pages/Trace.astro';
+import { pageMeta } from '../../i18n/pageMeta';
+
+const lang = 'en' as const;
+const m = pageMeta.trace[lang];
+---
+
+<BaseLayout lang={lang} title={m.title} description={m.description} basePath="/trace">
+  <Trace lang={lang} />
+</BaseLayout>

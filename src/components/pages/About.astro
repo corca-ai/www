@@ -1,0 +1,150 @@
+---
+import { contact, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const HERO_BG = '/images/pages/2fe9a6_d35d2743fc2342df884222c5a0d125ee.webp';
+const LOGO = '/images/pages/5cb5de_4a84baab528e42b797e2b35189e6661a.webp';
+
+// External destinations kept as external links (not replicated).
+const CAREERS_URL = 'https://corcateam.career.greetinghr.com/ko/career';
+const MAP_URL = 'https://map.naver.com/p/entry/place/1354855657';
+const contactLinks = {
+  ko: { careers: '채용 안내', map: '지도 확인' },
+  en: { careers: 'Careers', map: 'View on map' },
+  ja: { careers: '採用情報', map: '地図で見る' },
+};
+
+// Branded value names stay in English across locales (as on the original).
+const valueNames = ['Creative Idea', 'Better Future', 'People', 'Theory', 'Helping Hands'];
+
+const content = {
+  ko: {
+    heroTitle: '기술 발전의 혜택을 모두가 누리게 하여\n인류 문명의 발전에 기여합니다',
+    missionTitle: 'AI로 삶과 일의 패러다임을 바꿉니다',
+    missionBody:
+      '코르카는 상상을 현실로 바꾸는 AI 기술을 선도합니다. 탁월한 솔루션과 윤리적 리더십, 글로벌 임팩트를 핵심 가치로 삼고, 고객 중심의 서비스와 끊임없는 연구 개발에 힘씁니다. 기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여하는 게 우리의 미션입니다.',
+    valueDescs: ['창의적인 아이디어', '더 나은 사회, 문화, 문명 지향', '사람 중심, 인류애', '탄탄한 이론과 연구에 기반한 의사결정', '나만이 아닌, 우리와 모두, 코르카와 함께'],
+    ethicalTitle: '더 밝은 미래를 위한 윤리적 AI',
+    ethicalSubtitle: '코르카는 상상을 현실로 만드는 AI 기술을 선도하며, 높은 기술력으로 더 나은 사회를 만들기 위해 혁신적 솔루션과 윤리적 리더십을 추구합니다.',
+    pillars: [
+      { title: '기술을 넘어선 신뢰', body: '코르카는 첨단 AI 기술의 개발과 활용에 있어 투명성과 윤리성을 최우선 가치로 삼습니다. 고객과 사회 모두가 신뢰할 수 있는 기술을 만들기 위해, 책임 있는 데이터 관리와 공정한 알고리즘 개발에 힘쓰고 있습니다.' },
+      { title: '모두를 위한 혁신', body: '혁신은 소수만을 위한 것이 아니라 모두를 위한 것이라는 믿음으로, 다양한 사용자의 필요와 환경을 고려한 AI 솔루션을 제공합니다. 누구나 쉽게 접근하고 활용할 수 있는 기술로 사회적 격차를 줄이고, 모두가 함께 성장하는 미래를 만들어갑니다.' },
+      { title: '모두의 일상을 바꾸는 기술', body: '코르카의 AI는 일상 속에서 실질적인 변화를 만들어냅니다. 복잡한 문제를 쉽게 해결하고, 더 편리하고 안전한 삶을 누릴 수 있도록 다양한 분야에 맞춤형 솔루션을 제공합니다. 우리의 기술은 사람들의 일상에 긍정적인 영향을 주는 것을 목표로 합니다.' },
+      { title: '글로벌 AI 혁신을 선도하는 기업', body: '코르카는 국내를 넘어 글로벌 시장에서도 윤리적이고 혁신적인 AI 기술을 선도합니다. 세계 각국의 다양한 파트너와 협력하며, 글로벌 표준을 제시하는 기업으로 성장하고 있습니다. 미래를 향한 도전과 책임감을 바탕으로, 더 나은 세상을 만들어갑니다.' },
+    ],
+    contactLabel: 'Contact',
+    locationLabel: 'Location',
+    address: '서울특별시 강남구 테헤란로77길 11-8, 6층',
+    phone: '02 6925 6978',
+  },
+  en: {
+    heroTitle: 'We make technology benefit everyone\nand help human civilization move forward.',
+    missionTitle: 'Changing the paradigm of life and work with AI',
+    missionBody:
+      'Corca is a leader in AI technology that turns imagination into reality. With excellent solutions, ethical leadership, and global impact as its core values, we strive for customer-centric services and continuous research and development. Our mission is to contribute to the advancement of human civilization by allowing everyone to enjoy the benefits of technological progress.',
+    valueDescs: ['Creative ideas', 'Aiming for a better society, culture, and civilization', 'People-centered, with love for humanity', 'Decision-making based on solid theory and research', 'Not just me, but us and everyone, with Corca'],
+    ethicalTitle: 'Ethical AI for a Brighter Future',
+    ethicalSubtitle: 'Corca leads AI technology that turns imagination into reality, pursuing innovative solutions and ethical leadership to create a better society with advanced technology.',
+    pillars: [
+      { title: 'Trust Beyond Technology', body: 'Corca prioritizes transparency and ethics in the development and use of cutting-edge AI technologies. We strive to create technologies that customers and society can trust by managing data responsibly and developing fair algorithms.' },
+      { title: 'Innovation for All', body: 'With the belief that innovation is not for the few but for everyone, we provide AI solutions that consider the needs and environments of diverse users. We reduce social gaps with technology anyone can easily access and use, creating a future where everyone grows together.' },
+      { title: 'Technology That Changes Daily Life', body: "Corca's AI creates real change in daily life. It provides customized solutions across various fields to solve complex problems easily and make life more convenient and safe. Our technology aims to have a positive impact on people's daily lives." },
+      { title: 'A Company Leading Global AI Innovation', body: 'Corca leads ethical and innovative AI technology in the global market, beyond Korea. Collaborating with diverse partners worldwide, we are growing into a company that sets global standards — building a better world based on challenge and responsibility for the future.' },
+    ],
+    contactLabel: 'Contact',
+    locationLabel: 'Location',
+    address: '6F, 11-8 Teheran-ro 77-gil, Gangnam-gu, Seoul, Korea',
+    phone: '+82 2 6925 6978',
+  },
+  ja: {
+    heroTitle: '技術の進歩の恩恵をすべての人が享受できる社会を実現し、\n人類文明の発展に貢献します。',
+    missionTitle: 'AIの力で、人生と仕事のパラダイムを変革します。',
+    missionBody:
+      'コルカは、想像を現実に変えるAI技術の最前線をリードしています。卓越したソリューション、倫理的リーダーシップ、そしてグローバルな影響力を中核的価値とし、顧客中心のサービスと不断の研究開発に取り組んでいます。技術の進歩の恩恵をすべての人が享受できるようにし、人類文明の発展に貢献することが私たちのミッションです。',
+    valueDescs: ['創造的なアイデア', 'より良い社会・文化・文明を志向', '人を中心に、人類への愛を持って', '確かな理論と研究に基づく意思決定', '私だけではなく、私たちと皆、コルカと共に'],
+    ethicalTitle: 'より明るい未来のための倫理的AIを追求',
+    ethicalSubtitle: 'コルカは、想像を現実に変えるAI技術をリードし、高い技術力によってより良い社会を創造するため、革新的なソリューションと倫理的リーダーシップを追求しています。',
+    pillars: [
+      { title: '技術を超えた信頼', body: 'コルカは、先端AI技術の開発と活用において、透明性と倫理性を最も重要な価値としています。顧客と社会の双方が信頼できる技術を実現するため、責任あるデータ管理と公正なアルゴリズムの開発に取り組んでいます。' },
+      { title: 'すべての人のためのイノベーション', body: 'イノベーションは一部の人々だけのものではなく、すべての人のためのものであるという信念のもと、さまざまなユーザーのニーズと環境を考慮したAIソリューションを提供します。誰もが簡単にアクセスし活用できる技術で社会的格差を縮小し、共に成長する未来を築きます。' },
+      { title: 'みんなの日常を変える技術', body: 'コルカのAIは、日常の中で実質的な変化をもたらします。複雑な問題をスマートに解決し、より便利で安全な生活を実現するため、各分野に最適化されたソリューションを提供します。私たちの技術は、人々の日常にポジティブな影響を与えることを目指しています。' },
+      { title: 'グローバルAIイノベーションをリードする企業', body: 'コルカは、国内にとどまらず、グローバル市場でも倫理的かつ革新的なAI技術をリードしています。世界各国の多様なパートナーと協力し、国際標準を示す企業へと成長しています。未来への挑戦と責任感を胸に、より良い世界を築いていきます。' },
+    ],
+    contactLabel: 'Contact',
+    locationLabel: '所在地',
+    address: '6F, 11-8 Teheran-ro 77-gil, Gangnam-gu, Seoul, Korea',
+    phone: '+82 2 6925 6978',
+  },
+};
+const c = content[lang];
+const cl = contactLinks[lang];
+const br = (s: string) => s.replace(/\n/g, '<br />');
+---
+
+<!-- Hero -->
+<section
+  class="relative bg-[#1a2352] bg-cover bg-center"
+  style={`background-image: linear-gradient(rgba(16,22,54,0.66), rgba(16,22,54,0.72)), url('${HERO_BG}');`}
+>
+  <div class="container-c flex min-h-[420px] flex-col justify-center py-24 text-white lg:min-h-[520px]">
+    <h1 class="text-[30px] font-semibold leading-snug sm:text-[38px] lg:text-[46px]" set:html={br(c.heroTitle)} />
+  </div>
+</section>
+
+<!-- Mission + values -->
+<section class="bg-white">
+  <div class="container-c flex flex-col items-center py-20 text-center lg:py-28">
+    <img src={LOGO} alt="Corca" width="200" height="58" class="h-[46px] w-auto" />
+    <h2 class="mt-8 text-[26px] font-semibold text-[#1a2352] lg:text-[38px]">{c.missionTitle}</h2>
+    <p class="mt-6 max-w-[760px] text-[15px] leading-relaxed text-[#1a2352]/85 lg:text-[17px]">{c.missionBody}</p>
+
+    <div class="mt-14 flex w-full max-w-[900px] flex-wrap justify-center gap-x-8 gap-y-10">
+      {valueNames.map((name, i) => (
+        <div class="flex w-[42%] max-w-[220px] flex-col items-center gap-2 sm:w-[28%]">
+          <span class="h-1 w-8 rounded-full bg-brand"></span>
+          <h3 class="text-[18px] font-semibold text-[#1a2352] lg:text-[21px]">{name}</h3>
+          <p class="text-[14px] leading-snug text-[#1a2352]/70 lg:text-[15px]">{c.valueDescs[i]}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Ethical AI pillars -->
+<section class="bg-[#f7f5ef]">
+  <div class="container-c py-20 lg:py-24">
+    <div class="mx-auto max-w-[720px] text-center">
+      <h2 class="text-[26px] font-semibold text-[#1a2352] lg:text-[40px]">{c.ethicalTitle}</h2>
+      <p class="mt-5 text-[15px] leading-relaxed text-[#1a2352]/80 lg:text-[17px]">{c.ethicalSubtitle}</p>
+    </div>
+    <div class="mx-auto mt-14 grid max-w-[900px] gap-x-14 gap-y-12 md:grid-cols-2">
+      {c.pillars.map((p) => (
+        <div>
+          <h3 class="text-[19px] font-semibold text-[#1a2352] lg:text-[22px]">{p.title}</h3>
+          <p class="mt-3 text-[14px] leading-relaxed text-[#1a2352]/75 lg:text-[15px]">{p.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="bg-white">
+  <div class="container-c py-20 lg:py-24">
+    <h2 class="text-[32px] font-semibold text-[#1a2352] lg:text-[46px]">{c.contactLabel}</h2>
+    <address class="mt-8 space-y-1.5 text-[15px] not-italic text-[#1a2352] lg:text-[18px]">
+      <p class="font-semibold">{c.locationLabel}</p>
+      <p>{c.address}</p>
+      <p><a href={`mailto:${contact.email}`} class="hover:text-brand">{contact.email}</a></p>
+      <p><a href="tel:+82-2-6925-6978" class="hover:text-brand">{c.phone}</a></p>
+    </address>
+    <div class="mt-7 flex flex-wrap gap-3">
+      <a href={CAREERS_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.careers}</a>
+      <a href={MAP_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.map}</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "corca-www",
+  "compatibility_date": "2025-11-01",
+  // Corca account (beta domain borca.ai lives here).
+  "account_id": "b23e9b2e3a9159dd7eb3fa51f839c5c5",
+  // Keep the workers.dev preview URL enabled alongside the custom domain.
+  "workers_dev": true,
+  // Static Astro build served directly by Cloudflare Workers Static Assets.
+  // No Worker script (`main`) needed for a purely static site — assets are
+  // served from ./dist. Add a `main` entry later if edge logic is required.
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // Beta site custom domain — provisions DNS + cert on the borca.ai zone.
+  "routes": [{ "pattern": "www.borca.ai", "custom_domain": true }]
+}

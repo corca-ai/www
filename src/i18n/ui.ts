@@ -1,0 +1,229 @@
+// Locale configuration + translation dictionaries for the Corca site.
+// Locales mirror the original: ko (default, "/"), en ("/en"), ja ("/ja").
+
+export const locales = ['ko', 'en', 'ja'] as const;
+export type Lang = (typeof locales)[number];
+
+export const defaultLang: Lang = 'ko';
+
+export const languageNames: Record<Lang, string> = {
+  ko: '한국어',
+  en: 'English',
+  ja: '日本語',
+};
+
+/** Short label shown in the language switcher. */
+export const languageShort: Record<Lang, string> = {
+  ko: 'KO',
+  en: 'EN',
+  ja: 'JA',
+};
+
+/** BCP-47 tags used for <html lang>, hreflang and OG locale. */
+export const localeTag: Record<Lang, string> = {
+  ko: 'ko-KR',
+  en: 'en-US',
+  ja: 'ja-JP',
+};
+
+export const ogLocale: Record<Lang, string> = {
+  ko: 'ko_KR',
+  en: 'en_US',
+  ja: 'ja_JP',
+};
+
+// External destinations (shared across locales).
+export const externalLinks = {
+  careers: 'https://corca.team/recruit',
+  blog: 'https://medium.com/corca',
+  // The home "기사 보기" buttons link out to the original press articles.
+  recsysArticle: 'https://www.epnc.co.kr/news/articleView.html?idxno=238466',
+  babyUnicornArticle: 'https://news.mt.co.kr/mtview.php?no=2024062609442912371',
+};
+
+export const contact = {
+  email: 'contact@corca.ai',
+  tel: '02-6925-6978',
+};
+
+type Nav = {
+  products: string;
+  about: string;
+  careers: string;
+  blog: string;
+  vision: string;
+  howWeWork: string;
+  news: string;
+  colleagues: string;
+};
+
+type FooterT = {
+  address: string;
+  tel: string;
+  rights: string;
+};
+
+type Home = {
+  metaTitle: string;
+  metaDescription: string;
+  heroTitle: string; // may contain a single \n for the line break
+  heroSubtitle: string;
+  readMore: string;
+  readArticle: string;
+  moonlightHeading: string;
+  moonlightBody: string;
+  traceHeading: string;
+  traceBody: string;
+  babyUnicornBadge: string;
+  babyUnicornHeading: string;
+  recsysHeading: string;
+  recsysCaptionTop: string;
+  recsysEvent: string;
+  recsysRank: string;
+  partnersHeading: string;
+  closingHeading: string;
+  closingSubtitle: string;
+};
+
+type Dict = {
+  nav: Nav;
+  footer: FooterT;
+  home: Home;
+  langLabel: string;
+};
+
+export const ui: Record<Lang, Dict> = {
+  ko: {
+    langLabel: '언어 선택',
+    nav: {
+      products: '제품 소개',
+      about: '회사 소개',
+      careers: '채용',
+      blog: '블로그',
+      vision: '비전과 미션',
+      howWeWork: '이렇게 일해요',
+      news: '뉴스 기사',
+      colleagues: '코르카 사람들',
+    },
+    footer: {
+      address: '서울특별시 강남구 테헤란로77길 11-8, 6층 주식회사 코르카',
+      tel: 'Tel: 02-6925-6978',
+      rights: '© 2026 Corca, Inc.',
+    },
+    home: {
+      metaTitle: 'Corca | AI 기술로 세상 바꾸기',
+      metaDescription:
+        'Corca는 상상을 현실로 바꾸는 AI 기술을 선도합니다. 탁월한 솔루션과 윤리적 리더십, 글로벌 임팩트를 핵심 가치로 삼고, 고객 중심의 서비스와 끊임없는 연구 개발에 힘씁니다. 광고, 비즈니스, 연구, 일상 등 다양한 분야에 적용된 Moonlight, Trace 등 AI 제품들을 만나보세요.',
+      heroTitle: '코르카는 AI 기술로\n세상을 바꾸고 있습니다.',
+      heroSubtitle: 'AI 기술로 새로운 가능성을 열고 세상의 변화를 이끌어 갑니다.',
+      readMore: '자세히 보기',
+      readArticle: '기사 보기',
+      moonlightHeading: '논문을 더 빠르고 쉽게 이해하기',
+      moonlightBody:
+        '문라이트는 AI 기술을 학술 논문을 읽는 흐름에 직접적으로 적용하여 생소하거나 어려운 내용에 대한 실시간 설명을 제공하며, 대화형 AI와 함께 개념을 구체화하거나 내용을 요약하여 연구에 필요한 PDF 문서를 이해하는 데 걸리는 시간을 크게 줄이고 더 깊이 있게 이해하도록 도와줍니다.',
+      traceHeading: '대화하듯 입력하는 일정관리 앱',
+      traceBody:
+        '트레이스는 당신의 하루를 손쉽게 관리해주는 AI 기반 스케줄링 앱입니다. 일상적인 언어로 일정을 입력하면 트레이스가 자동으로 세부 내용을 채워줍니다. 맥락을 이해하는 알림 기능으로 언제나 준비된 상태로 일정을 관리할 수 있습니다.',
+      babyUnicornBadge: '2024 아기유니콘 선정!',
+      babyUnicornHeading: '혁신성, 성장성, 글로벌 경쟁력을 인정받은 코르카',
+      recsysHeading: '코르카의 기술력은 이미\n세계적으로 인정받았습니다.',
+      recsysCaptionTop: 'AI 추천시스템 분야 최고 권위 학회에서 주관한',
+      recsysEvent: 'ACM RecSys Challenge 2023',
+      recsysRank: '세계 7위, 국내 기업 중 1위 쾌거!',
+      partnersHeading: '코르카는 많은 기업들에게\n혁신을 안겨주고 있습니다.',
+      closingHeading: 'AI로 삶과 일의 패러다임을 바꿉니다',
+      closingSubtitle: '우리의 기술력으로 새로운 가능성을 열고, 세상의 변화를 이끌어 갑니다.',
+    },
+  },
+
+  en: {
+    langLabel: 'Select language',
+    nav: {
+      products: 'Products',
+      about: 'About us',
+      careers: 'Careers',
+      blog: 'Blog',
+      vision: 'Vision & Mission',
+      howWeWork: 'How We Work',
+      news: 'News',
+      colleagues: 'Our People',
+    },
+    footer: {
+      address:
+        '6F, 11-8, Teheran-ro 77-gil, Gangnam-gu, Seoul, Republic of Korea · Corca, Inc.',
+      tel: 'Tel: +82-2-6925-6978',
+      rights: '© 2026 Corca, Inc.',
+    },
+    home: {
+      metaTitle: 'Corca | Changing the world with AI technology',
+      metaDescription:
+        'Corca leads AI technology that turns imagination into reality. With excellent solutions, ethical leadership, and global impact as its core values, we strive for customer-centric services and continuous research and development. Meet AI products like Moonlight and Trace applied across advertising, business, research, and daily life.',
+      heroTitle: 'Corca is changing the world\nwith AI technology.',
+      heroSubtitle:
+        'We create new possibilities with AI technology and lead the change in the world.',
+      readMore: 'Read more',
+      readArticle: 'Read article',
+      moonlightHeading: 'Understand papers faster and more easily',
+      moonlightBody:
+        'Moonlight applies AI technology directly to the flow of reading academic papers, providing real-time explanations of unfamiliar or difficult content, and working with conversational AI to flesh out concepts or summarize content — significantly reducing the time it takes to understand the PDF documents required for research and helping you understand them more deeply.',
+      traceHeading: 'A scheduling app you can just talk to',
+      traceBody:
+        'Trace is an AI-based scheduling app that makes it easy to manage your day. Just type your schedule in everyday language and Trace automatically fills in the details. With context-aware notifications, you can always stay on top of your schedule.',
+      babyUnicornBadge: 'Selected as a 2024 Baby Unicorn!',
+      babyUnicornHeading:
+        'Corca, recognized for its innovation, growth potential, and global competitiveness',
+      recsysHeading: "Corca's technological prowess has\nalready been recognized worldwide.",
+      recsysCaptionTop: 'Hosted by the most authoritative conference in AI recommender systems',
+      recsysEvent: 'ACM RecSys Challenge 2023',
+      recsysRank: '7th in the world · 1st among Korean companies!',
+      partnersHeading: 'Corca is bringing innovation\nto many companies.',
+      closingHeading: 'Changing the paradigm of life and work with AI',
+      closingSubtitle:
+        'We open up new possibilities and lead the changes in the world with our technological prowess.',
+    },
+  },
+
+  ja: {
+    langLabel: '言語を選択',
+    nav: {
+      products: '製品紹介',
+      about: '会社紹介',
+      careers: '採用',
+      blog: 'ブログ',
+      vision: 'ビジョンとミッション',
+      howWeWork: '私たちの働き方',
+      news: 'ニュース',
+      colleagues: 'コルカの人々',
+    },
+    footer: {
+      address:
+        'ソウル特別市 江南区 テヘラン路77ギル 11-8, 6階 株式会社コルカ',
+      tel: 'Tel: +82-2-6925-6978',
+      rights: '© 2026 Corca, Inc.',
+    },
+    home: {
+      metaTitle: 'Corca | AI技術で世界を変える',
+      metaDescription:
+        'Corcaは、想像を現実に変えるAI技術をリードしています。卓越したソリューション、倫理的リーダーシップ、グローバルな影響力を中核的価値とし、顧客中心のサービスと不断の研究開発に取り組んでいます。広告・ビジネス・研究・日常など、さまざまな分野に応用されたMoonlight、TraceなどのAI製品をぜひご覧ください。',
+      heroTitle: 'コルカはAI技術で\n世界を変えています。',
+      heroSubtitle: 'AI技術で新たな可能性を切り拓き、世界の変化をリードします。',
+      readMore: 'もっと見る',
+      readArticle: '記事を見る',
+      moonlightHeading: '論文をもっと速く、もっとわかりやすく理解する',
+      moonlightBody:
+        'ムーンライトは、AI技術を学術論文の読解プロセスに直接応用し、難解な内容もリアルタイムでわかりやすく説明します。インタラクティブなAIとの対話を通じて概念を具体化し、要点を要約することで、研究に必要なPDF文書の理解時間を大幅に短縮し、より深い洞察を得ることができます。',
+      traceHeading: '会話するように入力するスケジューリングアプリ',
+      traceBody:
+        'トレースは、あなたの一日をスマートに管理するAIスケジューリングアプリです。日常の言葉で予定を入力すると、トレースが自動的に詳細を補完します。文脈を理解する通知機能により、いつでも最適な状態でスケジュールを管理できます。',
+      babyUnicornBadge: '2024 ベビーユニコーン選定！',
+      babyUnicornHeading: '革新性・成長性・グローバル競争力が高く評価されたコルカ',
+      recsysHeading: 'コルカの技術力は、すでに\n世界で高く評価されています。',
+      recsysCaptionTop: 'AI推薦システム分野で最高権威の学会が主催した',
+      recsysEvent: 'ACM RecSys Challenge 2023',
+      recsysRank: '世界7位・国内企業中1位の快挙！',
+      partnersHeading: 'コルカは多くの企業に\n革新をもたらしています。',
+      closingHeading: 'AIの力で、人生と仕事のパラダイムを変革する',
+      closingSubtitle: '私たちの技術力で新たな可能性を切り拓き、世界の変化をリードしていきます。',
+    },
+  },
+};

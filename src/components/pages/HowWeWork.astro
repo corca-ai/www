@@ -1,0 +1,157 @@
+---
+import type { Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const P = '/images/pages/';
+const HERO = `${P}2fe9a6_436c7f601f11466e84412cc7179828c9.webp`;
+const ISO_STRUCTURE = `${P}2fe9a6_27eadb8d7d914426b56ccaf2c96ac22d.webp`;
+const ISO_LADDER = `${P}2fe9a6_9931d659ab8d44e488da606935878568.webp`;
+const ISO_STUDY = `${P}2fe9a6_20e646ee0e3a4dddb332665db0023f2e.webp`;
+const PHOTOS = [
+  `${P}2fe9a6_6137577504cd418dbbb43f8238b9aaa1.webp`,
+  `${P}2fe9a6_aeedb44afb144ddf97c4c6350706e563.webp`,
+  `${P}2fe9a6_7b41924b3738498ab454d78ee7f4c9f6.webp`,
+  `${P}2fe9a6_537cd02fc1aa4fa3bb2ad28ea7eaf8bc.webp`,
+  `${P}2fe9a6_f9cd4f032afc4e9f98dbfc6b88d480b6.webp`,
+];
+
+// Fully localized in all three languages. (The original Wix site fell back to
+// Korean on /ja/how-we-work; our version provides a proper Japanese translation.)
+const ko = {
+  heroTitle: '코르카는,\n이렇게 일해요',
+  heroSubtitle: '코르카는 멤버의 성장과 복지를 위해 최적의 근무 환경을 제공하고 역량 개발에 힘쓰고 있습니다.',
+  methodsLabel: '일하는 방식',
+  methods: [
+    { title: '조직 구조', body: '코르카의 조직구조는 기능조직과 목적조직으로 나뉘어요. 각 챕터-스쿼드 별 Mission과 Strategy를 가지고 같은 목표를 바라보고 일해요. 건강한 피드백, 회고, 스크럼을 통해 팀과 프로덕트의 성장에 집중해요.', img: ISO_STRUCTURE },
+    { title: '커리어 래더', body: '코르카 테크팀은 코르카 안에서 임팩트를 내는 방법에 대한 가이드인 코르카 래더가 있어요. 커리어 래더를 통해 본인의 현재 임팩트를 측정하고 매니저와 논의하여 다음 스텝으로 나아가기 위한 구체적인 계획을 세워보세요.', img: ISO_LADDER },
+    { title: '다양한 커리큘럼과 스터디', body: '코르카는 신규 입사자들이 업무에 보다 빠르게 적응할 수 있는 커리큘럼과 팀원들이 자율적으로 운영하는 스터디를 적극적으로 지원하고 있어요. 지금까지 했던 스터디는 MLOps Curriculum, Data Curriculum, Lead Engineer Maker, CUDA, 강화학습, 리팩토링 등이 있고 계속 추가되고 있습니다!', img: ISO_STUDY },
+  ],
+  envLabel: '일하는 환경',
+  benefits: [
+    { icon: '💰', title: '직무 교육비 지원', body: '코르카는 팀원의 성장이 곧 팀 전체의 성장이라고 믿어요. 성과와 성장에 도움이 된다면 어떤 교육이든 아낌없이 지원해요. 외부 컨퍼런스 참석, 직무 관련 교육뿐 아니라 업무 생산성을 높이는 AI 도구 구독료도 지원하고 있어요.' },
+    { icon: '📚', title: '도서 지원', body: '회사와 팀원의 성장을 위해 필요한 도서 구매를 지원해요. 코르카 Library에서 도서 목록과 팀원들이 남긴 감상평을 확인할 수 있어요.' },
+    { icon: '🤝', title: '버디 프로그램', body: '코르카에 새로 합류한 신규 입사자들의 적응을 돕기 위해 버디프로그램을 진행하고 있어요. 출근 첫 날, 걱정하지 마세요! 편하게 이야기 나눌 수 있도록 버디챗 비용도 지원해요!' },
+    { icon: '🎤', title: '성장을 위한 세미나 진행', body: '다양한 세미나를 진행하며 팀원들의 지속가능한 성장과 퍼포먼스를 지원하고 있어요. 내부 세미나 외에도 외부 초청 세미나도 진행하여 많은 인사이트를 얻을 수 있어요.' },
+    { icon: '👥', title: '수평적인 조직, 든든한 팀워크', body: '~님 호칭을 통일하고 있어요. 건강하고 자유로운 토론을 통해 프로젝트의 진행 방향을 결정하고 있어요. 배울 점이 많은, 긍정적인 자극이 되는 동료들과 함께 일할 수 있어요!' },
+    { icon: '🕐', title: '유연한 출퇴근 시간', body: '선택적 근로시간제로 근무 시간을 유연하게 조정할 수 있어요. Co-work Time (오전 10시 30분 - 오후 4시) 운영으로 팀원 간 원활한 소통이 가능해요.' },
+    { icon: '🧰', title: '기술 스택 적극 도입', body: '프로젝트 진행에 필요한 업무 도구 활용을 적극적으로 권장하며 지원하고 있어요.' },
+    { icon: '💻', title: '최상의 장비 지원', body: 'MacBook Pro/Air, LG 그램 중 선택하여 사용할 수 있어요. 모니터, 기계식 키보드 등 업무에 필요한 모든 장비를 적극 지원하고 있어요!' },
+    { icon: '🍱', title: '넉넉한 식대와 간식', body: '한국인은 밥심! 맛있게 먹고 기분 좋게 일할 수 있도록 넉넉한 점심 식대와 야간 근무 시 동일한 저녁 식대를 제공해요. 간식도 든든히 제공하고 있어요.' },
+    { icon: '🎂', title: '생일 휴가', body: '코르카 멤버가 태어난 날을 축하하는 마음을 가득 담아 생일 휴가 하루를 지급해요. 매달 생일파티를 열어 다같이 축하해주는 시간도 갖고 있어요!' },
+    { icon: '🎗️', title: '경조사 지원', body: '기쁠 때나 슬플 때나 코르카가 함께 해요. 규정에 따른 경조휴가, 경조비를 지급하고 있어요.' },
+  ],
+};
+
+const en = {
+  heroTitle: 'How we work',
+  heroSubtitle: 'Corca provides the best working environment for the growth and well-being of its members and strives to develop their capabilities.',
+  methodsLabel: 'Ways of Working',
+  methods: [
+    { title: 'Organizational Structure', body: "Corca's organization is divided into functional and purpose-oriented teams. Each chapter-squad has its own mission and strategy and works toward the same goal. We focus on the growth of the team and product through healthy feedback, retrospectives, and scrum.", img: ISO_STRUCTURE },
+    { title: 'Career Ladder', body: 'The Corca Tech Team has the Corca Ladder — a guide on how to make an impact within Corca. Measure your current impact through the career ladder and discuss it with your manager to make a concrete plan to move to the next step.', img: ISO_LADDER },
+    { title: 'Curricula & Study Groups', body: 'Corca actively supports curricula that help new employees adapt more quickly, and study groups that team members run autonomously — MLOps Curriculum, Data Curriculum, Lead Engineer Maker, CUDA, reinforcement learning, refactoring, and more, continuously being added!', img: ISO_STUDY },
+  ],
+  envLabel: 'Working Environment',
+  benefits: [
+    { icon: '💰', title: 'Job training support', body: 'We believe the growth of team members is the growth of the whole team. We generously support any training helpful for performance and growth — external conferences, job-related training, and even subscriptions to AI tools that boost productivity.' },
+    { icon: '📚', title: 'Book support', body: 'We support the purchase of books necessary for the growth of the company and team members. You can check the book list and reviews left by team members in the Corca Library.' },
+    { icon: '🤝', title: 'Buddy Program', body: 'We run a buddy program to help new members who have just joined Corca adapt. Don’t worry about your first day! We also cover the cost of buddy chats so you can talk comfortably.' },
+    { icon: '🎤', title: 'Seminars for growth', body: 'We support the sustainable growth and performance of our members by running various seminars. In addition to internal seminars, we also hold externally-invited seminars to gain plenty of insight.' },
+    { icon: '👥', title: 'Horizontal organization, strong teamwork', body: 'We address everyone by the same respectful title, regardless of position. We decide project direction through healthy, free discussion. You can work with colleagues who are positively stimulating and have a lot to teach!' },
+    { icon: '🕐', title: 'Flexible work hours', body: 'You can flexibly adjust your working hours with a flextime system. Co-work Time (10:30 AM – 4 PM) enables smooth communication among team members.' },
+    { icon: '🧰', title: 'Active tech-stack adoption', body: 'We actively encourage and support the use of work tools needed for project progress.' },
+    { icon: '💻', title: 'Best equipment support', body: 'Choose between MacBook Pro/Air or LG Gram. We actively support all equipment needed for work, such as monitors and mechanical keyboards!' },
+    { icon: '🍱', title: 'Generous meals and snacks', body: 'Koreans run on food! We provide a generous lunch allowance and the same dinner allowance for night shifts, plus plenty of snacks, so you can eat well and work comfortably.' },
+    { icon: '🎂', title: 'Birthday leave', body: "We give one day of birthday leave to celebrate each Corca member's birthday. We also hold a birthday party every month to celebrate together!" },
+    { icon: '🎗️', title: 'Family-event support', body: 'In happy times and sad times, Corca is with you. We provide family-event leave and support according to our regulations.' },
+  ],
+};
+
+const ja = {
+  heroTitle: 'コルカは、\nこう働きます',
+  heroSubtitle: 'コルカは、メンバーの成長と福利厚生のために最適な労働環境を提供し、能力開発に力を注いでいます。',
+  methodsLabel: '働き方',
+  methods: [
+    { title: '組織構造', body: 'コルカの組織は、機能組織と目的組織に分かれています。各チャプター・スクワッドがそれぞれのMissionとStrategyを持ち、同じ目標を見据えて働きます。健全なフィードバック、レトロスペクティブ、スクラムを通じて、チームとプロダクトの成長に集中します。', img: ISO_STRUCTURE },
+    { title: 'キャリアラダー', body: 'コルカのテックチームには、コルカの中でインパクトを生み出す方法をまとめたガイド「Corca Ladder」があります。キャリアラダーで自分の現在のインパクトを測り、マネージャーと相談しながら、次のステップへ進むための具体的な計画を立てましょう。', img: ISO_LADDER },
+    { title: '多様なカリキュラムとスタディ', body: 'コルカは、新入社員が業務に素早く適応できるカリキュラムや、メンバーが自律的に運営するスタディを積極的に支援しています。これまでに実施したスタディにはMLOps Curriculum、Data Curriculum、Lead Engineer Maker、CUDA、強化学習、リファクタリングなどがあり、今も増え続けています！', img: ISO_STUDY },
+  ],
+  envLabel: '働く環境',
+  benefits: [
+    { icon: '💰', title: '職務教育費の支援', body: 'コルカは、メンバーの成長がチーム全体の成長だと信じています。成果と成長に役立つ教育であれば惜しみなく支援します。外部カンファレンスへの参加や職務関連の教育に加え、業務生産性を高めるAIツールのサブスク費用も支援しています。' },
+    { icon: '📚', title: '書籍の支援', body: '会社とメンバーの成長に必要な書籍の購入を支援します。Corca Libraryで書籍リストやメンバーが残した感想を確認できます。' },
+    { icon: '🤝', title: 'バディプログラム', body: 'コルカに新しく加わった入社者の適応を助けるため、バディプログラムを実施しています。出社初日も心配いりません！気軽に話せるよう、バディチャットの費用も支援します！' },
+    { icon: '🎤', title: '成長のためのセミナー開催', body: 'さまざまなセミナーを開催し、メンバーの持続的な成長とパフォーマンスを支援しています。社内セミナーのほか、外部招へいセミナーも行い、多くのインサイトを得られます。' },
+    { icon: '👥', title: 'フラットな組織、頼れるチームワーク', body: '「〜さん」という呼称に統一しています。健全で自由な議論を通じてプロジェクトの方向性を決めています。学ぶことが多く、良い刺激をくれる仲間と一緒に働けます！' },
+    { icon: '🕐', title: '柔軟な勤務時間', body: 'フレックスタイム制で勤務時間を柔軟に調整できます。Co-work Time（午前10時30分〜午後4時）の運用で、メンバー間の円滑なコミュニケーションが可能です。' },
+    { icon: '🧰', title: '技術スタックの積極導入', body: 'プロジェクトの推進に必要な業務ツールの活用を積極的に推奨し、支援しています。' },
+    { icon: '💻', title: '最高の機材支援', body: 'MacBook Pro/Air、LG gramから選んで使用できます。モニターやメカニカルキーボードなど、業務に必要なすべての機材を積極的に支援します！' },
+    { icon: '🍱', title: 'たっぷりの食事補助とおやつ', body: '韓国人はご飯の力！おいしく食べて気持ちよく働けるよう、たっぷりの昼食補助と、夜間勤務時には同額の夕食補助を提供します。おやつもしっかり用意しています。' },
+    { icon: '🎂', title: '誕生日休暇', body: 'コルカのメンバーが生まれた日を祝う気持ちを込めて、誕生日休暇を1日支給します。毎月バースデーパーティーを開き、みんなでお祝いする時間も持っています！' },
+    { icon: '🎗️', title: '慶弔支援', body: 'うれしいときも悲しいときも、コルカが共にあります。規定に基づく慶弔休暇・慶弔費を支給しています。' },
+  ],
+};
+
+const c = { ko, en, ja }[lang];
+const br = (s: string) => s.replace(/\n/g, '<br />');
+---
+
+<!-- Hero -->
+<section class="relative overflow-hidden bg-white">
+  <div class="container-c relative z-10 pt-16 lg:pt-20">
+    <h1 class="text-[32px] font-semibold leading-tight text-[#1a2352] sm:text-[42px] lg:text-[52px]" set:html={br(c.heroTitle)} />
+    <p class="mt-5 max-w-[520px] text-[15px] leading-relaxed text-[#1a2352]/80 lg:text-[17px]">{c.heroSubtitle}</p>
+  </div>
+  <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="mt-4 h-auto w-full lg:-mt-16" />
+</section>
+
+<!-- Methods (blue) -->
+<section class="bg-brand text-white">
+  <div class="container-c py-16 lg:py-20">
+    <h2 class="text-[28px] font-semibold lg:text-[36px]">{c.methodsLabel}</h2>
+    <div class="mt-10 flex flex-col gap-14 lg:gap-20">
+      {c.methods.map((m, i) => (
+        <div class:list={["grid items-center gap-8 lg:grid-cols-2 lg:gap-12", i % 2 === 1 && "lg:[&>*:first-child]:order-last"]}>
+          <div class:list={[i % 2 === 1 && 'lg:order-last']}>
+            <h3 class="text-[22px] font-semibold lg:text-[26px]">{m.title}</h3>
+            <p class="mt-4 text-[15px] leading-relaxed text-white lg:text-[16px]">{m.body}</p>
+          </div>
+          <div class:list={["flex justify-center", i % 2 === 1 && 'lg:order-first']}>
+            <img src={m.img} alt="" width="320" height="240" loading="lazy" decoding="async" class="h-auto w-[260px] max-w-full lg:w-[320px]" />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Office photos -->
+<section class="bg-white">
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+    {PHOTOS.map((src) => (
+      <img src={src} alt="" class="aspect-square w-full object-cover" loading="lazy" decoding="async" />
+    ))}
+  </div>
+</section>
+
+<!-- Benefits -->
+<section class="bg-white">
+  <div class="container-c grid gap-10 py-16 lg:grid-cols-[260px_1fr] lg:gap-16 lg:py-24">
+    <h2 class="text-[28px] font-semibold text-[#1a2352] lg:text-[36px]">{c.envLabel}</h2>
+    <div class="flex flex-col gap-9">
+      {c.benefits.map((b) => (
+        <div class="flex gap-4">
+          <span class="shrink-0 text-[26px] leading-none" aria-hidden="true">{b.icon}</span>
+          <div>
+            <h3 class="text-[17px] font-semibold text-[#1a2352] lg:text-[19px]">{b.title}</h3>
+            <p class="mt-2 text-[14px] leading-relaxed text-[#1a2352]/75 lg:text-[15px]">{b.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

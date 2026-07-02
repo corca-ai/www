@@ -1,0 +1,38 @@
+---
+import type { Lang } from '../../i18n/ui';
+import { members, storyUrls } from '../../i18n/content/colleagues';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const P = '/images/pages/';
+
+const heading = {
+  ko: { title: '코르카 사람들', sub: '능력있고 열정적인 코르카 팀 멤버들의 경험과 성장에 대한 생생한 이야기들을 만나보세요', newWindow: '(corca.team에서 열림)' },
+  en: { title: 'Our People', sub: 'Discover the vivid stories of experience and growth from the talented, passionate members of the Corca team.', newWindow: '(opens on corca.team)' },
+  ja: { title: 'コルカの人々', sub: '有能で情熱的なコルカのチームメンバーたちの経験と成長に関する、生き生きとしたストーリーをご覧ください。', newWindow: '(corca.team で開く)' },
+}[lang];
+---
+
+<section class="bg-white">
+  <div class="container-c py-16 lg:py-20">
+    <h1 class="text-[28px] font-semibold text-[#1a2352] lg:text-[38px]">{heading.title}</h1>
+    <p class="mt-4 max-w-[680px] text-[15px] leading-relaxed text-ink-soft lg:text-[17px]">{heading.sub}</p>
+
+    <ul role="list" class="mt-12 grid list-none gap-x-8 gap-y-12 p-0 sm:grid-cols-2 lg:grid-cols-3">
+      {members.map((m) => (
+        <li>
+          <a href={storyUrls[m.img]} target="_blank" rel="noopener" class="group flex flex-col">
+            <div class="overflow-hidden rounded-xl bg-black/5">
+              <img src={`${P}${m.img}.webp`} alt="" loading="lazy" decoding="async" class="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" />
+            </div>
+            <h2 class="mt-4 text-[17px] font-semibold leading-snug text-ink transition-colors group-hover:text-brand lg:text-[18px]">{m.t[lang]}</h2>
+            <p class="mt-2 line-clamp-3 text-[14px] leading-relaxed text-ink-soft">{m.q[lang]}</p>
+            <span class="sr-only">{heading.newWindow}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

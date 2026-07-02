@@ -1,0 +1,106 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { localeTag, ogLocale, locales, defaultLang, contact, type Lang } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Locale-agnostic base path for this page, e.g. "/" or "/moonlight". */
+  basePath: string;
+  ogImage?: string;
+}
+
+const { lang, title, description, basePath, ogImage = '/og-default.png' } = Astro.props;
+
+const site = Astro.site ?? new URL('https://www.corca.ai');
+const canonical = new URL(localizePath(basePath, lang), site).href;
+const ogImageUrl = new URL(ogImage, site).href;
+
+// hreflang alternates + x-default (points to the default locale).
+const alternates = locales.map((l) => ({
+  hreflang: localeTag[l],
+  href: new URL(localizePath(basePath, l), site).href,
+}));
+const xDefault = new URL(localizePath(basePath, defaultLang), site).href;
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Corca',
+  legalName: 'Corca, Inc.',
+  url: site.href,
+  logo: new URL('/images/logo.png', site).href,
+  email: contact.email,
+  telephone: '+82-2-6925-6978',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '6F, 11-8, Teheran-ro 77-gil, Gangnam-gu',
+    addressLocality: 'Seoul',
+    addressCountry: 'KR',
+  },
+  sameAs: ['https://medium.com/corca', 'https://corca.team'],
+};
+---
+
+<!doctype html>
+<html lang={localeTag[lang]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Corca" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    {locales.filter((l) => l !== lang).map((l) => (
+      <meta property="og:locale:alternate" content={ogLocale[l]} />
+    ))}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Preload the primary variable font -->
+    <link
+      rel="preload"
+      href="/fonts/PretendardVariable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only rounded-lg bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]"
+    >
+      {lang === 'ja' ? '本文へスキップ' : lang === 'en' ? 'Skip to content' : '본문으로 건너뛰기'}
+    </a>
+    <Header lang={lang} basePath={basePath} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

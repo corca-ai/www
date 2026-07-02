@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Core gates — no external auth needed, always enforced.
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Biome (format + lint)
+        run: pnpm exec biome ci
+      - name: Astro type check
+        run: pnpm exec astro check
+      - name: Build
+        run: pnpm build
+
+  # Duplication (nose) + docs (awiki) gates. These are native binaries from the
+  # private corca-ai/nose and corca-ai/awiki repos, so they need a PAT with read
+  # access stored as the CORCA_GH_TOKEN secret. The job skips cleanly (with a
+  # warning) when the secret is not configured — e.g. on fork PRs.
+  duplication-and-docs:
+    runs-on: ubuntu-latest
+    env:
+      CORCA_GH_TOKEN: ${{ secrets.CORCA_GH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect token
+        id: tok
+        run: |
+          if [ -n "${CORCA_GH_TOKEN:-}" ]; then
+            echo "have=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "have=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::CORCA_GH_TOKEN not set — skipping nose & awiki gates."
+          fi
+
+      - name: Install nose + awiki (from private releases)
+        if: steps.tok.outputs.have == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CORCA_GH_TOKEN }}
+          NOSE_VERSION: v0.17.0
+          AWIKI_VERSION: v0.5.0
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          dl() { # repo tag outname binname
+            gh release download "$2" --repo "$1" --pattern '*x86_64-unknown-linux-gnu*.tar.*' \
+              --dir "/tmp/$3" --clobber
+            tar -xf /tmp/"$3"/*.tar.* -C "/tmp/$3"
+            install -m755 "$(find "/tmp/$3" -type f -name "$4" | head -1)" "$HOME/.local/bin/$4"
+          }
+          dl corca-ai/nose  "$NOSE_VERSION"  nose  nose
+          dl corca-ai/awiki "$AWIKI_VERSION" awiki awiki
+          nose --version
+          awiki version
+
+      - name: Duplication gate (nose)
+        if: steps.tok.outputs.have == 'true'
+        run: nose query src --mode syntax 'dup>80' --fail-on any
+
+      - name: Docs gate (awiki)
+        if: steps.tok.outputs.have == 'true'
+        run: awiki lint -root docs

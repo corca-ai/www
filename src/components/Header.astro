@@ -177,7 +177,7 @@ const langOptions = locales.map((l) => ({
       closeIcon?.classList.toggle('hidden', !open);
       document.documentElement.style.overflow = open ? 'hidden' : '';
     };
-    btn.addEventListener('click', () => setOpen((menu as HTMLElement).hidden));
+    btn.addEventListener('click', () => setOpen(!!(menu as HTMLElement).hidden));
     menu.addEventListener('click', (e) => {
       if ((e.target as HTMLElement).closest('a')) setOpen(false);
     });

@@ -149,8 +149,7 @@ export const ui: Record<Lang, Dict> = {
       colleagues: 'Our People',
     },
     footer: {
-      address:
-        '6F, 11-8, Teheran-ro 77-gil, Gangnam-gu, Seoul, Republic of Korea · Corca, Inc.',
+      address: '6F, 11-8, Teheran-ro 77-gil, Gangnam-gu, Seoul, Republic of Korea · Corca, Inc.',
       tel: 'Tel: +82-2-6925-6978',
       rights: '© 2026 Corca, Inc.',
     },
@@ -196,8 +195,7 @@ export const ui: Record<Lang, Dict> = {
       colleagues: 'コルカの人々',
     },
     footer: {
-      address:
-        'ソウル特別市 江南区 テヘラン路77ギル 11-8, 6階 株式会社コルカ',
+      address: 'ソウル特別市 江南区 テヘラン路77ギル 11-8, 6階 株式会社コルカ',
       tel: 'Tel: +82-2-6925-6978',
       rights: '© 2026 Corca, Inc.',
     },

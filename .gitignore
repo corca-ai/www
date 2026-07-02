@@ -19,6 +19,10 @@ _*.mjs
 .raw-assets-backup/
 public/images/_raw/
 
+# tool caches / local overrides
+.nose-cache/
+lefthook-local.yml
+
 # os / logs
 .DS_Store
 *.log

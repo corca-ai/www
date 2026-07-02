@@ -90,15 +90,18 @@ export const pageMeta: Record<string, PageMeta> = {
   colleagues: {
     ko: {
       title: '코르카 사람들 | Corca',
-      description: '능력있고 열정적인 코르카 팀 멤버들의 경험과 성장에 대한 생생한 이야기들을 만나보세요.',
+      description:
+        '능력있고 열정적인 코르카 팀 멤버들의 경험과 성장에 대한 생생한 이야기들을 만나보세요.',
     },
     en: {
       title: 'Our People | Corca',
-      description: 'Discover the vivid stories of growth and experience from the talented, passionate members of the Corca team.',
+      description:
+        'Discover the vivid stories of growth and experience from the talented, passionate members of the Corca team.',
     },
     ja: {
       title: 'コルカの人々 | Corca',
-      description: '有能で情熱的なコルカのチームメンバーたちの経験と成長に関する生き生きとしたストーリーをご覧ください。',
+      description:
+        '有能で情熱的なコルカのチームメンバーたちの経験と成長に関する生き生きとしたストーリーをご覧ください。',
     },
   },
 };

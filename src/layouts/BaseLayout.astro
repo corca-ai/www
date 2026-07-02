@@ -88,7 +88,7 @@ const orgJsonLd = {
       crossorigin
     />
 
-    <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(orgJsonLd)} />
   </head>
   <body>
     <a

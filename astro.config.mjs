@@ -1,7 +1,8 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'astro/config';
 
 // Corca marketing site — static output, deployed to Cloudflare Workers (Static Assets).
 // Locales mirror the original Wix site: ko (default, "/"), en ("/en"), ja ("/ja").

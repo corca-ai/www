@@ -1,0 +1,14 @@
+# Supply-chain hardening.
+#
+# Do not install any package version that was published less than 3 days
+# (4320 minutes) ago. This "cooldown" gives the ecosystem time to detect and
+# yank malicious releases before they can land in our lockfile — pnpm will
+# pick the newest version that satisfies the range AND is old enough.
+#
+# Requires pnpm >= 10.16. Docs: https://pnpm.io/settings#minimumreleaseage
+minimumReleaseAge: 4320
+
+# Packages exempt from the cooldown (add sparingly, e.g. trusted first-party
+# packages you need to update immediately):
+# minimumReleaseAgeExclude:
+#   - '@corca/*'

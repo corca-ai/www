@@ -1,0 +1,49 @@
+# Git hooks (managed by lefthook). Installed automatically via the package.json
+# "prepare" script; run `pnpm exec lefthook install` manually if needed.
+#
+# Biome and astro-check are hard gates (installed via pnpm). nose and awiki are
+# native binaries (brew install corca-ai/tap/nose corca-ai/tap/awiki); the hooks
+# run them when present and warn otherwise, so contributors are never blocked by
+# a missing binary — CI installs them and enforces them hard.
+
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: '*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc}'
+      run: pnpm exec biome check --write --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+      stage_fixed: true
+    docs:
+      glob: 'docs/*.md'
+      run: |
+        if command -v awiki >/dev/null 2>&1; then
+          awiki format -root docs
+          if ! git diff --quiet -- docs; then
+            echo "awiki reformatted docs — run 'git add docs' and commit again."; exit 1
+          fi
+          awiki lint -root docs
+        else
+          echo "awiki not installed — skipping docs check (brew install corca-ai/tap/awiki)"
+        fi
+
+pre-push:
+  parallel: true
+  commands:
+    biome:
+      run: pnpm exec biome check
+    astro-check:
+      run: pnpm exec astro check
+    duplication:
+      run: |
+        if command -v nose >/dev/null 2>&1; then
+          nose query src --mode syntax 'dup>80' --fail-on any
+        else
+          echo "nose not installed — skipping duplication gate (brew install corca-ai/tap/nose)"
+        fi
+    docs:
+      run: |
+        if command -v awiki >/dev/null 2>&1; then
+          awiki lint -root docs
+        else
+          echo "awiki not installed — skipping docs lint (brew install corca-ai/tap/awiki)"
+        fi

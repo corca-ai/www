@@ -1,0 +1,20 @@
+# Code-duplication detection (jscpd replacement). Docs: corca-ai/nose.
+# Note: nose does not analyze .astro files, so this covers our .ts under src/.
+# dist/, node_modules/, .astro/, .wrangler/ and _*.mjs are already .gitignored
+# and skipped automatically; the excludes below are the extra ones.
+[query]
+# jscpd-style copy-paste (syntax) + proven-equivalent (semantic). The fuzzy
+# "near" channel is intentionally left out of the committed gate to avoid
+# noise — run `nose query src --mode near` ad-hoc for triage.
+mode = ["syntax", "semantic"]
+
+exclude = [
+  "**/*.d.ts",
+  "src/env.d.ts",
+  "**/*.md",   # documentation is linted by awiki, not nose
+  "**/*.css",  # Tailwind
+]
+
+# Minimum duplicated run, in IL tokens (analogous to jscpd --min-tokens).
+min-size = 40
+min-members = 2

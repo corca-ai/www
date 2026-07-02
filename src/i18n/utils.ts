@@ -1,4 +1,4 @@
-import { ui, defaultLang, locales, type Lang } from './ui';
+import { defaultLang, type Lang, locales, ui } from './ui';
 
 /** Detect the active locale from a request/page URL. */
 export function getLangFromUrl(url: URL): Lang {

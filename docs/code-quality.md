@@ -35,6 +35,6 @@ duplication and build gates. The matching scripts are listed in [[development]].
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs the core gates (Biome, `astro check` and the
-build) on every push and pull request. The nose and awiki gates also run there
-when the `CORCA_GH_TOKEN` secret — a token that can read the private tool repos —
-is configured, and skip with a warning otherwise.
+build) on every push and pull request. A second job installs nose and awiki
+from their public release binaries and runs the duplication and docs gates, so
+every gate is enforced in CI with no extra configuration.

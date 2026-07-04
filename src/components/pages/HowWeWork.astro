@@ -19,7 +19,7 @@ const PHOTOS = [
   `${P}2fe9a6_f9cd4f032afc4e9f98dbfc6b88d480b6.webp`,
 ];
 
-// Fully localized in all three languages. (The original Wix site fell back to
+// Fully localized in all four languages. (The original Wix site fell back to
 // Korean on /ja/how-we-work; our version provides a proper Japanese translation.)
 const ko = {
   heroTitle: '코르카는,\n이렇게 일해요',
@@ -96,7 +96,32 @@ const ja = {
   ],
 };
 
-const c = { ko, en, ja }[lang];
+const zh = {
+  heroTitle: 'Corca，\n是这样工作的',
+  heroSubtitle: 'Corca 为成员的成长与福利提供最佳的工作环境，并致力于帮助大家发展能力。',
+  methodsLabel: '工作方式',
+  methods: [
+    { title: '组织架构', body: 'Corca 的组织架构分为职能组织和目的组织。每个 Chapter–Squad 都有各自的 Mission 和 Strategy，朝着同一个目标一起工作。我们通过健康的反馈、复盘和 Scrum，专注于团队和产品的成长。', img: ISO_STRUCTURE },
+    { title: '职业阶梯', body: 'Corca 技术团队有一份名为 Corca Ladder 的指南，帮助你了解如何在 Corca 内部创造影响力。你可以通过 Corca Ladder 衡量自己当前的影响力，再和经理一起讨论，制定迈向下一步的具体计划。', img: ISO_LADDER },
+    { title: '丰富的课程与学习小组', body: 'Corca 积极支持帮助新成员更快适应工作的课程，以及由团队成员自主运营的学习小组。到目前为止办过的学习小组有 MLOps Curriculum、Data Curriculum、Lead Engineer Maker、CUDA、强化学习、重构等，而且还在不断增加！', img: ISO_STUDY },
+  ],
+  envLabel: '工作环境',
+  benefits: [
+    { icon: '💰', title: '职务教育费支持', body: 'Corca 相信，团队成员的成长就是整个团队的成长。只要有助于成果和成长，无论什么样的教育我们都会毫不吝啬地支持。除了参加外部大会、职务相关的培训之外，我们还会支持能提升工作效率的 AI 工具订阅费用。' },
+    { icon: '📚', title: '图书支持', body: '我们支持购买对公司和团队成员成长有帮助的图书。你可以在 Corca Library 里查看书单，以及团队成员们留下的读后感。' },
+    { icon: '🤝', title: '伙伴计划（Buddy Program）', body: '为了帮助刚加入 Corca 的新成员更好地适应，我们会开展伙伴计划（Buddy Program）。上班第一天，别紧张！为了让大家能轻松聊天，我们还会支持伙伴聊天的费用！' },
+    { icon: '🎤', title: '为成长举办研讨会', body: '我们会举办各种研讨会，支持团队成员持续的成长与表现。除了内部研讨会，我们还会邀请外部嘉宾来做分享，让大家获得许多启发。' },
+    { icon: '👥', title: '扁平的组织，可靠的团队协作', body: '我们统一使用平等的称呼方式，不分职位高低。项目的推进方向，通过健康又自由的讨论来决定。你可以和很多值得学习、能带来正向激励的同事一起共事！' },
+    { icon: '🕐', title: '弹性的上下班时间', body: '通过弹性工作时间制，你可以灵活地调整工作时间。我们设有 Co-work Time（上午 10 点 30 分 – 下午 4 点），让团队成员之间沟通更顺畅。' },
+    { icon: '🧰', title: '积极引入技术栈', body: '对于推进项目所需的各类工作工具，我们都会积极鼓励并支持大家去使用。' },
+    { icon: '💻', title: '顶级设备支持', body: '你可以在 MacBook Pro/Air、LG gram 中自由选择。显示器、机械键盘等工作所需的所有设备，我们都会积极支持！' },
+    { icon: '🍱', title: '充足的餐补和零食', body: '民以食为天！为了让大家吃得开心、工作也开心，我们提供充足的午餐餐补，加班时还会提供同等金额的晚餐餐补。零食也准备得满满当当。' },
+    { icon: '🎂', title: '生日假', body: '为了满怀心意地庆祝每位 Corca 成员出生的日子，我们会赠送一天生日假。每个月还会举办生日派对，大家一起庆祝！' },
+    { icon: '🎗️', title: '婚丧喜庆支持', body: '无论开心还是难过，Corca 都会陪在你身边。我们会按照规定发放婚丧喜庆假期和相应的礼金。' },
+  ],
+};
+
+const c = { ko, en, ja, zh }[lang];
 const br = (s: string) => s.replace(/\n/g, '<br />');
 ---
 

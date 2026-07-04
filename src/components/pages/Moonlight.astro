@@ -44,8 +44,28 @@ const content = {
       { label: '利用機関数', value: '1,000+' },
     ],
   },
+  zh: {
+    title: '为研究者打造的AI PDF论文阅读器',
+    body: 'Moonlight利用AI帮助您快速、轻松地理解和总结艰深的论文，还提供智能引用、页面翻译、自动高亮、文献管理、论文检索、创意发想等多种助力研究的功能。',
+    cta: '立即试用',
+    stats: [
+      { label: '用户', value: '100,000+' },
+      { label: '已读论文', value: '1.7M+' },
+      { label: '使用国家', value: '150+' },
+      { label: '使用机构', value: '1,000+' },
+    ],
+  },
 };
 const c = content[lang];
+
+// Stat icons (users / papers read / countries / institutions), mirroring the
+// original site's pictograms. Decorative — text labels carry the meaning.
+const statIcons = [
+  'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0M17 3.5a4 4 0 0 1 0 7.4M22 20a7 7 0 0 0-4.6-6.6',
+  'M12 5.5C10.5 4 8.4 3 5.5 3 4 3 2.9 3.3 2 3.7V19c.9-.4 2-.7 3.5-.7 2.9 0 5 1 6.5 2.5 1.5-1.5 3.6-2.5 6.5-2.5 1.5 0 2.6.3 3.5.7V3.7C21.1 3.3 20 3 18.5 3 15.6 3 13.5 4 12 5.5Zm0 0V21',
+  'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0c2.5-2.2 4-5.4 4-9s-1.5-6.8-4-9c-2.5 2.2-4 5.4-4 9s1.5 6.8 4 9Zm-8.5-9h17',
+  'M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 9h.01M12 9h.01M15 9h.01M9 13h.01M12 13h.01M15 13h.01',
+];
 ---
 
 <!-- Hero -->
@@ -54,23 +74,28 @@ const c = content[lang];
   style={`background-image: linear-gradient(rgba(20,8,40,0.72), rgba(20,8,40,0.78)), url('${HERO_BG}');`}
 >
   <div class="container-c flex min-h-[620px] flex-col items-center justify-center gap-7 py-24 text-center text-white lg:min-h-[760px]">
-    <img src={LOGO} alt="Moonlight" width="460" height="127" class="w-[300px] max-w-full sm:w-[420px]" />
-    <h1 class="text-[32px] font-semibold leading-tight sm:text-[44px] lg:text-[56px]">{c.title}</h1>
-    <p class="max-w-[720px] text-[15px] leading-relaxed text-white/85 lg:text-[18px]">{c.body}</p>
+    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[300px] max-w-full sm:w-[420px]" data-reveal />
+    <h1 class="text-[32px] font-semibold leading-tight sm:text-[44px] lg:text-[56px]" data-reveal style="--reveal-delay: .1s">{c.title}</h1>
+    <p class="max-w-[720px] text-[15px] leading-relaxed text-white/85 lg:text-[18px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
     <a
       href={APP_URL}
       target="_blank"
       rel="noopener"
       class="btn-pill mt-2 border-transparent bg-white px-7 text-[15px] font-semibold text-[#402060] hover:bg-white/90"
+      data-reveal
+      style="--reveal-delay: .3s"
     >{c.cta}</a>
   </div>
 </section>
 
-<!-- Stats -->
+<!-- Stats — folds open on scroll, like the original page's entry animation. -->
 <section class="bg-[#1a2352] text-white">
-  <div class="container-c grid grid-cols-2 gap-y-10 py-16 text-center md:grid-cols-4 lg:py-20">
-    {c.stats.map((s) => (
+  <div class="container-c grid grid-cols-2 gap-y-10 py-16 text-center md:grid-cols-4 lg:py-20" data-reveal="fold">
+    {c.stats.map((s, i) => (
       <div class="flex flex-col items-center gap-2">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="mb-1 text-white/80">
+          <path d={statIcons[i]} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
         <p class="text-[14px] text-white/60 lg:text-[16px]">{s.label}</p>
         <p class="text-[34px] font-semibold lg:text-[44px]">{s.value}</p>
       </div>

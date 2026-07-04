@@ -1,7 +1,8 @@
 // Locale configuration + translation dictionaries for the Corca site.
-// Locales mirror the original: ko (default, "/"), en ("/en"), ja ("/ja").
+// ko (default, "/") mirrors the original; en ("/en"), ja ("/ja") and
+// zh ("/zh", Simplified Chinese) are prefixed.
 
-export const locales = ['ko', 'en', 'ja'] as const;
+export const locales = ['ko', 'en', 'ja', 'zh'] as const;
 export type Lang = (typeof locales)[number];
 
 export const defaultLang: Lang = 'ko';
@@ -10,6 +11,7 @@ export const languageNames: Record<Lang, string> = {
   ko: '한국어',
   en: 'English',
   ja: '日本語',
+  zh: '中文',
 };
 
 /** Short label shown in the language switcher. */
@@ -17,6 +19,7 @@ export const languageShort: Record<Lang, string> = {
   ko: 'KO',
   en: 'EN',
   ja: 'JA',
+  zh: 'ZH',
 };
 
 /** BCP-47 tags used for <html lang>, hreflang and OG locale. */
@@ -24,12 +27,14 @@ export const localeTag: Record<Lang, string> = {
   ko: 'ko-KR',
   en: 'en-US',
   ja: 'ja-JP',
+  zh: 'zh-CN',
 };
 
 export const ogLocale: Record<Lang, string> = {
   ko: 'ko_KR',
   en: 'en_US',
   ja: 'ja_JP',
+  zh: 'zh_CN',
 };
 
 // External destinations (shared across locales).
@@ -222,6 +227,49 @@ export const ui: Record<Lang, Dict> = {
       partnersHeading: 'コルカは多くの企業に\n革新をもたらしています。',
       closingHeading: 'AIの力で、人生と仕事のパラダイムを変革する',
       closingSubtitle: '私たちの技術力で新たな可能性を切り拓き、世界の変化をリードしていきます。',
+    },
+  },
+
+  zh: {
+    langLabel: '选择语言',
+    nav: {
+      products: '产品介绍',
+      about: '公司介绍',
+      careers: '招聘',
+      blog: '博客',
+      vision: '愿景与使命',
+      howWeWork: '我们的工作方式',
+      news: '新闻报道',
+      colleagues: 'Corca 的伙伴们',
+    },
+    footer: {
+      address: '韩国首尔特别市江南区德黑兰路77街11-8, 6层 Corca株式会社',
+      tel: 'Tel: +82-2-6925-6978',
+      rights: '© 2026 Corca, Inc.',
+    },
+    home: {
+      metaTitle: 'Corca | 用AI技术改变世界',
+      metaDescription:
+        'Corca引领将想象变为现实的AI技术。我们以卓越的解决方案、道德领导力和全球影响力为核心价值，致力于以客户为中心的服务和持续的研发。欢迎了解应用于广告、商业、研究和日常生活等多个领域的Moonlight、Trace等AI产品。',
+      heroTitle: 'Corca正在用AI技术\n改变世界。',
+      heroSubtitle: '我们用AI技术开启新的可能，引领世界的变革。',
+      readMore: '了解更多',
+      readArticle: '查看报道',
+      moonlightHeading: '更快、更轻松地理解论文',
+      moonlightBody:
+        'Moonlight将AI技术直接应用于学术论文的阅读过程，为陌生或艰深的内容提供实时讲解，并通过对话式AI帮助您具体化概念、总结要点，大幅缩短理解研究所需PDF文献的时间，助您获得更深入的理解。',
+      traceHeading: '像聊天一样输入的日程管理应用',
+      traceBody:
+        'Trace是一款帮助您轻松管理一天的AI日程应用。只需用日常语言输入日程，Trace就会自动补全细节。借助理解上下文的提醒功能，您随时都能从容地掌控日程。',
+      babyUnicornBadge: '入选2024年"小独角兽"企业！',
+      babyUnicornHeading: '创新性、成长性与全球竞争力备受认可的Corca',
+      recsysHeading: 'Corca的技术实力\n已获得世界级认可。',
+      recsysCaptionTop: '在AI推荐系统领域最权威学会主办的',
+      recsysEvent: 'ACM RecSys Challenge 2023',
+      recsysRank: '荣获世界第7名、韩国企业第1名的佳绩！',
+      partnersHeading: 'Corca正在为众多企业\n带来创新。',
+      closingHeading: '用AI改变生活与工作的范式',
+      closingSubtitle: '以我们的技术实力开启新的可能，引领世界的变革。',
     },
   },
 };

@@ -10,12 +10,19 @@ const HERO_BG = '/images/pages/2fe9a6_d35d2743fc2342df884222c5a0d125ee.webp';
 const LOGO = '/images/pages/5cb5de_4a84baab528e42b797e2b35189e6661a.webp';
 
 // External destinations kept as external links (not replicated).
-const CAREERS_URL = 'https://corcateam.career.greetinghr.com/ko/career';
+// (The old greetinghr careers URL now 404s; corca.team/recruit is the live one,
+// and matches where the original site's header links to.)
+const CAREERS_URL = 'https://corca.team/recruit';
 const MAP_URL = 'https://map.naver.com/p/entry/place/1354855657';
+// Embedded Google Map of the office, like the original site's contact section.
+const MAP_EMBED = (hl: string) =>
+  `https://maps.google.com/maps?q=${encodeURIComponent('11-8 Teheran-ro 77-gil, Gangnam-gu, Seoul')}&z=16&hl=${hl}&output=embed`;
+const mapLang: Record<Lang, string> = { ko: 'ko', en: 'en', ja: 'ja', zh: 'zh-CN' };
 const contactLinks = {
-  ko: { careers: '채용 안내', map: '지도 확인' },
-  en: { careers: 'Careers', map: 'View on map' },
-  ja: { careers: '採用情報', map: '地図で見る' },
+  ko: { careers: '채용 안내', map: '네이버 지도로 보기', mapTitle: '코르카 오시는 길 지도' },
+  en: { careers: 'Careers', map: 'Open in Naver Map', mapTitle: 'Map to the Corca office' },
+  ja: { careers: '採用情報', map: 'NAVERマップで見る', mapTitle: 'コルカへのアクセスマップ' },
+  zh: { careers: '招聘信息', map: '在Naver地图中查看', mapTitle: 'Corca办公室位置地图' },
 };
 
 // Branded value names stay in English across locales (as on the original).
@@ -79,6 +86,25 @@ const content = {
     address: '6F, 11-8 Teheran-ro 77-gil, Gangnam-gu, Seoul, Korea',
     phone: '+82 2 6925 6978',
   },
+  zh: {
+    heroTitle: '让所有人共享技术进步的成果，\n为人类文明的发展贡献力量。',
+    missionTitle: '用AI改变生活与工作的范式',
+    missionBody:
+      'Corca引领将想象变为现实的AI技术。我们以卓越的解决方案、道德领导力和全球影响力为核心价值，致力于以客户为中心的服务和持续的研发。让所有人共享技术进步的成果、为人类文明的发展贡献力量，是我们的使命。',
+    valueDescs: ['富有创意的想法', '追求更美好的社会、文化与文明', '以人为本，心怀人类之爱', '基于扎实理论与研究的决策', '不止于我，而是我们与所有人，与Corca同行'],
+    ethicalTitle: '为更光明的未来打造道德的AI',
+    ethicalSubtitle: 'Corca引领将想象变为现实的AI技术，以高超的技术实力追求创新的解决方案与道德领导力，致力于创造更美好的社会。',
+    pillars: [
+      { title: '超越技术的信任', body: 'Corca在尖端AI技术的开发与应用中，始终将透明性与道德性作为首要价值。为了打造客户与社会都能信赖的技术，我们致力于负责任的数据管理和公平的算法开发。' },
+      { title: '惠及所有人的创新', body: '我们坚信创新不是少数人的专利，而是属于每一个人。我们提供充分考虑不同用户需求与环境的AI解决方案，用人人都能轻松使用的技术缩小社会差距，共创共同成长的未来。' },
+      { title: '改变每个人日常的技术', body: 'Corca的AI在日常生活中创造实实在在的改变。我们为各个领域提供量身定制的解决方案，轻松解决复杂问题，让生活更便捷、更安全。我们的技术旨在为人们的日常带来积极的影响。' },
+      { title: '引领全球AI创新的企业', body: 'Corca不仅立足韩国，更在全球市场引领道德且创新的AI技术。我们与世界各地的多元伙伴合作，正成长为制定全球标准的企业。怀着对未来的挑战精神与责任感，我们不断创造更美好的世界。' },
+    ],
+    contactLabel: 'Contact',
+    locationLabel: '地址',
+    address: '6F, 11-8 Teheran-ro 77-gil, Gangnam-gu, Seoul, Korea',
+    phone: '+82 2 6925 6978',
+  },
 };
 const c = content[lang];
 const cl = contactLinks[lang];
@@ -98,7 +124,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Mission + values -->
 <section class="bg-white">
   <div class="container-c flex flex-col items-center py-20 text-center lg:py-28">
-    <img src={LOGO} alt="Corca" width="200" height="58" class="h-[46px] w-auto" />
+    <img src={LOGO} alt="Corca" width="1600" height="467" class="h-[46px] w-auto" />
     <h2 class="mt-8 text-[26px] font-semibold text-[#1a2352] lg:text-[38px]">{c.missionTitle}</h2>
     <p class="mt-6 max-w-[760px] text-[15px] leading-relaxed text-[#1a2352]/85 lg:text-[17px]">{c.missionBody}</p>
 
@@ -132,19 +158,30 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   </div>
 </section>
 
-<!-- Contact -->
+<!-- Contact — info on the left, embedded office map on the right (as on the
+     original site). -->
 <section class="bg-white">
-  <div class="container-c py-20 lg:py-24">
-    <h2 class="text-[32px] font-semibold text-[#1a2352] lg:text-[46px]">{c.contactLabel}</h2>
-    <address class="mt-8 space-y-1.5 text-[15px] not-italic text-[#1a2352] lg:text-[18px]">
-      <p class="font-semibold">{c.locationLabel}</p>
-      <p>{c.address}</p>
-      <p><a href={`mailto:${contact.email}`} class="hover:text-brand">{contact.email}</a></p>
-      <p><a href="tel:+82-2-6925-6978" class="hover:text-brand">{c.phone}</a></p>
-    </address>
-    <div class="mt-7 flex flex-wrap gap-3">
-      <a href={CAREERS_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.careers}</a>
-      <a href={MAP_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.map}</a>
+  <div class="container-c grid items-start gap-10 py-20 lg:grid-cols-2 lg:gap-14 lg:py-24">
+    <div>
+      <h2 class="text-[32px] font-semibold text-[#1a2352] lg:text-[46px]">{c.contactLabel}</h2>
+      <address class="mt-8 space-y-1.5 text-[15px] not-italic text-[#1a2352] lg:text-[18px]">
+        <p class="font-semibold">{c.locationLabel}</p>
+        <p>{c.address}</p>
+        <p><a href={`mailto:${contact.email}`} class="hover:text-brand">{contact.email}</a></p>
+        <p><a href="tel:+82-2-6925-6978" class="hover:text-brand">{c.phone}</a></p>
+      </address>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href={CAREERS_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.careers}</a>
+        <a href={MAP_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.map}</a>
+      </div>
     </div>
+    <iframe
+      src={MAP_EMBED(mapLang[lang])}
+      title={cl.mapTitle}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen
+      class="h-[320px] w-full rounded-2xl border border-black/10 lg:h-[380px]"
+    ></iframe>
   </div>
 </section>

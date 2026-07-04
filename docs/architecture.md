@@ -10,7 +10,7 @@ Styling is Tailwind CSS v4 with a self-hosted Pretendard variable font.
 
 ## Project layout
 
-- `src/pages/` — file-based routes; locale folders `en/` and `ja/` mirror the
+- `src/pages/` — file-based routes; locale folders `en/`, `ja/` and `zh/` mirror the
   Korean routes that live at the site root.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`.

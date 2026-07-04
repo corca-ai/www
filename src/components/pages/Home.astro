@@ -25,7 +25,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- ============================ Hero ============================ -->
 <section class="relative overflow-hidden bg-brand text-white">
   <div class="container-c relative flex flex-col items-center gap-10 py-16 text-center lg:min-h-[760px] lg:items-start lg:justify-center lg:py-0 lg:text-left">
-    <div class="lg:max-w-[640px]">
+    <div class="lg:max-w-[640px]" data-reveal>
       <h1
         class="text-[34px] font-semibold leading-[1.18] tracking-tight sm:text-[44px] lg:text-[52px]"
         set:html={br(h.heroTitle)}
@@ -46,7 +46,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- ========================== Moonlight ========================== -->
 <section class="bg-white">
   <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
-    <div class="order-first">
+    <div class="order-first" data-reveal>
       <Image
         src={moonlightApp}
         alt="Moonlight app screenshot"
@@ -55,8 +55,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
         class="w-full rounded-2xl shadow-[var(--shadow-card)]"
       />
     </div>
-    <div>
-      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} class="h-[52px] w-auto" />
+    <div data-reveal style="--reveal-delay: .12s">
+      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto" />
       <h2 class="mt-5 text-[26px] font-semibold leading-snug lg:text-[30px]">{h.moonlightHeading}</h2>
       <p class="mt-5 text-[15px] leading-relaxed text-ink-soft lg:text-[16px]">{h.moonlightBody}</p>
       <a href={localizePath('/moonlight', lang)} class="btn-pill mt-8 border-transparent bg-[#6b6580] text-white hover:bg-[#565068]">{h.readMore}</a>
@@ -67,7 +67,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- ============================ Trace ============================ -->
 <section class="bg-lavender">
   <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
-    <div class="order-first lg:order-last">
+    <div class="order-first lg:order-last" data-reveal>
       <Image
         src={traceApp}
         alt="Trace app screenshot"
@@ -76,8 +76,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
         class="w-full rounded-2xl shadow-[var(--shadow-card)]"
       />
     </div>
-    <div>
-      <Image src={traceLogo} alt="Trace" width={190} height={57} class="h-[52px] w-auto" />
+    <div data-reveal style="--reveal-delay: .12s">
+      <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto" />
       <h2 class="mt-5 text-[26px] font-semibold leading-snug lg:text-[30px]">{h.traceHeading}</h2>
       <p class="mt-5 text-[15px] leading-relaxed text-ink-soft lg:text-[16px]">{h.traceBody}</p>
       <a href={localizePath('/trace', lang)} class="btn-pill mt-8 border-transparent bg-[#6257cc] text-white hover:bg-[#514799]">{h.readMore}</a>
@@ -88,14 +88,14 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- ===================== Baby Unicorn award ===================== -->
 <section class="bg-white">
   <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-24">
-    <div class="order-first">
+    <div class="order-first" data-reveal>
       <div class="mx-auto flex max-w-[440px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
         <p class="text-[20px] font-semibold text-brand">{h.babyUnicornBadge}</p>
-        <Image src={awardUnicorn} alt="" width={260} height={83} class="w-[62%] max-w-[240px]" />
-        <Image src={awardStartup} alt="" width={320} height={64} class="w-[80%] max-w-[300px]" />
+        <Image src={awardUnicorn} alt="" width={260} height={83} densities={[1, 2]} class="w-[62%] max-w-[240px]" />
+        <Image src={awardStartup} alt="" width={320} height={64} densities={[1, 2]} class="w-[80%] max-w-[300px]" />
       </div>
     </div>
-    <div>
+    <div data-reveal style="--reveal-delay: .12s">
       <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.babyUnicornHeading)} />
       <a href={externalLinks.babyUnicornArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
     </div>
@@ -105,11 +105,11 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- ============================ RecSys ============================ -->
 <section class="bg-white">
   <div class="container-c grid items-center gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
-    <div>
+    <div data-reveal>
       <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.recsysHeading)} />
       <a href={externalLinks.recsysArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
     </div>
-    <div class="order-first lg:order-last">
+    <div class="order-first lg:order-last" data-reveal style="--reveal-delay: .12s">
       <div class="rounded-2xl bg-[#f4f0fb] px-6 py-8 sm:px-10">
         <div class="text-center">
           <p class="text-[14px] text-ink-soft lg:text-[15px]">{h.recsysCaptionTop}</p>
@@ -131,7 +131,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- =========================== Partners =========================== -->
 <section class="bg-white">
   <div class="container-c grid items-center gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
-    <div class="order-first">
+    <div class="order-first" data-reveal>
       <Image
         src={partners}
         alt="Corca partners and clients"
@@ -140,7 +140,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
         class="w-full"
       />
     </div>
-    <div>
+    <div data-reveal style="--reveal-delay: .12s">
       <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.partnersHeading)} />
     </div>
   </div>
@@ -148,7 +148,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- ========================= Closing CTA ========================= -->
 <section class="bg-brand text-white">
-  <div class="container-c flex flex-col items-center gap-5 py-24 text-center lg:py-32">
+  <div class="container-c flex flex-col items-center gap-5 py-24 text-center lg:py-32" data-reveal>
     <h2 class="text-[28px] font-semibold leading-snug lg:text-[40px]">{h.closingHeading}</h2>
     <p class="max-w-2xl text-[15px] leading-relaxed text-white lg:text-[17px]">{h.closingSubtitle}</p>
   </div>

@@ -5,7 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
 // Corca marketing site — static output, deployed to Cloudflare Workers (Static Assets).
-// Locales mirror the original Wix site: ko (default, "/"), en ("/en"), ja ("/ja").
+// ko (default, "/") mirrors the original Wix site; en ("/en"), ja ("/ja") and
+// zh ("/zh") are prefixed.
 export default defineConfig({
   site: 'https://www.corca.ai',
   // Trailing slash everywhere so canonical/hreflang/sitemap match how
@@ -13,7 +14,7 @@ export default defineConfig({
   trailingSlash: 'always',
   i18n: {
     defaultLocale: 'ko',
-    locales: ['ko', 'en', 'ja'],
+    locales: ['ko', 'en', 'ja', 'zh'],
     routing: {
       prefixDefaultLocale: false,
       redirectToDefaultLocale: false,
@@ -27,6 +28,7 @@ export default defineConfig({
           ko: 'ko-KR',
           en: 'en-US',
           ja: 'ja-JP',
+          zh: 'zh-CN',
         },
       },
     }),

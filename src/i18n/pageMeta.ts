@@ -21,6 +21,11 @@ export const pageMeta: Record<string, PageMeta> = {
       description:
         'ムーンライトは、AI技術を学術論文の読解に直接応用する研究者向けのAI論文リーダーです。難解な内容をリアルタイムで説明し、要約や翻訳など研究に役立つ多彩な機能を提供します。',
     },
+    zh: {
+      title: 'Moonlight | Corca',
+      description:
+        'Moonlight是一款面向研究者的AI论文阅读器，将AI技术直接应用于学术论文的阅读过程，实时讲解陌生或艰深的内容，帮助您更快、更深入地理解研究所需的PDF文献。',
+    },
   },
   trace: {
     ko: {
@@ -37,6 +42,11 @@ export const pageMeta: Record<string, PageMeta> = {
       title: 'Trace | Corca',
       description:
         'トレースは、話す・入力する・写真を撮るだけでAIが内容を理解し、予定を自動で整理するAIスケジューリングアプリです。あなたのライフリズムに合わせて通知やルーチンを最適化します。',
+    },
+    zh: {
+      title: 'Trace | Corca',
+      description:
+        'Trace是一款只需说话、输入或拍照，AI就能理解内容并自动整理日程的AI日历。通过契合生活节奏的提醒与例行事项，轻松管理您的每一天。',
     },
   },
   'about-corca': {
@@ -55,6 +65,11 @@ export const pageMeta: Record<string, PageMeta> = {
       description:
         'コルカは、想像を現実に変えるAI技術の最前線をリードしています。卓越したソリューション、倫理的リーダーシップ、グローバルな影響力を中核的価値とし、技術の進歩の恩恵をすべての人に届けます。',
     },
+    zh: {
+      title: '愿景与使命 | Corca',
+      description:
+        'Corca引领将想象变为现实的AI技术。我们以卓越的解决方案、道德领导力和全球影响力为核心价值，用技术的进步创造更美好的社会。',
+    },
   },
   'how-we-work': {
     ko: {
@@ -72,6 +87,11 @@ export const pageMeta: Record<string, PageMeta> = {
       description:
         'コルカは、メンバーの成長と働きやすさのために最適な労働環境を提供し、能力開発に力を注いでいます。コルカの働き方と多様な福利厚生をご紹介します。',
     },
+    zh: {
+      title: '我们的工作方式 | Corca',
+      description:
+        'Corca为成员的成长与福祉提供最佳的工作环境，并致力于能力发展。为您介绍Corca的工作方式和多样的福利制度。',
+    },
   },
   news: {
     ko: {
@@ -85,6 +105,10 @@ export const pageMeta: Record<string, PageMeta> = {
     ja: {
       title: 'ニュース | Corca',
       description: 'ニュース記事で見るコルカの成果とお知らせをご覧ください。',
+    },
+    zh: {
+      title: '新闻 | Corca',
+      description: '通过新闻报道了解Corca的成果与最新动态。',
     },
   },
   colleagues: {
@@ -102,6 +126,10 @@ export const pageMeta: Record<string, PageMeta> = {
       title: 'コルカの人々 | Corca',
       description:
         '有能で情熱的なコルカのチームメンバーたちの経験と成長に関する生き生きとしたストーリーをご覧ください。',
+    },
+    zh: {
+      title: 'Corca 的伙伴们 | Corca',
+      description: '欢迎了解Corca团队中才华横溢、充满热情的成员们关于经验与成长的生动故事。',
     },
   },
 };

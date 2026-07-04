@@ -13,7 +13,8 @@ export function useTranslations(lang: Lang) {
 
 /**
  * Build a locale-prefixed path from a base path (which must start with "/").
- * ko (default) has no prefix; en → /en, ja → /ja. Mirrors the original URLs.
+ * ko (default) has no prefix; en → /en, ja → /ja, zh → /zh. Mirrors the
+ * original URLs.
  */
 export function localizePath(base: string, lang: Lang): string {
   const clean = base === '/' ? '' : `/${base.replace(/^\/+|\/+$/g, '')}`;

@@ -7,7 +7,9 @@ interface Props {
 const { lang } = Astro.props;
 
 const P = '/images/pages/';
-const HERO_BG = `${P}2fe9a6_4b78885029854f5daeb2e6b97cc72baaf000.webp`;
+const HERO_POSTER = `${P}2fe9a6_4b78885029854f5daeb2e6b97cc72baaf000.webp`;
+// Original Wix hero background: concentric circles with a rotating clock.
+const HERO_VIDEO = '/videos/trace-hero.mp4';
 const BADGE = `${P}2fe9a6_32ebaebce4ec4c2e83c49bb9eb147c21.webp`;
 const LOGO = `${P}2fe9a6_ed110dd31d37412ab81cbcbe0b9a30cc.webp`;
 const APPSTORE = `${P}2fe9a6_6bc0705e6e9245658b307e1b1a6b0bcc.webp`;
@@ -24,16 +26,25 @@ const content = {
     title: '말 한마디로 완벽한 일정관리',
     body: '트레이스는 당신의 하루를 손쉽게 관리해주는 AI 캘린더입니다. 말하거나, 입력하거나, 사진을 찍기만 하면 AI가 내용을 이해해 일정을 자동으로 정리하고 당신의 생활 리듬에 맞춰 알림과 루틴을 똑똑하게 챙겨드립니다.',
     cta: '스마트한 일정 관리가 필요하신가요? 지금 Trace를 다운로드하고 일정 관리의 편리함을 경험해 보세요.',
+    appStoreAlt: 'App Store에서 다운로드',
   },
   en: {
     title: 'Just tell me your schedule',
     body: 'Trace is an AI calendar that makes managing your day easy. Simply speak, type, or take a photo, and the AI will understand your content, automatically organize your schedule, and intelligently manage reminders and routines to suit your daily rhythm.',
     cta: 'Need smarter scheduling? Download Trace now and experience effortless schedule management.',
+    appStoreAlt: 'Download on the App Store',
   },
   ja: {
     title: '話すだけで予定が登録される\nAIスケジューリングアプリ',
     body: 'トレースは、あなたの一日をスマートに管理するAIスケジューリングアプリです。話す・入力する・写真を撮るだけで、AIが内容を理解し、自動でスケジュールを整理します。あなたのライフリズムに合わせて、通知やルーチンを最適なタイミングでお届けします。',
     cta: 'スマートなスケジュール管理をお探しですか？今すぐTraceをダウンロードして、その便利さを体験してください。',
+    appStoreAlt: 'App Storeでダウンロード',
+  },
+  zh: {
+    title: '一句话，轻松搞定日程管理',
+    body: 'Trace是一款帮助您轻松管理一天的AI日历。只需说话、输入或拍照，AI就能理解内容并自动整理日程，还会根据您的生活节奏智能地安排提醒与例行事项。',
+    cta: '需要更智能的日程管理吗？立即下载Trace，体验日程管理的便捷。',
+    appStoreAlt: '在App Store下载',
   },
 };
 const c = content[lang];
@@ -41,34 +52,62 @@ const c = content[lang];
 
 <section
   class="relative overflow-hidden bg-[#745add] bg-cover bg-top text-white"
-  style={`background-image: linear-gradient(rgba(116,90,221,0.62), rgba(103,78,205,0.72)), url('${HERO_BG}');`}
+  style={`background-image: url('${HERO_POSTER}');`}
 >
+  <!-- Background video: the original site's rotating-clock animation. Decorative
+       only (aria-hidden); the poster image doubles as the reduced-motion and
+       no-JS fallback. -->
+  <video
+    id="trace-hero-video"
+    class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    poster={HERO_POSTER}
+    aria-hidden="true"
+    tabindex="-1"
+  >
+    <source src={HERO_VIDEO} type="video/mp4" />
+  </video>
+  <!-- Contrast overlay so white text stays WCAG-readable over the video. -->
+  <div class="absolute inset-0 bg-gradient-to-b from-[rgba(116,90,221,0.55)] to-[rgba(103,78,205,0.65)]" aria-hidden="true"></div>
+
   <!-- top-right chat phone (desktop only, peeking) -->
   <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[4%] top-[-40px] hidden w-[260px] select-none lg:block" />
 
   <!-- Content -->
   <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-20 pb-10 text-center lg:pt-28">
-    <a href="https://www.producthunt.com/products/trace" target="_blank" rel="noopener">
-      <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="216" height="47" class="h-[46px] w-auto" />
-    </a>
-    <img src={LOGO} alt="Trace" width="300" height="90" class="mt-2 w-[240px] max-w-full sm:w-[300px]" />
-    <h1 class="mt-2 text-[34px] font-semibold leading-tight sm:text-[46px] lg:text-[58px]" set:html={br(c.title)} />
-    <p class="max-w-[760px] text-[15px] leading-relaxed text-white/90 lg:text-[18px]">{c.body}</p>
-    <p class="max-w-[720px] text-[15px] leading-relaxed text-white/90 lg:text-[17px]">{c.cta}</p>
-    <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block transition-transform hover:-translate-y-0.5">
-      <img src={APPSTORE} alt="Download on the App Store" width="215" height="63" class="h-[58px] w-auto" />
+    <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[48px] w-auto" data-reveal />
+    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[250px] max-w-full sm:w-[352px]" data-reveal style="--reveal-delay: .08s" />
+    <h1 class="mt-2 text-[34px] font-semibold leading-tight sm:text-[46px] lg:text-[58px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
+    <p class="max-w-[760px] text-[15px] leading-relaxed text-white/90 lg:text-[18px]" data-reveal style="--reveal-delay: .24s">{c.body}</p>
+    <p class="max-w-[720px] text-[15px] leading-relaxed text-white/90 lg:text-[17px]" data-reveal style="--reveal-delay: .3s">{c.cta}</p>
+    <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block transition-transform hover:-translate-y-0.5" data-reveal style="--reveal-delay: .36s">
+      <img src={APPSTORE} alt={c.appStoreAlt} width="324" height="95" class="h-[66px] w-auto sm:h-[92px]" />
     </a>
   </div>
 
   <!-- Desktop phone collage -->
   <div class="relative mx-auto hidden h-[640px] w-full max-w-[1240px] lg:block">
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[7%] top-[150px] w-[35%] max-w-[440px]" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-[39%] top-[10px] z-20 w-[25%] max-w-[320px]" />
-    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute left-[43%] top-[70px] w-[46%] max-w-[600px]" />
+    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[7%] top-[150px] w-[35%] max-w-[440px]" data-reveal style="--reveal-delay: .1s" />
+    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-[39%] top-[10px] z-20 w-[25%] max-w-[320px]" data-reveal style="--reveal-delay: .25s" />
+    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute left-[43%] top-[70px] w-[46%] max-w-[600px]" data-reveal style="--reveal-delay: .4s" />
   </div>
 
   <!-- Mobile: single representative mockup -->
-  <div class="flex justify-center px-6 pb-16 lg:hidden">
-    <img src={PHONE_HOME} alt="Trace app" width="329" height="400" loading="lazy" decoding="async" class="h-auto w-[88%] max-w-[380px]" />
+  <div class="relative flex justify-center px-6 pb-16 lg:hidden">
+    <img src={PHONE_HOME} alt="Trace app" width="329" height="400" loading="lazy" decoding="async" class="h-auto w-[88%] max-w-[380px]" data-reveal />
   </div>
 </section>
+
+<script>
+  // Respect prefers-reduced-motion for the decorative background video: stop
+  // playback and fall back to the static poster frame.
+  const video = document.getElementById('trace-hero-video') as HTMLVideoElement | null;
+  if (video && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    video.removeAttribute('autoplay');
+    video.pause();
+  }
+</script>

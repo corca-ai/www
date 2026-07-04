@@ -13,7 +13,7 @@ const t = useTranslations(lang);
 
 <footer class="bg-footer text-white/70">
   <div class="container-c flex flex-col items-center gap-5 py-14 text-center">
-    <Image src={logoWhite} alt="Corca" width={120} height={35} class="h-[34px] w-auto opacity-90" />
+    <Image src={logoWhite} alt="Corca" width={120} height={35} densities={[1, 2, 3]} class="h-[34px] w-auto opacity-90" />
     <address class="space-y-1.5 text-[14px] not-italic leading-relaxed">
       <p>{t.footer.address}</p>
       <p>

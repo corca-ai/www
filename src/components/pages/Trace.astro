@@ -73,21 +73,24 @@ const emph = (s: string) => br(s).replace(/\b(AI|Trace)\b/g, '<b class="font-sem
   >
     <source src={HERO_VIDEO} type="video/mp4" />
   </video>
-  <!-- Contrast overlay so white text stays WCAG-readable over the video. -->
-  <div class="absolute inset-0 bg-gradient-to-b from-[rgba(112,88,215,0.92)] to-[rgba(112,88,215,0.95)]" aria-hidden="true"></div>
+  <!-- Contrast overlay so white text stays WCAG-readable over the video. The
+       tint (#7b5ce6 @0.9) is calibrated so that, blended over the dark poster
+       (avg #0d354f), the hero resolves to live corca.ai's flat violet #7058d7
+       while still letting ~10% of the rotating-clock video show through. -->
+  <div class="absolute inset-0 bg-[#7b5ce6]/90" aria-hidden="true"></div>
 
   <!-- top-right chat phone (desktop only, peeking) -->
   <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[4%] top-[-40px] hidden w-[260px] select-none lg:block" />
 
   <!-- Content -->
-  <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-20 pb-10 text-center lg:pt-20">
-    <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[48px] w-auto" data-reveal />
-    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[220px] max-w-full sm:w-[280px] lg:w-[352px]" data-reveal style="--reveal-delay: .08s" />
-    <h1 class="mt-2 text-[28px] font-semibold leading-tight sm:text-[44px] lg:text-[58px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
-    <p class="max-w-[760px] text-[15px] leading-relaxed text-white md:text-[17px] lg:text-[18px]" set:html={emph(c.body)} data-reveal style="--reveal-delay: .24s" />
+  <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
+    <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[34px] w-auto sm:h-[40px] lg:h-[48px]" data-reveal />
+    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[176px] max-w-full sm:w-[216px] lg:w-[352px]" data-reveal style="--reveal-delay: .08s" />
+    <h1 class="mt-2 text-[28px] font-semibold leading-tight sm:text-[36px] lg:text-[58px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
+    <p class="max-w-[760px] text-[15px] leading-relaxed text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={emph(c.body)} data-reveal style="--reveal-delay: .24s" />
     <p class="max-w-[720px] text-[15px] leading-relaxed text-white md:text-[16px] lg:text-[17px]" set:html={emph(c.cta)} data-reveal style="--reveal-delay: .3s" />
     <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block transition-transform hover:-translate-y-0.5" data-reveal style="--reveal-delay: .36s">
-      <img src={APPSTORE} alt={c.appStoreAlt} width="324" height="95" class="h-[58px] w-auto lg:h-[92px]" />
+      <img src={APPSTORE} alt={c.appStoreAlt} width="324" height="95" class="h-[76px] w-auto sm:h-[58px] lg:h-[92px]" />
     </a>
   </div>
 

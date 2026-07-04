@@ -7,7 +7,9 @@ interface Props {
 const { lang } = Astro.props;
 
 const HERO_BG = '/images/pages/2fe9a6_c547632b877545b1ac6444eddee05fd8.webp';
-const LOGO = '/images/pages/2fe9a6_515387d442214c69b4888bdd038f87e4.webp';
+// White-wordmark version (icon kept, "Moonlight" text recolored white) so the
+// logo reads on the dark hero — the original asset has dark-purple text baked in.
+const LOGO = '/images/pages/moonlight-logo-white.webp';
 const APP_URL = 'https://themoonlight.io/';
 
 const content = {
@@ -76,15 +78,15 @@ const statIcons = [
   class="relative bg-[#402060] bg-cover bg-center"
   style={`background-image: linear-gradient(rgba(44,18,70,0.18), rgba(28,10,50,0.34)), url('${HERO_BG}');`}
 >
-  <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white md:min-h-[680px] lg:min-h-[900px] lg:gap-7 lg:py-24">
-    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[300px] max-w-full sm:w-[440px] lg:w-[500px]" data-reveal />
-    <h1 class="text-[34px] font-semibold leading-[1.2] sm:text-[40px] lg:text-[60px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
-    <p class="max-w-[720px] text-[16px] leading-relaxed text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
+  <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white md:min-h-[720px] lg:min-h-[960px] lg:gap-7 lg:py-24">
+    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[245px] max-w-full sm:w-[330px] lg:w-[500px]" data-reveal />
+    <h1 class="text-[34px] font-semibold leading-[1.2] sm:text-[40px] lg:text-[56px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
+    <p class="max-w-[720px] text-[14px] leading-[1.5] text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
     <a
       href={APP_URL}
       target="_blank"
       rel="noopener"
-      class="btn-pill mt-2 border-transparent bg-white px-9 py-4 text-[17px] font-semibold text-[#402060] hover:bg-white/90"
+      class="btn-pill btn-pill-lg mt-2 border-transparent bg-white text-[#402060] hover:bg-white/90"
       data-reveal
       style="--reveal-delay: .3s"
     >{c.cta}</a>
@@ -93,10 +95,10 @@ const statIcons = [
 
 <!-- Stats — folds open on scroll, like the original page's entry animation. -->
 <section class="bg-[#1a2352] text-white">
-  <div class="container-c grid grid-cols-2 gap-y-8 py-16 text-center md:grid-cols-4 md:gap-y-10 lg:py-20" data-reveal="fold">
+  <div class="container-c grid grid-cols-2 gap-y-6 py-10 text-center md:grid-cols-4 md:gap-y-8 lg:py-14" data-reveal="fold">
     {c.stats.map((s, i) => (
-      <div class="flex flex-col items-center gap-2">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="mb-1 text-white/80">
+      <div class="flex flex-col items-center gap-1">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="text-white/80">
           <path d={statIcons[i]} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <p class="text-[14px] text-white/70 lg:text-[18px]">{s.label}</p>

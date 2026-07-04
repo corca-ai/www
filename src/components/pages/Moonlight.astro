@@ -68,15 +68,16 @@ const statIcons = [
 ];
 ---
 
-<!-- Hero -->
+<!-- Hero — the purple app-screenshot montage shows through a lighter overlay,
+     matching corca.ai's brighter, taller hero. -->
 <section
   class="relative bg-[#402060] bg-cover bg-center"
-  style={`background-image: linear-gradient(rgba(20,8,40,0.72), rgba(20,8,40,0.78)), url('${HERO_BG}');`}
+  style={`background-image: linear-gradient(rgba(36,14,62,0.55), rgba(26,10,48,0.62)), url('${HERO_BG}');`}
 >
-  <div class="container-c flex min-h-[620px] flex-col items-center justify-center gap-7 py-24 text-center text-white lg:min-h-[760px]">
-    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[300px] max-w-full sm:w-[420px]" data-reveal />
-    <h1 class="text-[32px] font-semibold leading-tight sm:text-[44px] lg:text-[56px]" data-reveal style="--reveal-delay: .1s">{c.title}</h1>
-    <p class="max-w-[720px] text-[15px] leading-relaxed text-white/85 lg:text-[18px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
+  <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white lg:min-h-[880px] lg:gap-7 lg:py-24">
+    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[320px] max-w-full sm:w-[440px]" data-reveal />
+    <h1 class="text-[34px] font-semibold leading-[1.2] sm:text-[46px] lg:text-[60px]" data-reveal style="--reveal-delay: .1s">{c.title}</h1>
+    <p class="max-w-[720px] text-[15px] leading-relaxed text-white/90 lg:text-[18px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
     <a
       href={APP_URL}
       target="_blank"
@@ -96,8 +97,8 @@ const statIcons = [
         <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="mb-1 text-white/80">
           <path d={statIcons[i]} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <p class="text-[14px] text-white/60 lg:text-[16px]">{s.label}</p>
-        <p class="text-[34px] font-semibold lg:text-[44px]">{s.value}</p>
+        <p class="text-[14px] text-white/70 lg:text-[18px]">{s.label}</p>
+        <p class="text-[36px] font-semibold lg:text-[46px]">{s.value}</p>
       </div>
     ))}
   </div>

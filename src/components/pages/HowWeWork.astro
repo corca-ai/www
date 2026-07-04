@@ -125,13 +125,14 @@ const c = { ko, en, ja, zh }[lang];
 const br = (s: string) => s.replace(/\n/g, '<br />');
 ---
 
-<!-- Hero -->
+<!-- Hero — full-bleed island illustration from the top with the title overlaid
+     on its upper-left empty space, matching corca.ai. -->
 <section class="relative overflow-hidden bg-white">
-  <div class="container-c relative z-10 pt-16 lg:pt-20">
-    <h1 class="text-[32px] font-semibold leading-tight text-[#1a2352] sm:text-[42px] lg:text-[52px]" set:html={br(c.heroTitle)} />
-    <p class="mt-5 max-w-[520px] text-[15px] leading-relaxed text-[#1a2352]/80 lg:text-[17px]">{c.heroSubtitle}</p>
+  <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="block h-auto w-full" />
+  <div class="container-c absolute inset-x-0 top-0 z-10 pt-10 sm:pt-14 lg:pt-20">
+    <h1 class="text-[26px] font-semibold leading-tight text-[#1a2352] sm:text-[42px] lg:text-[52px]" set:html={br(c.heroTitle)} />
+    <p class="mt-3 max-w-[300px] text-[13px] leading-relaxed text-[#1a2352]/80 sm:mt-5 sm:max-w-[520px] sm:text-[15px] lg:text-[17px]">{c.heroSubtitle}</p>
   </div>
-  <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="mt-4 h-auto w-full lg:-mt-16" />
 </section>
 
 <!-- Methods (blue) -->

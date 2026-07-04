@@ -63,11 +63,15 @@ body {
 /* Modern-baseline typography niceties (Baseline 2024+). Headings use `pretty`
    (not `balance`): the live corca.ai headings wrap greedily, whereas `balance`
    equalises line lengths and would split Korean words mid-line (e.g. 경쟁력). */
+/* `word-break: keep-all` stops Korean/CJK from breaking mid-word (Wix corca.ai
+   wraps only at spaces); without it headings split words like 경쟁력 / 인정받았습니다. */
 h1, h2, h3 {
   text-wrap: pretty;
+  word-break: keep-all;
 }
 p {
   text-wrap: pretty;
+  word-break: keep-all;
 }
 
 /* Visible keyboard focus for all interactive elements. */

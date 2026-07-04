@@ -71,7 +71,7 @@ const heroTitleHtml = (() => {
       <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[58px]" />
       <h2 class="mt-5 text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
       <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]">{h.moonlightBody}</p>
-      <a href={localizePath('/moonlight', lang)} class="btn-pill mt-8 border-transparent bg-[#605070] text-white hover:bg-[#4d4159]">{h.readMore}</a>
+      <a href={localizePath('/moonlight', lang)} class="btn-pill mt-8 w-full justify-center border-transparent bg-[#605070] text-white hover:bg-[#4d4159] md:w-auto">{h.readMore}</a>
     </div>
   </div>
 </section>
@@ -92,7 +92,7 @@ const heroTitleHtml = (() => {
       <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[58px]" />
       <h2 class="mt-5 text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
       <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]">{h.traceBody}</p>
-      <a href={localizePath('/trace', lang)} class="btn-pill mt-8 border-transparent bg-[#777cdc] text-white hover:bg-[#6469c9]">{h.readMore}</a>
+      <a href={localizePath('/trace', lang)} class="btn-pill mt-8 w-full justify-center border-transparent bg-[#777cdc] text-white hover:bg-[#6469c9] md:w-auto">{h.readMore}</a>
     </div>
   </div>
 </section>
@@ -101,10 +101,10 @@ const heroTitleHtml = (() => {
 <section class="bg-white">
   <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div class="order-first" data-reveal>
-      <div class="mx-auto flex max-w-[460px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
+      <div class="mx-auto flex max-w-[500px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
         <p class="text-[20px] font-semibold text-brand-ink lg:text-[30px]">{h.babyUnicornBadge}</p>
-        <Image src={awardUnicorn} alt="" width={260} height={83} densities={[1, 2]} class="w-[66%] max-w-[260px]" />
-        <Image src={awardStartup} alt="" width={320} height={64} densities={[1, 2]} class="w-[82%] max-w-[320px]" />
+        <Image src={awardUnicorn} alt="" width={340} height={109} densities={[1, 2]} class="w-[86%] max-w-[340px]" />
+        <Image src={awardStartup} alt="" width={300} height={60} densities={[1, 2]} class="w-[64%] max-w-[300px]" />
       </div>
     </div>
     <div data-reveal style="--reveal-delay: .12s">
@@ -161,7 +161,7 @@ const heroTitleHtml = (() => {
 <!-- ========================= Closing CTA ========================= -->
 <section class="bg-brand text-white">
   <div class="container-c flex flex-col items-center gap-5 py-20 text-center md:py-28" data-reveal>
-    <h2 class="text-[22px] font-semibold leading-[1.2] md:text-[38px]">{h.closingHeading}</h2>
+    <h2 class="text-[22px] font-semibold leading-[1.2] md:text-[38px]" set:html={h.closingHeading.replace(/AI/g, '<b class="font-extrabold">AI</b>')} />
     <p class="max-w-2xl text-[15px] leading-relaxed text-white lg:text-[17px]">{h.closingSubtitle}</p>
   </div>
 </section>

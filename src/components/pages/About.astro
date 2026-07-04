@@ -9,10 +9,7 @@ const { lang } = Astro.props;
 const HERO_BG = '/images/pages/2fe9a6_d35d2743fc2342df884222c5a0d125ee.webp';
 const LOGO = '/images/pages/5cb5de_4a84baab528e42b797e2b35189e6661a.webp';
 
-// External destinations kept as external links (not replicated).
-// (The old greetinghr careers URL now 404s; corca.team/recruit is the live one,
-// and matches where the original site's header links to.)
-const CAREERS_URL = 'https://corca.team/recruit';
+// Naver map link (live's Contact section shows a single filled "map" button).
 const MAP_URL = 'https://map.naver.com/p/entry/place/1354855657';
 // Embedded Google Map of the office, like the original site's contact section.
 const MAP_EMBED = (hl: string) =>
@@ -115,9 +112,9 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
      keeps the white tagline legible, matching corca.ai. -->
 <section
   class="relative bg-[#0b3a86] bg-cover bg-top"
-  style={`background-image: linear-gradient(rgba(2,20,60,0) 42%, rgba(2,15,48,0.55) 100%), url('${HERO_BG}');`}
+  style={`background-image: linear-gradient(rgba(2,20,60,0) 48%, rgba(2,15,48,0.30) 100%), url('${HERO_BG}');`}
 >
-  <div class="container-c flex min-h-[520px] flex-col items-center justify-end pb-14 pt-24 text-center text-white lg:min-h-[780px] lg:pb-20">
+  <div class="container-c flex min-h-[600px] flex-col items-center justify-end pb-[14%] pt-24 text-center text-white md:min-h-[700px] lg:min-h-[900px] lg:pb-[19%]">
     <h1
       class="max-w-[900px] text-[26px] font-semibold leading-snug [text-shadow:0_2px_14px_rgba(0,10,40,0.55)] sm:text-[34px] lg:text-[44px]"
       set:html={br(c.heroTitle)}
@@ -127,14 +124,14 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- Mission + values -->
 <section class="bg-white">
-  <div class="container-c flex flex-col items-center py-20 text-center lg:py-28">
-    <img src={LOGO} alt="Corca" width="1600" height="467" class="h-[52px] w-auto lg:h-[64px]" />
+  <div class="container-c flex flex-col items-start py-14 text-left sm:items-center sm:text-center lg:py-28">
+    <img src={LOGO} alt="Corca" width="1600" height="467" class="h-[60px] w-auto lg:h-[96px]" />
     <h2 class="mt-8 text-[26px] font-semibold text-[#1a2352] lg:text-[42px]">{c.missionTitle}</h2>
-    <p class="mt-6 max-w-[780px] text-[15px] leading-relaxed text-[#1a2352] lg:text-[18px]">{c.missionBody}</p>
+    <p class="mt-6 max-w-[980px] text-[15px] leading-normal text-[#1a2352] lg:text-[18px]">{c.missionBody}</p>
 
-    <div class="mt-14 flex w-full max-w-[920px] flex-wrap justify-center gap-4 lg:gap-5">
+    <div class="mt-10 flex w-full max-w-[760px] flex-wrap justify-center gap-3 lg:mt-14 lg:gap-4">
       {valueNames.map((name, i) => (
-        <div class="flex w-full max-w-[520px] flex-col items-center justify-center gap-1.5 rounded-2xl bg-[#f1f5fb] px-5 py-6 sm:w-[30%] sm:max-w-[280px]">
+        <div class="flex w-full max-w-[520px] flex-col items-center justify-center gap-1 rounded-full bg-[#eaf1fa] px-6 py-4 sm:w-[31%] sm:max-w-[220px] lg:py-5">
           <h3 class="text-[18px] font-semibold text-[#1a2352] lg:text-[22px]">{name}</h3>
           <p class="text-[13px] leading-snug text-[#1a2352] lg:text-[15px]">{c.valueDescs[i]}</p>
         </div>
@@ -145,14 +142,14 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- Ethical AI pillars -->
 <section class="bg-white">
-  <div class="container-c pb-20 lg:pb-24">
+  <div class="container-c pb-14 lg:pb-24">
     <div class="mx-auto max-w-[760px] text-center">
       <h2 class="text-[26px] font-semibold text-[#1a2352] lg:text-[43px]">{c.ethicalTitle}</h2>
       <p class="mt-5 text-[15px] leading-relaxed text-[#1a2352] lg:text-[18px]">{c.ethicalSubtitle}</p>
     </div>
-    <div class="mx-auto mt-14 grid max-w-[940px] gap-5 md:grid-cols-2">
+    <div class="mx-auto mt-10 grid max-w-[1120px] gap-4 md:grid-cols-2 lg:mt-14 lg:gap-6">
       {c.pillars.map((p) => (
-        <div class="rounded-2xl bg-[#eff5ff] px-7 py-7">
+        <div class="rounded-2xl bg-[#eff5ff] px-6 py-5 lg:px-7 lg:py-7">
           <h3 class="text-[19px] font-semibold text-[#1a2352] lg:text-[22px]">{p.title}</h3>
           <p class="mt-3 text-[14px] leading-relaxed text-[#1a2352] lg:text-[15px]">{p.body}</p>
         </div>
@@ -163,8 +160,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- Contact — info on the left, embedded office map on the right (as on the
      original site). -->
-<section class="bg-white">
-  <div class="container-c grid items-start gap-10 py-20 lg:grid-cols-2 lg:gap-14 lg:py-24">
+<section class="bg-[#f4f5f7]">
+  <div class="container-c grid items-start gap-10 py-14 md:grid-cols-2 md:gap-10 lg:gap-14 lg:py-24">
     <div>
       <h2 class="text-[32px] font-semibold text-[#1a2352] lg:text-[46px]">{c.contactLabel}</h2>
       <address class="mt-8 space-y-1.5 text-[15px] not-italic text-[#1a2352] lg:text-[18px]">
@@ -173,9 +170,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
         <p><a href={`mailto:${contact.email}`} class="hover:text-brand">{contact.email}</a></p>
         <p><a href="tel:+82-2-6925-6978" class="hover:text-brand">{c.phone}</a></p>
       </address>
-      <div class="mt-7 flex flex-wrap gap-3">
-        <a href={CAREERS_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.careers}</a>
-        <a href={MAP_URL} target="_blank" rel="noopener" class="btn-pill btn-pill-dark">{cl.map}</a>
+      <div class="mt-7">
+        <a href={MAP_URL} target="_blank" rel="noopener" class="btn-pill border-transparent bg-brand-ink text-white hover:bg-[#035a9a]">{cl.map}</a>
       </div>
     </div>
     <iframe

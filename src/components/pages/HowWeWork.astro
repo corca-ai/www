@@ -128,25 +128,31 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Hero — full-bleed island illustration from the top with the title overlaid
      on its upper-left empty space, matching corca.ai. -->
 <section class="relative overflow-hidden bg-white">
-  <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="block h-auto w-full" />
+  <!-- Live zooms this landscape illustration on mobile/tablet (cropping the
+       sides) so the scene fills a taller band; we mirror that with a >100%
+       width centered inside the section's overflow-hidden crop. -->
+  <div class="flex justify-center">
+    <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="block h-auto w-[170%] max-w-none shrink-0 md:w-[120%] lg:w-full" />
+  </div>
   <div class="container-c absolute inset-x-0 top-0 z-10 pt-10 sm:pt-14 lg:pt-20">
-    <h1 class="text-[26px] font-semibold leading-tight text-[#1a2352] sm:text-[42px] lg:text-[52px]" set:html={br(c.heroTitle)} />
-    <p class="mt-3 max-w-[300px] text-[13px] leading-relaxed text-[#1a2352]/80 sm:mt-5 sm:max-w-[520px] sm:text-[15px] lg:text-[17px]">{c.heroSubtitle}</p>
+    <h1 class="text-[34px] font-semibold leading-tight text-[#1a2352] sm:text-[46px] lg:text-[58px]" set:html={br(c.heroTitle)} />
+    <p class="mt-3 max-w-[300px] text-[13px] leading-relaxed text-[#1a2352]/90 sm:mt-5 sm:max-w-[520px] sm:text-[16px] lg:text-[20px]">{c.heroSubtitle}</p>
   </div>
 </section>
 
-<!-- Methods (blue) -->
-<section class="bg-brand text-white">
+<!-- Methods — deep sea-blue that seamlessly continues the hero illustration's
+     water (live corca.ai uses #046eb8 here, not the brighter hero blue). -->
+<section class="bg-[#046eb8] text-white">
   <div class="container-c py-16 lg:py-20">
-    <h2 class="text-[28px] font-semibold lg:text-[36px]">{c.methodsLabel}</h2>
+    <h2 class="text-[28px] font-semibold lg:text-[42px]">{c.methodsLabel}</h2>
     <div class="mt-10 flex flex-col gap-14 lg:gap-20">
       {c.methods.map((m, i) => (
-        <div class:list={["grid items-center gap-8 lg:grid-cols-2 lg:gap-12", i % 2 === 1 && "lg:[&>*:first-child]:order-last"]}>
-          <div class:list={[i % 2 === 1 && 'lg:order-last']}>
-            <h3 class="text-[22px] font-semibold lg:text-[26px]">{m.title}</h3>
+        <div class:list={["grid items-center gap-8 md:grid-cols-2 md:gap-12", i % 2 === 1 && "md:[&>*:first-child]:order-last"]}>
+          <div class:list={[i % 2 === 1 && 'md:order-last']}>
+            <h3 class="text-[22px] font-semibold md:text-[26px] lg:text-[32px]">{m.title}</h3>
             <p class="mt-4 text-[15px] leading-relaxed text-white lg:text-[16px]">{m.body}</p>
           </div>
-          <div class:list={["flex justify-center", i % 2 === 1 && 'lg:order-first']}>
+          <div class:list={["flex justify-center", i % 2 === 1 && 'md:order-first']}>
             <img src={m.img} alt="" width="320" height="240" loading="lazy" decoding="async" class="h-auto w-[260px] max-w-full lg:w-[320px]" />
           </div>
         </div>
@@ -155,11 +161,12 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   </div>
 </section>
 
-<!-- Office photos -->
+<!-- Office photos — live stacks full-width landscape photos on mobile, switching
+     to a square multi-column grid from sm up. -->
 <section class="bg-white">
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5">
     {PHOTOS.map((src) => (
-      <img src={src} alt="" class="aspect-square w-full object-cover" loading="lazy" decoding="async" />
+      <img src={src} alt="" class="aspect-[16/9] w-full object-cover sm:aspect-square" loading="lazy" decoding="async" />
     ))}
   </div>
 </section>
@@ -167,14 +174,14 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Benefits -->
 <section class="bg-white">
   <div class="container-c grid gap-10 py-16 lg:grid-cols-[260px_1fr] lg:gap-16 lg:py-24">
-    <h2 class="text-[28px] font-semibold text-[#1a2352] lg:text-[36px]">{c.envLabel}</h2>
-    <div class="flex flex-col gap-9">
+    <h2 class="text-[28px] font-semibold text-[#1a2352] lg:text-[42px]">{c.envLabel}</h2>
+    <div class="flex flex-col gap-10">
       {c.benefits.map((b) => (
-        <div class="flex gap-4">
-          <span class="shrink-0 text-[26px] leading-none" aria-hidden="true">{b.icon}</span>
+        <div class="flex gap-5">
+          <span class="shrink-0 text-[32px] leading-none lg:text-[38px]" aria-hidden="true">{b.icon}</span>
           <div>
-            <h3 class="text-[17px] font-semibold text-[#1a2352] lg:text-[19px]">{b.title}</h3>
-            <p class="mt-2 text-[14px] leading-relaxed text-[#1a2352]/75 lg:text-[15px]">{b.body}</p>
+            <h3 class="text-[18px] font-semibold text-[#1a2352] lg:text-[21px]">{b.title}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-[#1a2352]/85 lg:text-[16px]">{b.body}</p>
           </div>
         </div>
       ))}

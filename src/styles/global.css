@@ -60,9 +60,11 @@ body {
   font-family: var(--font-zh);
 }
 
-/* Modern-baseline typography niceties (Baseline 2024+). */
+/* Modern-baseline typography niceties (Baseline 2024+). Headings use `pretty`
+   (not `balance`): the live corca.ai headings wrap greedily, whereas `balance`
+   equalises line lengths and would split Korean words mid-line (e.g. 경쟁력). */
 h1, h2, h3 {
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 p {
   text-wrap: pretty;

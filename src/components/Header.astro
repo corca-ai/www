@@ -91,7 +91,7 @@ const langOptions = locales.map((l) => ({
 
     <!-- Right side: language switcher (desktop) + hamburger (mobile) -->
     <div class="flex items-center gap-2">
-      <details class="lang-switch relative hidden md:block">
+      <details class="lang-switch relative block">
         <summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-[13px] font-medium text-ink" aria-label={t.langLabel}>
           {languageShort[lang]}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">

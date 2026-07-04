@@ -20,25 +20,27 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const h = t.home;
 const br = (s: string) => s.replace(/\n/g, '<br />');
+// Hero title, with "AI" given extra weight to mirror the live corca.ai hero.
+const heroTitleHtml = br(h.heroTitle).replace(/AI/g, '<b class="font-extrabold">AI</b>');
 ---
 
 <!-- ============================ Hero ============================ -->
 <section class="relative overflow-hidden bg-brand text-white">
-  <div class="container-c relative flex flex-col items-start gap-8 py-14 text-left md:min-h-[calc(460px_+_38vw)] md:justify-start md:py-0 md:pt-[calc(9vw_-_40px)]">
-    <div class="md:max-w-[600px]" data-reveal>
+  <div class="container-c relative flex flex-col items-start gap-8 py-14 text-left min-[810px]:min-h-[calc(460px_+_36vw)] min-[810px]:justify-start min-[810px]:py-0 min-[810px]:pt-[calc(9vw_-_40px)]">
+    <div class="max-[809px]:max-w-[440px] min-[810px]:max-w-[600px]" data-reveal>
       <h1
-        class="text-[33px] font-semibold leading-[1.18] tracking-tight sm:text-[40px] md:text-[44px] lg:text-[60px]"
-        set:html={br(h.heroTitle)}
+        class="text-[33px] font-semibold leading-[1.18] tracking-tight min-[640px]:text-[40px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
+        set:html={heroTitleHtml}
       />
-      <p class="mt-6 text-[17px] leading-relaxed text-white md:text-[18px] lg:text-[23px]" set:html={br(h.heroSubtitle)} />
+      <p class="mt-6 text-[17px] leading-relaxed text-white min-[810px]:text-[18px] min-[1024px]:text-[23px]" set:html={br(h.heroSubtitle)} />
     </div>
     <Image
       src={heroIllustration}
       alt=""
       widths={[440, 820, 1640]}
-      sizes="(min-width: 768px) 56vw, 92vw"
+      sizes="(min-width: 810px) 56vw, 100vw"
       loading="eager"
-      class="pointer-events-none w-[92%] max-w-[440px] select-none md:absolute md:bottom-[24px] md:right-0 md:mx-0 md:w-[56%] md:max-w-[780px]"
+      class="pointer-events-none mx-auto w-[116%] max-w-[480px] select-none min-[810px]:absolute min-[810px]:bottom-[24px] min-[810px]:right-0 min-[810px]:mx-0 min-[810px]:w-[56%] min-[810px]:max-w-[780px]"
     />
   </div>
 </section>

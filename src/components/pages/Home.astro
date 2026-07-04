@@ -24,79 +24,79 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- ============================ Hero ============================ -->
 <section class="relative overflow-hidden bg-brand text-white">
-  <div class="container-c relative flex flex-col items-center gap-10 py-16 text-center lg:min-h-[760px] lg:items-start lg:justify-center lg:py-0 lg:text-left">
-    <div class="lg:max-w-[640px]" data-reveal>
+  <div class="container-c relative flex flex-col items-start gap-8 py-14 text-left md:min-h-[calc(460px_+_38vw)] md:justify-start md:py-0 md:pt-[calc(9vw_-_40px)]">
+    <div class="md:max-w-[600px]" data-reveal>
       <h1
-        class="text-[34px] font-semibold leading-[1.18] tracking-tight sm:text-[44px] lg:text-[52px]"
+        class="text-[33px] font-semibold leading-[1.18] tracking-tight sm:text-[40px] md:text-[44px] lg:text-[60px]"
         set:html={br(h.heroTitle)}
       />
-      <p class="mt-6 text-[16px] leading-relaxed text-white lg:text-[19px]" set:html={br(h.heroSubtitle)} />
+      <p class="mt-6 text-[17px] leading-relaxed text-white md:text-[18px] lg:text-[23px]" set:html={br(h.heroSubtitle)} />
     </div>
     <Image
       src={heroIllustration}
       alt=""
       widths={[440, 820, 1640]}
-      sizes="(min-width: 1024px) 60vw, 88vw"
+      sizes="(min-width: 768px) 56vw, 92vw"
       loading="eager"
-      class="pointer-events-none w-[90%] max-w-[440px] select-none lg:absolute lg:bottom-0 lg:right-0 lg:mx-0 lg:w-[60%] lg:max-w-[820px]"
+      class="pointer-events-none w-[92%] max-w-[440px] select-none md:absolute md:bottom-[24px] md:right-0 md:mx-0 md:w-[56%] md:max-w-[780px]"
     />
   </div>
 </section>
 
 <!-- ========================== Moonlight ========================== -->
 <section class="bg-white">
-  <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
+  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div class="order-first" data-reveal>
       <Image
         src={moonlightApp}
         alt="Moonlight app screenshot"
         widths={[560, 900]}
-        sizes="(min-width: 1024px) 45vw, 90vw"
+        sizes="(min-width: 768px) 50vw, 92vw"
         class="w-full rounded-2xl shadow-[var(--shadow-card)]"
       />
     </div>
     <div data-reveal style="--reveal-delay: .12s">
-      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto" />
-      <h2 class="mt-5 text-[26px] font-semibold leading-snug lg:text-[30px]">{h.moonlightHeading}</h2>
+      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[58px]" />
+      <h2 class="mt-5 text-[26px] font-semibold leading-snug text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
       <p class="mt-5 text-[15px] leading-relaxed text-ink-soft lg:text-[16px]">{h.moonlightBody}</p>
-      <a href={localizePath('/moonlight', lang)} class="btn-pill mt-8 border-transparent bg-[#6b6580] text-white hover:bg-[#565068]">{h.readMore}</a>
+      <a href={localizePath('/moonlight', lang)} class="btn-pill mt-8 border-transparent bg-[#605070] text-white hover:bg-[#4d4159]">{h.readMore}</a>
     </div>
   </div>
 </section>
 
 <!-- ============================ Trace ============================ -->
 <section class="bg-lavender">
-  <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
-    <div class="order-first lg:order-last" data-reveal>
+  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
+    <div class="order-first md:order-last" data-reveal>
       <Image
         src={traceApp}
         alt="Trace app screenshot"
         widths={[560, 900]}
-        sizes="(min-width: 1024px) 45vw, 90vw"
+        sizes="(min-width: 768px) 50vw, 92vw"
         class="w-full rounded-2xl shadow-[var(--shadow-card)]"
       />
     </div>
     <div data-reveal style="--reveal-delay: .12s">
-      <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto" />
-      <h2 class="mt-5 text-[26px] font-semibold leading-snug lg:text-[30px]">{h.traceHeading}</h2>
+      <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[58px]" />
+      <h2 class="mt-5 text-[26px] font-semibold leading-snug text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
       <p class="mt-5 text-[15px] leading-relaxed text-ink-soft lg:text-[16px]">{h.traceBody}</p>
-      <a href={localizePath('/trace', lang)} class="btn-pill mt-8 border-transparent bg-[#6257cc] text-white hover:bg-[#514799]">{h.readMore}</a>
+      <a href={localizePath('/trace', lang)} class="btn-pill mt-8 border-transparent bg-[#777cdc] text-white hover:bg-[#6469c9]">{h.readMore}</a>
     </div>
   </div>
 </section>
 
 <!-- ===================== Baby Unicorn award ===================== -->
 <section class="bg-white">
-  <div class="container-c grid items-center gap-10 py-20 lg:grid-cols-2 lg:gap-16 lg:py-24">
+  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div class="order-first" data-reveal>
-      <div class="mx-auto flex max-w-[440px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
-        <p class="text-[20px] font-semibold text-brand">{h.babyUnicornBadge}</p>
-        <Image src={awardUnicorn} alt="" width={260} height={83} densities={[1, 2]} class="w-[62%] max-w-[240px]" />
-        <Image src={awardStartup} alt="" width={320} height={64} densities={[1, 2]} class="w-[80%] max-w-[300px]" />
+      <div class="mx-auto flex max-w-[460px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
+        <p class="text-[20px] font-semibold text-brand-ink lg:text-[28px]">{h.babyUnicornBadge}</p>
+        <Image src={awardUnicorn} alt="" width={260} height={83} densities={[1, 2]} class="w-[66%] max-w-[260px]" />
+        <Image src={awardStartup} alt="" width={320} height={64} densities={[1, 2]} class="w-[82%] max-w-[320px]" />
       </div>
     </div>
     <div data-reveal style="--reveal-delay: .12s">
-      <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.babyUnicornHeading)} />
+      <h2 class="text-[26px] font-semibold leading-snug text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.babyUnicornHeading)} />
       <a href={externalLinks.babyUnicornArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
     </div>
   </div>
@@ -104,17 +104,17 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- ============================ RecSys ============================ -->
 <section class="bg-white">
-  <div class="container-c grid items-center gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div data-reveal>
-      <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.recsysHeading)} />
+      <h2 class="text-[26px] font-semibold leading-snug text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.recsysHeading)} />
       <a href={externalLinks.recsysArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
     </div>
-    <div class="order-first lg:order-last" data-reveal style="--reveal-delay: .12s">
+    <div class="order-first md:order-last" data-reveal style="--reveal-delay: .12s">
       <div class="rounded-2xl bg-[#f4f0fb] px-6 py-8 sm:px-10">
         <div class="text-center">
           <p class="text-[14px] text-ink-soft lg:text-[15px]">{h.recsysCaptionTop}</p>
-          <p class="mt-2 text-[20px] font-bold lg:text-[22px]">{h.recsysEvent}</p>
-          <p class="mt-2 text-[20px] font-bold text-brand lg:text-[22px]">{h.recsysRank}</p>
+          <p class="mt-2 text-[20px] font-bold text-heading md:text-[22px] lg:text-[24px]">{h.recsysEvent}</p>
+          <p class="mt-2 text-[20px] font-bold text-brand-ink md:text-[22px] lg:text-[26px]">{h.recsysRank}</p>
         </div>
         <Image
           src={recsysArticle}
@@ -130,26 +130,26 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- =========================== Partners =========================== -->
 <section class="bg-white">
-  <div class="container-c grid items-center gap-10 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div class="order-first" data-reveal>
       <Image
         src={partners}
         alt="Corca partners and clients"
         widths={[560, 1000]}
-        sizes="(min-width: 1024px) 45vw, 90vw"
+        sizes="(min-width: 768px) 50vw, 92vw"
         class="w-full"
       />
     </div>
     <div data-reveal style="--reveal-delay: .12s">
-      <h2 class="text-[26px] font-semibold leading-snug lg:text-[32px]" set:html={br(h.partnersHeading)} />
+      <h2 class="text-[26px] font-semibold leading-snug text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.partnersHeading)} />
     </div>
   </div>
 </section>
 
 <!-- ========================= Closing CTA ========================= -->
 <section class="bg-brand text-white">
-  <div class="container-c flex flex-col items-center gap-5 py-24 text-center lg:py-32" data-reveal>
-    <h2 class="text-[28px] font-semibold leading-snug lg:text-[40px]">{h.closingHeading}</h2>
+  <div class="container-c flex flex-col items-center gap-5 py-20 text-center md:py-28" data-reveal>
+    <h2 class="text-[22px] font-semibold leading-snug md:text-[38px]">{h.closingHeading}</h2>
     <p class="max-w-2xl text-[15px] leading-relaxed text-white lg:text-[17px]">{h.closingSubtitle}</p>
   </div>
 </section>

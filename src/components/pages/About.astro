@@ -116,8 +116,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   class="relative bg-[#1a2352] bg-cover bg-center"
   style={`background-image: linear-gradient(rgba(16,22,54,0.66), rgba(16,22,54,0.72)), url('${HERO_BG}');`}
 >
-  <div class="container-c flex min-h-[420px] flex-col justify-center py-24 text-white lg:min-h-[520px]">
-    <h1 class="text-[30px] font-semibold leading-snug sm:text-[38px] lg:text-[46px]" set:html={br(c.heroTitle)} />
+  <div class="container-c flex min-h-[460px] flex-col items-center justify-center py-24 text-center text-white lg:min-h-[560px]">
+    <h1 class="max-w-[820px] text-[30px] font-semibold leading-snug sm:text-[38px] lg:text-[46px]" set:html={br(c.heroTitle)} />
   </div>
 </section>
 

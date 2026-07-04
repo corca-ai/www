@@ -16,15 +16,16 @@
    Design tokens
 --------------------------------------------------------------------------- */
 @theme {
-  /* Brand blue deepened from the original #419eff so white text on blue (and
-     blue text on white) meets WCAG 2.1 AA contrast (≥4.5:1). This is an
-     intentional, minor a11y-driven deviation from the source site. */
-  --color-brand: #2f6fe0;          /* hero / CTA blue — 4.7:1 with white */
-  --color-brand-ink: #1f57c4;      /* deeper blue for emphasis */
+  /* Brand blue restored to the live corca.ai value so the hero / CTA panels
+     read as the same brand. Blue *text on white* uses the deeper --color-brand-ink
+     (corca's own accent blue, ~4.6:1 on white) to stay legible. */
+  --color-brand: #419eff;          /* hero / CTA background — matches corca.ai */
+  --color-brand-ink: #046cb8;      /* blue text on white (accessible accent) */
   --color-lavender: #faeeff;       /* Trace section background */
+  --color-heading: #1a2352;        /* navy section headings — matches corca.ai */
   --color-ink: #1a1a1a;            /* body text */
   --color-ink-soft: #4a4a4a;       /* secondary text */
-  --color-footer: #1b1b1f;         /* footer background */
+  --color-footer: #000000;         /* footer background — matches corca.ai */
 
   --font-sans: "Pretendard Variable", Pretendard, -apple-system,
     BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
@@ -122,12 +123,16 @@ p {
   }
 }
 
-/* Shared content container — mirrors the original ~1000px centred column. */
+/* Shared content container — mirrors corca.ai's centred column: content caps
+   at 1120px (so at 1440px the left edge lands at ~160px, matching the source)
+   with a 20px minimum gutter on narrow screens. */
 .container-c {
   width: 100%;
-  max-width: 1040px;
   margin-inline: auto;
-  padding-inline: 20px;
+  /* Side gutter fitted to corca.ai's own scaling (≈23px @390, 60px @768,
+     160px @1440). The 9.8vw−15px term tracks the tablet/small-desktop ramp;
+     the 50%−560px term caps content at 1120px on wide screens; 20px floor. */
+  padding-inline: max(20px, 9.8vw - 15px, 50% - 560px);
 }
 
 /* Pill button used across the site (자세히 보기 / 기사 보기 / Read more …) */

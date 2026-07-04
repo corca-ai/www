@@ -18,10 +18,10 @@ const heading = {
 
 <section class="bg-white">
   <div class="container-c py-16 lg:py-20">
-    <h1 class="text-[28px] font-semibold text-[#1a2352] lg:text-[38px]">{heading.title}</h1>
-    <p class="mt-4 max-w-[680px] text-[15px] leading-relaxed text-ink-soft lg:text-[17px]">{heading.sub}</p>
+    <h1 class="text-center text-[28px] font-semibold text-[#1a2352] lg:text-[38px]">{heading.title}</h1>
+    <p class="mx-auto mt-4 max-w-[680px] text-center text-[15px] leading-relaxed text-ink-soft lg:text-[17px]">{heading.sub}</p>
 
-    <ul role="list" class="mt-12 grid list-none gap-x-8 gap-y-12 p-0 sm:grid-cols-2 lg:grid-cols-3">
+    <ul role="list" class="mt-12 grid list-none gap-x-8 gap-y-12 p-0 grid-cols-2 md:grid-cols-3">
       {members.map((m) => (
         <li>
           <a href={storyUrls[m.img]} target="_blank" rel="noopener" class="group flex flex-col">

@@ -7,6 +7,12 @@ interface Props {
 const { lang } = Astro.props;
 
 const P = '/images/pages/';
+// Benefit icons — captured from live corca.ai's isometric illustration set
+// (same order across all languages, keyed by index).
+const BENEFIT_ICONS = [
+  'training', 'books', 'buddy', 'seminar', 'teamwork', 'flextime',
+  'techstack', 'equipment', 'meals', 'birthday', 'family',
+];
 // Cropped to remove the illustration's trailing "sea" band below the boat (the
 // original 1440x1217 master has ~117px of flat #046eb8 sea at the bottom); live
 // corca.ai crops it so the methods heading tucks under the boat. The crop line
@@ -183,9 +189,9 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   <div class="container-c grid gap-10 py-16 md:grid-cols-[220px_1fr] md:gap-12 lg:grid-cols-[260px_1fr] lg:gap-16 lg:py-24">
     <h2 class="font-body text-[27px] font-normal leading-[1.2] text-[#1a2352] lg:text-[44px] xl:text-[50px]">{c.envLabel}</h2>
     <div class="flex flex-col gap-10">
-      {c.benefits.map((b) => (
-        <div class="flex gap-5">
-          <span class="shrink-0 text-[32px] leading-none lg:text-[38px]" aria-hidden="true">{b.icon}</span>
+      {c.benefits.map((b, i) => (
+        <div class="flex gap-4">
+          <img src={`${P}hww-icons/${BENEFIT_ICONS[i]}.webp`} alt="" width="80" height="80" loading="lazy" decoding="async" class="h-[60px] w-[60px] shrink-0 lg:h-[76px] lg:w-[76px]" />
           <div>
             <h3 class="font-body text-[20px] font-normal leading-tight text-[#1a2352] xl:text-[22px]">{b.title}</h3>
             <p class="mt-2 text-[15px] leading-[1.4] text-[#1a2352] lg:text-[18px]">{b.body}</p>

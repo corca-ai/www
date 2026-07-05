@@ -134,7 +134,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
     <div class="mt-10 flex w-full max-w-[900px] flex-wrap justify-center gap-3 lg:mt-16 lg:gap-4">
       {valueNames.map((name, i) => (
         <div class="flex w-full max-w-[520px] flex-col items-center justify-center gap-1 rounded-full bg-gradient-to-b from-[#e9f0f9] to-white px-6 py-4 sm:w-[31%] sm:max-w-[280px] lg:py-5">
-          <h3 class="font-body text-[18px] font-semibold text-[#1a2352] lg:text-[22px]">{name}</h3>
+          <h3 class="text-[18px] font-normal text-[#1a2352] lg:text-[22px]">{name}</h3>
           <p class="text-[16px] leading-[1.4] text-[#1a2352] md:text-[18px]">{c.valueDescs[i]}</p>
         </div>
       ))}

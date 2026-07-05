@@ -16,7 +16,7 @@ interface Props {
 
 const { lang, title, description, basePath, ogImage = '/og-default.png' } = Astro.props;
 
-const site = Astro.site ?? new URL('https://www.corca.ai');
+const site = Astro.site ?? new URL('https://www.borca.ai');
 const canonical = new URL(localizePath(basePath, lang), site).href;
 const ogImageUrl = new URL(ogImage, site).href;
 

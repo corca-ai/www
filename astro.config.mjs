@@ -8,7 +8,10 @@ import { defineConfig } from 'astro/config';
 // ko (default, "/") mirrors the original Wix site; en ("/en"), ja ("/ja") and
 // zh ("/zh") are prefixed.
 export default defineConfig({
-  site: 'https://www.corca.ai',
+  // Canonical production origin — drives sitemap, canonical, hreflang and og:url.
+  // Currently the beta domain; override with SITE_URL when it moves (e.g. to
+  // https://www.corca.ai once this replaces the Wix site).
+  site: process.env.SITE_URL ?? 'https://www.borca.ai',
   // Trailing slash everywhere so canonical/hreflang/sitemap match how
   // Cloudflare Static Assets serves directory index files (no redirect hop).
   trailingSlash: 'always',

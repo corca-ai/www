@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import About from '../components/pages/About.astro';
+import Colleagues from '../components/pages/Colleagues.astro';
+import Home from '../components/pages/Home.astro';
+import HowWeWork from '../components/pages/HowWeWork.astro';
+import Moonlight from '../components/pages/Moonlight.astro';
+import News from '../components/pages/News.astro';
+import Trace from '../components/pages/Trace.astro';
+import { pageMeta } from '../i18n/pageMeta';
+import { defaultLang, locales } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+// Single source of truth for every localized page. Add a route below + a
+// component in COMPONENTS → it is generated in all four locales; add a locale in
+// i18n/ui → every page follows. The ko default locale is un-prefixed ("/news/"),
+// en/ja/zh are prefixed ("/en/news/"); BaseLayout derives canonical + hreflang
+// from basePath + lang. `id` doubles as the pageMeta key (home reads its SEO
+// copy from the home translations instead). NB: getStaticPaths runs before the
+// module body, so its route list lives inside it, not as an outer const.
+export function getStaticPaths() {
+  const routes = [
+    { id: 'home', slug: '', basePath: '/' },
+    { id: 'about-corca', slug: 'about-corca', basePath: '/about-corca' },
+    { id: 'how-we-work', slug: 'how-we-work', basePath: '/how-we-work' },
+    { id: 'moonlight', slug: 'moonlight', basePath: '/moonlight' },
+    { id: 'trace', slug: 'trace', basePath: '/trace' },
+    { id: 'news', slug: 'news', basePath: '/news' },
+    { id: 'colleagues', slug: 'colleagues', basePath: '/colleagues' },
+  ];
+  return locales.flatMap((lang) =>
+    routes.map((r) => {
+      const path = `${lang === defaultLang ? '' : `${lang}/`}${r.slug}`;
+      return { params: { slug: path === '' ? undefined : path }, props: { lang, id: r.id, basePath: r.basePath } };
+    }),
+  );
+}
+
+const COMPONENTS = {
+  home: Home,
+  'about-corca': About,
+  'how-we-work': HowWeWork,
+  moonlight: Moonlight,
+  trace: Trace,
+  news: News,
+  colleagues: Colleagues,
+} as const;
+
+const { lang, id, basePath } = Astro.props as { lang: (typeof locales)[number]; id: keyof typeof COMPONENTS; basePath: string };
+const meta =
+  id === 'home'
+    ? { title: useTranslations(lang).home.metaTitle, description: useTranslations(lang).home.metaDescription }
+    : pageMeta[id][lang];
+const Component = COMPONENTS[id];
+---
+
+<BaseLayout lang={lang} title={meta.title} description={meta.description} basePath={basePath}>
+  <Component lang={lang} />
+</BaseLayout>

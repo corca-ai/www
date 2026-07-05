@@ -133,8 +133,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
     <div class="mt-10 flex w-full max-w-[900px] flex-wrap justify-center gap-3 lg:mt-16 lg:gap-4">
       {valueNames.map((name, i) => (
-        <div class="flex w-full max-w-[520px] flex-col items-center justify-center gap-1 rounded-full bg-gradient-to-b from-[#e9f0f9] to-white px-6 py-4 sm:w-[31%] sm:max-w-[280px] lg:py-5">
-          <h3 class="text-[18px] font-normal text-[#1a2352] lg:text-[22px]">{name}</h3>
+        <div class="flex w-full max-w-[520px] flex-col items-center justify-center gap-1 rounded-full text-center bg-gradient-to-b from-[#e9f0f9] to-white px-6 py-4 sm:w-[31%] sm:max-w-[280px] lg:py-5">
+          <h3 class="text-[19px] font-normal text-[#1a2352] md:text-[20px] lg:text-[22px]">{name}</h3>
           <p class="text-[16px] leading-[1.4] text-[#1a2352] md:text-[18px]">{c.valueDescs[i]}</p>
         </div>
       ))}
@@ -147,7 +147,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   <div class="container-c pb-14 lg:pb-24">
     <div class="mx-auto max-w-[860px] text-left sm:text-center md:max-w-[calc(67vw_+_48px)] xl:max-w-[911px]">
       <h2 class="text-[26px] font-normal leading-[1.2] text-[#1a2352] lg:text-[37px] xl:text-[43px]">{c.ethicalTitle}</h2>
-      <p class="mt-5 text-[15px] leading-[1.4] text-[#1a2352] lg:text-[18px]">{c.ethicalSubtitle}</p>
+      <p class="mt-5 text-[15px] leading-[1.4] text-[#1a2352] md:text-[18px]">{c.ethicalSubtitle}</p>
     </div>
     <div class="mx-auto mt-10 grid max-w-[1120px] gap-4 md:grid-cols-2 lg:mt-14 lg:gap-6">
       {c.pillars.map((p) => (
@@ -167,7 +167,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
     <div>
       <h2 class="font-body text-[32px] font-semibold leading-[1.2] text-[#1a2352] lg:text-[46px]">{c.contactLabel}</h2>
       <address class="mt-8 space-y-1.5 text-[16px] not-italic text-[#1a2352] md:text-[18px]">
-        <p class="text-[18px] lg:text-[20px]">{c.locationLabel}</p>
+        <p class="font-head text-[18px] lg:text-[20px]">{c.locationLabel}</p>
         <p>{c.address}</p>
         <p><a href={`mailto:${contact.email}`} class="hover:text-brand">{contact.email}</a></p>
         <p><a href="tel:+82-2-6925-6978" class="hover:text-brand">{c.phone}</a></p>

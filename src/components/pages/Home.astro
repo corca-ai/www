@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { useTranslations, localizePath } from '../../i18n/utils';
 import { externalLinks, type Lang } from '../../i18n/ui';
+import { br } from '../../text';
 
 import heroIllustration from '../../assets/images/hero-illustration.png';
 import moonlightLogo from '../../assets/images/moonlight-logo.png';
@@ -19,7 +20,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const h = t.home;
-const br = (s: string) => s.replace(/\n/g, '<br />');
 
 // Localized alt text for the content images (issue #14: alt must be descriptive
 // and in the page's language, not hardcoded English).

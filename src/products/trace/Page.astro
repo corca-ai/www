@@ -1,5 +1,6 @@
 ---
 import type { Lang } from '../../i18n/ui';
+import { br } from '../../text';
 
 interface Props {
   lang: Lang;
@@ -19,7 +20,6 @@ const PHONE_HOME = `${P}2fe9a6_1210239befb1472284d6ac3ddc9c335f.webp`; // big ri
 const PHONE_EVENTS = `${P}2fe9a6_054c526e4498482bade3326d493410f1.webp`; // left event cards
 const APP_URL = 'https://apps.apple.com/app/id6503812022';
 
-const br = (s: string) => s.replace(/\n/g, '<br />');
 
 const content = {
   ko: {
@@ -56,10 +56,6 @@ const content = {
   },
 };
 const c = content[lang];
-// Live corca.ai renders the Latin tokens "AI" / "Trace" in a heavier weight.
-// Body copy is in the sans body font (matching live); "AI"/"Trace" get no
-// special serif/weight treatment — only headings use the serif-Latin face.
-const emph = (s: string) => br(s);
 ---
 
 <section
@@ -98,8 +94,8 @@ const emph = (s: string) => br(s);
     <img src={BADGE} alt={c.badgeAlt} width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" data-reveal />
     <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[181px] max-w-full sm:w-[210px] lg:w-[302px] xl:w-[352px]" data-reveal style="--reveal-delay: .08s" />
     <h1 class="mt-2 text-[27px] font-normal leading-[1.2] sm:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
-    <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={emph(c.body)} data-reveal style="--reveal-delay: .24s" />
-    <p class="font-head max-w-[720px] text-[15px] leading-[1.4] text-white md:text-[18px]" set:html={emph(c.cta)} data-reveal style="--reveal-delay: .3s" />
+    <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={br(c.body)} data-reveal style="--reveal-delay: .24s" />
+    <p class="font-head max-w-[720px] text-[15px] leading-[1.4] text-white md:text-[18px]" set:html={br(c.cta)} data-reveal style="--reveal-delay: .3s" />
     <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block" data-reveal style="--reveal-delay: .36s">
       <img src={APPSTORE} alt={c.appStoreAlt} width="324" height="95" class="h-[76px] w-auto sm:h-[58px] lg:h-[92px]" />
     </a>

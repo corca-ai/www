@@ -1,5 +1,6 @@
 ---
 import { contact, type Lang } from '../../i18n/ui';
+import { br } from '../../text';
 
 interface Props {
   lang: Lang;
@@ -105,7 +106,6 @@ const content = {
 };
 const c = content[lang];
 const cl = contactLinks[lang];
-const br = (s: string) => s.replace(/\n/g, '<br />');
 ---
 
 <!-- Hero — the bright underwater whale shows through; a bottom-weighted gradient

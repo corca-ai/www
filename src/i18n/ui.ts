@@ -97,7 +97,7 @@ type Dict = {
   langLabel: string;
 };
 
-export const ui: Record<Lang, Dict> = {
+export const ui = {
   ko: {
     langLabel: '언어 선택',
     nav: {
@@ -274,4 +274,4 @@ export const ui: Record<Lang, Dict> = {
       closingSubtitle: '以我们的技术实力开启新的可能，引领世界的变革。',
     },
   },
-};
+} satisfies Record<Lang, Dict>;

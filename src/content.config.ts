@@ -11,8 +11,12 @@ const i18n = z.object({ ko: z.string(), en: z.string(), ja: z.string(), zh: z.st
 const news = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/news' }),
   schema: z.object({
-    date: z.string(), // display string as on the source article, e.g. "2026/3/25"
-    image: z.string(),
+    // Display string as on the source article; validated so a typo fails the
+    // build instead of sorting wrong (News parses it as YYYY-M-D).
+    date: z
+      .string()
+      .regex(/^\d{4}\/\d{1,2}\/\d{1,2}$/, 'date must be "YYYY/M/D", e.g. "2026/3/25"'),
+    image: z.string().min(1),
     href: z.string().url(),
     title: i18n,
   }),
@@ -21,8 +25,8 @@ const news = defineCollection({
 const colleagues = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/colleagues' }),
   schema: z.object({
-    order: z.number(), // ascending display order
-    image: z.string(),
+    order: z.number().int().positive(), // ascending display order
+    image: z.string().min(1),
     story: z.string().url(),
     role: i18n,
     quote: i18n,

@@ -7,6 +7,7 @@ import {
   languageShort,
   languageNames,
   locales,
+  localeTag,
   type Lang,
 } from '../i18n/ui';
 import { products } from '../products/registry';
@@ -23,6 +24,11 @@ const primaryNavLabel = { ko: '주요 메뉴', en: 'Primary', ja: 'メインナ�
 const home = localizePath('/', lang);
 const productsHref = localizePath('/products', lang);
 const aboutHref = localizePath('/about', lang);
+
+// Mark the nav link for the page you're on (aria-current="page"); it has no
+// visual effect but tells assistive tech where you are.
+const currentPath = localizePath(basePath, lang);
+const isCurrent = (href: string) => (href === currentPath ? 'page' : undefined);
 
 // Product dropdown entries come from the product registry (src/products/*), so a
 // new product folder appears here automatically.
@@ -41,6 +47,7 @@ const langOptions = locales.map((l) => ({
   short: languageShort[l],
   name: languageNames[l],
   href: localizePath(basePath, l),
+  hreflang: localeTag[l],
   active: l === lang,
 }));
 ---
@@ -48,7 +55,7 @@ const langOptions = locales.map((l) => ({
 <header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur">
   <div class="container-c flex h-[66px] items-center justify-between gap-4">
     <!-- Logo -->
-    <a href={home} class="flex shrink-0 items-center" aria-label="Corca home">
+    <a href={home} class="flex shrink-0 items-center" aria-label="Corca home" aria-current={isCurrent(home)}>
       <Image src={logo} alt="Corca" width={104} height={30} densities={[1, 2, 3]} loading="eager" class="h-[20px] w-auto md:h-[32px]" />
     </a>
 
@@ -58,6 +65,7 @@ const langOptions = locales.map((l) => ({
       <div class="group relative nav-dd">
         <a
           href={productsHref}
+          aria-current={isCurrent(productsHref)}
           class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black transition-colors"
         >
           {t.nav.products}
@@ -67,7 +75,7 @@ const langOptions = locales.map((l) => ({
         </a>
         <div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
           {productItems.map((item) => (
-            <a href={item.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
+            <a href={item.href} aria-current={isCurrent(item.href)} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
           ))}
         </div>
       </div>
@@ -76,6 +84,7 @@ const langOptions = locales.map((l) => ({
       <div class="group relative nav-dd">
         <a
           href={aboutHref}
+          aria-current={isCurrent(aboutHref)}
           class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black transition-colors"
         >
           {t.nav.about}
@@ -85,7 +94,7 @@ const langOptions = locales.map((l) => ({
         </a>
         <div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
           {aboutItems.map((item) => (
-            <a href={item.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
+            <a href={item.href} aria-current={isCurrent(item.href)} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
           ))}
         </div>
       </div>
@@ -108,6 +117,7 @@ const langOptions = locales.map((l) => ({
             <li>
               <a
                 href={o.href}
+                hreflang={o.hreflang}
                 aria-label={o.name}
                 aria-current={o.active ? 'true' : undefined}
                 class:list={["block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-brand/8", o.active ? "font-semibold text-brand" : "text-ink-soft"]}
@@ -138,18 +148,18 @@ const langOptions = locales.map((l) => ({
       <div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white md:hidden">
         <nav class="container-c flex flex-col py-2" aria-label={menuLabel}>
           <div class="border-b border-black/5">
-            <a href={productsHref} class="block py-4 text-[16px] font-medium">{t.nav.products}</a>
+            <a href={productsHref} aria-current={isCurrent(productsHref)} class="block py-4 text-[16px] font-medium">{t.nav.products}</a>
             <div class="pb-2">
               {productItems.map((item) => (
-                <a href={item.href} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
+                <a href={item.href} aria-current={isCurrent(item.href)} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
               ))}
             </div>
           </div>
           <div class="border-b border-black/5">
-            <a href={aboutHref} class="block py-4 text-[16px] font-medium">{t.nav.about}</a>
+            <a href={aboutHref} aria-current={isCurrent(aboutHref)} class="block py-4 text-[16px] font-medium">{t.nav.about}</a>
             <div class="pb-2">
               {aboutItems.map((item) => (
-                <a href={item.href} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
+                <a href={item.href} aria-current={isCurrent(item.href)} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
               ))}
             </div>
           </div>
@@ -157,7 +167,7 @@ const langOptions = locales.map((l) => ({
           <a href={externalLinks.blog} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.blog}</a>
           <div class="flex gap-2 py-4">
             {langOptions.map((o) => (
-              <a href={o.href} class:list={["rounded-full border px-4 py-1.5 text-[14px]", o.active ? "border-brand font-semibold text-brand" : "border-black/15 text-ink-soft"]}>{o.short}</a>
+              <a href={o.href} hreflang={o.hreflang} aria-label={o.name} aria-current={o.active ? 'true' : undefined} class:list={["rounded-full border px-4 py-1.5 text-[14px]", o.active ? "border-brand font-semibold text-brand" : "border-black/15 text-ink-soft"]}>{o.short}</a>
             ))}
           </div>
         </nav>

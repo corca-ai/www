@@ -8,6 +8,11 @@ interface Props {
 const { lang } = Astro.props;
 const P = '/images/pages/';
 const asDate = (d: string) => new Date(d.replace(/\//g, '-')).getTime();
+// Machine-readable date for <time datetime>: "2026/3/25" → "2026-03-25".
+const isoDate = (d: string) => {
+  const [y = '', m = '', day = ''] = d.split('/');
+  return `${y}-${m.padStart(2, '0')}-${day.padStart(2, '0')}`;
+};
 const items = (await getCollection('news')).map((e) => e.data).sort((a, b) => asDate(b.date) - asDate(a.date));
 
 const heading = {
@@ -41,7 +46,7 @@ const heading = {
               />
             </div>
             <h2 class="font-body mt-4 line-clamp-3 text-[16px] font-bold leading-[1.25] text-heading [text-wrap:normal] md:text-[18px] lg:text-[20px]">{n.title[lang]}</h2>
-            <p class="mt-4 text-[13px] text-[#808090] md:text-[15px] lg:text-[16px]">{n.date}</p>
+            <p class="mt-4 text-[13px] text-[#808090] md:text-[15px] lg:text-[16px]"><time datetime={isoDate(n.date)}>{n.date}</time></p>
             <span class="sr-only">{heading.newWindow}</span>
           </a>
         </li>

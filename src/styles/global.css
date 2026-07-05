@@ -167,10 +167,12 @@ h1, h2, h3, .font-head {
 .container-c {
   width: 100%;
   margin-inline: auto;
-  /* Side gutter fitted to corca.ai's own scaling (≈23px @390, 60px @768,
-     160px @1440). The 9.8vw−15px term tracks the tablet/small-desktop ramp;
-     the 50%−560px term caps content at 1120px on wide screens; 20px floor. */
-  padding-inline: max(20px, 9.8vw - 15px, 50% - 560px);
+  /* Side gutter fitted to corca.ai's own scaling, measured across widths:
+     ≈23px @390, 60px @768, 69px @1100, 80px @1280, 160px @1440. Below ~765px
+     the steep 9.8vw−15 ramp matches; above it live flattens (≈3.9vw+30), so we
+     take the min of the two; the 50%−560 term then caps content at 1120px on
+     wide screens; 20px floor. */
+  padding-inline: max(20px, min(9.8vw - 15px, 3.9vw + 30px), 50% - 560px);
 }
 
 /* Pill button used across the site (자세히 보기 / 기사 보기 / Read more …) */

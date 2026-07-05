@@ -86,7 +86,7 @@ const emph = (s: string) => br(s).replace(/\b(AI|Trace)\b/g, '<b class="font-sem
   <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
     <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[34px] w-auto sm:h-[40px] lg:h-[48px]" data-reveal />
     <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[176px] max-w-full sm:w-[216px] lg:w-[352px]" data-reveal style="--reveal-delay: .08s" />
-    <h1 class="mt-2 text-[28px] font-semibold leading-tight sm:text-[36px] lg:text-[58px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
+    <h1 class="mt-2 text-[28px] font-normal leading-tight sm:text-[36px] lg:text-[58px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
     <p class="max-w-[760px] text-[15px] leading-relaxed text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={emph(c.body)} data-reveal style="--reveal-delay: .24s" />
     <p class="max-w-[720px] text-[15px] leading-relaxed text-white md:text-[16px] lg:text-[17px]" set:html={emph(c.cta)} data-reveal style="--reveal-delay: .3s" />
     <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block transition-transform hover:-translate-y-0.5" data-reveal style="--reveal-delay: .36s">

@@ -60,7 +60,7 @@ const content = {
 };
 const c = content[lang];
 // Live corca.ai bolds the Latin run ("AI PDF" / "AI") heavier than the Korean.
-const titleHtml = c.title.replace(/AI PDF|AI/g, (m) => `<b class="font-extrabold">${m}</b>`);
+const titleHtml = c.title.replace(/AI PDF|AI/g, (m) => `<b class="font-semibold">${m}</b>`);
 
 // Stat icons (users / papers read / countries / institutions), mirroring the
 // original site's pictograms. Decorative — text labels carry the meaning.
@@ -72,15 +72,17 @@ const statIcons = [
 ];
 ---
 
-<!-- Hero — the purple app-screenshot montage shows through a lighter overlay,
-     matching corca.ai's brighter, taller hero. -->
+<!-- Hero — a purple app-screenshot montage under a strong purple filter (~0.66
+     opacity, calibrated to live corca.ai) so the bright screenshots are dimmed to
+     a readable dark-purple and the white title/body stay legible. Too light an
+     overlay (the old 0.18–0.34) let the montage show through and the text vanished. -->
 <section
   class="relative bg-[#402060] bg-cover bg-center"
-  style={`background-image: linear-gradient(rgba(44,18,70,0.18), rgba(28,10,50,0.34)), url('${HERO_BG}');`}
+  style={`background-image: linear-gradient(rgba(58,25,90,0.64), rgba(46,18,74,0.72)), url('${HERO_BG}');`}
 >
   <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white md:min-h-[720px] lg:min-h-[960px] lg:gap-7 lg:py-24">
     <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[245px] max-w-full sm:w-[330px] lg:w-[500px]" data-reveal />
-    <h1 class="text-[34px] font-semibold leading-[1.2] sm:text-[40px] lg:text-[56px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
+    <h1 class="text-[34px] font-normal leading-[1.2] sm:text-[40px] lg:text-[56px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
     <p class="max-w-[720px] text-[14px] leading-[1.5] text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
     <a
       href={APP_URL}
@@ -102,7 +104,7 @@ const statIcons = [
           <path d={statIcons[i]} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <p class="text-[14px] text-white/70 lg:text-[18px]">{s.label}</p>
-        <p class="text-[30px] font-semibold lg:text-[46px]">{s.value}</p>
+        <p class="text-[30px] font-normal lg:text-[46px]">{s.value}</p>
       </div>
     ))}
   </div>

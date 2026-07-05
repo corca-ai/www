@@ -139,7 +139,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
     <img src={HERO} alt="" width="1440" height="1100" decoding="async" class="block h-auto w-[195%] max-w-none shrink-0 md:w-[180%] lg:w-full" />
   </div>
   <div class="container-c absolute inset-x-0 top-0 z-10 pt-6 sm:pt-10 lg:pt-20">
-    <h1 class="text-[34px] font-semibold leading-tight text-[#1a2352] sm:text-[40px] lg:text-[74px]" set:html={br(c.heroTitle)} />
+    <h1 class="text-[34px] font-normal leading-tight text-[#1a2352] sm:text-[40px] lg:text-[74px]" set:html={br(c.heroTitle)} />
     <p class="mt-3 max-w-[300px] text-[13px] leading-relaxed text-[#1a2352]/90 sm:mt-5 sm:max-w-[390px] sm:text-[16px] lg:text-[20px]">{c.heroSubtitle}</p>
   </div>
 </section>
@@ -151,12 +151,12 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
      keeps it close to the illustration at every breakpoint. -->
 <section class="bg-[#046eb8] text-white">
   <div class="container-c pb-16 pt-6 lg:pb-20 lg:pt-8">
-    <h2 class="text-[28px] font-semibold lg:text-[42px]">{c.methodsLabel}</h2>
+    <h2 class="text-[28px] font-normal lg:text-[42px]">{c.methodsLabel}</h2>
     <div class="mt-10 flex flex-col gap-14 lg:gap-20">
       {c.methods.map((m, i) => (
         <div class:list={["grid items-center gap-8 md:grid-cols-2 md:gap-12", i % 2 === 1 && "md:[&>*:first-child]:order-last"]}>
           <div class:list={[i % 2 === 1 && 'md:order-last']}>
-            <h3 class="text-[22px] font-semibold md:text-[26px] lg:text-[32px]">{m.title}</h3>
+            <h3 class="text-[22px] font-normal md:text-[26px] lg:text-[32px]">{m.title}</h3>
             <p class="mt-4 text-[15px] leading-relaxed text-white lg:text-[16px]">{m.body}</p>
           </div>
           <div class:list={["flex justify-center", i % 2 === 1 && 'md:order-first']}>
@@ -181,13 +181,13 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Benefits -->
 <section class="bg-white">
   <div class="container-c grid gap-10 py-16 md:grid-cols-[220px_1fr] md:gap-12 lg:grid-cols-[260px_1fr] lg:gap-16 lg:py-24">
-    <h2 class="text-[28px] font-semibold text-[#1a2352] lg:text-[42px]">{c.envLabel}</h2>
+    <h2 class="text-[28px] font-normal text-[#1a2352] lg:text-[42px]">{c.envLabel}</h2>
     <div class="flex flex-col gap-10">
       {c.benefits.map((b) => (
         <div class="flex gap-5">
           <span class="shrink-0 text-[32px] leading-none lg:text-[38px]" aria-hidden="true">{b.icon}</span>
           <div>
-            <h3 class="text-[18px] font-semibold text-[#1a2352] lg:text-[21px]">{b.title}</h3>
+            <h3 class="text-[18px] font-normal text-[#1a2352] lg:text-[21px]">{b.title}</h3>
             <p class="mt-2 text-[15px] leading-relaxed text-[#1a2352]/85 lg:text-[16px]">{b.body}</p>
           </div>
         </div>

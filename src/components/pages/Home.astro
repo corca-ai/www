@@ -30,7 +30,7 @@ const heroTitleHtml = (() => {
   const sp = line2.lastIndexOf(' ');
   const line2Html =
     sp > 0 ? `${line2.slice(0, sp)} <br class="min-[810px]:hidden" />${line2.slice(sp + 1)}` : line2;
-  return `${line1}<br />${line2Html}`.replace(/AI/g, '<b class="font-extrabold">AI</b>');
+  return `${line1}<br />${line2Html}`.replace(/AI/g, '<b class="font-semibold">AI</b>');
 })();
 ---
 
@@ -39,7 +39,7 @@ const heroTitleHtml = (() => {
   <div class="container-c relative flex flex-col items-start gap-8 pt-6 pb-14 text-left min-[640px]:pb-6 min-[810px]:min-h-[calc(400px_+_33vw)] min-[810px]:justify-start min-[810px]:py-0 min-[810px]:pt-[calc(9vw_-_40px)]">
     <div class="max-[809px]:max-w-[360px] min-[810px]:max-w-[600px]" data-reveal>
       <h1
-        class="text-[33px] font-semibold leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
+        class="text-[33px] font-normal leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
         set:html={heroTitleHtml}
       />
       <p class="mt-6 text-[18px] leading-[1.4] text-white min-[1024px]:text-[24px]" set:html={br(h.heroSubtitle)} />
@@ -69,7 +69,7 @@ const heroTitleHtml = (() => {
     </div>
     <div data-reveal style="--reveal-delay: .12s">
       <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[72px]" />
-      <h2 class="mt-5 text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
+      <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
       <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]">{h.moonlightBody}</p>
       <a href={localizePath('/moonlight', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#605070] text-white hover:bg-[#4d4159] md:w-auto">{h.readMore}</a>
     </div>
@@ -90,7 +90,7 @@ const heroTitleHtml = (() => {
     </div>
     <div data-reveal style="--reveal-delay: .12s">
       <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[72px]" />
-      <h2 class="mt-5 text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
+      <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
       <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]">{h.traceBody}</p>
       <a href={localizePath('/trace', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#777cdc] text-white hover:bg-[#6469c9] md:w-auto">{h.readMore}</a>
     </div>
@@ -102,13 +102,13 @@ const heroTitleHtml = (() => {
   <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div class="order-first" data-reveal>
       <div class="mx-auto flex max-w-[500px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
-        <p class="text-[20px] font-semibold text-brand-ink lg:text-[30px]">{h.babyUnicornBadge}</p>
+        <p class="text-[20px] font-normal text-brand-ink lg:text-[30px]">{h.babyUnicornBadge}</p>
         <Image src={awardUnicorn} alt="" width={420} height={135} densities={[1, 2]} class="w-full max-w-[420px]" />
         <Image src={awardStartup} alt="" width={300} height={60} densities={[1, 2]} class="w-[64%] max-w-[300px]" />
       </div>
     </div>
     <div data-reveal style="--reveal-delay: .12s">
-      <h2 class="text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.babyUnicornHeading)} />
+      <h2 class="text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.babyUnicornHeading)} />
       <a href={externalLinks.babyUnicornArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
     </div>
   </div>
@@ -118,15 +118,15 @@ const heroTitleHtml = (() => {
 <section class="bg-white">
   <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
     <div data-reveal>
-      <h2 class="text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.recsysHeading)} />
+      <h2 class="text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.recsysHeading)} />
       <a href={externalLinks.recsysArticle} target="_blank" rel="noopener" class="btn-pill btn-pill-dark mt-7">{h.readArticle}</a>
     </div>
     <div class="order-first md:order-last" data-reveal style="--reveal-delay: .12s">
       <div class="rounded-2xl bg-[#eef0f2] px-6 py-8 sm:px-10">
         <div class="text-center">
-          <p class="text-[14px] text-ink-soft lg:text-[15px]" set:html={h.recsysCaptionTop.replace(/AI/g, '<b class=\"font-semibold\">AI</b>')} />
-          <p class="mt-1 text-[15px] font-bold text-heading">{h.recsysEvent}</p>
-          <p class="mt-2 text-[20px] font-bold text-brand-ink md:text-[24px] lg:text-[28px]">{h.recsysRank}</p>
+          <p class="text-[14px] text-ink-soft lg:text-[15px]" set:html={h.recsysCaptionTop.replace(/AI/g, '<b class=\"font-normal\">AI</b>')} />
+          <p class="mt-1 text-[15px] font-normal text-heading">{h.recsysEvent}</p>
+          <p class="mt-2 text-[20px] font-normal text-brand-ink md:text-[24px] lg:text-[28px]">{h.recsysRank}</p>
         </div>
         <Image
           src={recsysArticle}
@@ -153,7 +153,7 @@ const heroTitleHtml = (() => {
       />
     </div>
     <div data-reveal style="--reveal-delay: .12s">
-      <h2 class="text-[26px] font-semibold leading-[1.2] text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.partnersHeading)} />
+      <h2 class="text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]" set:html={br(h.partnersHeading)} />
     </div>
   </div>
 </section>
@@ -161,7 +161,7 @@ const heroTitleHtml = (() => {
 <!-- ========================= Closing CTA ========================= -->
 <section class="bg-brand text-white">
   <div class="container-c flex flex-col items-center gap-5 py-40 text-center md:py-36 lg:py-44" data-reveal>
-    <h2 class="text-[26px] font-semibold leading-[1.2] md:text-[38px]" set:html={h.closingHeading.replace(/AI/g, '<b class="font-extrabold">AI</b>')} />
+    <h2 class="text-[26px] font-normal leading-[1.2] md:text-[38px]" set:html={h.closingHeading.replace(/AI/g, '<b class="font-semibold">AI</b>')} />
     <p class="max-w-2xl text-[15px] leading-relaxed text-white lg:text-[17px]">{h.closingSubtitle}</p>
   </div>
 </section>

@@ -11,24 +11,23 @@ const orgRef = (site: URL) => ({ '@id': `${site.href}#organization` });
 
 const homeLabel: Record<Lang, string> = { ko: '홈', en: 'Home', ja: 'ホーム', zh: '首页' };
 
-/** Home → current-page trail so subpages show a breadcrumb in search results. */
-export function breadcrumbLd(site: URL, lang: Lang, basePath: string, name: string) {
+/** A single breadcrumb node: display name + locale-agnostic base path. */
+export type Crumb = { name: string; path: string };
+
+/**
+ * Home → …category… → current-page trail so pages show a breadcrumb in search
+ * results. `crumbs` is the trail after Home (e.g. [제품 소개, 문라이트]).
+ */
+export function breadcrumbLd(site: URL, lang: Lang, crumbs: Crumb[]) {
+  const trail: Crumb[] = [{ name: homeLabel[lang], path: '/' }, ...crumbs];
   return {
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: homeLabel[lang],
-        item: new URL(localizePath('/', lang), site).href,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name,
-        item: new URL(localizePath(basePath, lang), site).href,
-      },
-    ],
+    itemListElement: trail.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: new URL(localizePath(c.path, lang), site).href,
+    })),
   };
 }
 

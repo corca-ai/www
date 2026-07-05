@@ -20,6 +20,8 @@ const t = useTranslations(lang);
 const menuLabel = { ko: '메뉴', en: 'Menu', ja: 'メニュー', zh: '菜单' }[lang];
 const primaryNavLabel = { ko: '주요 메뉴', en: 'Primary', ja: 'メインナビゲーション', zh: '主导航' }[lang];
 const home = localizePath('/', lang);
+const productsHref = localizePath('/products', lang);
+const aboutHref = localizePath('/about', lang);
 
 const productItems = [
   { label: 'Moonlight', href: localizePath('/products/moonlight', lang) },
@@ -49,19 +51,17 @@ const langOptions = locales.map((l) => ({
 
     <!-- Desktop navigation -->
     <nav class="hidden items-center gap-11 md:flex" aria-label={primaryNavLabel}>
-      <!-- Products -->
+      <!-- Products (label links to the category page; hover reveals the panel) -->
       <div class="group relative nav-dd">
-        <button
-          type="button"
+        <a
+          href={productsHref}
           class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black transition-colors"
-          aria-haspopup="true"
-          aria-expanded="false"
         >
           {t.nav.products}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-        </button>
+        </a>
         <div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
           {productItems.map((item) => (
             <a href={item.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
@@ -69,19 +69,17 @@ const langOptions = locales.map((l) => ({
         </div>
       </div>
 
-      <!-- About -->
+      <!-- About (label links to the category page; hover reveals the panel) -->
       <div class="group relative nav-dd">
-        <button
-          type="button"
+        <a
+          href={aboutHref}
           class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black transition-colors"
-          aria-haspopup="true"
-          aria-expanded="false"
         >
           {t.nav.about}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-        </button>
+        </a>
         <div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
           {aboutItems.map((item) => (
             <a href={item.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
@@ -136,22 +134,22 @@ const langOptions = locales.map((l) => ({
       <!-- Mobile menu panel -->
       <div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white md:hidden">
         <nav class="container-c flex flex-col py-2" aria-label={menuLabel}>
-          <details class="border-b border-black/5">
-            <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-[16px] font-medium">{t.nav.products}<span class="text-ink-soft">+</span></summary>
+          <div class="border-b border-black/5">
+            <a href={productsHref} class="block py-4 text-[16px] font-medium">{t.nav.products}</a>
             <div class="pb-2">
               {productItems.map((item) => (
                 <a href={item.href} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
               ))}
             </div>
-          </details>
-          <details class="border-b border-black/5">
-            <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-[16px] font-medium">{t.nav.about}<span class="text-ink-soft">+</span></summary>
+          </div>
+          <div class="border-b border-black/5">
+            <a href={aboutHref} class="block py-4 text-[16px] font-medium">{t.nav.about}</a>
             <div class="pb-2">
               {aboutItems.map((item) => (
                 <a href={item.href} class="block py-2.5 pl-3 text-[15px] text-ink-soft">{item.label}</a>
               ))}
             </div>
-          </details>
+          </div>
           <a href={externalLinks.careers} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.careers}</a>
           <a href={externalLinks.blog} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.blog}</a>
           <div class="flex gap-2 py-4">
@@ -170,11 +168,12 @@ const langOptions = locales.map((l) => ({
   .lang-switch > summary::-webkit-details-marker { display: none; }
   details > summary { list-style: none; }
 
-  /* Desktop nav dropdowns also open on click/tap (touch devices have no hover),
-     toggled by the .open class from the script below. */
-  .nav-dd.open > .nav-dd-panel { visibility: visible; opacity: 1; }
-  .nav-dd.open > .nav-dd-btn > svg { transform: rotate(180deg); }
+  /* Desktop nav dropdown panels open on hover / keyboard focus-within (see the
+     panel's group-hover / group-focus-within classes). The label itself is a
+     link to the category page, so touch users navigate there instead. */
   .nav-dd-btn > svg { transition: transform 0.15s ease; }
+  .nav-dd:hover > .nav-dd-btn > svg,
+  .nav-dd:focus-within > .nav-dd-btn > svg { transform: rotate(180deg); }
 </style>
 
 <script>
@@ -207,33 +206,8 @@ const langOptions = locales.map((l) => ({
     });
   }
 
-  // Desktop nav dropdowns (Products / About): open on click/tap as well as
-  // hover, so they work on touch devices (tablets, touchscreen laptops) where
-  // there is no hover. Hover still works for mouse users via CSS.
-  const navDropdowns = Array.from(document.querySelectorAll<HTMLElement>('.nav-dd'));
-  const closeNavDropdowns = (except?: HTMLElement) => {
-    for (const dd of navDropdowns) {
-      if (dd === except) continue;
-      dd.classList.remove('open');
-      dd.querySelector('.nav-dd-btn')?.setAttribute('aria-expanded', 'false');
-    }
-  };
-  for (const dd of navDropdowns) {
-    const ddBtn = dd.querySelector<HTMLButtonElement>('.nav-dd-btn');
-    if (!ddBtn) continue;
-    ddBtn.addEventListener('click', () => {
-      const willOpen = !dd.classList.contains('open');
-      closeNavDropdowns(dd);
-      dd.classList.toggle('open', willOpen);
-      ddBtn.setAttribute('aria-expanded', String(willOpen));
-    });
-  }
-  document.addEventListener('click', (e) => {
-    if (!(e.target as HTMLElement).closest('.nav-dd')) closeNavDropdowns();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeNavDropdowns();
-  });
+  // Desktop nav dropdowns (Products / About) are hover / focus-within only (CSS);
+  // the label links to the category page, so no JS toggle is needed.
 
   // Language switcher (<details>): close when clicking outside or pressing
   // Escape, mirroring native dropdown behaviour (issue #2).

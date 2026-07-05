@@ -1,14 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import About from '../components/pages/About.astro';
+import AboutIndex from '../components/pages/AboutIndex.astro';
 import Colleagues from '../components/pages/Colleagues.astro';
 import Home from '../components/pages/Home.astro';
 import HowWeWork from '../components/pages/HowWeWork.astro';
 import Moonlight from '../components/pages/Moonlight.astro';
 import News from '../components/pages/News.astro';
+import Products from '../components/pages/Products.astro';
 import Trace from '../components/pages/Trace.astro';
 import { pageMeta } from '../i18n/pageMeta';
-import { type AppInfo, breadcrumbLd, softwareAppLd } from '../i18n/structuredData';
+import { type AppInfo, breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
 import { defaultLang, locales } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 
@@ -26,6 +28,8 @@ export function getStaticPaths() {
   // public/_redirects.
   const routes = [
     { id: 'home', slug: '', basePath: '/' },
+    { id: 'products', slug: 'products', basePath: '/products' },
+    { id: 'about', slug: 'about', basePath: '/about' },
     { id: 'about-corca', slug: 'about/vision-mission', basePath: '/about/vision-mission' },
     { id: 'how-we-work', slug: 'about/how-we-work', basePath: '/about/how-we-work' },
     { id: 'moonlight', slug: 'products/moonlight', basePath: '/products/moonlight' },
@@ -43,6 +47,8 @@ export function getStaticPaths() {
 
 const COMPONENTS = {
   home: Home,
+  products: Products,
+  about: AboutIndex,
   'about-corca': About,
   'how-we-work': HowWeWork,
   moonlight: Moonlight,
@@ -69,7 +75,16 @@ const APPS: Partial<Record<keyof typeof COMPONENTS, AppInfo>> = {
   trace: { category: 'ProductivityApplication', os: 'iOS', appUrl: 'https://apps.apple.com/app/id6503812022' },
 };
 const jsonLd: Record<string, unknown>[] = [];
-if (id !== 'home') jsonLd.push(breadcrumbLd(site, lang, basePath, pageName));
+if (id !== 'home') {
+  // Build the crumb trail, inserting the category level for nested pages
+  // (e.g. /products/moonlight → Home → 제품 소개 → 문라이트).
+  const nav = useTranslations(lang).nav;
+  const crumbs: Crumb[] = [];
+  if (basePath.startsWith('/products/')) crumbs.push({ name: nav.products, path: '/products' });
+  else if (basePath.startsWith('/about/')) crumbs.push({ name: nav.about, path: '/about' });
+  crumbs.push({ name: pageName, path: basePath });
+  jsonLd.push(breadcrumbLd(site, lang, crumbs));
+}
 const app = APPS[id];
 if (app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, app));
 ---

@@ -8,6 +8,50 @@ type PageMeta = Record<Lang, Meta>;
 // and /about/ (see [...slug].astro). Titles read "PageName | descriptor"; the
 // breadcrumb/app name is derived from the part before the first pipe.
 export const pageMeta: Record<string, PageMeta> = {
+  products: {
+    ko: {
+      title: '코르카 AI 제품 소개 | 문라이트·트레이스 등 AI 솔루션 라인업',
+      description:
+        '논문 읽기를 바꾸는 AI 리서치 도구 문라이트, 대화하듯 입력하는 AI 일정관리 트레이스, 초개인화 리테일 미디어 코르카애즈까지. ACM RecSys 세계 7위 기술력의 코르카가 연구·업무·비즈니스 현장에 바로 쓰이는 AI 제품을 만듭니다.',
+    },
+    en: {
+      title: 'Corca AI Products | Moonlight, Trace & More AI Solutions',
+      description:
+        'From Moonlight, the AI research tool transforming how you read papers, to Trace, the AI scheduler you enter like a conversation, to Corca Ads, hyper-personalized retail media. With technology ranked 7th worldwide at the ACM RecSys Challenge, Corca builds AI products ready to use in research, work, and business.',
+    },
+    ja: {
+      title: 'Corca AI製品紹介 | ムーンライト・トレースなどAIソリューションのラインナップ',
+      description:
+        '論文の読み方を変えるAIリサーチツール「ムーンライト」、会話するように入力するAIスケジュール管理「トレース」、超パーソナライズドなリテールメディア「Corca Ads」まで。ACM RecSys 世界7位の技術力を持つコルカが、研究・業務・ビジネスの現場ですぐに使えるAI製品を開発します。',
+    },
+    zh: {
+      title: 'Corca AI产品介绍 | Moonlight、Trace等AI解决方案阵容',
+      description:
+        '从改变论文阅读方式的AI研究工具Moonlight，到像聊天一样输入的AI日程管理Trace，再到超个性化零售媒体Corca Ads。拥有ACM RecSys全球第7技术实力的Corca，打造可直接用于研究、工作与商业场景的AI产品。',
+    },
+  },
+  about: {
+    ko: {
+      title: '회사 소개 | 2024 아기유니콘 AI 전문 기업 코르카(Corca)',
+      description:
+        '코르카는 한국 최초 OpenAI 공식 서비스 파트너이자 2024 아기유니콘 선정 AI 전문 기업입니다. ACM RecSys Challenge 세계 7위·국내 1위 기술력으로 AI 제품 개발부터 기업 AX 컨설팅까지, 코르카의 비전과 팀을 소개합니다.',
+    },
+    en: {
+      title: 'About | Corca, a 2024 Baby Unicorn AI Company',
+      description:
+        "Corca is Korea's first official OpenAI service partner and a 2024 Baby Unicorn AI company. With technology ranked 7th worldwide and 1st in Korea at the ACM RecSys Challenge — from building AI products to enterprise AX consulting — meet Corca's vision and team.",
+    },
+    ja: {
+      title: '会社紹介 | 2024 ベビーユニコーンのAI専門企業 Corca（コルカ）',
+      description:
+        'コルカは、韓国初のOpenAI公式サービスパートナーであり、2024 ベビーユニコーンに選定されたAI専門企業です。ACM RecSys Challenge 世界7位・国内1位の技術力で、AI製品の開発から企業のAXコンサルティングまで。コルカのビジョンとチームをご紹介します。',
+    },
+    zh: {
+      title: '公司介绍 | 2024年“小独角兽”AI专业企业Corca',
+      description:
+        'Corca是韩国首家OpenAI官方服务合作伙伴，也是入选2024年“小独角兽”的AI专业企业。凭借在ACM RecSys Challenge中位列全球第7、韩国第1的技术实力，从AI产品开发到企业AX咨询，为你介绍Corca的愿景与团队。',
+    },
+  },
   moonlight: {
     ko: {
       title: '문라이트(Moonlight) | 논문 읽기 AI·논문 요약 분석 도구',

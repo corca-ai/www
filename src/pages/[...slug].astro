@@ -1,76 +1,47 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import About from '../components/pages/About.astro';
-import AboutIndex from '../components/pages/AboutIndex.astro';
-import Colleagues from '../components/pages/Colleagues.astro';
-import Home from '../components/pages/Home.astro';
-import HowWeWork from '../components/pages/HowWeWork.astro';
-import News from '../components/pages/News.astro';
-import Products from '../components/pages/Products.astro';
-import { pageMeta } from '../i18n/pageMeta';
 import { breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
-import { defaultLang, locales } from '../i18n/ui';
-import { useTranslations } from '../i18n/utils';
+import { defaultLang, locales, ui } from '../i18n/ui';
 import { products } from '../products/registry';
+import { staticPages, type StaticId } from '../staticPages';
 
-// Single localized route for the whole site. Static pages come from the registry
-// below; product detail pages come from the product registry (src/products/*),
-// so adding a product is "drop a folder" — no edit here. The ko default locale
-// is un-prefixed ("/news/"); en/ja/zh are prefixed. BaseLayout derives canonical
-// + hreflang from basePath + lang. NB: getStaticPaths runs before the module
-// body, so its route list lives inside it.
+// One localized route for the whole site. Static pages come from `staticPages`
+// and product detail pages from the product registry, so adding a product is
+// "drop a folder" — no edit here. The ko default locale is un-prefixed
+// ("/news/"), en/ja/zh are prefixed ("/en/news/"); BaseLayout derives canonical
+// + hreflang from basePath + lang. NB: getStaticPaths runs in an isolated scope,
+// so it only reads the imported registries.
 export function getStaticPaths() {
-  const staticRoutes = [
-    { id: 'home', slug: '', basePath: '/' },
-    { id: 'products', slug: 'products', basePath: '/products' },
-    { id: 'about', slug: 'about', basePath: '/about' },
-    { id: 'about-corca', slug: 'about/vision-mission', basePath: '/about/vision-mission' },
-    { id: 'how-we-work', slug: 'about/how-we-work', basePath: '/about/how-we-work' },
-    { id: 'news', slug: 'news', basePath: '/news' },
-    { id: 'colleagues', slug: 'about/colleagues', basePath: '/about/colleagues' },
+  const routes = [
+    ...Object.entries(staticPages).map(([id, p]) => ({ id, basePath: p.basePath })),
+    ...products.map((p) => ({ id: p.slug, basePath: `/products/${p.slug}` })),
   ];
-  const productRoutes = products.map((p) => ({
-    id: p.slug,
-    slug: `products/${p.slug}`,
-    basePath: `/products/${p.slug}`,
-  }));
   return locales.flatMap((lang) =>
-    [...staticRoutes, ...productRoutes].map((r) => {
-      const path = `${lang === defaultLang ? '' : `${lang}/`}${r.slug}`;
+    routes.map((r) => {
+      const slug = r.basePath === '/' ? '' : r.basePath.slice(1);
+      const path = `${lang === defaultLang ? '' : `${lang}/`}${slug}`;
       return { params: { slug: path === '' ? undefined : path }, props: { lang, id: r.id, basePath: r.basePath } };
     }),
   );
 }
 
-const STATIC_COMPONENTS = {
-  home: Home,
-  products: Products,
-  about: AboutIndex,
-  'about-corca': About,
-  'how-we-work': HowWeWork,
-  news: News,
-  colleagues: Colleagues,
-} as const;
-
-const { lang, id, basePath } = Astro.props as { lang: (typeof locales)[number]; id: string; basePath: string };
+const { lang, id, basePath } = Astro.props;
 
 // A product detail page (/products/<slug>) resolves from the product registry;
-// everything else is a static component + pageMeta (home reads its own copy).
-const product = products.find((p) => basePath === `/products/${p.slug}`) ?? null;
-const meta = product
-  ? product.meta[lang]
-  : id === 'home'
-    ? { title: useTranslations(lang).home.metaTitle, description: useTranslations(lang).home.metaDescription }
-    : pageMeta[id as keyof typeof pageMeta][lang];
-const Component = product ? product.Page : STATIC_COMPONENTS[id as keyof typeof STATIC_COMPONENTS];
+// otherwise `id` is one of the static pages (guaranteed by getStaticPaths).
+const product = products.find((p) => `/products/${p.slug}` === basePath) ?? null;
+const meta = product ? product.meta[lang] : staticPages[id as StaticId].meta(lang);
+const Component = product ? product.Page : staticPages[id as StaticId].Component;
 
 // Per-page schema.org nodes (merged into BaseLayout's @graph): a Home →
 // …category… → page breadcrumb, plus SoftwareApplication for products with app data.
 const site = Astro.site ?? new URL('https://www.borca.ai');
-const pageName = meta.title.split('|')[0].trim();
+// Titles read "PageName | descriptor"; the breadcrumb/app name is the part
+// before the first pipe (e.g. "문라이트(Moonlight)", "비전과 미션").
+const pageName = (meta.title.split('|')[0] ?? meta.title).trim();
 const jsonLd: Record<string, unknown>[] = [];
 if (id !== 'home') {
-  const nav = useTranslations(lang).nav;
+  const nav = ui[lang].nav;
   const crumbs: Crumb[] = [];
   if (basePath.startsWith('/products/')) crumbs.push({ name: nav.products, path: '/products' });
   else if (basePath.startsWith('/about/')) crumbs.push({ name: nav.about, path: '/about' });

@@ -19,7 +19,7 @@ const escapeXml = (s: string) =>
 // calendar day in every reader's time zone instead of slipping to the day before.
 const asDate = (d: string) => {
   const [y, m, day] = d.split('/').map(Number);
-  return new Date(Date.UTC(y, m - 1, day, 3, 0, 0));
+  return new Date(Date.UTC(y ?? 1970, (m ?? 1) - 1, day ?? 1, 3, 0, 0));
 };
 
 export const GET: APIRoute = async ({ site }) => {

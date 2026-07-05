@@ -3,11 +3,21 @@ import type { Lang } from './ui';
 type Meta = { title: string; description: string };
 type PageMeta = Record<Lang, Meta>;
 
+/** The static (non-product) pages that carry SEO copy here. */
+export type PageMetaKey =
+  | 'products'
+  | 'about'
+  | 'about-corca'
+  | 'how-we-work'
+  | 'news'
+  | 'colleagues';
+
 // SEO title/description per subpage per locale (issues #26 #27 #29 #30 #31 #32).
-// The `id` keys are stable even though the live URLs now live under /products/
-// and /about/ (see [...slug].astro). Titles read "PageName | descriptor"; the
-// breadcrumb/app name is derived from the part before the first pipe.
-export const pageMeta: Record<string, PageMeta> = {
+// The keys are stable even though the live URLs now live under /products/ and
+// /about/ (see [...slug].astro). Titles read "PageName | descriptor"; the
+// breadcrumb/app name is derived from the part before the first pipe. Product
+// pages keep their own copy in their manifest, so they are not listed here.
+export const pageMeta = {
   products: {
     ko: {
       title: '코르카 AI 제품 소개 | 문라이트·트레이스 등 AI 솔루션 라인업',
@@ -140,4 +150,4 @@ export const pageMeta: Record<string, PageMeta> = {
         '从在世界大赛中得到验证的AI工程师，到设计组织变革的AX顾问——为你介绍打造Corca的人们与团队文化。我们期待与你一起，用AI改变世界。',
     },
   },
-};
+} satisfies Record<PageMetaKey, PageMeta>;

@@ -59,9 +59,9 @@ const content = {
   },
 };
 const c = content[lang];
-// Live corca.ai renders the Latin run ("AI PDF" / "AI") in a bold serif face.
-const aiSerif = (s: string) => s.replace(/AI PDF|\bAI\b/g, (m) => `<span class="t-ai">${m}</span>`);
-const titleHtml = aiSerif(c.title);
+// The h1 uses the Corca heading font, whose Latin ("AI PDF") is already a bold
+// serif — no manual markup needed.
+const titleHtml = c.title;
 
 // Stat icons (users / papers read / countries / institutions), mirroring the
 // original site's pictograms. Decorative — text labels carry the meaning.
@@ -84,7 +84,7 @@ const statIcons = [
   <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white md:min-h-[720px] lg:min-h-[960px] lg:gap-7 lg:py-24">
     <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[245px] max-w-full sm:w-[330px] lg:w-[500px]" data-reveal />
     <h1 class="text-[34px] font-normal leading-[1.2] sm:text-[40px] lg:text-[60px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
-    <p class="max-w-[840px] text-[14px] leading-[1.5] text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s" set:html={aiSerif(c.body)} />
+    <p class="max-w-[840px] text-[14px] leading-[1.5] text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
     <a
       href={APP_URL}
       target="_blank"

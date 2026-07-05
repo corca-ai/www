@@ -49,10 +49,9 @@ const content = {
 };
 const c = content[lang];
 // Live corca.ai renders the Latin tokens "AI" / "Trace" in a heavier weight.
-const emph = (s: string) =>
-  br(s)
-    .replace(/\bAI\b/g, '<span class="t-ai">AI</span>')
-    .replace(/\bTrace\b/g, '<b class="font-semibold">Trace</b>');
+// Body copy is in the sans body font (matching live); "AI"/"Trace" get no
+// special serif/weight treatment — only headings use the serif-Latin face.
+const emph = (s: string) => br(s);
 ---
 
 <section

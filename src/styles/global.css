@@ -12,6 +12,18 @@
   src: url("/fonts/PretendardVariable.woff2") format("woff2-variations");
 }
 
+/* Heading typeface — corca.ai's own uploaded webfont (subsetted from the live
+   Wix site): a heavier Hangul sans whose LATIN glyphs are a bold serif. This is
+   what makes live's headings — and the "AI" acronym in them — read the way they
+   do; using it means the serif "AI" is intrinsic to the font (no manual span). */
+@font-face {
+  font-family: "Corca Head";
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/corca-head.woff2") format("woff2");
+}
+
 /* ---------------------------------------------------------------------------
    Design tokens
 --------------------------------------------------------------------------- */
@@ -74,11 +86,22 @@ p {
   word-break: keep-all;
 }
 
-/* Live corca.ai renders the "AI" acronym in a bold serif face (distinct from the
-   sans Korean body and other Latin labels). `.t-ai` mirrors that. */
-.t-ai {
-  font-family: Georgia, "Times New Roman", "Nanum Myeongjo", serif;
-  font-weight: 700;
+/* Headings (and the hero subtitles that live sets in the same face) use the
+   Corca heading webfont; Korean/JP/CJK glyphs the subset lacks fall back to the
+   locale sans stack. `.font-head` opts extra elements in (e.g. hero subtitles). */
+h1, h2, h3, .font-head {
+  font-family: "Corca Head", var(--font-sans);
+}
+:lang(ja) h1, :lang(ja) h2, :lang(ja) h3, :lang(ja) .font-head {
+  font-family: "Corca Head", var(--font-ja);
+}
+:lang(zh) h1, :lang(zh) h2, :lang(zh) h3, :lang(zh) .font-head {
+  font-family: "Corca Head", var(--font-zh);
+}
+/* Opt a heading BACK to the sans body face — live sets its pure-Latin labels
+   (e.g. About value pills, "Contact") in a sans, not the serif-Latin head font. */
+.font-body {
+  font-family: var(--font-sans);
 }
 
 /* Visible keyboard focus for all interactive elements. */

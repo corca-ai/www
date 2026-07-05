@@ -10,14 +10,16 @@ Styling is Tailwind CSS v4 with a self-hosted Pretendard variable font.
 
 ## Project layout
 
-- `src/pages/` — file-based routes; locale folders `en/`, `ja/` and `zh/` mirror the
-  Korean routes that live at the site root.
+- `src/pages/` — routes; a single dynamic route, `[...slug].astro`, generates
+  every page in all four locales from one registry, alongside `404.astro`.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`.
 - `src/layouts/BaseLayout.astro` — the HTML shell, SEO tags and JSON-LD.
-- `src/i18n/` — locale config, UI strings and per-page content.
+- `src/content/` — news and colleague entries as schema-validated YAML collections.
+- `src/i18n/` — locale config, UI strings and per-page SEO metadata.
 - `src/assets/` and `public/` — optimized images, the font and the OG image.
 
 For how to run and build the project see [[development]], and for how it reaches
 production see [[deployment]]. Content translation is covered in the [[i18n]]
-guide.
+guide, and the [[runbook]] has step-by-step recipes for adding content, locales
+and pages.

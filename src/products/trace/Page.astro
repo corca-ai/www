@@ -8,9 +8,6 @@ interface Props {
 const { lang } = Astro.props;
 
 const P = '/images/pages/';
-const HERO_POSTER = `${P}2fe9a6_4b78885029854f5daeb2e6b97cc72baaf000.webp`;
-// Original Wix hero background: concentric circles with a rotating clock.
-const HERO_VIDEO = '/videos/trace-hero.mp4';
 const BADGE = `${P}2fe9a6_32ebaebce4ec4c2e83c49bb9eb147c21.webp`;
 const LOGO = `${P}2fe9a6_ed110dd31d37412ab81cbcbe0b9a30cc.webp`;
 const APPSTORE = `${P}2fe9a6_6bc0705e6e9245658b307e1b1a6b0bcc.webp`;
@@ -19,7 +16,6 @@ const PHONE_CAL = `${P}2fe9a6_762fd195e5f1497faade479d0af4b12b.webp`; // center 
 const PHONE_HOME = `${P}2fe9a6_1210239befb1472284d6ac3ddc9c335f.webp`; // big right + notifications
 const PHONE_EVENTS = `${P}2fe9a6_054c526e4498482bade3326d493410f1.webp`; // left event cards
 const APP_URL = 'https://apps.apple.com/app/id6503812022';
-
 
 const content = {
   ko: {
@@ -58,34 +54,10 @@ const content = {
 const c = content[lang];
 ---
 
-<section
-  class="relative overflow-hidden bg-[#745add] bg-cover bg-top text-white"
-  style={`background-image: url('${HERO_POSTER}');`}
->
-  <!-- Background video: the original site's rotating-clock animation. Decorative
-       only (aria-hidden); the poster image doubles as the reduced-motion and
-       no-JS fallback. -->
-  <video
-    id="trace-hero-video"
-    class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="metadata"
-    poster={HERO_POSTER}
-    aria-hidden="true"
-    tabindex="-1"
-  >
-    <source src={HERO_VIDEO} type="video/mp4" />
-  </video>
-  <!-- Contrast overlay so white text stays WCAG-readable over the video. The
-       tint (#7f5eed @0.9) is calibrated so that, blended over the dark poster
-       (avg #0e3650), the hero resolves to live corca.ai's flat violet #745add
-       (measured from live's hero element) while still letting ~10% of the
-       rotating-clock video show through. -->
-  <div class="absolute inset-0 bg-[#7f5eed]/90" aria-hidden="true"></div>
-
+<!-- Flat violet hero — matches live corca.ai, whose own clock video element sits
+     at opacity:0, i.e. an effectively solid #745add panel. White text stays
+     WCAG-readable (~4.9:1) on this violet, so no contrast overlay is needed. -->
+<section class="relative overflow-hidden bg-[#745add] text-white">
   <!-- top-right chat phone (tablet+ , peeking) — bleeds above the top edge and
        sits at the right like live corca.ai (live: ~y-120/w320 at desktop). -->
   <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[2%] top-[-112px] hidden w-[300px] select-none md:block lg:right-[16%] lg:top-[-185px] lg:w-[320px]" />
@@ -121,13 +93,3 @@ const c = content[lang];
     <img src={PHONE_HOME} alt={c.appShotAlt} loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" data-reveal style="--reveal-delay: .4s" />
   </div>
 </section>
-
-<script>
-  // Respect prefers-reduced-motion for the decorative background video: stop
-  // playback and fall back to the static poster frame.
-  const video = document.getElementById('trace-hero-video') as HTMLVideoElement | null;
-  if (video && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    video.removeAttribute('autoplay');
-    video.pause();
-  }
-</script>

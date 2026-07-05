@@ -20,6 +20,8 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const h = t.home;
 const br = (s: string) => s.replace(/\n/g, '<br />');
+// Live renders the "AI" acronym in a bold serif face; wrap every AI run.
+const aiSerif = (s: string) => s.replace(/\bAI\b/g, '<span class="t-ai">AI</span>');
 // Hero title: keep the authored \n break, and on small screens (<810px) add a
 // second break before the last word of the second line so the hero wraps to
 // three lines like corca.ai's mobile/tablet layout. Space-less scripts (ja/zh)
@@ -30,7 +32,7 @@ const heroTitleHtml = (() => {
   const sp = line2.lastIndexOf(' ');
   const line2Html =
     sp > 0 ? `${line2.slice(0, sp)} <br class="min-[810px]:hidden" />${line2.slice(sp + 1)}` : line2;
-  return `${line1}<br />${line2Html}`.replace(/AI/g, '<b class="font-semibold">AI</b>');
+  return `${line1}<br />${line2Html}`.replace(/AI/g, '<span class="t-ai">AI</span>');
 })();
 ---
 
@@ -42,7 +44,7 @@ const heroTitleHtml = (() => {
         class="text-[33px] font-normal leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
         set:html={heroTitleHtml}
       />
-      <p class="mt-6 text-[18px] leading-[1.4] text-white min-[1024px]:text-[24px]" set:html={br(h.heroSubtitle)} />
+      <p class="mt-6 text-[18px] leading-[1.4] text-white min-[1024px]:text-[24px]" set:html={aiSerif(br(h.heroSubtitle))} />
     </div>
     <Image
       src={heroIllustration}
@@ -70,7 +72,7 @@ const heroTitleHtml = (() => {
     <div data-reveal style="--reveal-delay: .12s">
       <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[72px]" />
       <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
-      <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]">{h.moonlightBody}</p>
+      <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]" set:html={aiSerif(h.moonlightBody)} />
       <a href={localizePath('/moonlight', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#605070] text-white hover:bg-[#4d4159] md:w-auto">{h.readMore}</a>
     </div>
   </div>
@@ -91,8 +93,8 @@ const heroTitleHtml = (() => {
     <div data-reveal style="--reveal-delay: .12s">
       <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[72px]" />
       <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
-      <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]">{h.traceBody}</p>
-      <a href={localizePath('/trace', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#777cdc] text-white hover:bg-[#6469c9] md:w-auto">{h.readMore}</a>
+      <p class="mt-5 text-[16px] leading-[1.5] text-heading lg:text-[18px]" set:html={aiSerif(h.traceBody)} />
+      <a href={localizePath('/trace', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#8c90e1] text-white hover:bg-[#7a7fd6] md:w-auto">{h.readMore}</a>
     </div>
   </div>
 </section>
@@ -124,8 +126,8 @@ const heroTitleHtml = (() => {
     <div class="order-first md:order-last" data-reveal style="--reveal-delay: .12s">
       <div class="rounded-2xl bg-[#eef0f2] px-6 py-8 sm:px-10">
         <div class="text-center">
-          <p class="text-[14px] text-ink-soft lg:text-[15px]" set:html={h.recsysCaptionTop.replace(/AI/g, '<b class=\"font-normal\">AI</b>')} />
-          <p class="mt-1 text-[15px] font-normal text-heading">{h.recsysEvent}</p>
+          <p class="text-[14px] text-ink-soft lg:text-[15px]" set:html={aiSerif(h.recsysCaptionTop)} />
+          <p class="mt-1 text-[15px] font-semibold text-heading">{h.recsysEvent}</p>
           <p class="mt-2 text-[20px] font-normal text-brand-ink md:text-[24px] lg:text-[28px]">{h.recsysRank}</p>
         </div>
         <Image
@@ -161,7 +163,7 @@ const heroTitleHtml = (() => {
 <!-- ========================= Closing CTA ========================= -->
 <section class="bg-brand text-white">
   <div class="container-c flex flex-col items-center gap-5 py-40 text-center md:py-36 lg:py-44" data-reveal>
-    <h2 class="text-[26px] font-normal leading-[1.2] md:text-[38px]" set:html={h.closingHeading.replace(/AI/g, '<b class="font-semibold">AI</b>')} />
+    <h2 class="text-[26px] font-normal leading-[1.2] md:text-[38px]" set:html={aiSerif(h.closingHeading)} />
     <p class="max-w-2xl text-[15px] leading-relaxed text-white lg:text-[17px]">{h.closingSubtitle}</p>
   </div>
 </section>

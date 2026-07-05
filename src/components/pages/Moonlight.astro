@@ -59,8 +59,9 @@ const content = {
   },
 };
 const c = content[lang];
-// Live corca.ai bolds the Latin run ("AI PDF" / "AI") heavier than the Korean.
-const titleHtml = c.title.replace(/AI PDF|AI/g, (m) => `<b class="font-semibold">${m}</b>`);
+// Live corca.ai renders the Latin run ("AI PDF" / "AI") in a bold serif face.
+const aiSerif = (s: string) => s.replace(/AI PDF|\bAI\b/g, (m) => `<span class="t-ai">${m}</span>`);
+const titleHtml = aiSerif(c.title);
 
 // Stat icons (users / papers read / countries / institutions), mirroring the
 // original site's pictograms. Decorative — text labels carry the meaning.
@@ -82,8 +83,8 @@ const statIcons = [
 >
   <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white md:min-h-[720px] lg:min-h-[960px] lg:gap-7 lg:py-24">
     <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[245px] max-w-full sm:w-[330px] lg:w-[500px]" data-reveal />
-    <h1 class="text-[34px] font-normal leading-[1.2] sm:text-[40px] lg:text-[56px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
-    <p class="max-w-[720px] text-[14px] leading-[1.5] text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
+    <h1 class="text-[34px] font-normal leading-[1.2] sm:text-[40px] lg:text-[60px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
+    <p class="max-w-[840px] text-[14px] leading-[1.5] text-white md:text-[18px] lg:text-[20px]" data-reveal style="--reveal-delay: .2s" set:html={aiSerif(c.body)} />
     <a
       href={APP_URL}
       target="_blank"
@@ -104,7 +105,7 @@ const statIcons = [
           <path d={statIcons[i]} stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         <p class="text-[14px] text-white/70 lg:text-[18px]">{s.label}</p>
-        <p class="text-[30px] font-normal lg:text-[46px]">{s.value}</p>
+        <p class="text-[30px] font-semibold lg:text-[46px]">{s.value}</p>
       </div>
     ))}
   </div>

@@ -74,6 +74,13 @@ p {
   word-break: keep-all;
 }
 
+/* Live corca.ai renders the "AI" acronym in a bold serif face (distinct from the
+   sans Korean body and other Latin labels). `.t-ai` mirrors that. */
+.t-ai {
+  font-family: Georgia, "Times New Roman", "Nanum Myeongjo", serif;
+  font-weight: 700;
+}
+
 /* Visible keyboard focus for all interactive elements. */
 :focus-visible {
   outline: 3px solid var(--color-brand);

@@ -20,14 +20,18 @@ import { useTranslations } from '../i18n/utils';
 // copy from the home translations instead). NB: getStaticPaths runs before the
 // module body, so its route list lives inside it, not as an outer const.
 export function getStaticPaths() {
+  // `slug`/`basePath` are the live URL structure (products under /products/,
+  // company pages under /about/); `id` is the stable pageMeta/component key and
+  // does not change when a page moves. Old flat paths 301 → these via
+  // public/_redirects.
   const routes = [
     { id: 'home', slug: '', basePath: '/' },
-    { id: 'about-corca', slug: 'about-corca', basePath: '/about-corca' },
-    { id: 'how-we-work', slug: 'how-we-work', basePath: '/how-we-work' },
-    { id: 'moonlight', slug: 'moonlight', basePath: '/moonlight' },
-    { id: 'trace', slug: 'trace', basePath: '/trace' },
+    { id: 'about-corca', slug: 'about/vision-mission', basePath: '/about/vision-mission' },
+    { id: 'how-we-work', slug: 'about/how-we-work', basePath: '/about/how-we-work' },
+    { id: 'moonlight', slug: 'products/moonlight', basePath: '/products/moonlight' },
+    { id: 'trace', slug: 'products/trace', basePath: '/products/trace' },
     { id: 'news', slug: 'news', basePath: '/news' },
-    { id: 'colleagues', slug: 'colleagues', basePath: '/colleagues' },
+    { id: 'colleagues', slug: 'about/colleagues', basePath: '/about/colleagues' },
   ];
   return locales.flatMap((lang) =>
     routes.map((r) => {
@@ -57,7 +61,9 @@ const Component = COMPONENTS[id];
 // Per-page schema.org nodes (merged into BaseLayout's @graph). Every subpage
 // gets a Home → page breadcrumb; the two products also get a SoftwareApplication.
 const site = Astro.site ?? new URL('https://www.borca.ai');
-const pageName = meta.title.replace(/\s*\|\s*Corca\s*$/, '');
+// Titles read "PageName | descriptor", so the breadcrumb/app name is the part
+// before the first pipe (e.g. "문라이트(Moonlight)", "비전과 미션").
+const pageName = meta.title.split('|')[0].trim();
 const APPS: Partial<Record<keyof typeof COMPONENTS, AppInfo>> = {
   moonlight: { category: 'EducationalApplication', os: 'Web', appUrl: 'https://themoonlight.io/' },
   trace: { category: 'ProductivityApplication', os: 'iOS', appUrl: 'https://apps.apple.com/app/id6503812022' },

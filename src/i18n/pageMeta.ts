@@ -3,133 +3,141 @@ import type { Lang } from './ui';
 type Meta = { title: string; description: string };
 type PageMeta = Record<Lang, Meta>;
 
-// SEO title/description per subpage per locale.
+// SEO title/description per subpage per locale (issues #26 #27 #29 #30 #31 #32).
+// The `id` keys are stable even though the live URLs now live under /products/
+// and /about/ (see [...slug].astro). Titles read "PageName | descriptor"; the
+// breadcrumb/app name is derived from the part before the first pipe.
 export const pageMeta: Record<string, PageMeta> = {
   moonlight: {
     ko: {
-      title: 'Moonlight | Corca',
+      title: '문라이트(Moonlight) | 논문 읽기 AI·논문 요약 분석 도구',
       description:
-        '문라이트는 AI 기술을 학술 논문을 읽는 흐름에 직접 적용하여 생소하거나 어려운 내용에 대한 실시간 설명을 제공하고, 연구에 필요한 PDF 문서를 더 빠르고 깊이 있게 이해하도록 돕는 연구자용 AI 논문 리더입니다.',
+        '어려운 논문, AI와 함께 읽으세요. 문라이트는 PDF 논문 읽기 흐름에 AI를 직접 적용해 생소한 개념의 실시간 설명, 대화형 요약·질의응답을 제공합니다. 논문 이해에 걸리는 시간은 줄이고 깊이는 더하는 연구자를 위한 AI 리서치 도구입니다.',
     },
     en: {
-      title: 'Moonlight | Corca',
+      title: 'Moonlight | AI for Reading Papers · Paper Summary & Analysis Tool',
       description:
-        'Moonlight is an AI PDF reader for researchers. It applies AI directly to the flow of reading academic papers — providing real-time explanations, summaries, smart citation, translation and more.',
+        'Read difficult papers together with AI. Moonlight applies AI directly to the flow of reading PDF papers, giving real-time explanations of unfamiliar concepts plus conversational summaries and Q&A. It is an AI research tool for researchers that cuts the time it takes to understand a paper while deepening comprehension.',
     },
     ja: {
-      title: 'Moonlight | Corca',
+      title: 'ムーンライト（Moonlight）| 論文読解AI・論文要約分析ツール',
       description:
-        'ムーンライトは、AI技術を学術論文の読解に直接応用する研究者向けのAI論文リーダーです。難解な内容をリアルタイムで説明し、要約や翻訳など研究に役立つ多彩な機能を提供します。',
+        '難しい論文を、AIと一緒に読みましょう。ムーンライトは、PDF論文を読む流れにAIを直接適用し、馴染みのない概念のリアルタイム説明や、対話型の要約・質問応答を提供します。論文理解にかかる時間を減らし、理解の深さを高める、研究者のためのAIリサーチツールです。',
     },
     zh: {
-      title: 'Moonlight | Corca',
+      title: 'Moonlight | 论文阅读AI·论文摘要分析工具',
       description:
-        'Moonlight是一款面向研究者的AI论文阅读器，将AI技术直接应用于学术论文的阅读过程，实时讲解陌生或艰深的内容，帮助您更快、更深入地理解研究所需的PDF文献。',
+        '艰深的论文，和AI一起读。Moonlight将AI直接应用于PDF论文的阅读流程，为陌生概念提供实时讲解，并支持对话式摘要与问答。这是一款面向研究者的AI研究工具，缩短理解论文所需的时间，同时加深理解。',
     },
   },
   trace: {
     ko: {
-      title: 'Trace | Corca',
+      title: '트레이스(Trace) | 대화하듯 입력하는 AI 일정관리 앱',
       description:
-        '트레이스는 말하거나 입력하거나 사진을 찍기만 하면 AI가 내용을 이해해 일정을 자동으로 정리해주는 AI 캘린더입니다. 생활 리듬에 맞춘 알림과 루틴으로 하루를 손쉽게 관리하세요.',
+        "'내일 3시 회의'라고 입력하면 끝. 트레이스는 일상 언어로 입력한 일정의 세부 내용을 AI가 자동으로 채우고, 맥락을 이해하는 알림으로 하루를 관리해주는 AI 기반 스케줄링 앱입니다. 캘린더 정리에 쓰는 시간을 돌려드립니다.",
     },
     en: {
-      title: 'Trace | Corca',
+      title: 'Trace | The AI Scheduling App You Can Just Talk To',
       description:
-        'Trace is an AI calendar that makes managing your day easy. Just speak, type, or take a photo — the AI understands and organizes your schedule, with reminders and routines tuned to your rhythm.',
+        'Just type "meeting at 3 tomorrow" — done. Trace is an AI-based scheduling app: it automatically fills in the details of schedules you enter in everyday language and manages your day with context-aware reminders. Get back the time you spend organizing your calendar.',
     },
     ja: {
-      title: 'Trace | Corca',
+      title: 'トレース（Trace）| 会話するように入力するAIスケジュール管理アプリ',
       description:
-        'トレースは、話す・入力する・写真を撮るだけでAIが内容を理解し、予定を自動で整理するAIスケジューリングアプリです。あなたのライフリズムに合わせて通知やルーチンを最適化します。',
+        '「明日3時に会議」と入力するだけ。トレースは、日常の言葉で入力した予定の詳細をAIが自動で補完し、文脈を理解する通知で一日を管理するAIベースのスケジューリングアプリです。カレンダー整理に費やす時間を取り戻しましょう。',
     },
     zh: {
-      title: 'Trace | Corca',
+      title: 'Trace | 像聊天一样输入的AI日程管理应用',
       description:
-        'Trace是一款只需说话、输入或拍照，AI就能理解内容并自动整理日程的AI日历。通过契合生活节奏的提醒与例行事项，轻松管理您的每一天。',
+        '输入“明天3点开会”即可。Trace是一款AI日程应用：AI会自动补全你用日常语言输入的日程细节，并通过理解上下文的提醒帮你管理一天，把整理日历的时间还给你。',
     },
   },
   'about-corca': {
     ko: {
-      title: '비전과 미션 | Corca',
+      title: '비전과 미션 | AI로 삶과 일의 패러다임을 바꾸는 코르카',
       description:
-        '코르카는 상상을 현실로 바꾸는 AI 기술을 선도합니다. 탁월한 솔루션과 윤리적 리더십, 글로벌 임팩트를 핵심 가치로 삼고, 기술의 진보로 더 나은 사회를 만들어갑니다.',
+        "'상상을 현실로 바꾸는 AI 기술'. 코르카는 탁월한 솔루션, 윤리적 리더십, 글로벌 임팩트를 핵심 가치로 연구·업무·일상에 AI의 새로운 가능성을 엽니다. 코르카가 그리는 AI 시대의 비전과 미션을 확인하세요.",
     },
     en: {
-      title: 'Vision & Mission | Corca',
+      title: 'Vision & Mission | Corca, Changing the Paradigm of Life and Work with AI',
       description:
-        'Corca is a leader in AI technology that turns imagination into reality. With excellent solutions, ethical leadership, and global impact as core values, we make technology benefit everyone.',
+        '"AI technology that turns imagination into reality." With excellent solutions, ethical leadership, and global impact as its core values, Corca opens new AI possibilities across research, work, and everyday life. Discover the vision and mission Corca envisions for the age of AI.',
     },
     ja: {
-      title: 'ビジョンとミッション | Corca',
+      title: 'ビジョンとミッション | AIで人生と仕事のパラダイムを変えるコルカ',
       description:
-        'コルカは、想像を現実に変えるAI技術の最前線をリードしています。卓越したソリューション、倫理的リーダーシップ、グローバルな影響力を中核的価値とし、技術の進歩の恩恵をすべての人に届けます。',
+        '「想像を現実に変えるAI技術」。コルカは、卓越したソリューション、倫理的リーダーシップ、グローバルな影響力を核心的価値とし、研究・業務・日常にAIの新たな可能性を切り拓きます。コルカが描くAI時代のビジョンとミッションをご覧ください。',
     },
     zh: {
-      title: '愿景与使命 | Corca',
+      title: '愿景与使命 | 用AI改变生活与工作范式的Corca',
       description:
-        'Corca引领将想象变为现实的AI技术。我们以卓越的解决方案、道德领导力和全球影响力为核心价值，用技术的进步创造更美好的社会。',
+        '“将想象变为现实的AI技术”。Corca以卓越的解决方案、道德领导力和全球影响力为核心价值，在研究、工作与日常中开启AI的全新可能。一起了解Corca为AI时代描绘的愿景与使命。',
     },
   },
   'how-we-work': {
     ko: {
-      title: '이렇게 일해요 | Corca',
+      title: '이렇게 일해요 | AI 네이티브 조직 코르카의 일하는 방식',
       description:
-        '코르카는 멤버의 성장과 복지를 위해 최적의 근무 환경을 제공하고 역량 개발에 힘쓰고 있습니다. 코르카의 일하는 방식과 다양한 복지 제도를 소개합니다.',
+        'AX를 컨설팅하는 회사는 스스로 AI 네이티브여야 합니다. AI와 짝을 이뤄 일하는 문화, 빠른 실험과 공유, 자율과 책임의 팀 운영까지. 코르카 구성원들이 실제로 일하는 방식을 공개합니다.',
     },
     en: {
-      title: 'How We Work | Corca',
+      title: 'How We Work | The Way of Working at Corca, an AI-Native Organization',
       description:
-        'Corca provides the best working environment for the growth and welfare of its members. Learn about how we work and the benefits we offer.',
+        'A company that consults on AX must itself be AI-native. From a culture of working paired with AI, to fast experimentation and sharing, to team operations built on autonomy and responsibility — see how the people of Corca actually work.',
     },
     ja: {
-      title: '私たちの働き方 | Corca',
+      title: '私たちの働き方 | AIネイティブ組織コルカの働き方',
       description:
-        'コルカは、メンバーの成長と働きやすさのために最適な労働環境を提供し、能力開発に力を注いでいます。コルカの働き方と多様な福利厚生をご紹介します。',
+        'AXをコンサルティングする会社は、自らAIネイティブであるべきです。AIと組んで働く文化、素早い実験と共有、自律と責任に基づくチーム運営まで。コルカのメンバーが実際に働く方法を公開します。',
     },
     zh: {
-      title: '我们的工作方式 | Corca',
+      title: '我们的工作方式 | AI原生组织Corca的工作方式',
       description:
-        'Corca为成员的成长与福祉提供最佳的工作环境，并致力于能力发展。为您介绍Corca的工作方式和多样的福利制度。',
+        '为企业提供AX咨询的公司，自己首先必须是AI原生的。从与AI结对工作的文化，到快速实验与分享，再到基于自主与责任的团队运营——一起看看Corca的成员们究竟如何工作。',
     },
   },
   news: {
     ko: {
-      title: '뉴스 | Corca',
-      description: '뉴스 기사로 보는 코르카의 성과와 소식을 만나보세요.',
+      title: '뉴스 기사 | 코르카(Corca) 언론 보도·소식 모음',
+      description:
+        '2024 아기유니콘 선정, ACM RecSys Challenge 세계 7위, 한국 최초 OpenAI 공식 서비스 파트너 체결까지. 언론이 주목한 AI 전문 기업 코르카의 최신 소식과 보도 자료를 모았습니다.',
     },
     en: {
-      title: 'News | Corca',
-      description: "Corca's achievements and news, as covered in the press.",
+      title: 'News | Corca Press Coverage & Updates',
+      description:
+        "From being named a 2024 Baby Unicorn, to ranking 7th worldwide at the ACM RecSys Challenge, to becoming Korea's first official OpenAI service partner — a collection of the latest news and press coverage of Corca, the AI company the media is watching.",
     },
     ja: {
-      title: 'ニュース | Corca',
-      description: 'ニュース記事で見るコルカの成果とお知らせをご覧ください。',
+      title: 'ニュース記事 | Corca（コルカ）の報道・お知らせまとめ',
+      description:
+        '2024 ベビーユニコーン選定、ACM RecSys Challenge 世界7位、韓国初のOpenAI公式サービスパートナー締結まで。メディアが注目するAI専門企業コルカの最新の話題と報道資料を集めました。',
     },
     zh: {
-      title: '新闻 | Corca',
-      description: '通过新闻报道了解Corca的成果与最新动态。',
+      title: '新闻报道 | Corca 媒体报道与动态汇总',
+      description:
+        '从入选2024年“小独角兽”，到在ACM RecSys Challenge中位列全球第7，再到成为韩国首家OpenAI官方服务合作伙伴——汇集备受媒体关注的AI专业企业Corca的最新动态与新闻报道。',
     },
   },
   colleagues: {
     ko: {
-      title: '코르카 사람들 | Corca',
+      title: '코르카 사람들 | AI 전문가·엔지니어가 함께하는 팀 코르카',
       description:
-        '능력있고 열정적인 코르카 팀 멤버들의 경험과 성장에 대한 생생한 이야기들을 만나보세요.',
+        '세계 대회에서 검증된 AI 엔지니어부터 조직 변화를 설계하는 AX 컨설턴트까지. 코르카를 만들어가는 사람들과 팀 문화를 소개합니다. 함께 AI로 세상을 바꿀 동료를 기다립니다.',
     },
     en: {
-      title: 'Our People | Corca',
+      title: 'Our People | Corca, a Team of AI Experts and Engineers',
       description:
-        'Discover the vivid stories of growth and experience from the talented, passionate members of the Corca team.',
+        'From AI engineers proven at world-class competitions to AX consultants who design organizational change — meet the people who build Corca and the team culture behind them. We are looking for colleagues to change the world with AI together.',
     },
     ja: {
-      title: 'コルカの人々 | Corca',
+      title: 'コルカの人々 | AIの専門家・エンジニアが集うチーム、コルカ',
       description:
-        '有能で情熱的なコルカのチームメンバーたちの経験と成長に関する生き生きとしたストーリーをご覧ください。',
+        '世界大会で実力を証明したAIエンジニアから、組織変革を設計するAXコンサルタントまで。コルカをつくる人々とチーム文化をご紹介します。AIで世界を変える仲間をお待ちしています。',
     },
     zh: {
-      title: 'Corca 的伙伴们 | Corca',
-      description: '欢迎了解Corca团队中才华横溢、充满热情的成员们关于经验与成长的生动故事。',
+      title: 'Corca 的伙伴们 | AI专家与工程师携手同行的Corca团队',
+      description:
+        '从在世界大赛中得到验证的AI工程师，到设计组织变革的AX顾问——为你介绍打造Corca的人们与团队文化。我们期待与你一起，用AI改变世界。',
     },
   },
 };

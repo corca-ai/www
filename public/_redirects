@@ -1,5 +1,49 @@
 # Cloudflare Workers Static Assets redirect rules (applied before asset serving).
-# /rss is the conventional feed URL (issue #17); the feed is emitted at /rss.xml
-# so it carries the correct content-type on static hosting.
+
+# RSS: /rss is the conventional feed URL (issue #17); the feed is emitted at
+# /rss.xml so it carries the correct content-type on static hosting.
 /rss     /rss.xml    302
 /rss/    /rss.xml    302
+
+# Page relocations (issues #26 #27 #30 #31 #32): the old flat URLs 301 to the
+# new /products/ and /about/ structure, per locale (ko default is un-prefixed).
+/moonlight     /products/moonlight/   301
+/moonlight/    /products/moonlight/   301
+/en/moonlight     /en/products/moonlight/   301
+/en/moonlight/    /en/products/moonlight/   301
+/ja/moonlight     /ja/products/moonlight/   301
+/ja/moonlight/    /ja/products/moonlight/   301
+/zh/moonlight     /zh/products/moonlight/   301
+/zh/moonlight/    /zh/products/moonlight/   301
+/trace     /products/trace/   301
+/trace/    /products/trace/   301
+/en/trace     /en/products/trace/   301
+/en/trace/    /en/products/trace/   301
+/ja/trace     /ja/products/trace/   301
+/ja/trace/    /ja/products/trace/   301
+/zh/trace     /zh/products/trace/   301
+/zh/trace/    /zh/products/trace/   301
+/about-corca     /about/vision-mission/   301
+/about-corca/    /about/vision-mission/   301
+/en/about-corca     /en/about/vision-mission/   301
+/en/about-corca/    /en/about/vision-mission/   301
+/ja/about-corca     /ja/about/vision-mission/   301
+/ja/about-corca/    /ja/about/vision-mission/   301
+/zh/about-corca     /zh/about/vision-mission/   301
+/zh/about-corca/    /zh/about/vision-mission/   301
+/how-we-work     /about/how-we-work/   301
+/how-we-work/    /about/how-we-work/   301
+/en/how-we-work     /en/about/how-we-work/   301
+/en/how-we-work/    /en/about/how-we-work/   301
+/ja/how-we-work     /ja/about/how-we-work/   301
+/ja/how-we-work/    /ja/about/how-we-work/   301
+/zh/how-we-work     /zh/about/how-we-work/   301
+/zh/how-we-work/    /zh/about/how-we-work/   301
+/colleagues     /about/colleagues/   301
+/colleagues/    /about/colleagues/   301
+/en/colleagues     /en/about/colleagues/   301
+/en/colleagues/    /en/about/colleagues/   301
+/ja/colleagues     /ja/about/colleagues/   301
+/ja/colleagues/    /ja/about/colleagues/   301
+/zh/colleagues     /zh/about/colleagues/   301
+/zh/colleagues/    /zh/about/colleagues/   301

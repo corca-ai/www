@@ -116,9 +116,9 @@ export const ui: Record<Lang, Dict> = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle: 'Corca | AI 기술로 세상 바꾸기',
+      metaTitle: '코르카(Corca) | 기업 AI 전환(AX) 컨설팅·AI 교육·AI 솔루션 전문 기업',
       metaDescription:
-        'Corca는 상상을 현실로 바꾸는 AI 기술을 선도합니다. 탁월한 솔루션과 윤리적 리더십, 글로벌 임팩트를 핵심 가치로 삼고, 고객 중심의 서비스와 끊임없는 연구 개발에 힘씁니다. 광고, 비즈니스, 연구, 일상 등 다양한 분야에 적용된 Moonlight, Trace 등 AI 제품들을 만나보세요.',
+        '한국 최초 OpenAI 공식 서비스 파트너 코르카. 신한은행·토스·GS그룹 등 20여 개 조직, 1,000명 이상이 경험한 AI 교육과 AX 가속화 컨설팅으로 조직의 일하는 방식을 실제로 바꿉니다. 2024 아기유니콘, ACM RecSys 세계 7위 기술력으로 검증된 AI 전환 파트너.',
       heroTitle: '코르카는 AI 기술로\n세상을 바꾸고 있습니다.',
       heroSubtitle: 'AI 기술로 새로운 가능성을 열고 세상의 변화를 이끌어 갑니다.',
       readMore: '자세히 보기',
@@ -159,9 +159,10 @@ export const ui: Record<Lang, Dict> = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle: 'Corca | Changing the world with AI technology',
+      metaTitle:
+        'Corca | Enterprise AI Transformation (AX) Consulting · AI Training · AI Solutions',
       metaDescription:
-        'Corca leads AI technology that turns imagination into reality. With excellent solutions, ethical leadership, and global impact as its core values, we strive for customer-centric services and continuous research and development. Meet AI products like Moonlight and Trace applied across advertising, business, research, and daily life.',
+        "Corca is Korea's first official OpenAI service partner. Through AI training and AX acceleration consulting experienced by 20+ organizations and over 1,000 people — including Shinhan Bank, Toss, and GS Group — we genuinely change how organizations work. A proven AI transformation partner, recognized as a 2024 Baby Unicorn and ranked 7th worldwide at the ACM RecSys Challenge.",
       heroTitle: 'Corca is changing the world\nwith AI technology.',
       heroSubtitle:
         'We create new possibilities with AI technology and lead the change in the world.',
@@ -205,9 +206,10 @@ export const ui: Record<Lang, Dict> = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle: 'Corca | AI技術で世界を変える',
+      metaTitle:
+        'Corca（コルカ）| 企業のAI変革（AX）コンサルティング・AI教育・AIソリューション専門企業',
       metaDescription:
-        'Corcaは、想像を現実に変えるAI技術をリードしています。卓越したソリューション、倫理的リーダーシップ、グローバルな影響力を中核的価値とし、顧客中心のサービスと不断の研究開発に取り組んでいます。広告・ビジネス・研究・日常など、さまざまな分野に応用されたMoonlight、TraceなどのAI製品をぜひご覧ください。',
+        '韓国初のOpenAI公式サービスパートナー、コルカ。新韓銀行・Toss・GSグループなど20を超える組織、1,000名以上が体験したAI教育とAX加速化コンサルティングで、組織の働き方を実際に変えます。2024 ベビーユニコーン選定、ACM RecSys 世界7位の技術力で検証されたAI変革パートナーです。',
       heroTitle: 'コルカはAI技術で\n世界を変えています。',
       heroSubtitle: 'AI技術で新たな可能性を切り拓き、世界の変化をリードします。',
       readMore: 'もっと見る',
@@ -248,9 +250,9 @@ export const ui: Record<Lang, Dict> = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle: 'Corca | 用AI技术改变世界',
+      metaTitle: 'Corca | 企业AI转型（AX）咨询·AI培训·AI解决方案专业企业',
       metaDescription:
-        'Corca引领将想象变为现实的AI技术。我们以卓越的解决方案、道德领导力和全球影响力为核心价值，致力于以客户为中心的服务和持续的研发。欢迎了解应用于广告、商业、研究和日常生活等多个领域的Moonlight、Trace等AI产品。',
+        'Corca是韩国首家OpenAI官方服务合作伙伴。我们通过被新韩银行、Toss、GS集团等20多个组织、1,000多人亲身体验的AI培训与AX加速咨询，切实改变组织的工作方式。作为入选2024年“小独角兽”、在ACM RecSys Challenge中位列全球第7的AI转型伙伴，技术实力备受验证。',
       heroTitle: 'Corca正在用AI技术\n改变世界。',
       heroSubtitle: '我们用AI技术开启新的可能，引领世界的变革。',
       readMore: '了解更多',

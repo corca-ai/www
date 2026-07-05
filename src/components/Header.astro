@@ -22,14 +22,14 @@ const primaryNavLabel = { ko: '주요 메뉴', en: 'Primary', ja: 'メインナ�
 const home = localizePath('/', lang);
 
 const productItems = [
-  { label: 'Moonlight', href: localizePath('/moonlight', lang) },
-  { label: 'Trace', href: localizePath('/trace', lang) },
+  { label: 'Moonlight', href: localizePath('/products/moonlight', lang) },
+  { label: 'Trace', href: localizePath('/products/trace', lang) },
 ];
 const aboutItems = [
-  { label: t.nav.vision, href: localizePath('/about-corca', lang) },
-  { label: t.nav.howWeWork, href: localizePath('/how-we-work', lang) },
+  { label: t.nav.vision, href: localizePath('/about/vision-mission', lang) },
+  { label: t.nav.howWeWork, href: localizePath('/about/how-we-work', lang) },
   { label: t.nav.news, href: localizePath('/news', lang) },
-  { label: t.nav.colleagues, href: localizePath('/colleagues', lang) },
+  { label: t.nav.colleagues, href: localizePath('/about/colleagues', lang) },
 ];
 const langOptions = locales.map((l) => ({
   code: l,

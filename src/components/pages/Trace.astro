@@ -27,24 +27,32 @@ const content = {
     body: '트레이스는 당신의 하루를 손쉽게 관리해주는 AI 캘린더입니다. 말하거나, 입력하거나, 사진을 찍기만 하면 AI가 내용을 이해해 일정을 자동으로 정리하고 당신의 생활 리듬에 맞춰 알림과 루틴을 똑똑하게 챙겨드립니다.',
     cta: '스마트한 일정 관리가 필요하신가요? 지금 Trace를 다운로드하고 일정 관리의 편리함을 경험해 보세요.',
     appStoreAlt: 'App Store에서 다운로드',
+    badgeAlt: "Product Hunt '오늘의 제품' 4위 선정",
+    appShotAlt: '트레이스 앱 화면',
   },
   en: {
     title: 'Just tell me your schedule',
     body: 'Trace is an AI calendar that makes managing your day easy. Simply speak, type, or take a photo, and the AI will understand your content, automatically organize your schedule, and intelligently manage reminders and routines to suit your daily rhythm.',
     cta: 'Need smarter scheduling? Download Trace now and experience effortless schedule management.',
     appStoreAlt: 'Download on the App Store',
+    badgeAlt: 'Product Hunt — #4 Product of the Day',
+    appShotAlt: 'Trace app screen',
   },
   ja: {
     title: '話すだけで予定が登録される\nAIスケジューリングアプリ',
     body: 'トレースは、あなたの一日をスマートに管理するAIスケジューリングアプリです。話す・入力する・写真を撮るだけで、AIが内容を理解し、自動でスケジュールを整理します。あなたのライフリズムに合わせて、通知やルーチンを最適なタイミングでお届けします。',
     cta: 'スマートなスケジュール管理をお探しですか？今すぐTraceをダウンロードして、その便利さを体験してください。',
     appStoreAlt: 'App Storeでダウンロード',
+    badgeAlt: 'Product Hunt「本日のプロダクト」第4位',
+    appShotAlt: 'トレースのアプリ画面',
   },
   zh: {
     title: '一句话，轻松搞定日程管理',
     body: 'Trace是一款帮助您轻松管理一天的AI日历。只需说话、输入或拍照，AI就能理解内容并自动整理日程，还会根据您的生活节奏智能地安排提醒与例行事项。',
     cta: '需要更智能的日程管理吗？立即下载Trace，体验日程管理的便捷。',
     appStoreAlt: '在App Store下载',
+    badgeAlt: 'Product Hunt“今日产品”第4名',
+    appShotAlt: 'Trace 应用界面',
   },
 };
 const c = content[lang];
@@ -87,7 +95,7 @@ const emph = (s: string) => br(s);
 
   <!-- Content -->
   <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
-    <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" data-reveal />
+    <img src={BADGE} alt={c.badgeAlt} width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" data-reveal />
     <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[181px] max-w-full sm:w-[210px] lg:w-[302px] xl:w-[352px]" data-reveal style="--reveal-delay: .08s" />
     <h1 class="mt-2 text-[27px] font-normal leading-[1.2] sm:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
     <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={emph(c.body)} data-reveal style="--reveal-delay: .24s" />
@@ -113,7 +121,7 @@ const emph = (s: string) => br(s);
     <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="absolute left-[41%] top-[0px] z-10 w-[240px] max-w-none" data-reveal style="--reveal-delay: .1s" />
     <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-0 top-[32px] z-20 w-[180px] max-w-none" data-reveal style="--reveal-delay: .2s" />
     <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[-27%] top-[165px] w-[240px] max-w-none" data-reveal style="--reveal-delay: .3s" />
-    <img src={PHONE_HOME} alt="Trace app" loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" data-reveal style="--reveal-delay: .4s" />
+    <img src={PHONE_HOME} alt={c.appShotAlt} loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" data-reveal style="--reveal-delay: .4s" />
   </div>
 </section>
 

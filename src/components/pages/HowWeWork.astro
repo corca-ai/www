@@ -133,6 +133,15 @@ const zh = {
 
 const c = { ko, en, ja, zh }[lang];
 const br = (s: string) => s.replace(/\n/g, '<br />');
+
+// Shared alt for the office photo strip (issue #14). The method illustrations
+// and benefit icons stay decorative (empty alt) — the adjacent text carries them.
+const officePhotoAlt = {
+  ko: '코르카 팀이 일하는 사무실 풍경',
+  en: 'The Corca team at work in the office',
+  ja: 'コルカのチームが働くオフィスの様子',
+  zh: 'Corca 团队工作的办公室场景',
+}[lang];
 ---
 
 <!-- Hero — full-bleed island illustration from the top with the title overlaid
@@ -184,7 +193,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <section class="bg-white">
   <div class="grid grid-cols-1 md:grid-cols-5">
     {PHOTOS.map((src) => (
-      <img src={src} alt="" class="aspect-[16/9] w-full object-cover md:aspect-square" loading="lazy" decoding="async" />
+      <img src={src} alt={officePhotoAlt} class="aspect-[16/9] w-full object-cover md:aspect-square" loading="lazy" decoding="async" />
     ))}
   </div>
 </section>

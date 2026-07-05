@@ -1,0 +1,5 @@
+# Cloudflare Workers Static Assets redirect rules (applied before asset serving).
+# /rss is the conventional feed URL (issue #17); the feed is emitted at /rss.xml
+# so it carries the correct content-type on static hosting.
+/rss     /rss.xml    302
+/rss/    /rss.xml    302

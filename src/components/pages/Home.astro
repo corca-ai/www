@@ -20,6 +20,35 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const h = t.home;
 const br = (s: string) => s.replace(/\n/g, '<br />');
+
+// Localized alt text for the content images (issue #14: alt must be descriptive
+// and in the page's language, not hardcoded English).
+const imgAlt = {
+  ko: {
+    moonlight: '문라이트 앱 화면',
+    trace: '트레이스 앱 화면',
+    recsys: 'ACM RecSys Challenge 2023 성과를 다룬 코르카 관련 기사',
+    partners: '코르카의 파트너사와 고객사 로고',
+  },
+  en: {
+    moonlight: 'Moonlight app screenshot',
+    trace: 'Trace app screenshot',
+    recsys: 'Corca featured in an ACM RecSys Challenge 2023 news article',
+    partners: 'Logos of Corca partners and clients',
+  },
+  ja: {
+    moonlight: 'ムーンライトのアプリ画面',
+    trace: 'トレースのアプリ画面',
+    recsys: 'ACM RecSys Challenge 2023の成果を報じたコルカ関連記事',
+    partners: 'コルカのパートナー企業と顧客企業のロゴ',
+  },
+  zh: {
+    moonlight: 'Moonlight 应用界面',
+    trace: 'Trace 应用界面',
+    recsys: '报道Corca在ACM RecSys Challenge 2023成绩的新闻文章',
+    partners: 'Corca的合作伙伴与客户的标志',
+  },
+}[lang];
 // Hero title: keep the authored \n break, and on small screens (<810px) add a
 // second break before the last word of the second line so the hero wraps to
 // three lines like corca.ai's mobile/tablet layout. Space-less scripts (ja/zh)
@@ -67,7 +96,7 @@ const heroTitleHtml = (() => {
     <div class="order-first" data-reveal>
       <Image
         src={moonlightApp}
-        alt="Moonlight app screenshot"
+        alt={imgAlt.moonlight}
         widths={[560, 900]}
         sizes="(min-width: 768px) 50vw, 92vw"
         class="aspect-[5/4] w-full rounded-2xl object-cover object-center shadow-[var(--shadow-card)] md:aspect-[29/20]"
@@ -88,7 +117,7 @@ const heroTitleHtml = (() => {
     <div class="order-first md:order-last" data-reveal>
       <Image
         src={traceApp}
-        alt="Trace app screenshot"
+        alt={imgAlt.trace}
         widths={[560, 900, 1200]}
         sizes="(min-width: 768px) 50vw, 92vw"
         class="aspect-[5/4] w-full rounded-2xl object-cover object-center shadow-[var(--shadow-card)] md:aspect-[7/5]"
@@ -136,7 +165,7 @@ const heroTitleHtml = (() => {
         </div>
         <Image
           src={recsysArticle}
-          alt="Corca featured in ACM RecSys Challenge 2023 news article"
+          alt={imgAlt.recsys}
           widths={[560, 900]}
           sizes="(min-width: 1024px) 45vw, 90vw"
           class="mt-6 w-full rounded-xl shadow-[var(--shadow-card)]"
@@ -152,7 +181,7 @@ const heroTitleHtml = (() => {
     <div class="order-first" data-reveal>
       <Image
         src={partners}
-        alt="Corca partners and clients"
+        alt={imgAlt.partners}
         widths={[560, 1000]}
         sizes="(min-width: 768px) 50vw, 92vw"
         class="w-full"

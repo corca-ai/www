@@ -138,12 +138,16 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Hero — full-bleed island illustration from the top with the title overlaid
      on its upper-left empty space, matching corca.ai. -->
 <section class="relative overflow-hidden bg-white">
-  <!-- Live serves the illustration at object-fit:cover into a container whose
-       height grows as the viewport narrows (1440x1217, 1024x974, 768x1000,
-       390x696), so the scene stays full-width and fills a taller band on
-       mobile/tablet. We mirror those heights exactly. -->
+  <!-- The source is a WIDE panorama (the original is 6040x2560); live crops it
+       per-viewport via object-fit:cover into a container whose height tracks the
+       width (aspect ~1.05, capping at 1217 from ~1280 up) and is taller on
+       tablet/mobile. Because the source is wide, cover keeps the illustration at
+       a CONSTANT scale and simply reveals more of the scene's width on wider
+       screens — using a narrow crop here instead makes cover scale the art UP
+       (it looks too big). Heights measured off live: 974@1024, 1217@1280+,
+       1000@768, 710@mobile. -->
   <div>
-    <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="block w-full object-cover object-center h-[710px] md:h-[1000px] lg:h-[min(58.4vw_+_376px,1217px)]" />
+    <img src={HERO} alt="" width="3840" height="2434" decoding="async" class="block w-full object-cover object-center h-[710px] md:h-[1000px] lg:h-[min(95vw,1217px)]" />
   </div>
   <div class="container-c absolute inset-x-0 top-0 z-10 pt-6 sm:pt-10 lg:pt-20">
     <h1 class="text-[37px] font-normal leading-[1.2] text-[#1a2352] sm:text-[44px] lg:text-[65px] xl:text-[76px]" set:html={br(c.heroTitle)} />

@@ -9,6 +9,7 @@ import {
   locales,
   type Lang,
 } from '../i18n/ui';
+import { products } from '../products/registry';
 
 interface Props {
   lang: Lang;
@@ -23,10 +24,12 @@ const home = localizePath('/', lang);
 const productsHref = localizePath('/products', lang);
 const aboutHref = localizePath('/about', lang);
 
-const productItems = [
-  { label: 'Moonlight', href: localizePath('/products/moonlight', lang) },
-  { label: 'Trace', href: localizePath('/products/trace', lang) },
-];
+// Product dropdown entries come from the product registry (src/products/*), so a
+// new product folder appears here automatically.
+const productItems = products.map((p) => ({
+  label: p.name,
+  href: localizePath(`/products/${p.slug}`, lang),
+}));
 const aboutItems = [
   { label: t.nav.vision, href: localizePath('/about/vision-mission', lang) },
   { label: t.nav.howWeWork, href: localizePath('/about/how-we-work', lang) },

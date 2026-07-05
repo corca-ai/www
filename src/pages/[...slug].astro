@@ -5,79 +5,71 @@ import AboutIndex from '../components/pages/AboutIndex.astro';
 import Colleagues from '../components/pages/Colleagues.astro';
 import Home from '../components/pages/Home.astro';
 import HowWeWork from '../components/pages/HowWeWork.astro';
-import Moonlight from '../components/pages/Moonlight.astro';
 import News from '../components/pages/News.astro';
 import Products from '../components/pages/Products.astro';
-import Trace from '../components/pages/Trace.astro';
 import { pageMeta } from '../i18n/pageMeta';
-import { type AppInfo, breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
+import { breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
 import { defaultLang, locales } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
+import { products } from '../products/registry';
 
-// Single source of truth for every localized page. Add a route below + a
-// component in COMPONENTS → it is generated in all four locales; add a locale in
-// i18n/ui → every page follows. The ko default locale is un-prefixed ("/news/"),
-// en/ja/zh are prefixed ("/en/news/"); BaseLayout derives canonical + hreflang
-// from basePath + lang. `id` doubles as the pageMeta key (home reads its SEO
-// copy from the home translations instead). NB: getStaticPaths runs before the
-// module body, so its route list lives inside it, not as an outer const.
+// Single localized route for the whole site. Static pages come from the registry
+// below; product detail pages come from the product registry (src/products/*),
+// so adding a product is "drop a folder" — no edit here. The ko default locale
+// is un-prefixed ("/news/"); en/ja/zh are prefixed. BaseLayout derives canonical
+// + hreflang from basePath + lang. NB: getStaticPaths runs before the module
+// body, so its route list lives inside it.
 export function getStaticPaths() {
-  // `slug`/`basePath` are the live URL structure (products under /products/,
-  // company pages under /about/); `id` is the stable pageMeta/component key and
-  // does not change when a page moves. Old flat paths 301 → these via
-  // public/_redirects.
-  const routes = [
+  const staticRoutes = [
     { id: 'home', slug: '', basePath: '/' },
     { id: 'products', slug: 'products', basePath: '/products' },
     { id: 'about', slug: 'about', basePath: '/about' },
     { id: 'about-corca', slug: 'about/vision-mission', basePath: '/about/vision-mission' },
     { id: 'how-we-work', slug: 'about/how-we-work', basePath: '/about/how-we-work' },
-    { id: 'moonlight', slug: 'products/moonlight', basePath: '/products/moonlight' },
-    { id: 'trace', slug: 'products/trace', basePath: '/products/trace' },
     { id: 'news', slug: 'news', basePath: '/news' },
     { id: 'colleagues', slug: 'about/colleagues', basePath: '/about/colleagues' },
   ];
+  const productRoutes = products.map((p) => ({
+    id: p.slug,
+    slug: `products/${p.slug}`,
+    basePath: `/products/${p.slug}`,
+  }));
   return locales.flatMap((lang) =>
-    routes.map((r) => {
+    [...staticRoutes, ...productRoutes].map((r) => {
       const path = `${lang === defaultLang ? '' : `${lang}/`}${r.slug}`;
       return { params: { slug: path === '' ? undefined : path }, props: { lang, id: r.id, basePath: r.basePath } };
     }),
   );
 }
 
-const COMPONENTS = {
+const STATIC_COMPONENTS = {
   home: Home,
   products: Products,
   about: AboutIndex,
   'about-corca': About,
   'how-we-work': HowWeWork,
-  moonlight: Moonlight,
-  trace: Trace,
   news: News,
   colleagues: Colleagues,
 } as const;
 
-const { lang, id, basePath } = Astro.props as { lang: (typeof locales)[number]; id: keyof typeof COMPONENTS; basePath: string };
-const meta =
-  id === 'home'
-    ? { title: useTranslations(lang).home.metaTitle, description: useTranslations(lang).home.metaDescription }
-    : pageMeta[id][lang];
-const Component = COMPONENTS[id];
+const { lang, id, basePath } = Astro.props as { lang: (typeof locales)[number]; id: string; basePath: string };
 
-// Per-page schema.org nodes (merged into BaseLayout's @graph). Every subpage
-// gets a Home → page breadcrumb; the two products also get a SoftwareApplication.
+// A product detail page (/products/<slug>) resolves from the product registry;
+// everything else is a static component + pageMeta (home reads its own copy).
+const product = products.find((p) => basePath === `/products/${p.slug}`) ?? null;
+const meta = product
+  ? product.meta[lang]
+  : id === 'home'
+    ? { title: useTranslations(lang).home.metaTitle, description: useTranslations(lang).home.metaDescription }
+    : pageMeta[id as keyof typeof pageMeta][lang];
+const Component = product ? product.Page : STATIC_COMPONENTS[id as keyof typeof STATIC_COMPONENTS];
+
+// Per-page schema.org nodes (merged into BaseLayout's @graph): a Home →
+// …category… → page breadcrumb, plus SoftwareApplication for products with app data.
 const site = Astro.site ?? new URL('https://www.borca.ai');
-// Titles read "PageName | descriptor", so the breadcrumb/app name is the part
-// before the first pipe (e.g. "문라이트(Moonlight)", "비전과 미션").
 const pageName = meta.title.split('|')[0].trim();
-const APPS: Partial<Record<keyof typeof COMPONENTS, AppInfo>> = {
-  moonlight: { category: 'EducationalApplication', os: 'Web', appUrl: 'https://themoonlight.io/' },
-  trace: { category: 'ProductivityApplication', os: 'iOS', appUrl: 'https://apps.apple.com/app/id6503812022' },
-};
 const jsonLd: Record<string, unknown>[] = [];
 if (id !== 'home') {
-  // Build the crumb trail, inserting the category level for nested pages
-  // (e.g. /products/moonlight → Home → 제품 소개 → 문라이트).
   const nav = useTranslations(lang).nav;
   const crumbs: Crumb[] = [];
   if (basePath.startsWith('/products/')) crumbs.push({ name: nav.products, path: '/products' });
@@ -85,8 +77,7 @@ if (id !== 'home') {
   crumbs.push({ name: pageName, path: basePath });
   jsonLd.push(breadcrumbLd(site, lang, crumbs));
 }
-const app = APPS[id];
-if (app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, app));
+if (product?.app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, product.app));
 ---
 
 <BaseLayout lang={lang} title={meta.title} description={meta.description} basePath={basePath} jsonLd={jsonLd}>

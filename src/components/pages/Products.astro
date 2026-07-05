@@ -1,115 +1,41 @@
 ---
 import { Image } from 'astro:assets';
-import moonlightLogo from '../../assets/images/moonlight-logo.png';
-import traceLogo from '../../assets/images/trace-logo.png';
 import type { Lang } from '../../i18n/ui';
 import { localizePath } from '../../i18n/utils';
+import { products } from '../../products/registry';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 
-// Category landing (issue #28): links to the released product detail pages.
-// The meta description also mentions Corca Ads, which has no detail page yet.
-const dict = {
-  ko: {
-    title: '제품 소개',
-    sub: '연구·업무·비즈니스 현장에 바로 쓰이는 코르카의 AI 제품을 만나보세요.',
-    cta: '자세히 보기',
-    products: [
-      {
-        name: 'Moonlight',
-        slug: '/products/moonlight',
-        logo: moonlightLogo,
-        body: '논문 읽기 흐름에 AI를 직접 적용한 연구자용 AI 리서치 도구. 실시간 설명과 대화형 요약으로 논문을 더 빠르고 깊이 있게 이해합니다.',
-      },
-      {
-        name: 'Trace',
-        slug: '/products/trace',
-        logo: traceLogo,
-        body: '말하거나 입력하거나 사진을 찍기만 하면 AI가 일정을 정리해주는 AI 일정관리 앱. 맥락을 이해하는 알림으로 하루를 손쉽게 관리합니다.',
-      },
-    ],
-  },
-  en: {
-    title: 'Products',
-    sub: 'Meet Corca’s AI products, ready to use in research, work, and business.',
-    cta: 'Learn more',
-    products: [
-      {
-        name: 'Moonlight',
-        slug: '/products/moonlight',
-        logo: moonlightLogo,
-        body: 'An AI research tool for researchers that applies AI directly to reading papers — real-time explanations and conversational summaries help you understand papers faster and more deeply.',
-      },
-      {
-        name: 'Trace',
-        slug: '/products/trace',
-        logo: traceLogo,
-        body: 'An AI scheduling app that organizes your day — just speak, type, or snap a photo. Context-aware reminders keep your day effortlessly on track.',
-      },
-    ],
-  },
-  ja: {
-    title: '製品紹介',
-    sub: '研究・業務・ビジネスの現場ですぐに使えるコルカのAI製品をご紹介します。',
-    cta: '詳しく見る',
-    products: [
-      {
-        name: 'Moonlight',
-        slug: '/products/moonlight',
-        logo: moonlightLogo,
-        body: '論文を読む流れにAIを直接適用した研究者向けAIリサーチツール。リアルタイム説明と対話型要約で、論文をより速く深く理解できます。',
-      },
-      {
-        name: 'Trace',
-        slug: '/products/trace',
-        logo: traceLogo,
-        body: '話す・入力する・写真を撮るだけでAIが予定を整理するAIスケジュール管理アプリ。文脈を理解する通知で一日を手軽に管理します。',
-      },
-    ],
-  },
-  zh: {
-    title: '产品介绍',
-    sub: '一起了解可直接用于研究、工作与商业场景的Corca AI产品。',
-    cta: '了解更多',
-    products: [
-      {
-        name: 'Moonlight',
-        slug: '/products/moonlight',
-        logo: moonlightLogo,
-        body: '将AI直接应用于论文阅读流程的研究者AI工具。实时讲解与对话式摘要，助你更快、更深入地理解论文。',
-      },
-      {
-        name: 'Trace',
-        slug: '/products/trace',
-        logo: traceLogo,
-        body: '只需说话、输入或拍照，AI就能整理日程的AI日程应用。理解上下文的提醒，让你轻松掌控每一天。',
-      },
-    ],
-  },
-};
-const c = dict[lang];
+// Category landing (issue #28). The product cards are generated from the product
+// registry — the page's own copy (heading/CTA) is the only thing kept here.
+const t = {
+  ko: { title: '제품 소개', sub: '연구·업무·비즈니스 현장에 바로 쓰이는 코르카의 AI 제품을 만나보세요.', cta: '자세히 보기' },
+  en: { title: 'Products', sub: 'Meet Corca’s AI products, ready to use in research, work, and business.', cta: 'Learn more' },
+  ja: { title: '製品紹介', sub: '研究・業務・ビジネスの現場ですぐに使えるコルカのAI製品をご紹介します。', cta: '詳しく見る' },
+  zh: { title: '产品介绍', sub: '一起了解可直接用于研究、工作与商业场景的Corca AI产品。', cta: '了解更多' },
+}[lang];
 ---
 
 <section class="bg-gradient-to-b from-[#e1eaf7] to-white">
   <div class="container-c pb-8 pt-10 text-center lg:pt-24">
-    <h1 class="font-body text-[26px] font-normal leading-[1.2] text-[#1a2352] md:text-[32px] lg:text-[44px] xl:text-[51px]">{c.title}</h1>
-    <p class="mx-auto mt-3 max-w-[720px] text-[15px] leading-[1.4] text-[#1a2352] md:text-[18px]">{c.sub}</p>
+    <h1 class="font-body text-[26px] font-normal leading-[1.2] text-[#1a2352] md:text-[32px] lg:text-[44px] xl:text-[51px]">{t.title}</h1>
+    <p class="mx-auto mt-3 max-w-[720px] text-[15px] leading-[1.4] text-[#1a2352] md:text-[18px]">{t.sub}</p>
   </div>
 </section>
 
 <section class="bg-white">
   <div class="container-c grid gap-6 pb-16 pt-8 md:grid-cols-2 lg:gap-8 lg:pb-24 lg:pt-10">
-    {c.products.map((p) => (
+    {products.map((p) => (
       <a
-        href={localizePath(p.slug, lang)}
+        href={localizePath(`/products/${p.slug}`, lang)}
         class="group flex flex-col items-start rounded-2xl border border-black/10 bg-white p-8 transition-shadow hover:shadow-[var(--shadow-card)] lg:p-10"
       >
-        <Image src={p.logo} alt={p.name} width={200} height={55} densities={[1, 2, 3]} class="h-[44px] w-auto lg:h-[54px]" />
-        <p class="mt-6 flex-1 text-[15px] leading-[1.5] text-ink-soft lg:text-[16px]">{p.body}</p>
-        <span class="btn-pill btn-pill-dark mt-8">{c.cta}</span>
+        <Image src={p.logo} alt={p.name} densities={[1, 2]} class="h-[44px] w-auto lg:h-[54px]" />
+        <p class="mt-6 flex-1 text-[15px] leading-[1.5] text-ink-soft lg:text-[16px]">{p.blurb[lang]}</p>
+        <span class="btn-pill btn-pill-dark mt-8">{t.cta}</span>
       </a>
     ))}
   </div>

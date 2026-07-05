@@ -52,50 +52,6 @@ export const pageMeta: Record<string, PageMeta> = {
         'Corca是韩国首家OpenAI官方服务合作伙伴，也是入选2024年“小独角兽”的AI专业企业。凭借在ACM RecSys Challenge中位列全球第7、韩国第1的技术实力，从AI产品开发到企业AX咨询，为你介绍Corca的愿景与团队。',
     },
   },
-  moonlight: {
-    ko: {
-      title: '문라이트(Moonlight) | 논문 읽기 AI·논문 요약 분석 도구',
-      description:
-        '어려운 논문, AI와 함께 읽으세요. 문라이트는 PDF 논문 읽기 흐름에 AI를 직접 적용해 생소한 개념의 실시간 설명, 대화형 요약·질의응답을 제공합니다. 논문 이해에 걸리는 시간은 줄이고 깊이는 더하는 연구자를 위한 AI 리서치 도구입니다.',
-    },
-    en: {
-      title: 'Moonlight | AI for Reading Papers · Paper Summary & Analysis Tool',
-      description:
-        'Read difficult papers together with AI. Moonlight applies AI directly to the flow of reading PDF papers, giving real-time explanations of unfamiliar concepts plus conversational summaries and Q&A. It is an AI research tool for researchers that cuts the time it takes to understand a paper while deepening comprehension.',
-    },
-    ja: {
-      title: 'ムーンライト（Moonlight）| 論文読解AI・論文要約分析ツール',
-      description:
-        '難しい論文を、AIと一緒に読みましょう。ムーンライトは、PDF論文を読む流れにAIを直接適用し、馴染みのない概念のリアルタイム説明や、対話型の要約・質問応答を提供します。論文理解にかかる時間を減らし、理解の深さを高める、研究者のためのAIリサーチツールです。',
-    },
-    zh: {
-      title: 'Moonlight | 论文阅读AI·论文摘要分析工具',
-      description:
-        '艰深的论文，和AI一起读。Moonlight将AI直接应用于PDF论文的阅读流程，为陌生概念提供实时讲解，并支持对话式摘要与问答。这是一款面向研究者的AI研究工具，缩短理解论文所需的时间，同时加深理解。',
-    },
-  },
-  trace: {
-    ko: {
-      title: '트레이스(Trace) | 대화하듯 입력하는 AI 일정관리 앱',
-      description:
-        "'내일 3시 회의'라고 입력하면 끝. 트레이스는 일상 언어로 입력한 일정의 세부 내용을 AI가 자동으로 채우고, 맥락을 이해하는 알림으로 하루를 관리해주는 AI 기반 스케줄링 앱입니다. 캘린더 정리에 쓰는 시간을 돌려드립니다.",
-    },
-    en: {
-      title: 'Trace | The AI Scheduling App You Can Just Talk To',
-      description:
-        'Just type "meeting at 3 tomorrow" — done. Trace is an AI-based scheduling app: it automatically fills in the details of schedules you enter in everyday language and manages your day with context-aware reminders. Get back the time you spend organizing your calendar.',
-    },
-    ja: {
-      title: 'トレース（Trace）| 会話するように入力するAIスケジュール管理アプリ',
-      description:
-        '「明日3時に会議」と入力するだけ。トレースは、日常の言葉で入力した予定の詳細をAIが自動で補完し、文脈を理解する通知で一日を管理するAIベースのスケジューリングアプリです。カレンダー整理に費やす時間を取り戻しましょう。',
-    },
-    zh: {
-      title: 'Trace | 像聊天一样输入的AI日程管理应用',
-      description:
-        '输入“明天3点开会”即可。Trace是一款AI日程应用：AI会自动补全你用日常语言输入的日程细节，并通过理解上下文的提醒帮你管理一天，把整理日历的时间还给你。',
-    },
-  },
   'about-corca': {
     ko: {
       title: '비전과 미션 | AI로 삶과 일의 패러다임을 바꾸는 코르카',

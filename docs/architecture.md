@@ -15,6 +15,8 @@ Styling is Tailwind CSS v4 with a self-hosted Pretendard variable font.
   `robots.txt`, `sitemap.xml` and `rss.xml` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`.
+- `src/products/` — one self-contained folder per product (Moonlight, Trace, …),
+  auto-discovered by the shared shell; see [[products]].
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
   hreflang alternates and a per-page JSON-LD `@graph`.
 - `src/content/` — news and colleague entries as schema-validated YAML collections.

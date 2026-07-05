@@ -56,6 +56,7 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 body {
   font-family: var(--font-sans);
@@ -151,13 +152,6 @@ h1, h2, h3, .font-head {
   html.js [data-reveal].is-visible {
     opacity: 1;
     transform: none;
-  }
-}
-
-/* Slow continuous spin for the Trace hero clock ring fallback. */
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
   }
 }
 

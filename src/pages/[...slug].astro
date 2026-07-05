@@ -8,6 +8,7 @@ import Moonlight from '../components/pages/Moonlight.astro';
 import News from '../components/pages/News.astro';
 import Trace from '../components/pages/Trace.astro';
 import { pageMeta } from '../i18n/pageMeta';
+import { type AppInfo, breadcrumbLd, softwareAppLd } from '../i18n/structuredData';
 import { defaultLang, locales } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 
@@ -52,8 +53,21 @@ const meta =
     ? { title: useTranslations(lang).home.metaTitle, description: useTranslations(lang).home.metaDescription }
     : pageMeta[id][lang];
 const Component = COMPONENTS[id];
+
+// Per-page schema.org nodes (merged into BaseLayout's @graph). Every subpage
+// gets a Home → page breadcrumb; the two products also get a SoftwareApplication.
+const site = Astro.site ?? new URL('https://www.borca.ai');
+const pageName = meta.title.replace(/\s*\|\s*Corca\s*$/, '');
+const APPS: Partial<Record<keyof typeof COMPONENTS, AppInfo>> = {
+  moonlight: { category: 'EducationalApplication', os: 'Web', appUrl: 'https://themoonlight.io/' },
+  trace: { category: 'ProductivityApplication', os: 'iOS', appUrl: 'https://apps.apple.com/app/id6503812022' },
+};
+const jsonLd: Record<string, unknown>[] = [];
+if (id !== 'home') jsonLd.push(breadcrumbLd(site, lang, basePath, pageName));
+const app = APPS[id];
+if (app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, app));
 ---
 
-<BaseLayout lang={lang} title={meta.title} description={meta.description} basePath={basePath}>
+<BaseLayout lang={lang} title={meta.title} description={meta.description} basePath={basePath} jsonLd={jsonLd}>
   <Component lang={lang} />
 </BaseLayout>

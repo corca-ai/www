@@ -1,0 +1,19 @@
+{
+  "name": "Corca",
+  "short_name": "Corca",
+  "description": "Corca leads AI technology that turns imagination into reality — makers of Moonlight and Trace.",
+  "lang": "ko-KR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

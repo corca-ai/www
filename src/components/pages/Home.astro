@@ -36,7 +36,13 @@ const heroTitleHtml = (() => {
 
 <!-- ============================ Hero ============================ -->
 <section class="relative overflow-hidden bg-brand text-white">
-  <div class="container-c relative flex flex-col items-start gap-8 pt-6 pb-14 text-left min-[640px]:pb-6 min-[810px]:min-h-[calc(480px_+_33vw)] min-[810px]:justify-start min-[810px]:py-0 min-[810px]:pt-[calc(9vw_-_40px)]">
+  <!-- Hero geometry matches live: the illustration is min(60vw,768px) wide, flush
+       to the right of a centred 1280 container (right = max(0,50vw−640)), and
+       flush to the hero bottom. Live's header is a FIXED transparent overlay so
+       its blue starts at y0 and runs `clamp(720,75vw,960)`; ours is a 66px opaque
+       sticky bar, so we subtract that 66px here to land the illustration bottom at
+       the same on-page position as live. -->
+  <div class="container-c relative flex flex-col items-start gap-8 pt-6 pb-14 text-left min-[640px]:pb-6 min-[810px]:min-h-[clamp(654px,calc(75vw_-_66px),894px)] min-[810px]:justify-start min-[810px]:py-0 min-[810px]:pt-[calc(9vw_-_40px)]">
     <div class="max-[809px]:max-w-[360px] min-[810px]:max-w-[600px]" data-reveal>
       <h1
         class="text-[33px] font-normal leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
@@ -50,7 +56,7 @@ const heroTitleHtml = (() => {
       widths={[440, 820, 1640]}
       sizes="(min-width: 810px) 56vw, 100vw"
       loading="eager"
-      class="pointer-events-none w-[120%] max-w-[480px] select-none self-end -mt-[52px] -me-[max(20px,9.8vw_-_15px)] min-[640px]:-mt-[90px] min-[810px]:absolute min-[810px]:bottom-[45px] min-[810px]:right-[80px] min-[810px]:mt-0 min-[810px]:me-0 min-[810px]:w-[54%] min-[810px]:max-w-[770px]"
+      class="pointer-events-none w-[120%] max-w-[480px] select-none self-end -mt-[52px] -me-[max(20px,9.8vw_-_15px)] min-[640px]:-mt-[90px] min-[810px]:absolute min-[810px]:bottom-[0px] min-[810px]:right-[max(0px,calc(50vw_-_640px))] min-[810px]:mt-0 min-[810px]:me-0 min-[810px]:w-[60vw] min-[810px]:max-w-[768px]"
     />
   </div>
 </section>

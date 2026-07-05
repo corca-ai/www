@@ -81,14 +81,14 @@ const emph = (s: string) => br(s);
        while still letting ~10% of the rotating-clock video show through. -->
   <div class="absolute inset-0 bg-[#7b5ce6]/90" aria-hidden="true"></div>
 
-  <!-- top-right chat phone (desktop only, peeking) — pulled inward and enlarged
-       to sit closer to the collage, matching live corca.ai. -->
-  <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[15%] top-[0px] hidden w-[295px] select-none lg:block" />
+  <!-- top-right chat phone (tablet+ , peeking) — bleeds above the top edge and
+       sits at the right like live corca.ai (live: ~y-120/w320 at desktop). -->
+  <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[2%] top-[-112px] hidden w-[300px] select-none md:block lg:right-[16%] lg:top-[-185px] lg:w-[320px]" />
 
   <!-- Content -->
   <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
-    <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[34px] w-auto sm:h-[40px] lg:h-[48px]" data-reveal />
-    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[176px] max-w-full sm:w-[216px] lg:w-[352px]" data-reveal style="--reveal-delay: .08s" />
+    <img src={BADGE} alt="Product Hunt — #4 Product of the Day" width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" data-reveal />
+    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[181px] max-w-full sm:w-[210px] lg:w-[302px] xl:w-[352px]" data-reveal style="--reveal-delay: .08s" />
     <h1 class="mt-2 text-[27px] font-normal leading-[1.2] sm:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
     <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={emph(c.body)} data-reveal style="--reveal-delay: .24s" />
     <p class="max-w-[720px] text-[16px] leading-[1.4] text-white md:text-[17px] lg:text-[18px]" set:html={emph(c.cta)} data-reveal style="--reveal-delay: .3s" />
@@ -97,17 +97,23 @@ const emph = (s: string) => br(s);
     </a>
   </div>
 
-  <!-- Desktop phone collage — enlarged ~12% and raised to fill the width and
-       close the gap under the App Store button, matching live corca.ai. -->
-  <div class="relative mx-auto hidden h-[620px] w-full max-w-[1340px] lg:block">
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[5%] top-[120px] w-[37%] max-w-[470px]" data-reveal style="--reveal-delay: .1s" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-[38%] top-[0px] z-20 w-[27%] max-w-[345px]" data-reveal style="--reveal-delay: .25s" />
-    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute left-[44%] top-[40px] w-[52%] max-w-[680px]" data-reveal style="--reveal-delay: .4s" />
+  <!-- Phone collage — shown from tablet up (md), like live corca.ai which keeps
+       the four-phone montage down to ~768px. Fixed pixel sizes per tier (md/lg)
+       instead of container-% so the phones don't shrink between 1024–1280 the
+       way live's fixed-size montage doesn't. -->
+  <div class="relative mx-auto hidden h-[784px] w-full max-w-[1180px] md:block lg:h-[825px] lg:max-w-[1200px]">
+    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute bottom-[88px] left-[1%] w-[400px] lg:bottom-[132px] lg:w-[500px]" data-reveal style="--reveal-delay: .1s" />
+    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute bottom-[345px] left-[33%] z-20 w-[287px] lg:bottom-[393px] lg:left-[37%] lg:w-[359px]" data-reveal style="--reveal-delay: .25s" />
+    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute bottom-0 right-[7%] w-[493px] lg:right-[4%] lg:w-[657px]" data-reveal style="--reveal-delay: .4s" />
   </div>
 
-  <!-- Mobile: single representative mockup -->
-  <div class="relative flex justify-center px-6 pb-16 lg:hidden">
-    <img src={PHONE_HOME} alt="Trace app" width="329" height="400" loading="lazy" decoding="async" class="h-auto w-[88%] max-w-[380px]" data-reveal />
+  <!-- Mobile (<768): four-phone montage echoing live's mobile layout (phones
+       bleed past both edges; the section's overflow-hidden clips them). -->
+  <div class="relative mx-auto block h-[680px] w-full max-w-[420px] md:hidden">
+    <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="absolute left-[41%] top-[0px] z-10 w-[240px] max-w-none" data-reveal style="--reveal-delay: .1s" />
+    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-0 top-[32px] z-20 w-[180px] max-w-none" data-reveal style="--reveal-delay: .2s" />
+    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[-27%] top-[165px] w-[240px] max-w-none" data-reveal style="--reveal-delay: .3s" />
+    <img src={PHONE_HOME} alt="Trace app" loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" data-reveal style="--reveal-delay: .4s" />
   </div>
 </section>
 

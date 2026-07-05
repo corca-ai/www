@@ -143,7 +143,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
        390x696), so the scene stays full-width and fills a taller band on
        mobile/tablet. We mirror those heights exactly. -->
   <div>
-    <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="block w-full object-cover object-center h-[710px] md:h-[1000px] lg:h-[calc(58.4vw_+_376px)]" />
+    <img src={HERO} alt="" width="1440" height="1217" decoding="async" class="block w-full object-cover object-center h-[710px] md:h-[1000px] lg:h-[min(58.4vw_+_376px,1217px)]" />
   </div>
   <div class="container-c absolute inset-x-0 top-0 z-10 pt-6 sm:pt-10 lg:pt-20">
     <h1 class="text-[37px] font-normal leading-[1.2] text-[#1a2352] sm:text-[44px] lg:text-[65px] xl:text-[76px]" set:html={br(c.heroTitle)} />

@@ -140,7 +140,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   </div>
   <div class="container-c absolute inset-x-0 top-0 z-10 pt-6 sm:pt-10 lg:pt-20">
     <h1 class="font-body text-[39px] font-normal leading-tight text-[#1a2352] sm:text-[44px] lg:text-[74px]" set:html={br(c.heroTitle)} />
-    <p class="mt-3 max-w-[300px] text-[13px] leading-relaxed text-[#1a2352] sm:mt-5 sm:max-w-[390px] sm:text-[16px] lg:max-w-[560px] lg:text-[20px]">{c.heroSubtitle}</p>
+    <p class="mt-3 max-w-[300px] text-[13px] leading-[1.4] text-[#1a2352] sm:mt-5 sm:max-w-[390px] sm:text-[16px] lg:max-w-[560px] lg:text-[24px]">{c.heroSubtitle}</p>
   </div>
 </section>
 
@@ -157,7 +157,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
         <div class:list={["grid items-center gap-8 md:grid-cols-2 md:gap-12", i % 2 === 1 && "md:[&>*:first-child]:order-last"]}>
           <div class:list={[i % 2 === 1 && 'md:order-last']}>
             <h3 class="font-body text-[22px] font-normal md:text-[28px] lg:text-[36px]">{m.title}</h3>
-            <p class="mt-4 text-[15px] leading-relaxed text-white lg:text-[16px]">{m.body}</p>
+            <p class="mt-4 text-[15px] leading-[1.4] text-white lg:text-[18px]">{m.body}</p>
           </div>
           <div class:list={["flex justify-center", i % 2 === 1 && 'md:order-first']}>
             <img src={m.img} alt="" width="320" height="240" loading="lazy" decoding="async" class="h-auto w-[260px] max-w-full lg:w-[320px]" />
@@ -187,8 +187,8 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
         <div class="flex gap-5">
           <span class="shrink-0 text-[32px] leading-none lg:text-[38px]" aria-hidden="true">{b.icon}</span>
           <div>
-            <h3 class="font-body text-[18px] font-normal text-[#1a2352] lg:text-[21px]">{b.title}</h3>
-            <p class="mt-2 text-[15px] leading-relaxed text-[#1a2352] lg:text-[16px]">{b.body}</p>
+            <h3 class="font-body text-[18px] font-normal text-[#1a2352] lg:text-[22px]">{b.title}</h3>
+            <p class="mt-2 text-[15px] leading-[1.4] text-[#1a2352] lg:text-[18px]">{b.body}</p>
           </div>
         </div>
       ))}

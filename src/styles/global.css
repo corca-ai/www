@@ -63,7 +63,9 @@ body {
   background: #ffffff;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  line-height: 1.6;
+  /* Match live corca.ai's body line-height (~1.4). Headings, labels and numbers
+     set their own tighter leading; multi-line paragraphs set an explicit value. */
+  line-height: 1.4;
 }
 :lang(ja) {
   font-family: var(--font-ja);
@@ -199,7 +201,7 @@ h1, h2, h3, .font-head {
    Declared after .btn-pill so its size wins for elements carrying both classes
    (both are unlayered, so later source order beats the utility layer). */
 .btn-pill-lg {
-  padding: 1.05rem 2.5rem;
+  padding: 1.05rem 2.9rem;
   font-size: 1.0625rem;
-  font-weight: 600;
+  font-weight: 400;
 }

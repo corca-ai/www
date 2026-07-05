@@ -14,11 +14,11 @@ const t = useTranslations(lang);
 <footer class="bg-footer text-white/70">
   <div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left">
     <Image src={logoWhite} alt="Corca" width={120} height={35} densities={[1, 2, 3]} class="h-[34px] w-auto opacity-90" />
-    <address class="space-y-1 text-[13px] not-italic leading-[1.5] text-[#bbbbbb]">
+    <address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]">
       <p>{t.footer.address}</p>
       <p>
         <a href="tel:+82-2-6925-6978" class="transition-colors hover:text-white">{t.footer.tel}</a>
-        <span class="mx-2 inline-block w-1"></span>
+        <span class="inline-block w-3"></span>
         <a href={`mailto:${contact.email}`} class="transition-colors hover:text-white">{contact.email}</a>
       </p>
     </address>

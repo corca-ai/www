@@ -111,12 +111,14 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Hero — the bright underwater whale shows through; a bottom-weighted gradient
      keeps the white tagline legible, matching corca.ai. -->
 <section
-  class="relative bg-[#0b3a86] bg-cover bg-top"
+  class="relative min-h-[600px] bg-[#0b3a86] bg-cover bg-top md:min-h-[780px] lg:min-h-[900px]"
   style={`background-image: linear-gradient(rgba(2,20,60,0) 48%, rgba(2,15,48,0.30) 100%), url('${HERO_BG}');`}
 >
-  <div class="container-c flex min-h-[560px] flex-col items-center justify-end pb-[14%] pt-24 text-center text-white md:min-h-[700px] lg:min-h-[820px] lg:pb-[19%]">
+  <!-- Title sits ~66% down the hero at every width (like live), not flush to the
+       bottom — a width-based pb pushed it to the bottom edge on mobile. -->
+  <div class="container-c absolute inset-x-0 top-[66%] -translate-y-1/2">
     <h1
-      class="max-w-[900px] text-[25px] font-normal leading-[1.18] [text-shadow:0_2px_14px_rgba(0,10,40,0.55)] sm:text-[34px] lg:text-[38px] xl:text-[45px]"
+      class="mx-auto max-w-[900px] text-center text-[25px] font-normal leading-[1.18] text-white [text-shadow:0_2px_14px_rgba(0,10,40,0.55)] sm:text-[34px] lg:text-[38px] xl:text-[45px]"
       set:html={br(c.heroTitle)}
     />
   </div>

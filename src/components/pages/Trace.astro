@@ -82,8 +82,9 @@ const emph = (s: string) =>
        while still letting ~10% of the rotating-clock video show through. -->
   <div class="absolute inset-0 bg-[#7b5ce6]/90" aria-hidden="true"></div>
 
-  <!-- top-right chat phone (desktop only, peeking) -->
-  <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[4%] top-[-40px] hidden w-[260px] select-none lg:block" />
+  <!-- top-right chat phone (desktop only, peeking) — pulled inward and enlarged
+       to sit closer to the collage, matching live corca.ai. -->
+  <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[15%] top-[0px] hidden w-[295px] select-none lg:block" />
 
   <!-- Content -->
   <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
@@ -97,11 +98,12 @@ const emph = (s: string) =>
     </a>
   </div>
 
-  <!-- Desktop phone collage -->
-  <div class="relative mx-auto hidden h-[640px] w-full max-w-[1240px] lg:block">
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[7%] top-[150px] w-[35%] max-w-[440px]" data-reveal style="--reveal-delay: .1s" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-[39%] top-[10px] z-20 w-[25%] max-w-[320px]" data-reveal style="--reveal-delay: .25s" />
-    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute left-[43%] top-[70px] w-[46%] max-w-[600px]" data-reveal style="--reveal-delay: .4s" />
+  <!-- Desktop phone collage — enlarged ~12% and raised to fill the width and
+       close the gap under the App Store button, matching live corca.ai. -->
+  <div class="relative mx-auto hidden h-[620px] w-full max-w-[1340px] lg:block">
+    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[5%] top-[120px] w-[37%] max-w-[470px]" data-reveal style="--reveal-delay: .1s" />
+    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-[38%] top-[0px] z-20 w-[27%] max-w-[345px]" data-reveal style="--reveal-delay: .25s" />
+    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute left-[44%] top-[40px] w-[52%] max-w-[680px]" data-reveal style="--reveal-delay: .4s" />
   </div>
 
   <!-- Mobile: single representative mockup -->

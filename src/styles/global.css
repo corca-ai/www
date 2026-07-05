@@ -186,14 +186,14 @@ h1, h2, h3, .font-head {
   line-height: 1;
   transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
-.btn-pill:hover {
-  transform: translateY(-1px);
-}
+/* Live corca.ai buttons have no lift/transform on hover — only a background
+   shift (see the per-button hover:bg utilities). */
 .btn-pill-dark {
   color: var(--color-ink);
 }
 .btn-pill-dark:hover {
-  background: var(--color-ink);
+  background: #000;
+  border-color: transparent;
   color: #fff;
 }
 /* Larger pill used for the primary product CTAs (Home Moonlight/Trace "자세히

@@ -6,10 +6,9 @@ import Home from './components/pages/Home.astro';
 import HowWeWork from './components/pages/HowWeWork.astro';
 import News from './components/pages/News.astro';
 import Products from './components/pages/Products.astro';
-import { pageMeta } from './i18n/pageMeta';
+import { type Meta, pageMeta } from './i18n/pageMeta';
 import { type Lang, ui } from './i18n/ui';
 
-export type Meta = { title: string; description: string };
 type StaticPage = {
   basePath: string;
   Component: AstroComponentFactory;

@@ -1,6 +1,6 @@
 import type { Lang } from './ui';
 
-type Meta = { title: string; description: string };
+export type Meta = { title: string; description: string };
 type PageMeta = Record<Lang, Meta>;
 
 /** The static (non-product) pages that carry SEO copy here. */

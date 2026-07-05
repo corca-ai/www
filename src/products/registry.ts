@@ -23,6 +23,3 @@ export const products: Product[] = Object.entries(manifests)
     return { ...mod.default, Page: page.default };
   })
   .sort((a, b) => a.order - b.order);
-
-/** Look up a product by its slug (e.g. from a /products/<slug> route). */
-export const productBySlug = new Map(products.map((p) => [p.slug, p]));

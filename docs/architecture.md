@@ -11,8 +11,10 @@ Styling is Tailwind CSS v4 with a self-hosted Pretendard variable font.
 ## Project layout
 
 - `src/pages/` — routes; a single dynamic route, `[...slug].astro`, generates
-  every page in all four locales from one registry, alongside `404.astro` and the
-  `robots.txt`, `sitemap.xml` and `rss.xml` endpoints.
+  every page in all four locales from two registries — static pages from
+  `src/staticPages.ts` and product pages from the product registry (see
+  [products](products.md)) — alongside `404.astro` and the `robots.txt`,
+  `sitemap.xml` and `rss.xml` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`.
 - `src/products/` — one self-contained folder per product (Moonlight, Trace, …),

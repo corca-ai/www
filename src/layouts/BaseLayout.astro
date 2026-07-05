@@ -36,8 +36,10 @@ const canonical = new URL(localizePath(basePath, lang), site).href;
 const ogImageUrl = new URL(ogImage, site).href;
 const imageAlt = ogImageAlt ?? title;
 // Per the SEO meta policy (issue #15): indexable pages get plain "index, follow"
-// (no author on general pages, publisher unified to Corca); 404 stays out.
+// (no author on general pages); 404 stays out. Publisher is the brand name, per
+// locale (Korean pages get "코르카" as the issue specifies).
 const robots = noindex ? 'noindex, nofollow' : 'index, follow';
+const publisherName = { ko: '코르카', en: 'Corca', ja: 'コルカ', zh: 'Corca' }[lang];
 
 // hreflang alternates + x-default (points to the default locale).
 const alternates = locales.map((l) => ({
@@ -91,7 +93,7 @@ const graph = {
     <meta name="theme-color" content="#ffffff" />
     <meta name="application-name" content="Corca" />
     <meta name="apple-mobile-web-app-title" content="Corca" />
-    <meta name="publisher" content="Corca" />
+    <meta name="publisher" content={publisherName} />
 
     <title>{title}</title>
     <meta name="description" content={description} />

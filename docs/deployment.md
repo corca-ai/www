@@ -5,9 +5,10 @@ title: Deployment
 # Deployment
 
 The site deploys to Cloudflare Workers (Static Assets) in the Corca account.
-Running `pnpm deploy` builds the site and then runs `wrangler deploy`, and all of
-the configuration lives in `wrangler.jsonc` — the account, the `dist/` asset
-directory and the custom domain.
+Running `pnpm run deploy` builds the site and then runs `wrangler deploy`, and all
+of the configuration lives in `wrangler.jsonc` — the account, the `dist/` asset
+directory and the custom domain. Use `pnpm run deploy`, not `pnpm deploy`: the
+latter is pnpm's own workspace-deploy command and will not run this script.
 
 ## Domains
 

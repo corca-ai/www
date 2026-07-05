@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
-// Corca marketing site — static output, deployed to Cloudflare Workers (Static Assets).
+// Corca website — static output, deployed to Cloudflare Workers (Static Assets).
 // ko (default, "/") mirrors the original Wix site; en ("/en"), ja ("/ja") and
 // zh ("/zh") are prefixed.
 export default defineConfig({

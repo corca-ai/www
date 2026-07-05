@@ -16,5 +16,5 @@ The beta site is served at https://www.borca.ai, with the `workers.dev` preview
 URL kept enabled as a fallback. Deploying requires `wrangler` to be authenticated
 against the Corca Cloudflare account.
 
-The stack that gets deployed is described in [[architecture]], and the local
-build commands used before a deploy are listed in [[development]].
+The stack that gets deployed is described in [architecture](architecture.md), and the local
+build commands used before a deploy are listed in [development](development.md).

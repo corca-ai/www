@@ -34,4 +34,4 @@ formats.
 
 The route registry is `src/pages/[...slug].astro` and the auto-discovery (a
 `import.meta.glob` over the product folders) is `src/products/registry.ts`; both
-are part of the shared shell described in [[architecture]] and rarely change.
+are part of the shared shell described in [architecture](architecture.md) and rarely change.

@@ -14,8 +14,9 @@ and the `pnpm check` script.
 - **nose** detects code duplication across `src/**/*.ts` as a jscpd replacement;
   its gate is configured in `nose.toml`. It does not analyze `.astro` files, so
   shared logic belongs in `.ts` modules where nose can see it.
-- **awiki** lints and formats these docs. Every page must connect into the doc
-  graph and avoid link-only lines, which is why entries here carry prose.
+- **awiki** is Corca's CLI for a flat-file Markdown wiki. It keeps these docs
+  connected — failing on orphans, islands and context-free link-only lines — and
+  formats them to one style, so every page carries prose and resolvable links.
 
 Both nose and awiki are native binaries installed with `brew install
 corca-ai/tap/nose corca-ai/tap/awiki`.
@@ -30,7 +31,7 @@ catch malicious releases before they can reach our lockfile.
 
 `lefthook.yml` runs Biome on staged files at pre-commit and, when the binaries
 are present, checks the docs with awiki. Pre-push runs the full `astro check`,
-duplication and build gates. The matching scripts are listed in [[development]].
+duplication and build gates. The matching scripts are listed in [development](development.md).
 
 ## Continuous integration
 

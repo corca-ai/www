@@ -15,6 +15,6 @@ server and `pnpm build` to produce the static `dist/` directory.
 - `pnpm check` — run every quality gate at once (see below).
 - `pnpm format` — apply Biome and awiki formatting in place.
 
-The tooling behind `pnpm check` is described in [[code-quality]], and the overall
-structure it operates on is laid out in [[architecture]]. Routine content and
-configuration edits have step-by-step recipes in the [[runbook]].
+The tooling behind `pnpm check` is described in [code-quality](code-quality.md), and the overall
+structure it operates on is laid out in [architecture](architecture.md). Routine content and
+configuration edits have step-by-step recipes in the [runbook](runbook.md).

@@ -6,9 +6,9 @@ title: Runbook
 
 Recipes for the routine content and configuration changes on the site. Each is a
 self-contained edit that flows through the normal build, so after any of them run
-the gates in [[development]] and ship with [[deployment]]. The structure these
-steps touch is mapped in [[architecture]], and the translation model behind them
-in [[i18n]].
+the gates in [development](development.md) and ship with [deployment](deployment.md). The structure these
+steps touch is mapped in [architecture](architecture.md), and the translation model behind them
+in [i18n](i18n.md).
 
 ## Add a news article
 
@@ -57,7 +57,7 @@ quote:
 
 A new language is a change in `src/i18n/ui.ts`: extend the `locales` list and add
 its UI strings, then fill the new locale key across `src/i18n/pageMeta.ts` and
-every content YAML file. See [[i18n]] for the wider translation model; the
+every content YAML file. See [i18n](i18n.md) for the wider translation model; the
 dynamic route generates the new locale's pages on its own, so no route files are
 created.
 
@@ -68,7 +68,7 @@ Add an entry to its route list with an `id`, url `slug` and `basePath`, map that
 `id` to a component in the same file, and author the component under
 `src/components/pages/`. Its SEO title and description come from
 `src/i18n/pageMeta.ts` under the matching key. Product pages are the exception:
-each is a self-contained folder that registers itself, described in [[products]].
+each is a self-contained folder that registers itself, described in [products](products.md).
 
 ## Change the canonical domain
 

@@ -157,7 +157,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
      keeps it close to the illustration at every breakpoint. -->
 <section class="bg-[#046eb8] text-white">
   <div class="container-c pb-16 pt-6 lg:pb-20 lg:pt-8">
-    <h2 class="font-body text-[27px] font-normal leading-[1.2] lg:text-[44px] xl:text-[50px]">{c.methodsLabel}</h2>
+    <h2 class="font-body text-[27px] font-normal leading-[1.2] md:text-[31px] lg:text-[44px] xl:text-[50px]">{c.methodsLabel}</h2>
     <div class="mt-10 flex flex-col gap-14 lg:gap-20">
       {c.methods.map((m, i) => (
         <div class:list={["grid items-center gap-8 md:grid-cols-2 md:gap-12", i % 2 === 1 && "md:[&>*:first-child]:order-last"]}>
@@ -186,15 +186,15 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 
 <!-- Benefits -->
 <section class="bg-white">
-  <div class="container-c grid gap-10 py-16 md:grid-cols-[220px_1fr] md:gap-12 lg:grid-cols-[260px_1fr] lg:gap-16 lg:py-24">
-    <h2 class="font-body text-[27px] font-normal leading-[1.2] text-[#1a2352] lg:text-[44px] xl:text-[50px]">{c.envLabel}</h2>
+  <div class="container-c grid gap-10 py-16 md:grid-cols-[220px_1fr] md:gap-12 lg:grid-cols-[350px_1fr] lg:gap-[90px] lg:py-24">
+    <h2 class="font-body text-[27px] font-normal leading-[1.2] text-[#1a2352] md:text-[31px] lg:text-[44px] xl:text-[50px]">{c.envLabel}</h2>
     <div class="flex flex-col gap-10">
       {c.benefits.map((b, i) => (
         <div class="flex gap-4">
           <img src={`${P}hww-icons/${BENEFIT_ICONS[i]}.webp`} alt="" width="80" height="80" loading="lazy" decoding="async" class="h-[60px] w-[60px] shrink-0 lg:h-[76px] lg:w-[76px]" />
           <div>
-            <h3 class="font-body text-[20px] font-normal leading-tight text-[#1a2352] xl:text-[22px]">{b.title}</h3>
-            <p class="mt-2 text-[15px] leading-[1.4] text-[#1a2352] lg:text-[18px]">{b.body}</p>
+            <h3 class="font-body text-[20px] font-normal leading-[1.4] text-[#1a2352] xl:text-[22px]">{b.title}</h3>
+            <p class="mt-1 text-[15px] leading-[1.4] text-[#1a2352] md:text-[16px] lg:text-[18px]">{b.body}</p>
           </div>
         </div>
       ))}

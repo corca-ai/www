@@ -127,7 +127,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
   <div class="container-c flex flex-col items-start py-14 text-left sm:items-center sm:text-center lg:pb-24 lg:pt-40">
     <img src={LOGO} alt="Corca" width="1600" height="467" class="h-[38px] w-auto sm:h-[48px] md:h-[54px] lg:h-[96px]" />
     <h2 class="mt-8 text-[26px] font-normal leading-[1.2] text-[#1a2352] lg:mt-12 lg:text-[37px] xl:text-[42px]">{c.missionTitle}</h2>
-    <p class="mt-6 max-w-[980px] text-[15px] leading-[1.4] text-[#1a2352] lg:mt-8 lg:text-[18px]">{c.missionBody}</p>
+    <p class="mt-6 max-w-[980px] text-[15px] leading-[1.4] text-[#1a2352] md:max-w-[calc(86vw_-_128px)] lg:mt-8 lg:text-[18px] xl:max-w-[980px]">{c.missionBody}</p>
 
     <div class="mt-10 flex w-full max-w-[900px] flex-wrap justify-center gap-3 lg:mt-16 lg:gap-4">
       {valueNames.map((name, i) => (
@@ -143,7 +143,7 @@ const br = (s: string) => s.replace(/\n/g, '<br />');
 <!-- Ethical AI pillars -->
 <section class="bg-white">
   <div class="container-c pb-14 lg:pb-24">
-    <div class="mx-auto max-w-[860px] text-center">
+    <div class="mx-auto max-w-[860px] text-center md:max-w-[calc(67vw_+_48px)] xl:max-w-[911px]">
       <h2 class="text-[26px] font-normal leading-[1.2] text-[#1a2352] lg:text-[37px] xl:text-[43px]">{c.ethicalTitle}</h2>
       <p class="mt-5 text-[15px] leading-[1.4] text-[#1a2352] lg:text-[18px]">{c.ethicalSubtitle}</p>
     </div>

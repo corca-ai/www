@@ -20,12 +20,12 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Biome (format + lint)
-        run: pnpm exec biome ci
+      - name: Biome
+        run: pnpm check:biome
       - name: Astro type check
-        run: pnpm exec astro check
+        run: pnpm check:astro
       - name: Dead code + unused deps (knip)
-        run: pnpm exec knip
+        run: pnpm check:knip
       - name: Build
         run: pnpm build
 
@@ -35,6 +35,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Install nose + awiki
         env:
           GH_TOKEN: ${{ github.token }}
@@ -55,6 +59,6 @@ jobs:
           nose --version
           awiki version
       - name: Duplication gate (nose)
-        run: nose query src --mode syntax 'dup>80' --fail-on any
+        run: pnpm check:dup
       - name: Docs gate (awiki)
-        run: awiki lint -root docs
+        run: pnpm check:docs

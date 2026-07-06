@@ -58,16 +58,15 @@ const content = {
 const c = content[lang];
 ---
 
-<section
-  class="relative overflow-hidden bg-[#745add] bg-cover bg-top text-white"
-  style={`background-image: url('${HERO_POSTER}');`}
->
-  <!-- Background video: the original site's rotating-clock animation. Decorative
-       only (aria-hidden); the poster image doubles as the reduced-motion and
+<section class="relative overflow-hidden bg-[#745add] text-white">
+  <!-- Rotating-clock background video at 20% opacity over the flat #745add base
+       — exactly how live corca.ai composites it (video opacity .2, no tint
+       overlay), so the clock stays visibly detailed and the hero rests at
+       ~#5e51c0. Decorative (aria-hidden); the poster is the reduced-motion /
        no-JS fallback. -->
   <video
     id="trace-hero-video"
-    class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top"
+    class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top opacity-20"
     autoplay
     muted
     loop
@@ -79,12 +78,6 @@ const c = content[lang];
   >
     <source src={HERO_VIDEO} type="video/mp4" />
   </video>
-  <!-- Contrast overlay so white text stays WCAG-readable over the video. The
-       tint (#7f5eed @0.9) is calibrated so that, blended over the dark poster
-       (avg #0e3650), the hero resolves to live corca.ai's flat violet #745add
-       (measured from live's hero element) while still letting ~10% of the
-       rotating-clock video show through. -->
-  <div class="absolute inset-0 bg-[#7f5eed]/90" aria-hidden="true"></div>
 
   <!-- top-right chat phone (tablet+ , peeking) — bleeds above the top edge and
        sits at the right like live corca.ai (live: ~y-120/w320 at desktop). -->

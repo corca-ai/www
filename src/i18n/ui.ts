@@ -116,9 +116,8 @@ export const ui = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle: '코르카(Corca) | 기업 AI 전환(AX) 컨설팅·AI 교육·AI 솔루션 전문 기업',
-      metaDescription:
-        '한국 최초 OpenAI 공식 서비스 파트너 코르카. 신한은행·토스·GS그룹 등 20여 개 조직, 1,000명 이상이 경험한 AI 교육과 AX 가속화 컨설팅으로 조직의 일하는 방식을 실제로 바꿉니다. 2024 아기유니콘, ACM RecSys 세계 7위 기술력으로 검증된 AI 전환 파트너.',
+      metaTitle: 'Corca Blog',
+      metaDescription: '기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.',
       heroTitle: '코르카는 AI 기술로\n세상을 바꾸고 있습니다.',
       heroSubtitle: 'AI 기술로 새로운 가능성을 열고 세상의 변화를 이끌어 갑니다.',
       readMore: '자세히 보기',
@@ -159,10 +158,8 @@ export const ui = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle:
-        'Corca | Enterprise AI Transformation (AX) Consulting · AI Training · AI Solutions',
-      metaDescription:
-        "Corca is Korea's first official OpenAI service partner. Through AI training and AX acceleration consulting experienced by 20+ organizations and over 1,000 people — including Shinhan Bank, Toss, and GS Group — we genuinely change how organizations work. A proven AI transformation partner, recognized as a 2024 Baby Unicorn and ranked 7th worldwide at the ACM RecSys Challenge.",
+      metaTitle: 'Corca Blog',
+      metaDescription: '기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.',
       heroTitle: 'Corca is changing the world\nwith AI technology.',
       heroSubtitle:
         'We create new possibilities with AI technology and lead the change in the world.',
@@ -206,10 +203,8 @@ export const ui = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle:
-        'Corca（コルカ）| 企業のAI変革（AX）コンサルティング・AI教育・AIソリューション専門企業',
-      metaDescription:
-        '韓国初のOpenAI公式サービスパートナー、コルカ。新韓銀行・Toss・GSグループなど20を超える組織、1,000名以上が体験したAI教育とAX加速化コンサルティングで、組織の働き方を実際に変えます。2024 ベビーユニコーン選定、ACM RecSys 世界7位の技術力で検証されたAI変革パートナーです。',
+      metaTitle: 'Corca Blog',
+      metaDescription: '기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.',
       heroTitle: 'コルカはAI技術で\n世界を変えています。',
       heroSubtitle: 'AI技術で新たな可能性を切り拓き、世界の変化をリードします。',
       readMore: 'もっと見る',
@@ -250,9 +245,8 @@ export const ui = {
       rights: '© 2026 Corca, Inc.',
     },
     home: {
-      metaTitle: 'Corca | 企业AI转型（AX）咨询·AI培训·AI解决方案专业企业',
-      metaDescription:
-        'Corca是韩国首家OpenAI官方服务合作伙伴。我们通过被新韩银行、Toss、GS集团等20多个组织、1,000多人亲身体验的AI培训与AX加速咨询，切实改变组织的工作方式。作为入选2024年“小独角兽”、在ACM RecSys Challenge中位列全球第7的AI转型伙伴，技术实力备受验证。',
+      metaTitle: 'Corca Blog',
+      metaDescription: '기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.',
       heroTitle: 'Corca正在用AI技术\n改变世界。',
       heroSubtitle: '我们用AI技术开启新的可能，引领世界的变革。',
       readMore: '了解更多',

@@ -8,13 +8,14 @@ The site is built with [Astro](https://astro.build) in static (SSG) mode and
 served by Cloudflare Workers Static Assets. A thin Worker (`worker/index.ts`)
 runs in front of the assets purely to canonicalize URLs. Page rendering and blog
 pages stay fully static, with no server data store. Styling is Tailwind CSS v4
-with a self-hosted Pretendard variable font.
+with a self-hosted Pretendard variable font. Google Analytics runs through the
+shared layout as a client-side `gtag.js` snippet.
 
 ## Project layout
 
 - `src/pages/` — routes; a single dynamic route, `[...slug].astro`, generates
-  every page in all four locales from two registries — static pages from
-  `src/staticPages.ts` and product pages from the product registry (see
+  every localized marketing and product page from two registries — static pages
+  from `src/staticPages.ts` and product pages from the product registry (see
   [products](products.md)) — alongside `404.astro` and the `robots.txt`,
   `sitemap.xml` and `rss.xml` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
@@ -22,7 +23,7 @@ with a self-hosted Pretendard variable font.
 - `src/products/` — one self-contained folder per product (Moonlight, Trace, …),
   auto-discovered by the shared shell; see [products](products.md).
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
-  hreflang alternates and a per-page JSON-LD `@graph`.
+  hreflang alternates, Google Analytics tag and a per-page JSON-LD `@graph`.
 - `src/content/` — news and colleague entries as schema-validated YAML collections.
 - `public/blog/` — the integrated Corca Blog static subsite, generated from the
   separate `corca-blog-pages` project with `/blog` as its base path. It carries
@@ -60,4 +61,4 @@ Two layers enforce it at the edge:
 For how to run and build the project see [development](development.md), and for how it reaches
 production see [deployment](deployment.md). Content translation is covered in the [i18n](i18n.md)
 guide, and the [runbook](runbook.md) has step-by-step recipes for adding content, locales
-and pages.
+and pages, including the analytics measurement ID.

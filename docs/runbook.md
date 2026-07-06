@@ -6,9 +6,10 @@ title: Runbook
 
 Recipes for the routine content and configuration changes on the site. Each is a
 self-contained edit that flows through the normal build, so after any of them run
-the gates in [development](development.md) and ship with [deployment](deployment.md). The structure these
-steps touch is mapped in [architecture](architecture.md), and the translation model behind them
-in [i18n](i18n.md).
+the gates described in [contributing](contributing.md) and ship with
+[deployment](deployment.md). The structure these steps touch is mapped in
+[architecture](architecture.md), and the translation model behind them is
+covered in [i18n](i18n.md).
 
 ## Add a news article
 

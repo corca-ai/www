@@ -13,6 +13,10 @@ module, [blog](blog.md) for the integrated Corca Blog, and [runbook](runbook.md)
 for routine news, blog and page content changes. New contributors should start
 with [contributing](contributing.md), which ties together the branch, pull
 request, quality gate and deployment workflow.
+module, and [runbook](runbook.md) for routine news, blog and page content
+changes. New contributors should start with [contributing](contributing.md),
+which ties together the branch, pull request, quality gate and deployment
+workflow.
 
 Day-to-day work is covered in [development](development.md), and shipping is
 described in [deployment](deployment.md). Translations and page content are

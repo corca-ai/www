@@ -10,16 +10,18 @@ import { SITE_ORIGIN } from '../src/site';
 interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
   CORCA_ADMIN_PASSWORD_SHA256?: string;
+  CORCA_NOTION_WEBHOOK_SECRET?: string;
   GITHUB_DISPATCH_TOKEN?: string;
   GITHUB_DISPATCH_REPOSITORY?: string;
 }
 
+const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const adminApiPattern = /^\/api\/admin(?:\/(.*))?$/;
 const adminPostSourcePattern = /^\/blog\/admin\/post-sources\/[^/]+\.html$/;
 const adminSessionCookie = 'corca_blog_admin';
 const adminSessionMaxAge = 60 * 60 * 12;
 const defaultAdminPasswordHash = '364c4b1132e54f92e32e55339d44679dda228d5073b0f6e77afabbf7ce088800';
-const githubDispatchRepository = 'corca-ai/blog-platform';
+const githubDispatchRepository = 'corca-ai/www';
 
 // Preview hosts must not be rewritten to the production domain, or the
 // workers.dev preview and local `wrangler dev` would bounce to prod. Trailing-
@@ -33,6 +35,10 @@ export default {
     const url = new URL(request.url);
     const target = canonicalUrl(request.url, SITE_ORIGIN, !isPreviewRequest(request, url));
     if (target) return Response.redirect(target, 301);
+
+    if (notionPublishWebhookPattern.test(url.pathname)) {
+      return handleNotionPublishWebhook(request, env);
+    }
 
     const adminMatch = url.pathname.match(adminApiPattern);
     if (adminMatch) return handleAdminApi(request, env, safeDecode(adminMatch[1] || ''));
@@ -98,6 +104,49 @@ async function handleAdminApi(request: Request, env: Env, path: string): Promise
   }
 
   return json({ error: 'method_not_allowed' }, 405);
+}
+
+async function handleNotionPublishWebhook(request: Request, env: Env): Promise<Response> {
+  if (request.method.toUpperCase() !== 'POST') {
+    return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
+  }
+
+  const expectedSecret = String(env.CORCA_NOTION_WEBHOOK_SECRET || '');
+  if (!expectedSecret) return json({ error: 'missing_webhook_secret' }, 503);
+  if (!hasValidWebhookSecret(request, expectedSecret)) {
+    return json({ error: 'unauthorized' }, 401);
+  }
+
+  const token = String(env.GITHUB_DISPATCH_TOKEN || '');
+  if (!token) return json({ error: 'missing_github_dispatch_token' }, 503);
+
+  const payload = await readJsonPayload(request);
+  const pageId = extractNotionPageId(payload);
+  const repository = String(env.GITHUB_DISPATCH_REPOSITORY || githubDispatchRepository);
+  const dispatchResponse = await fetch(`https://api.github.com/repos/${repository}/dispatches`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/vnd.github+json',
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'corca-www-notion-relay',
+      'X-GitHub-Api-Version': '2026-03-10',
+    },
+    body: JSON.stringify({
+      event_type: 'notion-post-publish',
+      client_payload: {
+        source: 'notion-webhook',
+        received_at: new Date().toISOString(),
+        ...(pageId ? { page_id: pageId } : {}),
+      },
+    }),
+  });
+
+  if (!dispatchResponse.ok) {
+    return json({ error: 'github_dispatch_failed', status: dispatchResponse.status }, 502);
+  }
+
+  return json({ ok: true, page_id: pageId || null }, 202);
 }
 
 async function createAdminSession(request: Request, env: Env): Promise<Response> {
@@ -378,6 +427,46 @@ function constantTimeEqual(left: string, right: string): boolean {
     diff |= leftText.charCodeAt(index) ^ rightText.charCodeAt(index);
   }
   return diff === 0;
+}
+
+function hasValidWebhookSecret(request: Request, expectedSecret: string): boolean {
+  const headerSecret = request.headers.get('X-Corca-Webhook-Secret') || '';
+  const authorization = request.headers.get('Authorization') || '';
+  const bearerSecret = authorization.match(/^Bearer\s+(.+)$/i)?.[1] || '';
+  return (
+    constantTimeEqual(headerSecret, expectedSecret) ||
+    constantTimeEqual(bearerSecret, expectedSecret)
+  );
+}
+
+function extractNotionPageId(value: Record<string, unknown>): string {
+  const data = isRecord(value.data) ? value.data : {};
+  const entity = isRecord(value.entity) ? value.entity : {};
+  const candidates = [
+    value.id,
+    value.page_id,
+    value.pageId,
+    data.id,
+    data.page_id,
+    data.pageId,
+    entity.id,
+  ];
+
+  for (const candidate of candidates) {
+    const pageId = normalizeNotionId(candidate);
+    if (pageId) return pageId;
+  }
+
+  return '';
+}
+
+function normalizeNotionId(value: unknown): string {
+  const text = String(value || '').trim();
+  if (!text) return '';
+  const match = text.match(
+    /[0-9a-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
+  );
+  return match ? match[0].replace(/-/g, '') : '';
 }
 
 async function sha256Hex(value: string): Promise<string> {

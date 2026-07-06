@@ -1,0 +1,73 @@
+name: Publish Notion Posts
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - notion-post-publish
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: notion-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish ready Notion posts
+        run: pnpm notion:publish
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_BLOG_DATABASE_URL: ${{ vars.NOTION_BLOG_DATABASE_URL }}
+          NOTION_BLOG_DATABASE_ID: ${{ vars.NOTION_BLOG_DATABASE_ID }}
+          NOTION_BLOG_DATA_SOURCE_ID: ${{ vars.NOTION_BLOG_DATA_SOURCE_ID }}
+          NOTION_POST_READY_STATUS: ${{ vars.NOTION_POST_READY_STATUS }}
+          NOTION_POST_PUBLISHING_STATUS: ${{ vars.NOTION_POST_PUBLISHING_STATUS }}
+          NOTION_POST_PUBLISHED_STATUS: ${{ vars.NOTION_POST_PUBLISHED_STATUS }}
+          NOTION_POST_ERROR_STATUS: ${{ vars.NOTION_POST_ERROR_STATUS }}
+          NOTION_PAGE_ID: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.page_id || '' }}
+          NOTION_REQUIRE_RECENT_READY: ${{ github.event_name == 'repository_dispatch' && '1' || '' }}
+          NOTION_RECENT_READY_MINUTES: ${{ vars.NOTION_RECENT_READY_MINUTES || '90' }}
+          NOTION_SKIP_UPDATES: ${{ vars.NOTION_SKIP_UPDATES || '1' }}
+          CORCA_SITE_URL: ${{ vars.CORCA_SITE_URL || 'https://www.borca.ai' }}
+
+      - name: Commit published posts
+        id: commit_posts
+        run: |
+          if [ -z "$(git status --porcelain -- public/blog public/en/blog public/ja/blog public/zh/blog)" ]; then
+            echo "No Notion post changes to commit."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/blog public/en/blog public/ja/blog public/zh/blog
+          git commit -m "content: publish notion posts"
+          git push
+          echo "published=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger deploy workflow
+        if: ${{ steps.commit_posts.outputs.published == 'true' && vars.BLOG_ADMIN_DEPLOY_WORKFLOW != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run "${{ vars.BLOG_ADMIN_DEPLOY_WORKFLOW }}" --ref main

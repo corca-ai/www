@@ -85,12 +85,12 @@ const c = content[lang];
 
   <!-- Content -->
   <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
-    <img src={BADGE} alt={c.badgeAlt} width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" data-reveal />
-    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[181px] max-w-full sm:w-[210px] lg:w-[302px] xl:w-[352px]" data-reveal style="--reveal-delay: .08s" />
-    <h1 class="mt-2 text-[27px] font-normal leading-[1.2] sm:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.title)} data-reveal style="--reveal-delay: .16s" />
-    <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={br(c.body)} data-reveal style="--reveal-delay: .24s" />
-    <p class="font-head max-w-[720px] text-[15px] leading-[1.4] text-white md:text-[18px]" set:html={br(c.cta)} data-reveal style="--reveal-delay: .3s" />
-    <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block" data-reveal style="--reveal-delay: .36s">
+    <img src={BADGE} alt={c.badgeAlt} width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" />
+    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[181px] max-w-full sm:w-[210px] lg:w-[302px] xl:w-[352px]" />
+    <h1 class="mt-2 text-[27px] font-normal leading-[1.2] sm:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.title)} />
+    <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={br(c.body)} />
+    <p class="font-head max-w-[720px] text-[15px] leading-[1.4] text-white md:text-[18px]" set:html={br(c.cta)} />
+    <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block">
       <img src={APPSTORE} alt={c.appStoreAlt} width="324" height="95" class="h-[76px] w-auto sm:h-[58px] lg:h-[92px]" />
     </a>
   </div>
@@ -100,18 +100,18 @@ const c = content[lang];
        instead of container-% so the phones don't shrink between 1024–1280 the
        way live's fixed-size montage doesn't. -->
   <div class="relative mx-auto hidden h-[784px] w-full max-w-[1180px] md:block lg:h-[825px] lg:max-w-[1200px]">
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute bottom-[88px] left-[1%] w-[400px] lg:bottom-[132px] lg:w-[500px]" data-reveal style="--reveal-delay: .1s" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute bottom-[345px] left-[33%] z-20 w-[287px] lg:bottom-[393px] lg:left-[37%] lg:w-[359px]" data-reveal style="--reveal-delay: .25s" />
-    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute bottom-0 right-[7%] w-[493px] lg:right-[4%] lg:w-[657px]" data-reveal style="--reveal-delay: .4s" />
+    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute bottom-[88px] left-[1%] w-[400px] lg:bottom-[132px] lg:w-[500px]" />
+    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute bottom-[345px] left-[33%] z-20 w-[287px] lg:bottom-[393px] lg:left-[37%] lg:w-[359px]" />
+    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute bottom-0 right-[7%] w-[493px] lg:right-[4%] lg:w-[657px]" />
   </div>
 
   <!-- Mobile (<768): four-phone montage echoing live's mobile layout (phones
        bleed past both edges; the section's overflow-hidden clips them). -->
   <div class="relative mx-auto block h-[680px] w-full max-w-[420px] md:hidden">
-    <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="absolute left-[41%] top-[0px] z-10 w-[240px] max-w-none" data-reveal style="--reveal-delay: .1s" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-0 top-[32px] z-20 w-[180px] max-w-none" data-reveal style="--reveal-delay: .2s" />
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[-27%] top-[165px] w-[240px] max-w-none" data-reveal style="--reveal-delay: .3s" />
-    <img src={PHONE_HOME} alt={c.appShotAlt} loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" data-reveal style="--reveal-delay: .4s" />
+    <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="absolute left-[41%] top-[0px] z-10 w-[240px] max-w-none" />
+    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-0 top-[32px] z-20 w-[180px] max-w-none" />
+    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[-27%] top-[165px] w-[240px] max-w-none" />
+    <img src={PHONE_HOME} alt={c.appShotAlt} loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" />
   </div>
 </section>
 

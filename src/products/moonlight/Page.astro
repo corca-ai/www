@@ -82,16 +82,16 @@ const statIcons = [
   style={`background-image: linear-gradient(rgba(58,25,90,0.64), rgba(46,18,74,0.72)), url('${HERO_BG}');`}
 >
   <div class="container-c flex min-h-[500px] flex-col items-center justify-center gap-6 py-16 text-center text-white md:min-h-[720px] lg:min-h-[960px] lg:gap-7 lg:py-24">
-    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[245px] max-w-full sm:w-[330px] lg:w-[500px]" data-reveal />
-    <h1 class="text-[32px] font-normal leading-[1.2] md:text-[36px] lg:text-[52px] xl:text-[60px]" data-reveal style="--reveal-delay: .1s" set:html={titleHtml} />
-    <p class="max-w-[840px] text-[15px] leading-[1.4] text-white md:text-[20px]" data-reveal style="--reveal-delay: .2s">{c.body}</p>
+    <img src={LOGO} alt="Moonlight" width="460" height="131" class="w-[245px] max-w-full sm:w-[330px] lg:w-[500px]" />
+    <h1 class="text-[32px] font-normal leading-[1.2] md:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={titleHtml} />
+    <p class="max-w-[840px] text-[15px] leading-[1.4] text-white md:text-[20px]">{c.body}</p>
     <a
       href={APP_URL}
       target="_blank"
       rel="noopener"
       class="btn-pill btn-pill-lg mt-2 border-transparent bg-white text-black hover:bg-[#808090] lg:!text-[20px]"
-      data-reveal
-      style="--reveal-delay: .3s"
+     
+     
     >{c.cta}</a>
   </div>
 </section>

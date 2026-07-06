@@ -5,16 +5,15 @@ title: Contributing
 # Contributing
 
 This is the contribution hub for the Corca website. The site is a static Astro
-build served on Cloudflare Workers, and the rest of the project docs live under
-`docs/`; start at [the docs index](index.md) when you need wider context.
+build served on Cloudflare Workers. Start at the [docs index](index.md) when you
+need the full documentation map; use this page for the branch, pull request,
+quality gate and merge-to-deploy handoff.
 
 ## Start from the right doc
 
-Use [development](development.md) for local commands, [architecture](architecture.md)
-for the route and Worker layout, [runbook](runbook.md) for routine news, blog
-and page edits, [products](products.md) for product page ownership, and
-[i18n](i18n.md) for translations and localized content. Quality gates and hook
-details are centralized in [code quality](code-quality.md).
+Use [development](development.md) for local commands. Use [Code quality](code-quality.md)
+for exact gate definitions. Content and configuration recipes live in the
+[runbook](runbook.md). See [Product pages](products.md) for product page ownership.
 
 ## Local workflow
 
@@ -48,11 +47,11 @@ pnpm check
 ```
 
 This runs Biome, `astro check`, knip, duplication checks and docs linting. For a
-final static-build check, run `pnpm build`. The local pre-commit hook formats and
-checks staged code/docs, while the pre-push hook runs the same gate set that CI
-uses. If the native `nose` or `awiki` binaries are missing locally, the hook can
-warn and continue; CI installs them and enforces those gates. See
-[code quality](code-quality.md) for the full gate definitions.
+final static-build check, run `pnpm build`. Running `pnpm check` locally requires
+the native `nose` and `awiki` binaries described in [Code quality](code-quality.md).
+The local hooks can warn and continue when those binaries are missing, but CI
+installs and enforces them. CI also runs `pnpm build`, so a branch that passes
+`pnpm check` but breaks the static build can still fail CI.
 
 ## Open a pull request
 
@@ -66,6 +65,11 @@ git push -u origin your-branch-name
 after the required CI jobs are green. The CI jobs call the same `check:*` scripts
 as the local hooks, so a clean `pnpm check` is the best local predictor of a
 green pull request.
+
+For content, product or localization pull requests, include the relevant preview
+URLs, note which locales changed, confirm where images live, and call out any SEO
+title/description updates. Ask for product, content, localization or design input
+when the change changes meaning, positioning or visual direction.
 
 ## Merge and deploy
 

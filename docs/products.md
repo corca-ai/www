@@ -40,3 +40,17 @@ formats.
 The route registry is `src/pages/[...slug].astro` and the auto-discovery (a
 `import.meta.glob` over the product folders) is `src/products/registry.ts`; both
 are part of the shared shell described in [architecture](architecture.md) and rarely change.
+
+## Updating a product
+
+Product updates stay inside the owning product folder unless the shared shell
+itself needs to change. Edit `manifest.ts` for product ordering, category-card
+copy, SEO title/description, logos and `SoftwareApplication` schema data. Edit
+`Page.astro` for page body copy, layout and product-specific interactions. Add
+or replace product-owned media under `assets/` and import it from the manifest or
+page so the build fingerprints it and fails if the asset is missing.
+
+Before opening a product pull request, preview `/products/<slug>` and the
+localized variants (`/en/products/<slug>`, `/ja/products/<slug>`,
+`/zh/products/<slug>`). Confirm the nav dropdown, `/products` category card,
+metadata, schema data and visible page copy all match the changed product story.

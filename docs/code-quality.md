@@ -11,11 +11,13 @@ and the `pnpm check` script (see [development](development.md)).
 
 - **Biome** formats and lints `.ts`, `.js` and `.json`. Type safety for `.astro`
   files comes from `astro check`, and Tailwind CSS is left to the framework.
-- **knip** finds dead code — unused files, exports and dependencies. Product
-  pages load through `registry.ts`'s `import.meta.glob`, which knip cannot
-  follow, so `knip.json` lists `src/products/*/{manifest.ts,Page.astro}` as entry
-  points (the wildcard covers any new product) and ignores the native
-  `nose`/`awiki` binaries.
+- **knip** finds dead code — unused files, exports and dependencies. Routes and
+  product pages load through framework conventions and `import.meta.glob`, so
+  `knip.json` lists `src/pages/**/*.astro`, `src/pages/**/*.ts`,
+  `src/products/*/manifest.ts` and `src/products/*/Page.astro` as entry points.
+  It also ignores `public/blog/**` and `public/blog-assets/**` because those
+  static blog files are deployed as assets rather than imported from TypeScript.
+  The native `nose`/`awiki` binaries are ignored as external tools.
 - **nose** detects code duplication across `src/**/*.ts` as a jscpd replacement;
   its gate is configured in `nose.toml`. It does not analyze `.astro` files, so
   shared logic belongs in `.ts` modules where nose can see it.
@@ -48,15 +50,18 @@ present, formats and checks the docs. Pre-push runs the full gate set in
 parallel — `check:biome`, `check:astro`, `check:knip`, `check:dup` and
 `check:docs`. The two native-binary gates skip with a warning when nose or awiki
 is missing, so a contributor without them is never blocked; CI installs both and
-enforces them hard.
+enforces them hard. Running `pnpm check` directly does not skip missing native
+binaries; install them before using it as the local pre-PR check.
 
 ## Continuous integration
 
 `.github/workflows/ci.yml` calls the same `check:*` scripts on every push and
-pull request, so CI enforces exactly what the pre-push hook does. A `quality`
-job runs the pnpm-installed gates (Biome, `astro check`, knip) and `pnpm build`;
-a `duplication-and-docs` job installs nose and awiki from their public release
-binaries and runs the duplication and docs gates.
+pull request, so CI enforces the same gate definitions as the pre-push hook. A
+`quality` job runs the pnpm-installed gates (Biome, `astro check`, knip) and
+`pnpm build`; that build step is CI-only, so run `pnpm build` locally when you
+want the closest preview of the `quality` job. A `duplication-and-docs` job
+installs nose and awiki from their public release binaries and runs the
+duplication and docs gates.
 
 ## Protected main
 

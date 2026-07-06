@@ -63,5 +63,6 @@ binaries and runs the duplication and docs gates.
 `main` is a protected branch: changes land through a pull request, and both CI
 jobs — `quality` and `duplication-and-docs` — must pass before it can merge.
 Direct pushes are rejected, so the pre-push hook is the fast local preview of the
-gates CI will run on the pull request. Deployment stays a manual step after
-merge, covered in [deployment](deployment.md).
+gates CI will run on the pull request. The end-to-end branch and pull request
+workflow is covered in [contributing](contributing.md), and deployment stays a
+manual step after merge, covered in [deployment](deployment.md).

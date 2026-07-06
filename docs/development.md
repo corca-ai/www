@@ -21,9 +21,6 @@ configuration edits have step-by-step recipes in the [runbook](runbook.md).
 
 ## Contributing
 
-`main` is a protected branch, so every change lands through a pull request
-rather than a direct push. Work on a branch, `git push` it — the pre-push hook
-runs the gates locally — then open a pull request and merge once CI is green; no
-separate reviewer is required. CI runs the same `check:*` scripts as the hook,
-so a clean local `pnpm check` is a good predictor of a green pull request. The
-gates themselves are described in [code-quality](code-quality.md).
+The branch, pull request, quality gate and deployment handoff workflow lives in
+[contributing](contributing.md). Keep this page focused on local development
+commands; use [code quality](code-quality.md) for the exact gate definitions.

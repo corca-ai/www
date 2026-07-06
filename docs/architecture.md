@@ -6,9 +6,9 @@ title: Architecture
 
 The site is built with [Astro](https://astro.build) in static (SSG) mode and
 served by Cloudflare Workers Static Assets. A thin Worker (`worker/index.ts`)
-runs in front of the assets purely to canonicalize URLs — page rendering stays
-fully static, with no server runtime. Styling is Tailwind CSS v4 with a
-self-hosted Pretendard variable font.
+runs in front of the assets purely to canonicalize URLs. Page rendering and blog
+pages stay fully static, with no server data store. Styling is Tailwind CSS v4
+with a self-hosted Pretendard variable font.
 
 ## Project layout
 
@@ -24,12 +24,14 @@ self-hosted Pretendard variable font.
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
   hreflang alternates and a per-page JSON-LD `@graph`.
 - `src/content/` — news and colleague entries as schema-validated YAML collections.
+- `src/blog/` — Corca Blog source posts, metadata loading and URL normalization.
+  Blog pages are static Astro routes under `/blog`.
 - `src/i18n/` — locale config, UI strings, per-page SEO metadata and the
   structured-data (schema.org) builders.
 - `src/assets/` and `public/` — optimized images, the font, the OG image, the
-  web app manifest, and the RSS feed. `public/_redirects` holds the per-path
-  relocation rules (old flat URLs → the `/products` and `/about` structure, and
-  `/rss` → `/rss.xml`).
+  web app manifest, blog assets, and feed/static files. `public/_redirects`
+  holds the per-path relocation rules (old flat URLs → the `/products` and
+  `/about` structure, `/rss` → `/rss.xml`, and legacy blog post redirects).
 - `worker/index.ts` — the edge canonicalization Worker (see below). `src/site.ts`
   is the single source for the canonical origin (`SITE_ORIGIN`), and
   `src/canonical.ts` is the pure URL-normalization it applies.

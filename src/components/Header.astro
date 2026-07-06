@@ -15,8 +15,9 @@ import { products } from '../products/registry';
 interface Props {
   lang: Lang;
   basePath: string;
+  localized?: boolean;
 }
-const { lang, basePath } = Astro.props;
+const { lang, basePath, localized = true } = Astro.props;
 const t = useTranslations(lang);
 
 const menuLabel = { ko: '메뉴', en: 'Menu', ja: 'メニュー', zh: '菜单' }[lang];
@@ -24,11 +25,13 @@ const primaryNavLabel = { ko: '주요 메뉴', en: 'Primary', ja: 'メインナ�
 const home = localizePath('/', lang);
 const productsHref = localizePath('/products', lang);
 const aboutHref = localizePath('/about', lang);
+const blogHref = '/blog';
 
 // Mark the nav link for the page you're on (aria-current="page"); it has no
 // visual effect but tells assistive tech where you are.
 const currentPath = localizePath(basePath, lang);
 const isCurrent = (href: string) => (href === currentPath ? 'page' : undefined);
+const isBlogCurrent = currentPath === blogHref || currentPath.startsWith(`${blogHref}/`);
 
 // Product dropdown entries come from the product registry (src/products/*), so a
 // new product folder appears here automatically.
@@ -46,7 +49,7 @@ const langOptions = locales.map((l) => ({
   code: l,
   short: languageShort[l],
   name: languageNames[l],
-  href: localizePath(basePath, l),
+  href: localized ? localizePath(basePath, l) : localizePath('/', l),
   hreflang: localeTag[l],
   active: l === lang,
 }));
@@ -100,7 +103,7 @@ const langOptions = locales.map((l) => ({
       </div>
 
       <a href={externalLinks.careers} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black">{t.nav.careers}</a>
-      <a href={externalLinks.blog} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black">{t.nav.blog}</a>
+      <a href={blogHref} aria-current={isBlogCurrent ? 'page' : undefined} class="py-5 text-[17px] font-normal text-black">{t.nav.blog}</a>
     </nav>
 
     <!-- Right side: language switcher (desktop) + hamburger (mobile) -->
@@ -164,7 +167,7 @@ const langOptions = locales.map((l) => ({
             </div>
           </div>
           <a href={externalLinks.careers} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.careers}</a>
-          <a href={externalLinks.blog} target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.blog}</a>
+          <a href={blogHref} aria-current={isBlogCurrent ? 'page' : undefined} class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.blog}</a>
           <div class="flex gap-2 py-4">
             {langOptions.map((o) => (
               <a href={o.href} hreflang={o.hreflang} aria-label={o.name} aria-current={o.active ? 'true' : undefined} class:list={["rounded-full border px-4 py-1.5 text-[14px]", o.active ? "border-brand font-semibold text-brand" : "border-black/15 text-ink-soft"]}>{o.short}</a>

@@ -69,5 +69,6 @@ duplication and docs gates.
 jobs — `quality` and `duplication-and-docs` — must pass before it can merge.
 Direct pushes are rejected, so the pre-push hook is the fast local preview of the
 gates CI will run on the pull request. The end-to-end branch and pull request
-workflow is covered in [contributing](contributing.md), and deployment stays a
-manual step after merge, covered in [deployment](deployment.md).
+workflow is covered in [contributing](contributing.md); and as the
+[deployment](deployment.md) guide explains, merging to `main` now deploys
+automatically via Cloudflare's GitHub integration.

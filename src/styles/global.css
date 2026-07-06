@@ -54,7 +54,6 @@
    Base
 --------------------------------------------------------------------------- */
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -116,15 +115,13 @@ h1, h2, h3, .font-head {
 
 /* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -180,7 +177,7 @@ h1, h2, h3, .font-head {
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
-  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 /* Live corca.ai buttons have no lift/transform on hover — only a background
    shift (see the per-button hover:bg utilities). */

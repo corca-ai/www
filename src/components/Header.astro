@@ -66,16 +66,16 @@ const langOptions = locales.map((l) => ({
         <a
           href={productsHref}
           aria-current={isCurrent(productsHref)}
-          class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black transition-colors"
+          class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black"
         >
           {t.nav.products}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </a>
-        <div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
+        <div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
           {productItems.map((item) => (
-            <a href={item.href} aria-current={isCurrent(item.href)} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
+            <a href={item.href} aria-current={isCurrent(item.href)} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]">{item.label}</a>
           ))}
         </div>
       </div>
@@ -85,22 +85,22 @@ const langOptions = locales.map((l) => ({
         <a
           href={aboutHref}
           aria-current={isCurrent(aboutHref)}
-          class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black transition-colors"
+          class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black"
         >
           {t.nav.about}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
             <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </a>
-        <div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] transition-all duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
+        <div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel">
           {aboutItems.map((item) => (
-            <a href={item.href} aria-current={isCurrent(item.href)} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft transition-colors hover:bg-black/[0.04]">{item.label}</a>
+            <a href={item.href} aria-current={isCurrent(item.href)} class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]">{item.label}</a>
           ))}
         </div>
       </div>
 
-      <a href={externalLinks.careers} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black transition-opacity hover:opacity-70">{t.nav.careers}</a>
-      <a href={externalLinks.blog} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black transition-opacity hover:opacity-70">{t.nav.blog}</a>
+      <a href={externalLinks.careers} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black">{t.nav.careers}</a>
+      <a href={externalLinks.blog} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black">{t.nav.blog}</a>
     </nav>
 
     <!-- Right side: language switcher (desktop) + hamburger (mobile) -->
@@ -120,7 +120,7 @@ const langOptions = locales.map((l) => ({
                 hreflang={o.hreflang}
                 aria-label={o.name}
                 aria-current={o.active ? 'true' : undefined}
-                class:list={["block px-4 py-2 text-[13px] font-medium transition-colors hover:bg-brand/8", o.active ? "font-semibold text-brand" : "text-ink-soft"]}
+                class:list={["block px-4 py-2 text-[13px] font-medium hover:bg-brand/8", o.active ? "font-semibold text-brand" : "text-ink-soft"]}
               >{o.short}</a>
             </li>
           ))}
@@ -181,12 +181,10 @@ const langOptions = locales.map((l) => ({
   .lang-switch > summary::-webkit-details-marker { display: none; }
   details > summary { list-style: none; }
 
-  /* Desktop nav dropdown panels open on hover / keyboard focus-within (see the
-     panel's group-hover / group-focus-within classes). The label itself is a
-     link to the category page, so touch users navigate there instead. */
-  .nav-dd-btn > svg { transition: transform 0.15s ease; }
-  .nav-dd:hover > .nav-dd-btn > svg,
-  .nav-dd:focus-within > .nav-dd-btn > svg { transform: rotate(180deg); }
+  /* Desktop nav dropdown panels open instantly on hover / keyboard focus-within
+     (see the panel's group-hover / group-focus-within classes), matching live
+     corca.ai. The label itself links to the category page, so touch users
+     navigate there instead. */
 </style>
 
 <script>

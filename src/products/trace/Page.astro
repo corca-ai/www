@@ -116,11 +116,17 @@ const c = content[lang];
 </section>
 
 <script>
-  // Respect prefers-reduced-motion for the decorative background video: stop
-  // playback and fall back to the static poster frame.
+  // Respect prefers-reduced-motion for the decorative background video: pause it
+  // (falling back to the static poster frame) whenever reduced motion is on, and
+  // react if the user toggles the setting.
   const video = document.getElementById('trace-hero-video') as HTMLVideoElement | null;
-  if (video && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    video.removeAttribute('autoplay');
-    video.pause();
+  if (video) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => {
+      if (reduce.matches) video.pause();
+      else video.play().catch(() => {});
+    };
+    sync();
+    reduce.addEventListener('change', sync);
   }
 </script>

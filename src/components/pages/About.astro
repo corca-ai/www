@@ -169,8 +169,8 @@ const cl = contactLinks[lang];
       <address class="mt-8 space-y-1.5 text-[16px] not-italic text-[#1a2352] md:text-[18px]">
         <p class="font-head text-[18px] lg:text-[20px]">{c.locationLabel}</p>
         <p>{c.address}</p>
-        <p><a href={`mailto:${contact.email}`} class="hover:text-brand">{contact.email}</a></p>
-        <p><a href="tel:+82-2-6925-6978" class="hover:text-brand">{c.phone}</a></p>
+        <p><a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+        <p><a href="tel:+82-2-6925-6978">{c.phone}</a></p>
       </address>
       <div class="mt-7 lg:hidden">
         <a href={MAP_URL} target="_blank" rel="noopener" class="btn-pill border-transparent bg-brand-ink font-semibold text-white hover:bg-[#035a9a]">{cl.map}</a>

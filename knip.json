@@ -4,9 +4,8 @@
     "src/pages/**/*.astro",
     "src/pages/**/*.ts",
     "src/products/*/manifest.ts",
-    "src/products/*/Page.astro",
-    "public/blog-client.js"
+    "src/products/*/Page.astro"
   ],
-  "ignore": ["public/blog-assets/**"],
+  "ignore": ["public/blog/**", "public/blog-assets/**"],
   "ignoreBinaries": ["awiki", "nose"]
 }

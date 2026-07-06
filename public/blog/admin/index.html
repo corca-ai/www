@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Corca Blog Admin</title>
+    <link rel="icon" href="/assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/admin/admin.css">
+  </head>
+  <body>
+    <main class="admin-shell">
+      <section id="loginPanel" class="login-panel" aria-labelledby="loginTitle">
+        <img class="admin-logo" src="/assets/corca-logo-black.png" alt="Corca" width="1600" height="467" decoding="async">
+        <h1 id="loginTitle">Blog Admin</h1>
+        <form id="loginForm" class="login-form">
+          <label>
+            <span>비밀번호</span>
+            <input id="passwordInput" type="password" autocomplete="current-password" required>
+          </label>
+          <button type="submit">입장</button>
+        </form>
+        <p id="loginMessage" class="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="adminPanel" class="admin-panel" hidden>
+        <header class="admin-header">
+          <div>
+            <p class="eyebrow">Corca Blog</p>
+            <h1>Admin</h1>
+          </div>
+        </header>
+
+        <div class="admin-layout">
+          <aside class="post-panel" aria-label="블로그 글 목록">
+            <div class="panel-heading">
+              <strong>글 목록</strong>
+            </div>
+            <div id="postList" class="admin-post-list"></div>
+          </aside>
+
+          <section class="editor-panel" aria-label="글 편집">
+            <form id="postForm" class="post-form">
+              <div class="form-grid">
+                <label>
+                  <span>제목</span>
+                  <input id="titleInput" name="title" required>
+                </label>
+                <label>
+                  <span>슬러그</span>
+                  <input id="slugInput" name="slug" pattern="[a-z0-9가-힣]+(-[a-z0-9가-힣]+)*" required readonly>
+                </label>
+                <label class="wide">
+                  <span>설명</span>
+                  <input id="descriptionInput" name="description" maxlength="180" required>
+                </label>
+                <label>
+                  <span>게시일</span>
+                  <input id="dateInput" name="date" type="date" required>
+                </label>
+                <label>
+                  <span>태그</span>
+                  <input id="tagsInput" name="tags" placeholder="AX">
+                </label>
+                <label>
+                  <span>작성자</span>
+                  <input id="authorInput" name="author" value="Corca Team">
+                </label>
+                <label>
+                  <span>포맷</span>
+                  <select id="formatInput" name="format">
+                    <option value="markdown">Markdown</option>
+                    <option value="html">HTML</option>
+                  </select>
+                </label>
+                <label>
+                  <span>커버</span>
+                  <input id="coverInput" name="cover" value="assets/editorial-cover.jpg">
+                </label>
+                <label>
+                  <span>썸네일 이미지</span>
+                  <input id="coverFileInput" type="file" accept="image/jpeg,image/png,image/webp">
+                </label>
+                <label>
+                  <span>언어</span>
+                  <select id="languageInput" name="language">
+                    <option value="ko">ko</option>
+                    <option value="en">en</option>
+                  </select>
+                </label>
+                <label>
+                  <span>대표 섹션</span>
+                  <input id="sectionInput" name="section" placeholder="AX">
+                </label>
+                <label class="wide">
+                  <span>썸네일 설명</span>
+                  <input id="coverAltInput" name="coverAlt" maxlength="180">
+                </label>
+              </div>
+
+              <label class="file-field">
+                <span>Markdown/HTML 파일</span>
+                <input id="fileInput" type="file" accept=".md,.markdown,.html,.htm,text/markdown,text/html">
+              </label>
+
+              <label class="content-field">
+                <span id="contentLabel">Markdown 수정</span>
+                <textarea id="contentInput" rows="20" required></textarea>
+              </label>
+
+              <div class="editor-actions">
+                <button id="saveButton" type="submit">저장 요청</button>
+                <button id="deleteButton" type="button" class="danger-button">삭제 요청</button>
+              </div>
+            </form>
+            <p id="adminMessage" class="message" role="status" aria-live="polite"></p>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/admin/admin.js"></script>
+  </body>
+</html>

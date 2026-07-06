@@ -24,8 +24,11 @@ with a self-hosted Pretendard variable font.
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
   hreflang alternates and a per-page JSON-LD `@graph`.
 - `src/content/` — news and colleague entries as schema-validated YAML collections.
-- `src/blog/` — Corca Blog source posts, metadata loading and URL normalization.
-  Blog pages are static Astro routes under `/blog`.
+- `public/blog/` — the integrated Corca Blog static subsite, generated from the
+  separate `corca-blog-pages` project with `/blog` as its base path. It carries
+  the original blog HTML, CSS, client app, assets, post pages, RSS feed and JSON
+  feed so the embedded `/blog` experience stays UI/UX-compatible with the
+  source project.
 - `src/i18n/` — locale config, UI strings, per-page SEO metadata and the
   structured-data (schema.org) builders.
 - `src/assets/` and `public/` — optimized images, the font, the OG image, the

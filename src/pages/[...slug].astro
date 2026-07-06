@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
 import { defaultLang, locales, ui } from '../i18n/ui';
 import { products } from '../products/registry';
+import { SITE_ORIGIN } from '../site';
 import { staticPages, type StaticId } from '../staticPages';
 
 // One localized route for the whole site. Static pages come from `staticPages`
@@ -35,7 +36,7 @@ const Component = product ? product.Page : staticPages[id as StaticId].Component
 
 // Per-page schema.org nodes (merged into BaseLayout's @graph): a Home →
 // …category… → page breadcrumb, plus SoftwareApplication for products with app data.
-const site = Astro.site ?? new URL('https://www.borca.ai');
+const site = Astro.site ?? new URL(SITE_ORIGIN);
 // Titles read "PageName | descriptor"; the breadcrumb/app name is the part
 // before the first pipe (e.g. "문라이트(Moonlight)", "비전과 미션").
 const pageName = (meta.title.split('|')[0] ?? meta.title).trim();

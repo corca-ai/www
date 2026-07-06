@@ -1,5 +1,5 @@
 import type { Lang } from './ui';
-import { localizePath } from './utils';
+import { absoluteUrl } from './utils';
 
 // Page-level schema.org nodes, merged into BaseLayout's JSON-LD `@graph`
 // alongside the site-wide Organization + WebSite. Everything here references the
@@ -26,7 +26,7 @@ export function breadcrumbLd(site: URL, lang: Lang, crumbs: Crumb[]) {
       '@type': 'ListItem',
       position: i + 1,
       name: c.name,
-      item: new URL(localizePath(c.path, lang), site).href,
+      item: absoluteUrl(c.path, lang, site.origin),
     })),
   };
 }
@@ -46,7 +46,7 @@ export function softwareAppLd(
     '@type': 'SoftwareApplication',
     name,
     description,
-    url: new URL(localizePath(basePath, lang), site).href,
+    url: absoluteUrl(basePath, lang, site.origin),
     applicationCategory: info.category,
     operatingSystem: info.os,
     inLanguage: ['ko', 'en', 'ja', 'zh'],

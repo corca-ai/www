@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { SITE_ORIGIN } from '../site';
 
 // RSS feed (issue #17): a press/news feed built from the news collection so
 // search engines and subscription tools can follow Corca's coverage. Served at
@@ -23,7 +24,7 @@ const asDate = (d: string) => {
 };
 
 export const GET: APIRoute = async ({ site }) => {
-  const base = (site ?? new URL('https://www.borca.ai')).href;
+  const base = (site ?? new URL(SITE_ORIGIN)).href;
   const self = `${base}rss.xml`;
   const items = (await getCollection('news'))
     .map((e) => e.data)

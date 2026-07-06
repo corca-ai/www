@@ -1,10 +1,11 @@
 import type { APIRoute } from 'astro';
+import { SITE_ORIGIN } from '../site';
 
 // robots.txt (issue #18): open the whole public site to every crawler (LLM bots
 // included, via the wildcard), keep the future admin/privacy paths out, and
 // point at the sitemap on the configured `site` domain.
 export const GET: APIRoute = ({ site }) => {
-  const base = (site ?? new URL('https://www.borca.ai')).href;
+  const base = (site ?? new URL(SITE_ORIGIN)).href;
   const body = `User-agent: *
 Allow: /
 Disallow: /admin

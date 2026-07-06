@@ -74,7 +74,8 @@ when the change changes meaning, positioning or visual direction.
 ## Merge and deploy
 
 Merge once the required gates pass. No separate reviewer is required unless the
-change itself needs product, content or design approval. Deployment is a manual
-step after merge; use `pnpm run deploy` and make sure Wrangler is authenticated
-for the Corca Cloudflare account. See the [deployment guide](deployment.md) for
-details.
+change itself needs product, content or design approval. Merging to `main`
+deploys automatically: Cloudflare's GitHub integration builds and publishes the
+site, so a merged pull request is a release — treat it as one, and there is no
+manual deploy step in the normal flow. See the [deployment guide](deployment.md)
+for what to check after merge and for the manual `pnpm run deploy` fallback.

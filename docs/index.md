@@ -20,7 +20,8 @@ in front of you:
 | add or update a product page | [Product pages](products.md) |
 | change translations, localized content, or locale behavior | [Internationalization](i18n.md) |
 | inspect exact lint, formatting, duplication, docs, hook, and CI gates | [Code quality](code-quality.md) |
-| deploy the merged site | [Deployment](deployment.md) |
+| understand how a merge deploys, or deploy manually | [Deployment](deployment.md) |
+| understand how these docs are written and organized | [Meta-documentation](metadoc.md) |
 
 Keep broad navigation updates here. Topic-specific details should live on the
 nearest topic page so this index stays a compact map rather than a second copy of

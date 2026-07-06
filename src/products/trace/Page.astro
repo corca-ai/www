@@ -1,23 +1,31 @@
 ---
 import type { Lang } from '../../i18n/ui';
 import { br } from '../../text';
+import heroPoster from './assets/hero-poster.webp';
+import heroVideo from './assets/hero.mp4';
+import badge from './assets/badge-producthunt.webp';
+import logoWordmark from './assets/logo-wordmark.webp';
+import appstore from './assets/appstore-badge.webp';
+import phoneChat from './assets/phone-chat.webp';
+import phoneCal from './assets/phone-calendar.webp';
+import phoneHome from './assets/phone-home.webp';
+import phoneEvents from './assets/phone-events.webp';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 
-const P = '/images/pages/';
-const HERO_POSTER = `${P}2fe9a6_4b78885029854f5daeb2e6b97cc72baaf000.webp`;
+const HERO_POSTER = heroPoster.src;
 // Original Wix hero background: concentric circles with a rotating clock.
-const HERO_VIDEO = '/videos/trace-hero.mp4';
-const BADGE = `${P}2fe9a6_32ebaebce4ec4c2e83c49bb9eb147c21.webp`;
-const LOGO = `${P}2fe9a6_ed110dd31d37412ab81cbcbe0b9a30cc.webp`;
-const APPSTORE = `${P}2fe9a6_6bc0705e6e9245658b307e1b1a6b0bcc.webp`;
-const PHONE_CHAT = `${P}2fe9a6_c29d890e90d04eff8faaf751a934e297.webp`; // top-right chat
-const PHONE_CAL = `${P}2fe9a6_762fd195e5f1497faade479d0af4b12b.webp`; // center calendar widget
-const PHONE_HOME = `${P}2fe9a6_1210239befb1472284d6ac3ddc9c335f.webp`; // big right + notifications
-const PHONE_EVENTS = `${P}2fe9a6_054c526e4498482bade3326d493410f1.webp`; // left event cards
+const HERO_VIDEO = heroVideo;
+const BADGE = badge.src;
+const LOGO = logoWordmark.src;
+const APPSTORE = appstore.src;
+const PHONE_CHAT = phoneChat.src; // top-right chat
+const PHONE_CAL = phoneCal.src; // center calendar widget
+const PHONE_HOME = phoneHome.src; // big right + notifications
+const PHONE_EVENTS = phoneEvents.src; // left event cards
 const APP_URL = 'https://apps.apple.com/app/id6503812022';
 
 

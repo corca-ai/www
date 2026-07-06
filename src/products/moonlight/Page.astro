@@ -1,15 +1,17 @@
 ---
 import type { Lang } from '../../i18n/ui';
+import heroBg from './assets/hero-bg.webp';
+import logoWhite from './assets/logo-white.webp';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 
-const HERO_BG = '/images/pages/2fe9a6_c547632b877545b1ac6444eddee05fd8.webp';
+const HERO_BG = heroBg.src;
 // White-wordmark version (icon kept, "Moonlight" text recolored white) so the
 // logo reads on the dark hero — the original asset has dark-purple text baked in.
-const LOGO = '/images/pages/moonlight-logo-white.webp';
+const LOGO = logoWhite.src;
 const APP_URL = 'https://themoonlight.io/';
 
 const content = {

@@ -18,7 +18,12 @@ all generated from it — no shared file needs editing.
   and an optional `app` (for the `SoftwareApplication` schema).
 - `Page.astro` — the page body, free to be as bespoke as the product wants. It
   takes a `lang` prop and holds its own localized copy.
-- `assets/` — the product's images, imported so Astro optimizes and hashes them.
+- `assets/` — every image and video the page uses (hero art, screenshots, logos),
+  kept with the product and `import`ed by `Page.astro`/`manifest.ts` so Astro
+  fingerprints them and the build fails if one goes missing. A product's own media
+  lives here, never in `public/` — `public/images/pages/` is only for assets shared
+  across static pages. (Cross-product previews on the home page are the one
+  exception: those live in `src/assets/images/` because the shared homepage owns them.)
 
 The shared shell owns the URL structure (`/products/<slug>/`) and every SEO tag,
 so pages stay consistent no matter who authors them — teams supply values, not

@@ -33,6 +33,8 @@ pre-push:
       run: pnpm exec biome check
     astro-check:
       run: pnpm exec astro check
+    knip:
+      run: pnpm exec knip
     duplication:
       run: |
         if command -v nose >/dev/null 2>&1; then

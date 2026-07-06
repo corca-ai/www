@@ -9,6 +9,10 @@ Astro build served on Cloudflare Workers.
 
 Read the [architecture](architecture.md) page for the stack and project layout,
 [products](products.md) for how each product page is an independently-owned
+module, [blog](blog.md) for the integrated Corca Blog, and [runbook](runbook.md)
+for routine news, blog and page content changes. New contributors should start
+with [contributing](contributing.md), which ties together the branch, pull
+request, quality gate and deployment workflow.
 module, and [runbook](runbook.md) for routine news, blog and page content
 changes. New contributors should start with [contributing](contributing.md),
 which ties together the branch, pull request, quality gate and deployment

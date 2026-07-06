@@ -34,17 +34,15 @@ translation fails the build instead of shipping half-done.
 
 ## Add a blog post
 
-The integrated Corca Blog lives under `/blog`. Add the source HTML file to
-`src/blog/posts/`, add any images under `public/blog-assets/`, and update
-`src/blog/posts/index.json` with the post metadata. `src/blog/data.ts` rewrites
-legacy `assets/...` image paths to `/blog-assets/...` and generates `/blog`,
-`/blog/posts/<slug>`, `/blog/rss.xml` and `/blog/feed.json` during the Astro
-build.
+The integrated Corca Blog lives under `/blog`, but its source of truth remains
+the separate `corca-blog-pages` project. Add the post there, run that project's
+post validation/build flow, then rebuild it with `CORCA_SITE_URL` ending in
+`/blog` and copy the generated `dist/` contents into `public/blog/` in this
+repo. See [blog](blog.md) for the exact integration contract and commands.
 
-The public blog is Korean-only for now, so it uses `localized={false}` in the
-layout rather than generating `/en/blog`, `/ja/blog` or `/zh/blog` variants.
-Share and HTML-download actions are client-side only, so no runtime database is
-required for publishing a post.
+The public blog is Korean-only for now and ships as a static subsite. Share,
+save, reaction, reading preference and HTML-download actions are client-side
+only, so no runtime database is required for publishing a post.
 
 ## Add a colleague
 

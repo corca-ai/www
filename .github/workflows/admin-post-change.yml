@@ -1,0 +1,59 @@
+name: Apply Blog Admin Post Change
+
+on:
+  repository_dispatch:
+    types:
+      - admin-post-change
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: admin-post-change
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Apply admin post change
+        run: node scripts/apply-admin-post-change.js
+        env:
+          ADMIN_POST_CHANGE: ${{ toJson(github.event.client_payload) }}
+
+      - name: Check generated admin post files
+        run: node scripts/admin-post-change-check.js
+
+      - name: Commit admin post change
+        id: commit_posts
+        run: |
+          if [ -z "$(git status --porcelain -- public/blog public/en/blog public/ja/blog public/zh/blog)" ]; then
+            echo "No admin post changes to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A public/blog public/en/blog public/ja/blog public/zh/blog
+          git commit -m "content: apply blog admin post change"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger deploy workflow
+        if: ${{ steps.commit_posts.outputs.changed == 'true' && vars.BLOG_ADMIN_DEPLOY_WORKFLOW != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_WORKFLOW: ${{ vars.BLOG_ADMIN_DEPLOY_WORKFLOW }}
+          DEPLOY_REF: ${{ github.ref_name }}
+        run: gh workflow run "$DEPLOY_WORKFLOW" --ref "$DEPLOY_REF"
+

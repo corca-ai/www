@@ -12,6 +12,8 @@ interface Props {
   description: string;
   /** Locale-agnostic base path for this page, e.g. "/" or "/moonlight". */
   basePath: string;
+  /** Set false for Korean-only sections such as the blog. */
+  localized?: boolean;
   ogImage?: string;
   /** Alt text for the social share image; defaults to the page title. */
   ogImageAlt?: string;
@@ -19,6 +21,7 @@ interface Props {
   noindex?: boolean;
   /** Extra schema.org nodes merged into the JSON-LD @graph (see structuredData.ts). */
   jsonLd?: Record<string, unknown>[];
+  extraFeeds?: { title: string; type: string; href: string }[];
 }
 
 const {
@@ -26,10 +29,12 @@ const {
   title,
   description,
   basePath,
+  localized = true,
   ogImage = '/og-default.png',
   ogImageAlt,
   noindex = false,
   jsonLd = [],
+  extraFeeds = [],
 } = Astro.props;
 
 const site = Astro.site ?? new URL(SITE_ORIGIN);
@@ -44,11 +49,17 @@ const robots = noindex ? 'noindex, nofollow' : 'index, follow';
 const publisherName = { ko: '코르카', en: 'Corca', ja: 'コルカ', zh: 'Corca' }[lang];
 
 // hreflang alternates + x-default (points to the default locale).
-const alternates = locales.map((l) => ({
-  hreflang: localeTag[l],
-  href: absoluteUrl(basePath, l, origin),
-}));
-const xDefault = absoluteUrl(basePath, defaultLang, origin);
+const alternates = localized
+  ? locales.map((l) => ({
+      hreflang: localeTag[l],
+      href: absoluteUrl(basePath, l, origin),
+    }))
+  : [];
+const xDefault = localized ? absoluteUrl(basePath, defaultLang, origin) : '';
+const feeds = [
+  { title: 'Corca 뉴스 · News', type: 'application/rss+xml', href: '/rss.xml' },
+  ...extraFeeds,
+];
 
 // One JSON-LD @graph per page: the site-wide Organization + WebSite (referenced
 // by @id from page nodes) plus any page-specific nodes passed in via `jsonLd`.
@@ -103,9 +114,9 @@ const graph = {
     <link rel="canonical" href={canonical} />
 
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
-    <link rel="alternate" hreflang="x-default" href={xDefault} />
+    {xDefault && <link rel="alternate" hreflang="x-default" href={xDefault} />}
 
-    <link rel="alternate" type="application/rss+xml" title="Corca 뉴스 · News" href="/rss.xml" />
+    {feeds.map((feed) => <link rel="alternate" type={feed.type} title={feed.title} href={feed.href} />)}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -153,7 +164,7 @@ const graph = {
     >
       {{ ko: '본문으로 건너뛰기', en: 'Skip to content', ja: '本文へスキップ', zh: '跳转到正文' }[lang]}
     </a>
-    <Header lang={lang} basePath={basePath} />
+    <Header lang={lang} basePath={basePath} localized={localized} />
     <main id="main" tabindex="-1">
       <slot />
     </main>

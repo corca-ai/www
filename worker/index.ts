@@ -20,9 +20,30 @@ function isPreviewHost(hostname: string): boolean {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    const { hostname } = new URL(request.url);
-    const target = canonicalUrl(request.url, SITE_ORIGIN, !isPreviewHost(hostname));
+    const url = new URL(request.url);
+    const target = canonicalUrl(request.url, SITE_ORIGIN, !isPreviewRequest(request, url));
     if (target) return Response.redirect(target, 301);
     return env.ASSETS.fetch(request);
   },
 };
+
+function isPreviewRequest(request: Request, url: URL): boolean {
+  const forwardedHost = (request.headers.get('Host') || '').split(':')[0] || '';
+  const isMiniflareRequest = request.headers.has('MF-Original-Hostname');
+  return (
+    isPreviewHost(url.hostname) ||
+    isPreviewHost(forwardedHost) ||
+    (isMiniflareRequest && isLocalDevClientIp(request.headers.get('CF-Connecting-IP') || ''))
+  );
+}
+
+function isLocalDevClientIp(value: string): boolean {
+  return (
+    value === '127.0.0.1' ||
+    value === '::1' ||
+    /^10\./.test(value) ||
+    /^192\.168\./.test(value) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(value) ||
+    /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./.test(value)
+  );
+}

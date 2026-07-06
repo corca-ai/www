@@ -1,5 +1,12 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["src/products/*/manifest.ts", "src/products/*/Page.astro"],
+  "entry": [
+    "src/pages/**/*.astro",
+    "src/pages/**/*.ts",
+    "src/products/*/manifest.ts",
+    "src/products/*/Page.astro",
+    "public/blog-client.js"
+  ],
+  "ignore": ["public/blog-assets/**"],
   "ignoreBinaries": ["awiki", "nose"]
 }

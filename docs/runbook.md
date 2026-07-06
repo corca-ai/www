@@ -72,8 +72,19 @@ each is a self-contained folder that registers itself, described in [products](p
 
 ## Change the canonical domain
 
-The production origin used for canonical URLs, `hreflang` alternates and the
-sitemap is `site` in `astro.config.mjs`, which reads `SITE_URL` and falls back to
-the beta domain. Export `SITE_URL` before a deploy to move it — for instance when
-this site takes over from the Wix original. The sitemap regenerates from that
-value automatically, so nothing else changes.
+The canonical origin is single-sourced as `SITE_ORIGIN` in `src/site.ts`. It
+drives the Astro `site` (canonical URLs, `hreflang`, `og:url` and the sitemap)
+and the edge Worker's redirect target, so a permanent move is a one-line edit
+there — for instance when this site takes over from the Wix original:
+
+1. Set `SITE_ORIGIN` in `src/site.ts` to the new origin (`https://`, `www.`, no
+   trailing slash — e.g. `https://www.corca.ai`).
+2. Point `routes` in `wrangler.jsonc` at the new host so Cloudflare answers on it.
+   To also redirect the apex (`corca.ai` → `www.corca.ai`), add the apex as a
+   second `custom_domain` route; the Worker already canonicalizes the host.
+
+For a one-off build against a different origin without editing code, export
+`SITE_URL` (which `astro.config.ts` reads in preference to `SITE_ORIGIN`); note
+this overrides only the Astro `site`, not the Worker, so use it for previews, not
+a real move. Everything else — sitemap, canonical tags, redirects — follows
+automatically.

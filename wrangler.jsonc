@@ -6,14 +6,22 @@
   "account_id": "b23e9b2e3a9159dd7eb3fa51f839c5c5",
   // Keep the workers.dev preview URL enabled alongside the custom domain.
   "workers_dev": true,
-  // Static Astro build served directly by Cloudflare Workers Static Assets.
-  // No Worker script (`main`) needed for a purely static site — assets are
-  // served from ./dist. Add a `main` entry later if edge logic is required.
+  // Canonicalization Worker: runs first on every request (run_worker_first) to
+  // enforce https + www + no-trailing-slash with a 301 (issue #13), then serves
+  // the static Astro build via the ASSETS binding. The canonical origin is
+  // single-sourced in src/site.ts.
+  "main": "worker/index.ts",
   "assets": {
     "directory": "./dist",
-    "html_handling": "auto-trailing-slash",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    // Serve /about from about/index.html and 301 the /about/ variant away, so
+    // the served path matches the no-trailing-slash canonical URLs.
+    "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
-  // Beta site custom domain — provisions DNS + cert on the borca.ai zone.
+  // Beta site custom domain — provisions DNS + cert on the borca.ai zone. To also
+  // redirect the apex (borca.ai → www.borca.ai), add { "pattern": "borca.ai",
+  // "custom_domain": true } here; the Worker already canonicalizes the host.
   "routes": [{ "pattern": "www.borca.ai", "custom_domain": true }]
 }

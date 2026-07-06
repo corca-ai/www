@@ -24,6 +24,8 @@ jobs:
         run: pnpm exec biome ci
       - name: Astro type check
         run: pnpm exec astro check
+      - name: Dead code + unused deps (knip)
+        run: pnpm exec knip
       - name: Build
         run: pnpm build
 

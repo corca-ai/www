@@ -108,6 +108,16 @@ const graph = {
     <meta name="apple-mobile-web-app-title" content="Corca" />
     <meta name="publisher" content={publisherName} />
 
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-SZY1B11LXS"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-SZY1B11LXS');
+    </script>
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />

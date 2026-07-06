@@ -6,16 +6,17 @@ title: Blog integration
 
 The `/blog` section is a static copy of the standalone Corca Blog project at
 `/Users/koleuka/Documents/corca-blog-pages`. Keep that project as the source of
-truth for blog UI, UX, client-side behavior, post publishing scripts and post
-metadata. This repo vendors the generated output under `public/blog/` so the
-main Astro site can serve the same experience from the `www.corca.ai/blog`
-path.
+truth for blog content UI, client-side behavior, post publishing scripts and
+post metadata. This repo vendors the generated output under `public/blog/`, then
+uses the main website header and footer shell so `/blog` stays visually aligned
+with the rest of `www.corca.ai`.
 
 ## What is copied
 
 The vendored output includes:
 
-- `public/blog/index.html` — the original blog home shell.
+- `public/blog/index.html` — the blog home content shell with the main website
+  header and footer applied.
 - `public/blog/app.js` and `public/blog/styles.css` — the original client app
   and visual system, including search, sorting, saved posts, recent reads,
   pagination, reading settings, reading progress, reactions, share/download

@@ -39,8 +39,8 @@ const buttonFeedbackTimers = new WeakMap();
 
 const skipLink = document.querySelector(".skip-link");
 const postList = document.querySelector("#postList");
-const siteHeader = document.querySelector(".site-header");
-const siteFooter = document.querySelector(".site-footer");
+const siteHeader = document.querySelector(".corca-main-header");
+const siteFooter = document.querySelector(".corca-main-footer");
 const heroSection = document.querySelector(".hero");
 const featuredPost = document.querySelector("#featuredPost");
 const recentReads = document.querySelector("#recentReads");

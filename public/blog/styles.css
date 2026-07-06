@@ -85,6 +85,11 @@ img {
   outline-offset: -1px;
 }
 
+.corca-main-header img,
+.corca-main-footer img {
+  outline: 0;
+}
+
 mark {
   border-radius: 4px;
   background: #fff1a8;

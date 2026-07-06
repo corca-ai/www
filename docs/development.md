@@ -18,3 +18,12 @@ server and `pnpm build` to produce the static `dist/` directory.
 The tooling behind `pnpm check` is described in [code-quality](code-quality.md), and the overall
 structure it operates on is laid out in [architecture](architecture.md). Routine content and
 configuration edits have step-by-step recipes in the [runbook](runbook.md).
+
+## Contributing
+
+`main` is a protected branch, so every change lands through a pull request
+rather than a direct push. Work on a branch, `git push` it — the pre-push hook
+runs the gates locally — then open a pull request and merge once CI is green; no
+separate reviewer is required. CI runs the same `check:*` scripts as the hook,
+so a clean local `pnpm check` is a good predictor of a green pull request. The
+gates themselves are described in [code-quality](code-quality.md).

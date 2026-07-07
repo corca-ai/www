@@ -73,6 +73,7 @@ const localeLabels = {
   },
 };
 const supportedLocales = Object.keys(localePaths);
+const translationTargetLocales = supportedLocales.filter((locale) => locale !== 'ko');
 const defaultAuthor = 'Corca Team';
 const defaultCover = 'assets/editorial-cover.jpg';
 const blogIndexLabels = {
@@ -307,6 +308,7 @@ async function upsertPost(value) {
 
   await mkdir(sourcesDir, { recursive: true });
   await writeFile(join(sourcesDir, `${slug}.html`), renderPostSource(post, articleHtml));
+  await writePostTranslations(post, articleHtml, slug);
   console.log(`Admin ${format} post upserted: public/blog/admin/post-sources/${slug}.html`);
 }
 
@@ -372,12 +374,230 @@ async function deletePost(value) {
   await rm(join(sourcesDir, `${slug}.html`), { force: true });
   await rm(join(postsDir, slug), { recursive: true, force: true });
   for (const locale of ['en', 'ja', 'zh']) {
+    await rm(join(translationsDir, locale, `${slug}.html`), { force: true });
     await rm(join(repoRoot, `public/${locale}/blog/posts/${slug}`), {
       recursive: true,
       force: true,
     });
   }
   console.log(`Admin post deleted: ${slug}`);
+}
+
+async function writePostTranslations(post, articleHtml, slug) {
+  if (!shouldAutoTranslatePosts()) {
+    return;
+  }
+
+  const sourceLanguage = normalizeLanguage(post.language || 'ko');
+  for (const locale of translationTargetLocales) {
+    const translationPath = join(translationsDir, locale, `${slug}.html`);
+    await mkdir(dirname(translationPath), { recursive: true });
+
+    if (locale === sourceLanguage) {
+      await writeFile(
+        translationPath,
+        renderPostSource(
+          {
+            ...post,
+            language: locale,
+            tags: localizePostTags(post.tags, locale),
+            section: localizePostTopic(post.section || post.tags?.[0] || '', locale),
+          },
+          articleHtml,
+        ),
+      );
+      continue;
+    }
+
+    const translated = await translatePostSource(post, articleHtml, locale, sourceLanguage);
+    await writeFile(translationPath, renderPostSource(translated.post, translated.articleHtml));
+  }
+}
+
+function shouldAutoTranslatePosts() {
+  const value = String(process.env.BLOG_AUTO_TRANSLATE || '1')
+    .trim()
+    .toLowerCase();
+  return !['0', 'false', 'off', 'no'].includes(value);
+}
+
+async function translatePostSource(post, articleHtml, targetLocale, sourceLocale) {
+  const translator = createTranslator(sourceLocale, targetLocale);
+  const [title, description, coverAlt, translatedArticleHtml] = await Promise.all([
+    translator(String(post.title || '')),
+    translator(String(post.description || '')),
+    post.coverAlt ? translator(String(post.coverAlt || '')) : Promise.resolve(''),
+    translateArticleHtml(articleHtml, translator),
+  ]);
+
+  return {
+    post: {
+      ...post,
+      title: title || post.title,
+      description: trimDescription(description || post.description),
+      tags: localizePostTags(post.tags || [], targetLocale),
+      language: targetLocale,
+      coverAlt: coverAlt || '',
+      section: localizePostTopic(post.section || post.tags?.[0] || '', targetLocale),
+      wordCount: estimateWordCount(translatedArticleHtml),
+    },
+    articleHtml: translatedArticleHtml,
+  };
+}
+
+function createTranslator(sourceLocale, targetLocale) {
+  if (translationProvider() === 'fixture') {
+    return async (value) => fixtureTranslate(value, targetLocale);
+  }
+  return async (value) => googleTranslate(value, sourceLocale, targetLocale);
+}
+
+function translationProvider() {
+  return String(process.env.BLOG_TRANSLATION_PROVIDER || 'google')
+    .trim()
+    .toLowerCase();
+}
+
+async function translateArticleHtml(html, translateText) {
+  const protectedBlocks = [];
+  const protectedHtml = String(html || '').replace(
+    /<(pre|code|script|style|svg|math)\b[\s\S]*?<\/\1>/gi,
+    (match) => {
+      const token = `__CORCA_PROTECTED_HTML_${protectedBlocks.length}__`;
+      protectedBlocks.push(match);
+      return token;
+    },
+  );
+  const parts = protectedHtml.split(/(<[^>]+>)/g);
+  const textIndexes = [];
+  const texts = [];
+
+  for (let index = 0; index < parts.length; index += 1) {
+    if (parts[index].startsWith('<')) continue;
+    if (!shouldTranslateText(parts[index])) continue;
+    textIndexes.push(index);
+    texts.push(decodeHtml(parts[index]));
+  }
+
+  const translatedTexts = await translateTextBatch(texts, translateText);
+  for (let index = 0; index < textIndexes.length; index += 1) {
+    parts[textIndexes[index]] = escapeHtml(translatedTexts[index] || texts[index]);
+  }
+
+  return translateImageAltAttributes(parts.join(''), translateText).then((value) =>
+    protectedBlocks.reduce(
+      (nextHtml, block, index) => nextHtml.replace(`__CORCA_PROTECTED_HTML_${index}__`, block),
+      value,
+    ),
+  );
+}
+
+async function translateImageAltAttributes(html, translateText) {
+  const matches = [...String(html || '').matchAll(/\salt=(["'])(.*?)\1/gi)];
+  const values = matches
+    .map((match) => decodeHtml(match[2]))
+    .filter((value) => shouldTranslateText(value));
+  if (!values.length) return html;
+
+  const translated = await translateTextBatch(values, translateText);
+  let translatedIndex = 0;
+  return String(html || '').replace(/\salt=(["'])(.*?)\1/gi, (match, quote, value) => {
+    const decoded = decodeHtml(value);
+    if (!shouldTranslateText(decoded)) return match;
+    const nextValue = translated[translatedIndex] || decoded;
+    translatedIndex += 1;
+    return ` alt=${quote}${escapeAttribute(nextValue)}${quote}`;
+  });
+}
+
+async function translateTextBatch(texts, translateText) {
+  const normalizedTexts = texts.map((text) => String(text || ''));
+  const translated = [];
+  const chunkLimit = Number(process.env.BLOG_TRANSLATION_CHUNK_LIMIT || 2800);
+  let chunk = [];
+  let chunkLength = 0;
+
+  const flush = async () => {
+    if (!chunk.length) return;
+    translated.push(...(await translateTextChunk(chunk, translateText)));
+    chunk = [];
+    chunkLength = 0;
+  };
+
+  for (const text of normalizedTexts) {
+    const nextLength = chunkLength + text.length + translationDelimiter(0).length + 2;
+    if (chunk.length && nextLength > chunkLimit) {
+      await flush();
+    }
+    chunk.push(text);
+    chunkLength += text.length + translationDelimiter(0).length + 2;
+  }
+  await flush();
+  return translated;
+}
+
+async function translateTextChunk(texts, translateText) {
+  if (texts.length === 1) {
+    return [await translateText(texts[0])];
+  }
+
+  const delimiter = translationDelimiter(Date.now());
+  const joined = texts.join(`\n${delimiter}\n`);
+  const translated = await translateText(joined);
+  const parts = translated.split(delimiter).map((value) => value.trim());
+  if (parts.length === texts.length) {
+    return parts;
+  }
+  return Promise.all(texts.map((text) => translateText(text)));
+}
+
+function translationDelimiter(seed) {
+  return `<<<CORCA_TRANSLATE_BREAK_${seed}>>>`;
+}
+
+function shouldTranslateText(value) {
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!text) return false;
+  if (/^__CORCA_PROTECTED_HTML_\d+__$/.test(text)) return false;
+  if (/^https?:\/\//i.test(text)) return false;
+  return /[A-Za-z가-힣ぁ-んァ-ン一-龯]/.test(text);
+}
+
+function fixtureTranslate(value, targetLocale) {
+  const text = String(value || '');
+  if (!text.trim()) return text;
+  return `[${targetLocale}] ${text}`;
+}
+
+async function googleTranslate(value, sourceLocale, targetLocale) {
+  const text = String(value || '');
+  if (!text.trim()) return text;
+
+  const params = new URLSearchParams({
+    client: 'gtx',
+    sl: googleTranslateLanguage(sourceLocale),
+    tl: googleTranslateLanguage(targetLocale),
+    dt: 't',
+    q: text,
+  });
+  const response = await fetch(`https://translate.googleapis.com/translate_a/single?${params}`, {
+    headers: { 'accept-language': 'en-US,en;q=0.9' },
+  });
+  if (!response.ok) {
+    throw new Error(`Google Translate request failed with ${response.status}`);
+  }
+  const data = await response.json();
+  const translated = Array.isArray(data?.[0])
+    ? data[0].map((part) => part?.[0] || '').join('')
+    : '';
+  return translated.trim() || text;
+}
+
+function googleTranslateLanguage(locale) {
+  if (locale === 'zh') return 'zh-CN';
+  return locale || 'ko';
 }
 
 async function syncPostIndex() {

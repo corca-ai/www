@@ -1,0 +1,218 @@
+<!--
+corca-post
+{
+  "title": "何をキャッシュし、何を体に刻むのか",
+  "description": "ローカルリティとキャッシュを生産性の言語で読み直し、LLMに任せる事と直接体に刻む事を区別する感覚をまとめたCeal-terview文です。",
+  "date": "2026-05-28",
+  "tags": [
+    "AX"
+  ],
+  "author": "최정혁",
+  "cover": "assets/editorial-cover.jpg",
+  "language": "ja"
+}
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>何をキャッシュし、何を体に刻むのか</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --paper: #fffdfa;
+      --ink: #23211d;
+      --muted: #6f6a60;
+      --line: #e7dfd1;
+      --accent: #5f6f52;
+      --accent-2: #8b6f47;
+      --soft: #f0eadf;
+      --soft-2: #eef1e9;
+      --wrong: #8a3a35;
+      --right: #3f6f48;
+      --code: #29261f;
+      --shadow: 0 24px 80px rgba(40, 33, 20, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #fbf2dc 0, transparent 32rem), var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      line-height: 1.78;
+      word-break: keep-all;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 48px 22px 80px; }
+    article { background: rgba(255,253,250,.88); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); overflow: hidden; }
+    header.hero { padding: 58px clamp(24px, 6vw, 76px) 42px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(255,255,255,.82), rgba(241,234,219,.72)); }
+    .eyebrow { color: var(--accent); font-weight: 800; letter-spacing: .08em; font-size: .78rem; text-transform: uppercase; margin-bottom: 18px; }
+    h1 { font-size: clamp(2.05rem, 5.2vw, 4.2rem); line-height: 1.1; margin: 0 0 20px; letter-spacing: -0.055em; }
+    .subtitle { font-size: clamp(1.04rem, 2.1vw, 1.28rem); color: #4d493f; max-width: 760px; margin: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; color: var(--muted); font-size: .92rem; }
+    .pill { border: 1px solid var(--line); background: rgba(255,255,255,.6); padding: 6px 12px; border-radius: 999px; }
+    .content { padding: 42px clamp(24px, 6vw, 76px) 64px; }
+    p { margin: 0 0 1.05rem; }
+    h2 { margin: 3rem 0 1rem; font-size: clamp(1.42rem, 2.8vw, 2rem); line-height: 1.25; letter-spacing: -0.035em; }
+    h3 { margin: 2rem 0 .8rem; font-size: 1.12rem; }
+    .lead { font-size: 1.13rem; color: #3c382f; }
+    .ceal-q { margin: 2.2rem 0 1.1rem; border-left: 4px solid var(--accent); background: var(--soft-2); padding: 16px 18px; border-radius: 0 18px 18px 0; color: #3e4939; }
+    .ceal-q-label { display: block; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+    .ceal-q-text { margin: 0; font-size: 1.03rem; font-weight: 750; line-height: 1.62; color: #2f3b2c; }
+    .quote { margin: 1.4rem 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaf1; font-size: 1.06rem; }
+    .quote strong { color: var(--accent-2); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 1.2rem 0 1.6rem; }
+    .card { border: 1px solid var(--line); background: rgba(255,255,255,.76); border-radius: 20px; padding: 18px; }
+    .card h3 { margin-top: 0; }
+    code { background: #eee6d7; color: var(--code); border-radius: 7px; padding: .08rem .36rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .92em; }
+    ul { padding-left: 1.2rem; margin: .4rem 0 1.2rem; }
+    li + li { margin-top: .42rem; }
+    .checkpoint, .quiz { border: 1px solid var(--line); border-radius: 22px; background: var(--soft); padding: 22px; margin: 2.2rem 0; }
+    .checkpoint h3, .quiz h3 { margin-top: 0; }
+    button { font: inherit; border: 1px solid #cfc2aa; background: #fffdfa; color: var(--ink); padding: 10px 14px; border-radius: 12px; cursor: pointer; transition: transform .12s ease, background .12s ease; }
+    button:hover { transform: translateY(-1px); background: #fff7e8; }
+    .choices { display: grid; gap: 10px; margin: 14px 0; }
+    .choice { text-align: left; width: 100%; }
+    .choice[aria-pressed="true"] { border-color: var(--accent); background: #eef1e9; }
+    .feedback { min-height: 1.5em; margin-top: 10px; font-weight: 700; }
+    .feedback.right { color: var(--right); }
+    .feedback.wrong { color: var(--wrong); }
+    .feedback.ok { color: var(--right); }
+    .feedback.bad { color: var(--wrong); }
+    .choice.correct { border-color: var(--right); background: #eef8f0; }
+    .choice.incorrect, .choice.wrong { border-color: var(--wrong); background: #fff0ee; }
+    .quiet-answer { display: none; margin-top: 14px; color: #4d493f; }
+    .quiet-answer.open { display: block; }
+    .ending { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); color: #3c382f; }
+    .note { color: var(--muted); font-size: .95rem; }
+    .visual-figure { margin: 2.4rem 0 2.8rem; border: 1px solid var(--line); border-radius: 24px; background: #fff; overflow: hidden; box-shadow: 0 18px 48px rgba(40, 33, 20, 0.08); }
+    .visual-figure img { display: block; width: 100%; height: auto; }
+    .visual-figure figcaption { padding: 14px 18px 16px; color: var(--muted); font-size: .94rem; line-height: 1.62; background: linear-gradient(180deg, #fffdfa, #f7f1e5); border-top: 1px solid var(--line); }
+    .visual-figure strong { color: var(--accent-2); }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } .wrap { padding-top: 22px; } article { border-radius: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <article>
+      <header class="hero">
+        <div class="eyebrow">Ceal-terview・AX共有会</div>
+        <h1>何をキャッシュし、<br/>何を体に刻むのか</h1>
+        <p class="subtitle">チェ・ジョンヒョクの5/28 AX共有会発表<strong>「ローカルと自分だけのキャッシュ」</strong>を基に、生産性を単純な自動化ではなく、「近づけておく」と「一貫して通過すること」を選ぶ感覚で読み直す。</p>
+        <div class="meta">
+          <span class="pill">プレゼンター：チェ・ジョンヒョク</span>
+          <span class="pill">ソース: 2026-05-28 AX共有会</span>
+          <span class="pill">トピック: locality · cache · LLM 委任判断</span>
+        </div>
+      </header>
+
+      <div class="content">
+        <p class="lead">この記事は「クリップボードの履歴を書く」で止まるヒントのコレクションではありません。チョンヒョクが発表とインタビューから取り出した核心はより広い。私たちが書いたばかりの命令、コピーしたばかりの文章、開いたばかりの会話には現在の作業の流れが残っている。その流れを毎回引き出しの奥に入れてしまわずに机の上に近いところに置くこと。チョン・ヒョクはこれをCSの<em>locality of reference</em>とキャッシュの感覚で説明した。</p>
+
+        <div class="ceal-q">
+          <span class="ceal-q-label">Cealが尋ねた</span>
+          <p class="ceal-q-text">急いで捉えたテーマだったのに、なぜこの発表がチョン・ヒョク様にはすぐに言える文感でしたか？</p>
+        </div>
+        <p>チョンヒョクの最初の答えは意外と発表の出発点から率直だった。主題は緊急に決まった。もともと発表者だったホイドン様が前日発表が難しくなり、チョンヒョク様が代わりに発表をお願いされた。だが急調だったからといって手ぶらではなかった。</p>
+        <p>その直前の一週間、ジョンヒョクはいくつかの同僚にクリップボード管理、シェルコマンド履歴管理などのヒントをすでに伝えていました。 「これでこの部分を整理してみよう。私が長い間育ててきたメンタルモデルなので、すぐに準備しても栄養価を持てるように思える」発表は突然起こったが、材料はすでに作業台の上に置かれていた。</p>
+
+        <div class="quote"><strong>コア文候補</strong><br/>最近の命令とクリップボードの履歴は、私が過ぎたばかりの考えの近い痕跡です。</div>
+
+        <h2>ローカルリティをビジネスツールで読む</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">Cealが尋ねた</span>
+          <p class="ceal-q-text">仲間たちが発表を聞いてすぐに一つだけに従ってみたかった行動は何でしたか？</p>
+        </div>
+        <p>チョン・ヒョクが最も具体的に推薦した行動は、<strong>クリップボード履歴</strong>機能を搭載して活用してみることだった。ツールは、Raycast、Alfred、Hammerspoonなどの選択肢にすることができます。シェル側では、前の命令を再び検索する履歴検索や<code>hstr</code>、おなじみ<code>ctrl+r</code>同じ習慣が同じ系列にある。</p>
+        <p>この習慣の価値は、「服を早くする」よりも少し深いです。最近コピーしたテキストと最近入力した命令には、私がやっていたことの文脈が残ります。今の仕事はおおよそ前の仕事につながっている。そうすれば、その痕跡を毎回新たに探すようにしないで、近くで再び取り出せるようにしておくほうが自然だ。</p>
+
+        <div class="grid">
+          <section class="card">
+            <h3>近くに置くと良いこと</h3>
+            <ul>
+              <li>先ほど入力したシェルコマンド</li>
+              <li>最近コピーしたテキストとリンク</li>
+              <li>今送受信したAIチャットの文脈</li>
+              <li>現在の作業に続くSlack、Notion、Figmaの近い記録</li>
+            </ul>
+          </section>
+          <section class="card">
+            <h3>期待する変化</h3>
+            <ul>
+              <li>同じナビゲーションを繰り返さない</li>
+              <li>作業の流れを止めない</li>
+              <li>今過ぎた考えを再利用可能な手がかりとして見る</li>
+              <li>私に合った小さなキャッシュ階層を作る</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="quiz" id="quiz" data-next-label="다음 질문" data-finish-label="연습 마치기" data-complete-title="판단 연습 완료" data-complete-message="이제 글의 기준을 실제 작업 하나에 적용해보면 됩니다." data-quiz='[{"question":"정혁님 발표에서 “로컬 캐시”에 가장 가까운 예는 무엇인가요?","choices":["오래된 문서를 매번 처음부터 검색하기","최근 명령어와 클립보드 히스토리를 다시 꺼내 쓰기","모든 작업을 LLM에게 바로 위임하기"],"answer":1,"explanation":"최근 작업에는 현재 사고의 흐름이 남아 있으므로, 가까운 흔적을 다시 꺼내 쓰는 것이 locality의 업무적 활용에 가깝습니다."},{"question":"LLM에게 바로 맡기기보다 일부러 직접 해볼 만한 경우는?","choices":["이미 충분히 잘하고 결과만 필요한 일","당장 내 것으로 만들 생각이 없는 일","도구의 조작감과 멘탈 모델을 손에 익혀야 하는 일"],"answer":2,"explanation":"tmux 단축키처럼 몸에 새겨야 하는 조작은 느리게 직접 통과하는 시간이 나중의 fluency를 만듭니다."},{"question":"이 글의 생산성 관점에 가장 가까운 문장은?","choices":["생산성은 가능한 모든 일을 위임하는 능력이다","생산성은 무엇을 가까이 두고, 무엇을 직접 새길지 고르는 감각이다","생산성은 자동화를 최대한 미루는 태도다"],"answer":1,"explanation":"핵심은 자동화 찬반이 아니라, 캐시할 것과 몸에 새길 것을 구분하는 판단입니다."}]'>
+          <h3>短い判断練習</h3>
+          <p class="note">一度に一つずつ出てきます。正しい答えよりも文章の判断基準を練習する用途です。</p>
+          <div id="quizQuestion" data-quiz-question></div>
+          <div class="choices" id="quizChoices" data-quiz-choices></div>
+          <div class="feedback" id="quizFeedback" data-quiz-feedback aria-live="polite"></div>
+          <button id="quizNext" data-quiz-next style="display:none" disabled>次の質問</button>
+        </div>
+
+        <h2>しかし、すべてをキャッシュしてはいけません。</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">Cealが尋ねた</span>
+          <p class="ceal-q-text">発表原文にあった「とりあえず指ノガダが必要な例外」はどのような基準で判断しますか？</p>
+        </div>
+        <p>ここで文の方向が重要に折れる。最初は「私のためのキャッシュ」という表現のため、すべてを近いリポジトリに入れて素早く取り出す話が中心のように見える。しかしチョンヒョクは例外を明らかにした。 UIを身につけたり、メンタルモデルをとる中にはわざと手で通らなければならない時間がある。</p>
+        <p>チョン・ヒョクが持っているシーン<code>tmux</code>だった。 LLMに「窓をこんなに分割してくれ」と言うこともできた。しかし、彼は何度もわざわざショートカットのリストを探して手動で調整した。<code>ctrl+b</code>で始まるその感じを身につけてみるためだった。結果だけを得るなら、LLMは速い。しかし、作業空間を自分の手に身につけるには、遅い通過が必要な場合がある。</p>
+
+        <div class="quote"><strong>修正されたコントラスト</strong><br/>コマンド履歴とクリップボード履歴は「近い痕跡」です。しかし、身体と事故に慣れなければならないのはキャッシュするのではなく、きちんと刻むことだ。</div>
+
+
+
+        <figure class="visual-figure" aria-label="Before와 After 방식의 에이전트 위임 구조 비교 이미지">
+          <img src="../assets/post-images/ceal-terview-locality-cache-with-image-figure-01.png" alt="Before: delegate 안에 rigor가 들어가고 그 안에 doubt가 중첩된 구조. After: delegate, rigor, doubt가 각각 분리되어 agent로 내려가는 구조." />
+          <figcaption><strong>委任の構造を変える絵。</strong>一塊要請の中に検証と疑いを重ね合わせるより、任せる事・厳密に確認する事・疑問に思う事を分けてagentに流す時、判断基準がより鮮明になる。</figcaption>
+        </figure>
+
+        <h2>LLMに任せる仕事と、任せないこと</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">Cealが尋ねた</span>
+          <p class="ceal-q-text">LLMに任せずにわざわざ直接触ってみるべきことと、ただLLMにさせてもいいことを分ける基準は何ですか？</p>
+        </div>
+        <p>チョンヒョクの基準は単純だった。すでに私がうまくやっていることや、すぐに私のものにするつもりがないことはLLMにさせてもよい。逆に手に熟すべきこと、マッスルメモリを開発しなければならないこと、勉強して理解しなければならないことはわざわざ一汗一汗直接したり、さらにはLLMに「私にさせてほしい」とし進行する。</p>
+        <p>この基準はLLMの使用を減らすという話ではありません。むしろよりよい委任のための標準に近い。何を外部ツールに任せることができるかを知れば、何が私の中に残るべきかを知らなければならない。チョンヒョクが言った「刻む」という表現はここで重要です。キャッシュはすぐに取り出して書き込む近いリポジトリだ。刻みはゆっくりと繰り返し、体と思考の基本基層に入れる事だ。</p>
+        <p>チョンヒョクは「刻む」という言葉を主に手に熟す繰り返しの意味で書いた。ただし、その反復は単純な機械的訓練で終わらない。彫刻を繰り返し扱うfluencyが上がると、結局より高い次元の理解を牽引する。つまり、ショートカットキーを覚える行為がある瞬間作業空間を見る方式自体を変えるということだ。</p>
+
+        <div class="checkpoint">
+          <h3>静かなチェックポイント</h3>
+          <p>私が今日LLMに任せたいことを思い出してください。これは「すでに知ったり、すぐに自分のものにする必要のないこと」ですか、それとも「遅くても私の手に刻むべきこと」ですか？</p>
+          <button id="revealCheckpoint" data-checkpoint-toggle aria-expanded="false">解説を見る</button>
+          <div class="quiet-answer" id="checkpointAnswer" data-checkpoint-answer>
+            <p>この記事の基準としては、速度より「私の中に残るべきか」を先に見ます。結果だけが必要であり、次の判断に大きな影響を与えない場合は委任してもよい。逆に、今後頻繁に対処する基本操作、考え方、道具のメンタルモデルであれば、一度はわざと直接通過するほうが長期的に大きなfluencyを作ります。</p>
+          </div>
+        </div>
+
+        <h2>生産性は委任能力だけで完成しない</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">Cealが結びついた</span>
+          <p class="ceal-q-text">この記事の結論は「LLMに任せることと直接刻むことを区別しなさい」に近いですか、それとも「刻むべきことはわざわざ非効率的に繰り返せ」に近いのでしょうか。</p>
+        </div>
+        <p>チョン・ヒョク様はこの大目をインタビューアーがセンスに結びつけてもらった。だからこの文は二つのうちの一つだけを選ぶより、二つの文章を連結しておく。</p>
+        <p><strong>AI時代の生産性はすべてを委任する能力ではなく、何を委任しないか選ぶ感覚から出てくる。</strong></p>
+        <p>委任しないという言葉は、ツールを拒否するという意味ではありません。 LLMを書くべきではない禁欲の問題ではない。基準は「この能力を私の外に置くことができるか、それとも私の体と思考の中に刻むべきか」だ。すでにうまくいったり、今私のものにする必要のないことはLLMに任せてもよい。しかし、<code>tmux</code>の<code>ctrl+b</code>のように私の作業空間の感覚を作る事なら、しばらく遅い道に行くのがむしろ後の速い道を作る。</p>
+        <p>ローカルリティとキャッシュは私たちに「先ほど過ぎてきた考えを近づけろ」と話す。チョン・ヒョク様の例外はここに一文を付け加える。 「近くに置くのは近くに置きます。刻む必要があるのはあまりにも速く過ぎないでください」。</p>
+
+        <div class="ending">
+          <h2>すぐに試すことができる小さな実験</h2>
+          <ul>
+            <li>クリップボード履歴ツールを1つオンにし、1日の間「今コピーしたもの」を再び取り出して書いた瞬間を記録してみる。</li>
+            <li>shellコマンド履歴検索を意識的に書いて、繰り返し入力していた命令の1つを減らす。</li>
+            <li>LLMに許可する前に10秒間停止し、尋ねる。 「これは結果だけ必要か、それとも私の手に刻むべきか？」</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+  <script src="../assets/post-interactions.js"></script>
+</body>
+</html>

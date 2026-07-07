@@ -1,0 +1,99 @@
+<!--
+corca-post
+{
+  "title": "VOC 响应代理构建器",
+  "description": "我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。",
+  "date": "2026-04-22",
+  "tags": [
+    "AI 제품"
+  ],
+  "author": "하동훈(Software Engineer)",
+  "cover": "assets/editorial-cover.jpg",
+  "language": "zh"
+}
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VOC 响应代理构建器</title>
+  <style>
+    :root { --bg: #f7f8fa; --paper: #ffffff; --text: #1f2937; --muted: #6b7280; --line: #e5e7eb; --accent: #2563eb; --soft: #eff6ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; line-height: 1.72; }
+    .page { max-width: 860px; margin: 0 auto; padding: 48px 20px 72px; }
+    article { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 48px; box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06); }
+    .eyebrow { margin: 0 0 12px; color: var(--accent); font-size: 14px; font-weight: 700; }
+    h1 { margin: 0; font-size: clamp(30px, 5vw, 46px); line-height: 1.2; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; color: var(--muted); font-size: 14px; }
+    .pill { padding: 6px 11px; background: var(--soft); border-radius: 999px; color: #1e40af; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+    h2 { margin: 40px 0 14px; font-size: 26px; line-height: 1.35; }
+    p { margin: 14px 0; }
+    ol { padding-left: 24px; }
+    li { margin: 8px 0; }
+    pre { overflow-x: auto; margin: 28px 0; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #f8fafc; color: #111827; white-space: pre-wrap; word-break: break-word; line-height: 1.62; }
+    code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 0.9em; }
+    pre code { display: block; }
+    figure { margin: 28px 0; }
+    img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); }
+    @media (max-width: 720px) { .page { padding: 32px 16px 56px; } article { padding: 30px 22px; border-radius: 18px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <article>
+      <p class="eyebrow">Corca 中档案</p>
+      <h1>VOC 响应代理构建器</h1>
+      <div class="meta"><span class="pill">2026-04-22</span><span class="pill">河东勋（软件工程师）</span></div>
+      <hr />
+      <figure><img alt="" src="../assets/medium-import/voc-agent-figure-01.png" width="1020" height="574" loading="lazy" decoding="async" /></figure>
+      <h2>进入</h2>
+      <p>最近，Moonlight团队一直在与代理一起处理VoC响应流程。在这篇文章中，我将尝试总结一下我在这个过程中遇到的问题以及我是如何解决的。</p>
+      <p>我开始这个项目的原因是因为一个小团队正在处理大量的 VoC，团队成员之间的疲劳正在积累，我开始思考如何解决这个问题以及如何更有效地处理它。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/231/1*ag8Ao0EvjZlmFLLproywuQ.png" loading="lazy" decoding="async" /><figcaption>请求对 VOC 响应的支持</figcaption></figure>
+      <p>实际的 VoC 响应并不以写下一个句子作为响应而结束。您应该阅读查询，检查政策文档，查看代码库，必要时搜索数据库，如果您仍然难以决定，请向熟悉上下文的团队成员再次询问问题。换句话说，VoC回应是一项比写作更接近询问和判断的任务。</p>
+      <p>最近出现了具有各种人工智能功能的客户服务自动化工具。然而，团队需要的不是一个通用的答案生成器，而是一种像实际团队成员一样访问我们服务的策略、代码、数据和上下文以及查询和查询的方法。</p>
+      <h2>问题出在哪里？</h2>
+      <p>存在三个问题。</p>
+      <p>首先，一个小团队每天必须处理超过 10 个传入的 VoC，无论是时间还是上下文切换成本都是如此。</p>
+      <p>其次，每个团队成员的背景不同，因此确认的依据和回答的方法也存在差异。如果我无法立即记住在哪里可以找到我需要的证据，我就必须询问另一位团队成员。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/590/1*FhYCa3yZXehklgT7rcUb5Q.png" loading="lazy" decoding="async" /></figure>
+      <p>第三，即使我们尝试自动化回答，仅用通用的人工智能回答功能也很难访问内部上下文。在现实世界的操作中，这种限制很明显，因为扎根的反应比自然的句子更重要。</p>
+      <p>所以我们想解决两个问题。一是运营效率问题，可以用更少的人员处理更多的 VoC；另一个是质量问题，反映实际的服务环境和内部原理。</p>
+      <p>为了实现这一目标，Moonlight 团队构建了一个处理流程来收集 VoC、探索所需证据、起草证据，最后由人工审核。</p>
+      <h2>代理VOC处理流程</h2>
+      <p>在从事这个项目时，我关注的第一件事是构建响应流程。</p>
+      <p>我首先想到的是“我应该先看什么？”当我总结团队成员在响应时重复采取的步骤时，总体流程如下。</p>
+      <ol><li>检查现有的对话历史记录</li><li>检查保单文件</li><li>检查代码库</li><li>如有需要可查询DB</li><li>起草您的回复</li></ol>
+      <p>第一个目标是使代理可以重现此流程。</p>
+      <p>第二个目标是确保责任仍然在于人类。由于自动发送在质量和安全性方面很繁重，因此我们将其配置为让代理进行搜索和起草，并让人类做出最终决定。这就是通常所说的“人在环”方法。</p>
+      <p>因此，这个项目不仅仅是一个答案生成器，它更多的是创建一个处理流程来收集 VoC、探索证据、创建草稿并将其发送以供人工审核。</p>
+      <h2>月光VOC处理流程</h2>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*N2Ds1aMmz3EYG7HTORBTkw.png" loading="lazy" decoding="async" /></figure>
+      <h2>客户询价</h2>
+      <ol><li>客户查询进入 VoC 渠道。</li><li>通过webhooks接收客户询价，并以循环询价作为补漏的辅助手段。</li><li>确定 VoC 是否符合处理条件。</li><li>出于处理目的，证据按照类似于人流的顺序进行探索。<br>- 查看嵌入的现有对话<br>- 查看代码库和策略文档<br>- 必要时数据库查询</li><li>根据导航结果和模板创建响应草稿。</li><li>将草稿转发到 Slack。</li></ol>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/826/1*15drl70F6JAfBJinFDKwbA.png" loading="lazy" decoding="async" /><figcaption>Slack 中显示的草稿回复</figcaption></figure>
+      <p>7. 负责人检查Slack的摘要和详细信息后，通过“发送”、“重试”和“拒绝”按钮选择处理方法。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/760/1*W6ahXWDs9c1zTLQ7tOHgDA.png" loading="lazy" decoding="async" /><figcaption>单击发送按钮后，将发送到 VoC 通道</figcaption></figure>
+      <h2>应用代理流的结果</h2>
+      <p>应用这种结构后最大的变化是团队成员不再需要亲自从头到尾执行响应过程。以前，人们必须阅读调查，决定检查哪些证据，找到必要的信息，并组织草案。另一方面，大约50%的询问，代理商首先处理重复的询问和起草阶段，负责人只需在Slack中做出最终决定。</p>
+      <p>这种变化不仅仅是响应速度。我们能够减少每个团队成员的背景差异，并降低“我应该向谁提出这个问题？”的成本。特别是，通过将现有的对话历史记录、政策文档、代码库和数据查询合并到一个流程中，我们能够使寻找证据的过程更加一致。</p>
+      <p>因此，该项目不是一个自动发送响应的系统，而是被定位为一个操作工具，以减少 VoC 响应过程中重复探索和起草的成本。</p>
+      <h2>与月爪的联系</h2>
+      <p>基本的 VoC 收集、证据搜索、草稿创建、审核和发送可以使用前面描述的 VoC 处理流程来完成。但在实际操作中，也存在该流程并未结束的情况。有时您需要对草稿进行一些调整，有时您需要仔细检查与当前查询相关的项目上下文。有时您想再次检查代理提出的基础是否正确（即使按照当前标准）。</p>
+      <p>在这种情况下，我上面写的是<strong>月爪</strong>是的。 MoonClaw 并不是一个取代 VoC 处理流程本身的工具，而是一个在其之上运行的工具。<strong>主管代理</strong>接近 .通常，VoC 处理流程会处理大多数查询，并且仅在需要额外确认或更正时才与 MoonClaw 对话以完善结果。</p>
+      <p>例如，团队成员可能会要求 MoonClaw“请仅根据最新代码仔细检查此答案的付款政策部分。”或者，您可以再次检查代理引用的基础在当前操作上下文中是否仍然有效，以及某些表达式是否与实际策略一致。换句话说，如果 VoC 处理流程是基本路径，MoonClaw 可以被视为接受异常情况或在其之上的附加查询的路径。</p>
+      <p>这种结构的最大优点是<strong>运营灵活性</strong>是的。</p>
+      <ol><li><strong>独立发动机：</strong>VoC 响应流程每天 24 小时可靠地处理日常任务，无需更高级别的代理。</li><li><strong>互动强化：</strong>只有当需要进行复杂的判断或修改时，我们才会通过MoonClaw与智能体进行沟通并完善结果。</li><li><strong>分享背景：</strong>由于MoonClaw掌握了整个项目的上下文，因此除了简单的VoC处理之外，它还可以确保按照整个服务的更新方向进行响应。</li></ol>
+      <p>通过与上级代理的松散连接，日常处理实现自动化，复杂问题通过代理之间的协作得到解决。<strong>可扩展的运营结构</strong>已装备。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/753/1*k5uT6VkGXBV4KZ60DdBnvg.png" loading="lazy" decoding="async" /></figure>
+      <h2>完成</h2>
+      <p>我从这次部署中获得的最大收获是了解了代理系统如何分担人类的工作。我们发现，与其取代所有人类工作，不如将其分为探索、收集证据、起草和批准，然后将可重复的部分先委托给系统，这是有效的。</p>
+      <p>相反，事情显然要留给人，直到最后。仍然由人类决定是否真正将其发送给客户、确定在特殊情况下添加什么上下文以及对错误响应承担责任。因此，这个项目并不是关于消除人员的自动化，而是更接近于创建一个减少重复任务的结构，同时保持对人员的责任。</p>
+      <p>最后，这个项目是一个尝试如何将实际操作任务转移到代理系统而不是 VoC 自动化本身的案例。对于 Moonlight 团队来说，这种体验超越了简单的响应自动化，成为了未来处理其他运营领域时可以应用的标准。</p>
+    </article>
+  </main>
+</body>
+</html>

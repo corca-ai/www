@@ -1,0 +1,218 @@
+<!--
+corca-post
+{
+  "title": "缓存什么以及在你的身上刻上什么",
+  "description": "这是一篇关于谷物的文章，将局部性和缓存重新解读为生产力的语言，并总结了区分什么应该托付给法学硕士和什么应该刻在自己身上的意义。",
+  "date": "2026-05-28",
+  "tags": [
+    "AX"
+  ],
+  "author": "최정혁",
+  "cover": "assets/editorial-cover.jpg",
+  "language": "zh"
+}
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>缓存什么以及在你的身上刻上什么</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --paper: #fffdfa;
+      --ink: #23211d;
+      --muted: #6f6a60;
+      --line: #e7dfd1;
+      --accent: #5f6f52;
+      --accent-2: #8b6f47;
+      --soft: #f0eadf;
+      --soft-2: #eef1e9;
+      --wrong: #8a3a35;
+      --right: #3f6f48;
+      --code: #29261f;
+      --shadow: 0 24px 80px rgba(40, 33, 20, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #fbf2dc 0, transparent 32rem), var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      line-height: 1.78;
+      word-break: keep-all;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 48px 22px 80px; }
+    article { background: rgba(255,253,250,.88); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); overflow: hidden; }
+    header.hero { padding: 58px clamp(24px, 6vw, 76px) 42px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(255,255,255,.82), rgba(241,234,219,.72)); }
+    .eyebrow { color: var(--accent); font-weight: 800; letter-spacing: .08em; font-size: .78rem; text-transform: uppercase; margin-bottom: 18px; }
+    h1 { font-size: clamp(2.05rem, 5.2vw, 4.2rem); line-height: 1.1; margin: 0 0 20px; letter-spacing: -0.055em; }
+    .subtitle { font-size: clamp(1.04rem, 2.1vw, 1.28rem); color: #4d493f; max-width: 760px; margin: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; color: var(--muted); font-size: .92rem; }
+    .pill { border: 1px solid var(--line); background: rgba(255,255,255,.6); padding: 6px 12px; border-radius: 999px; }
+    .content { padding: 42px clamp(24px, 6vw, 76px) 64px; }
+    p { margin: 0 0 1.05rem; }
+    h2 { margin: 3rem 0 1rem; font-size: clamp(1.42rem, 2.8vw, 2rem); line-height: 1.25; letter-spacing: -0.035em; }
+    h3 { margin: 2rem 0 .8rem; font-size: 1.12rem; }
+    .lead { font-size: 1.13rem; color: #3c382f; }
+    .ceal-q { margin: 2.2rem 0 1.1rem; border-left: 4px solid var(--accent); background: var(--soft-2); padding: 16px 18px; border-radius: 0 18px 18px 0; color: #3e4939; }
+    .ceal-q-label { display: block; font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+    .ceal-q-text { margin: 0; font-size: 1.03rem; font-weight: 750; line-height: 1.62; color: #2f3b2c; }
+    .quote { margin: 1.4rem 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: 20px; background: #fffaf1; font-size: 1.06rem; }
+    .quote strong { color: var(--accent-2); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 1.2rem 0 1.6rem; }
+    .card { border: 1px solid var(--line); background: rgba(255,255,255,.76); border-radius: 20px; padding: 18px; }
+    .card h3 { margin-top: 0; }
+    code { background: #eee6d7; color: var(--code); border-radius: 7px; padding: .08rem .36rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .92em; }
+    ul { padding-left: 1.2rem; margin: .4rem 0 1.2rem; }
+    li + li { margin-top: .42rem; }
+    .checkpoint, .quiz { border: 1px solid var(--line); border-radius: 22px; background: var(--soft); padding: 22px; margin: 2.2rem 0; }
+    .checkpoint h3, .quiz h3 { margin-top: 0; }
+    button { font: inherit; border: 1px solid #cfc2aa; background: #fffdfa; color: var(--ink); padding: 10px 14px; border-radius: 12px; cursor: pointer; transition: transform .12s ease, background .12s ease; }
+    button:hover { transform: translateY(-1px); background: #fff7e8; }
+    .choices { display: grid; gap: 10px; margin: 14px 0; }
+    .choice { text-align: left; width: 100%; }
+    .choice[aria-pressed="true"] { border-color: var(--accent); background: #eef1e9; }
+    .feedback { min-height: 1.5em; margin-top: 10px; font-weight: 700; }
+    .feedback.right { color: var(--right); }
+    .feedback.wrong { color: var(--wrong); }
+    .feedback.ok { color: var(--right); }
+    .feedback.bad { color: var(--wrong); }
+    .choice.correct { border-color: var(--right); background: #eef8f0; }
+    .choice.incorrect, .choice.wrong { border-color: var(--wrong); background: #fff0ee; }
+    .quiet-answer { display: none; margin-top: 14px; color: #4d493f; }
+    .quiet-answer.open { display: block; }
+    .ending { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); color: #3c382f; }
+    .note { color: var(--muted); font-size: .95rem; }
+    .visual-figure { margin: 2.4rem 0 2.8rem; border: 1px solid var(--line); border-radius: 24px; background: #fff; overflow: hidden; box-shadow: 0 18px 48px rgba(40, 33, 20, 0.08); }
+    .visual-figure img { display: block; width: 100%; height: auto; }
+    .visual-figure figcaption { padding: 14px 18px 16px; color: var(--muted); font-size: .94rem; line-height: 1.62; background: linear-gradient(180deg, #fffdfa, #f7f1e5); border-top: 1px solid var(--line); }
+    .visual-figure strong { color: var(--accent-2); }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } .wrap { padding-top: 22px; } article { border-radius: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <article>
+      <header class="hero">
+        <div class="eyebrow">Ceal-terview·AX分享会</div>
+        <h1>缓存什么，<br/>身体上要刻什么</h1>
+        <p class="subtitle">崔正赫5/28 AX分享活动公告<strong>“地点和我自己的缓存”</strong>基于此，我们将生产力重新解读为一种选择“靠近什么”和“有意通过什么”的感觉，而不是简单的自动化。</p>
+        <div class="meta">
+          <span class="pill">主讲人：崔正赫</span>
+          <span class="pill">来源：2026-05-28 AX分享会</span>
+          <span class="pill">主题：局部性·缓存·LLM委托判断</span>
+        </div>
+      </header>
+
+      <div class="content">
+        <p class="lead">本文并不是止于“写入剪贴板历史记录”的提示集合。正赫在演讲和采访中提出的观点更为广泛。我们刚刚写的命令、刚刚复制的句子、刚刚打开的对话都保留了我们当前工作的流程。与其每次都把它放在抽屉深处，不如把它放在靠近桌子的地方。正赫在CS里说过这句话<em>参考地点</em>哇，用凯茜的感觉解释了。</p>
+
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">尽管这是一个仓促选择的主题，但为什么这次演讲感觉像是你可以立即谈论的事情，正赫？</p>
+        </div>
+        <p>正赫的第一个回答从演讲一开始就出奇地诚实。话题很快就定下来了。原来的主持人辉东前一天出现了困难，因此请正赫代替他进行演示。然而，虽然这是一个仓促的项目，但这并不意味着它是空手而归。</p>
+        <p>在此之前的一周，Jeong Hyeok已经给几位同事传授了剪贴板管理和shell命令历史管理等技巧。 “现在，我们来总结一下这一部分。这是我长期以来保持的心智模型，所以我想我可以很快地准备好，而且还是有营养的。”演示来得突然，但资料已经放在了工作台上。</p>
+
+        <div class="quote"><strong>关键句候选</strong><br/>最近的命令和剪贴板历史记录是我刚刚经历过的想法的密切痕迹。</div>
+
+        <h2>将本地化视为一种商业工具</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">您希望同事在听到您的演讲后立即采取的一项行动是什么？</p>
+        </div>
+        <p>正赫建议的最具体的行动是每个人都有自己的<strong>剪贴板历史记录</strong>我们的想法是安装该功能并使用它。工具可以是 Raycast、Alfred 或 Hammerspoon 等选项。在 shell 端，执行历史搜索和先前命令的重写。<code>hstr</code>, 熟悉的<code>ctrl+r</code>相同的习惯属于同一个系列。</p>
+        <p>这个习惯的价值比“使复制和粘贴更快”更深一些。最近复制的文本和最近输入的命令保留了您刚刚执行的操作的上下文。当前的工作很大程度上与之前的工作相关。既然如此，自然就留下痕迹，以便可以从附近的地方找回，而不是每次都得重新寻找。</p>
+
+        <div class="grid">
+          <section class="card">
+            <h3>很高兴保持在附近</h3>
+            <ul>
+              <li>刚刚输入的shell命令</li>
+              <li>最近复制的文本和链接</li>
+              <li>AI聊天上下文刚刚交换</li>
+              <li>关闭与当前工作相关的 Slack、Notion 和 Figma 的记录</li>
+            </ul>
+          </section>
+          <section class="card">
+            <h3>预期的变化</h3>
+            <ul>
+              <li>不要重复相同的搜索</li>
+              <li>不要中断工作流程</li>
+              <li>将刚刚经过的想法视为可重复使用的线索</li>
+              <li>创建适合您的小型缓存层次结构</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="quiz" id="quiz" data-next-label="다음 질문" data-finish-label="연습 마치기" data-complete-title="판단 연습 완료" data-complete-message="이제 글의 기준을 실제 작업 하나에 적용해보면 됩니다." data-quiz='[{"question":"정혁님 발표에서 “로컬 캐시”에 가장 가까운 예는 무엇인가요?","choices":["오래된 문서를 매번 처음부터 검색하기","최근 명령어와 클립보드 히스토리를 다시 꺼내 쓰기","모든 작업을 LLM에게 바로 위임하기"],"answer":1,"explanation":"최근 작업에는 현재 사고의 흐름이 남아 있으므로, 가까운 흔적을 다시 꺼내 쓰는 것이 locality의 업무적 활용에 가깝습니다."},{"question":"LLM에게 바로 맡기기보다 일부러 직접 해볼 만한 경우는?","choices":["이미 충분히 잘하고 결과만 필요한 일","당장 내 것으로 만들 생각이 없는 일","도구의 조작감과 멘탈 모델을 손에 익혀야 하는 일"],"answer":2,"explanation":"tmux 단축키처럼 몸에 새겨야 하는 조작은 느리게 직접 통과하는 시간이 나중의 fluency를 만듭니다."},{"question":"이 글의 생산성 관점에 가장 가까운 문장은?","choices":["생산성은 가능한 모든 일을 위임하는 능력이다","생산성은 무엇을 가까이 두고, 무엇을 직접 새길지 고르는 감각이다","생산성은 자동화를 최대한 미루는 태도다"],"answer":1,"explanation":"핵심은 자동화 찬반이 아니라, 캐시할 것과 몸에 새길 것을 구분하는 판단입니다."}]'>
+          <h3>简短的判断练习</h3>
+          <p class="note">他们一次一个地出来。目的是练习写作的判断标准，而不是猜测正确答案。</p>
+          <div id="quizQuestion" data-quiz-question></div>
+          <div class="choices" id="quizChoices" data-quiz-choices></div>
+          <div class="feedback" id="quizFeedback" data-quiz-feedback aria-live="polite"></div>
+          <button id="quizNext" data-quiz-next style="display:none" disabled>下一个问题</button>
+        </div>
+
+        <h2>但你不应该缓存所有内容</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">您用什么标准来判断演讲原文中“需要刻意把握时机的例外”？</p>
+        </div>
+        <p>这是写作方向发生重要转变的地方。起初，“为我缓存”这个表达似乎集中在将所有内容放入附近的存储中并快速将其取出。然而，正赫显然例外了。在学习 UI 或掌握心智模型时，有时您必须有意识地手动进行操作。</p>
+        <p>与正赫的场景是<code>tmux</code>是的。我本可以告诉法学硕士，“像这样分割窗口。”不过，他特意翻看了几遍快捷键列表，手动调整了一下。<code>ctrl+b</code>目的是为了学习入门的感觉。只要有结果，LLM就很快。然而，为了掌握工作空间，有时需要缓慢遍历。</p>
+
+        <div class="quote"><strong>校正对比度</strong><br/>命令历史记录和剪贴板历史记录是“紧密的痕迹”。然而，你在身体和思维中需要学习的不是缓存，而是正确的雕刻。</div>
+
+
+
+        <figure class="visual-figure" aria-label="Before와 After 방식의 에이전트 위임 구조 비교 이미지">
+          <img src="../assets/post-images/ceal-terview-locality-cache-with-image-figure-01.png" alt="Before: delegate 안에 rigor가 들어가고 그 안에 doubt가 중첩된 구조. After: delegate, rigor, doubt가 각각 분리되어 agent로 내려가는 구조." />
+          <figcaption><strong>改变授权结构的例证。</strong>不是将验证和怀疑分层到一个请求中，而是将需要委托的任务、需要严格确认的任务和需要怀疑的任务分开并发送给坐席，判断标准会变得更加清晰。</figcaption>
+        </figure>
+
+        <h2>什么可以委托给LLM，什么不可以委托给LLM</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">区分必须有目的地处理而不是留给LLM的任务和可以简单地命令给LLM的任务的标准是什么？</p>
+        </div>
+        <p>正赫的标准很简单。如果这是你已经擅长的事情或者你不打算立即自己做的事情，你可以要求LLM去做。另一方面，需要掌握的东西、需要培养肌肉记忆的东西、需要学习理解的东西，都是自己刻意一步步做的，甚至要求LLM“帮我做”。</p>
+        <p>该标准并不是为了减少 LLM 的使用。相反，它更接近更好授权的标准。要知道什么可以留给外部工具，你必须知道什么应该留在你自己内部。正赫提到的“雕刻”这个词在这里很重要。缓存是可以快速访问和使用的就近存储。铭刻是慢慢地、反复地放入身体和思想的基本层中的东西。</p>
+        <p>正赫主要使用“雕刻”这个词来表示熟悉的重复。然而，重复并不以简单的机械训练结束。随着重复处理碎片的流畅度的提高，最终会带来更高层次的理解。换句话说，记住快捷方式的行为会在某些时候改变您查看工作区的方式。</p>
+
+        <div class="checkpoint">
+          <h3>安静的检查站</h3>
+          <p>想一想今天我想委托给我的法学硕士的一项任务。这项工作是“我已经知道的东西，或者不需要立即制作成我自己的东西”，还是“我需要雕刻到自己手中的东西，即使它很慢”？</p>
+          <button id="revealCheckpoint" data-checkpoint-toggle aria-expanded="false">查看评论</button>
+          <div class="quiet-answer" id="checkpointAnswer" data-checkpoint-answer>
+            <p>作为这篇文章的标准，我先看“是否应该留在我体内”，然后再看速度。如果你只需要结果并且对你的下一个决定没有太大影响，那么委托是可以的。另一方面，如果它是你将来会经常处理的基本操作、思维方式和工具的心智模型，那么从长远来看，至少自己过一遍会带来更大的流畅性。</p>
+          </div>
+        </div>
+
+        <h2>仅通过授权技巧无法实现生产力。</h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">小麦打结了</span>
+          <p class="ceal-q-text">这篇文章的结论是更接近于“区分什么该托付给LLM，什么该刻自己”，还是更接近“故意低效地重复需要刻的东西”？</p>
+        </div>
+        <p>正赫要求采访者以理智的方式结束这一部分。因此，本文不是仅选择两者之一，而是将这两个句子连接起来。</p>
+        <p><strong>人工智能时代的生产力不是来自于将一切委托给别人的能力，而是来自于选择不委托什么的意识。</strong></p>
+        <p>不授权并不意味着拒绝工具。是否攻读LLM并不是禁欲的问题。标准是：“这个能力是可以放在我的体外，还是应该刻在我的身体和思想里？”你可以把你已经擅长的或者你现在不需要自己做的LLM工作留给你。但是<code>tmux</code>的<code>ctrl+b</code>就像，当谈到创造我的工作空间感时，暂时采取缓慢的路径实际上会在以后走上更快的路径。</p>
+        <p>Locality 和 Cathy 告诉我们“不要忘记过去的想法”。至于正赫的例外，这里补充一句。 “该靠近的就靠近，该刻的不要太快。”</p>
+
+        <div class="ending">
+          <h2>您可以立即尝试的一个小实验</h2>
+          <ul>
+            <li>打开剪贴板历史记录工具，全天记录您检索和重写“刚刚复制的内容”的时刻。</li>
+            <li>有意识地使用shell命令历史搜索，减少重复输入的命令数量。</li>
+            <li>在询问 LLM 之前，请停顿 10 秒并询问。 “我只需要一个结果，还是应该把它刻在手上？”</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+  </div>
+  <script src="../assets/post-interactions.js"></script>
+</body>
+</html>

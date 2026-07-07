@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="ko" class="no-js">
+<html lang="en" class="no-js">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Corca Blog</title>
-    <meta name="description" content="Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.">
+    <meta name="description" content="The official Corca blog for lessons from AI products, workflows, and team operations.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="https://www.corca.ai/blog/">
     <meta property="og:title" content="Corca Blog">
-    <meta property="og:description" content="Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.">
+    <meta property="og:description" content="The official Corca blog for lessons from AI products, workflows, and team operations.">
     <meta property="og:site_name" content="Corca Blog">
-    <meta property="og:locale" content="ko_KR">
+    <meta property="og:locale" content="en_US">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://www.corca.ai/blog/assets/editorial-cover.jpg">
     <meta property="og:image:width" content="1672">
@@ -19,7 +19,7 @@
     <meta property="og:url" content="https://www.corca.ai/blog/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Corca Blog">
-    <meta name="twitter:description" content="Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.">
+    <meta name="twitter:description" content="The official Corca blog for lessons from AI products, workflows, and team operations.">
     <meta name="twitter:image" content="https://www.corca.ai/blog/assets/editorial-cover.jpg">
     <meta name="twitter:image:alt" content="Corca 블로그 글쓰기와 제품 리서치를 위한 작업 공간">
     <meta name="theme-color" content="#ffffff">
@@ -30,9 +30,9 @@
         "@context": "https://schema.org",
         "@type": "Blog",
         "name": "Corca Blog",
-        "description": "Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.",
+        "description": "The official Corca blog for lessons from AI products, workflows, and team operations.",
         "url": "https://www.corca.ai/blog/",
-        "inLanguage": "ko-KR",
+        "inLanguage": "en-US",
         "publisher": {
           "@type": "Organization",
           "name": "Corca"
@@ -47,38 +47,38 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Corca Tech</p>
-          <h1><span class="hero-title-main">Corca Blog</span><span class="hero-title-sub">기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.</span></h1>
-          <div id="heroTopicFilters" class="hero-topic-filters" aria-label="주제별 글 필터">
+          <h1><span class="hero-title-main">Corca Blog</span><span class="hero-title-sub">Contributing to human progress by making the benefits of technology available to everyone.</span></h1>
+          <div id="heroTopicFilters" class="hero-topic-filters" aria-label="Filter posts by topic">
             <button type="button" data-topic-filter="product" aria-pressed="false">Product</button>
             <button type="button" data-topic-filter="ax" aria-pressed="false">AX</button>
             <button type="button" data-topic-filter="corca" aria-pressed="false">Corca</button>
             <button type="button" data-topic-filter="tech" aria-pressed="false">Tech</button>
           </div>
-          <p class="lead">Corca의 기술, AI 제품, 개발 조직, 문화에 대한 이야기를 들려드려요.</p>
+          <p class="lead">Stories about Corca technology, AI products, engineering teams, and culture.</p>
         </div>
         <img class="hero-image" src="/blog/assets/editorial-cover.jpg" alt="Corca 블로그 글쓰기와 제품 리서치를 위한 작업 공간" width="1672" height="941" fetchpriority="high" decoding="async">
       </section>
 
-      <section id="featuredPost" class="featured-post" aria-label="최신 글" hidden></section>
-      <section id="recentReads" class="recent-section" aria-label="최근 읽은 글" hidden></section>
-      <section id="savedReads" class="saved-section" aria-label="저장한 글" hidden></section>
+      <section id="featuredPost" class="featured-post" aria-label="Latest post" hidden></section>
+      <section id="recentReads" class="recent-section" aria-label="Recently read posts" hidden></section>
+      <section id="savedReads" class="saved-section" aria-label="Saved posts" hidden></section>
 
       <section id="postView" class="post-view" hidden inert>
         <div class="article-tools">
-          <button id="backButton" class="text-button compact" type="button">목록으로</button>
+          <button id="backButton" class="text-button compact" type="button">Back to list</button>
           <div class="article-primary-actions">
-            <button id="currentPostSaveButton" class="text-button compact save-button" type="button" aria-pressed="false" hidden>저장</button>
+            <button id="currentPostSaveButton" class="text-button compact save-button" type="button" aria-pressed="false" hidden>Save</button>
             <details class="article-menu article-share-menu">
-              <summary>공유</summary>
-              <div class="article-tool-group" aria-label="공유와 보관">
-                <button id="copyLinkButton" class="text-button compact" type="button">링크 복사</button>
-                <button id="sharePostButton" class="text-button compact" type="button">공유하기</button>
-                <button id="downloadPostButton" class="text-button compact" type="button">글 저장</button>
+              <summary>Share</summary>
+              <div class="article-tool-group" aria-label="Share and save">
+                <button id="copyLinkButton" class="text-button compact" type="button">Copy link</button>
+                <button id="sharePostButton" class="text-button compact" type="button">Share</button>
+                <button id="downloadPostButton" class="text-button compact" type="button">Save article</button>
               </div>
             </details>
             <details class="reading-settings">
-              <summary>읽기 설정</summary>
-              <div class="article-tool-group" aria-label="읽기 설정">
+              <summary>Reading settings</summary>
+              <div class="article-tool-group" aria-label="Reading settings">
                 <button id="decreaseFontButton" class="text-button compact" type="button">글자 작게</button>
                 <button id="increaseFontButton" class="text-button compact" type="button">글자 크게</button>
                 <button id="lineHeightButton" class="text-button compact" type="button">행간 보통</button>
@@ -91,7 +91,7 @@
           </div>
         </div>
         <p id="postViewMessage" class="list-message" role="status" hidden></p>
-        <aside id="tableOfContents" class="toc" aria-label="글 목차" hidden></aside>
+        <aside id="tableOfContents" class="toc" aria-label="Table of contents" hidden></aside>
         <article id="postArticle" class="article"></article>
         <section id="relatedPosts" class="related-posts" aria-label="관련 글" hidden></section>
       </section>
@@ -100,27 +100,27 @@
         <div class="section-heading">
           <p id="resultCount">글을 불러오는 중입니다.</p>
         </div>
-        <section class="toolbar" aria-label="글 검색 및 필터" hidden inert>
+        <section class="toolbar" aria-label="Search and filter posts" hidden inert>
           <label class="search-box">
-            <span>검색</span>
-            <input id="searchInput" type="search" placeholder="제목, 키워드, 주제">
+            <span>Search</span>
+            <input id="searchInput" type="search" placeholder="Title, keyword, topic">
           </label>
           <div class="toolbar-actions">
-            <button id="clearSearchButton" class="text-button compact" type="button" hidden>검색 지우기</button>
-            <button id="savedOnlyButton" class="text-button compact saved-filter-button" type="button" aria-pressed="false">저장한 글 0</button>
+            <button id="clearSearchButton" class="text-button compact" type="button" hidden>Clear search</button>
+            <button id="savedOnlyButton" class="text-button compact saved-filter-button" type="button" aria-pressed="false">Saved posts 0</button>
             <label class="sort-box">
-              <span>정렬</span>
+              <span>Sort</span>
               <select id="sortSelect">
-                <option value="newest">최신순</option>
-                <option value="oldest">오래된순</option>
-                <option value="title">제목순</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="title">Title</option>
               </select>
             </label>
           </div>
           <p id="filterSummary" class="filter-summary" role="status"></p>
           <p id="listMessage" class="list-message" role="status" hidden></p>
         </section>
-        <div id="postList" class="post-list is-loading" aria-busy="true" aria-label="글 목록을 불러오는 중">
+        <div id="postList" class="post-list is-loading" aria-busy="true" aria-label="Loading posts">
           <article class="post-card skeleton-card" aria-hidden="true">
             <div class="skeleton-media"></div>
             <div class="post-card-body">
@@ -149,317 +149,180 @@
             </div>
           </article>
         </div>
-        <nav id="postPagination" class="list-pagination" aria-label="글 페이지" hidden></nav>
-        <p id="emptyState" class="empty-state" role="status" aria-live="polite" hidden>조건에 맞는 글이 없습니다.</p>
+        <nav id="postPagination" class="list-pagination" aria-label="Post pages" hidden></nav>
+        <p id="emptyState" class="empty-state" role="status" aria-live="polite" hidden>No posts match these conditions.</p>
         <noscript>
-          <p class="filter-summary static-fallback-note">JavaScript 없이 볼 수 있는 글 목록입니다.</p>
+          <p class="filter-summary static-fallback-note">Posts available without JavaScript.</p>
           <div class="post-list static-fallback">
             <article class="post-card">
-              <a href="/blog/posts/corca-newbie-trip/">
+              <a href="/en/blog/posts/we-make-ai-colleague">
+                <img src="/blog/assets/notion-posts/we-make-ai-colleague-cover.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+                <div class="post-card-body">
+                  <h3>The AI Colleague we want to create</h3>
+                  <p>Moonlight is an AI Colleague that researches together</p>
+                  <div class="meta"><time datetime="2026-07-07">July 7, 2026</time> | 김선영</div>
+                </div>
+              </a>
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-newbie-trip">
                 <img src="/blog/assets/notion-posts/corca-newbie-trip-cover.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>코르카 신입 적응기</h3>
-                  <p>코르카의 신입이 회사에 적응하면서 첫 업무를 진행한 기록, 그 과정에서 배운것들</p>
-                  <div class="meta"><time datetime="2026-07-06">2026년 7월 6일</time> | 문정민</div>
+                  <h3>Corca&#039;s new adaptation period</h3>
+                  <p>A record of Corca&#039;s new recruits doing their first job while adapting to the company, and what they learned in the process.</p>
+                  <div class="meta"><time datetime="2026-07-06">July 6, 2026</time> | 문정민</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/axhibit-ceal-terview-redraft-with-image/">
-                <img src="/blog/assets/post-images/axhibit-ceal-terview-redraft-with-image-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/axhibit-ceal-terview-redraft-with-image">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>Axhibit: 디자인 리뷰가 상품성 판단이 되는 순간</h3>
-                  <p>송기성님과의 씰터뷰에서 정리한 Axhibit의 제품 방향. 전문가 리뷰와 가상 대중 반응으로 광고 디자인의 가능성을 더 일찍 가늠하는 도구 이야기.</p>
-                  <div class="meta"><time datetime="2026-06-29">2026년 6월 29일</time> | 송기성</div>
+                  <h3>Axhibit: The moment when a design review becomes a judgment of productability</h3>
+                  <p>Axhibit&#039;s product direction summarized in a live interview with Song Ki-seong. A story about a tool to gauge the potential of advertising designs earlier through expert reviews...</p>
+                  <div class="meta"><time datetime="2026-06-29">June 29, 2026</time> | 송기성</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image/">
-                <img src="/blog/assets/post-images/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>확인하지 않은 것을 사실처럼 말하지 않기</h3>
-                  <p>AX 공유회와 Ceal 사용 경험을 바탕으로, AI가 확인하지 않은 내용을 사실처럼 말하지 않게 만드는 작업 원칙과 CLI 운영 규칙을 정리합니다.</p>
-                  <div class="meta"><time datetime="2026-06-25">2026년 6월 25일</time> | 김예린</div>
+                  <h3>Don&#039;t say something you haven&#039;t confirmed as fact</h3>
+                  <p>Based on the AX sharing session and experience using Ceal, we summarize the working principles and CLI operating rules that prevent AI from saying unconfirmed information as fact.</p>
+                  <div class="meta"><time datetime="2026-06-25">June 25, 2026</time> | 김예린</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/ceal-terview-locality-cache-with-image/">
-                <img src="/blog/assets/post-images/ceal-terview-locality-cache-with-image-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/ceal-terview-locality-cache-with-image">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>무엇을 캐시하고, 무엇을 몸에 새길 것인가</h3>
-                  <p>로컬리티와 캐시를 생산성의 언어로 다시 읽으며, LLM에게 맡길 일과 직접 몸에 새길 일을 구분하는 감각을 정리한 Ceal-terview 글입니다.</p>
-                  <div class="meta"><time datetime="2026-05-28">2026년 5월 28일</time> | 최정혁</div>
+                  <h3>What to cache and what to engrave on your body</h3>
+                  <p>This is a Cereal-terview article that rereads locality and cache as the language of productivity and summarizes the sense of distinguishing between what to entrust to an LLM and...</p>
+                  <div class="meta"><time datetime="2026-05-28">May 28, 2026</time> | 최정혁</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/ceal-operations-team/">
-                <img src="/blog/assets/medium-import/ceal-operations-team-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/ceal-operations-team">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>오퍼레이션팀의 새로운 동료, Ceal</h3>
-                  <p>오퍼레이션팀이 Ceal을 활용해 법인카드, 설문, 생일·입사기념일 공지 같은 반복 운영 업무를 자동화한 사례를 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-05-13">2026년 5월 13일</time> | 김선영(HR Manager)</div>
+                  <h3>A new colleague on the operations team, Ceal</h3>
+                  <p>We introduce an example of how the operations team used Ceal to automate repetitive operational tasks such as corporate cards, surveys, and birthday/employment anniversary notices.</p>
+                  <div class="meta"><time datetime="2026-05-13">May 13, 2026</time> | 김선영(HR Manager)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/voc-agent/">
-                <img src="/blog/assets/medium-import/voc-agent-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/voc-agent">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>VoC 대응 에이전트 구축기</h3>
-                  <p>문라이트 팀이 VoC 응대 과정을 에이전트로 구조화하고, 근거 탐색과 답변 초안 작성 비용을 줄인 과정을 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-04-22">2026년 4월 22일</time> | 하동훈(Software Engineer)</div>
+                  <h3>VoC-responsive agent builder</h3>
+                  <p>We introduce how the Moonlight team structured the VoC response process into an agent, reducing the cost of searching for evidence and drafting responses.</p>
+                  <div class="meta"><time datetime="2026-04-22">April 22, 2026</time> | 하동훈(Software Engineer)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/corca-ax-day/">
-                <img src="/blog/assets/medium-import/corca-ax-day-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-ax-day">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>코르카 AX Day</h3>
-                  <p>AX(AI Transformation)에 진심인 코르카 팀이 하루 6시간을 AX에 몰입하며 실험하고 협업한 AX Day를 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-03-18">2026년 3월 18일</time> | 김선영(HR Manager)</div>
+                  <h3>Corca AX Day</h3>
+                  <p>We introduce AX Day, where the Corca team, who is serious about AX (AI Transformation), immerses themselves in AX for 6 hours a day, experimenting and collaborating.</p>
+                  <div class="meta"><time datetime="2026-03-18">March 18, 2026</time> | 김선영(HR Manager)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/corca-office-move/">
-                <img src="/blog/assets/medium-import/corca-office-move-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-office-move">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>우리의 새로운 시작, 코르카 이사 이야기</h3>
-                  <p>코르카가 독립 사무실로 이전하며 일하는 방식과 함께 머무는 공간을 어떻게 새롭게 설계했는지 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-02-02">2026년 2월 2일</time> | 김선영(HR Manager)</div>
+                  <h3>Our new beginning, Corca moving story</h3>
+                  <p>We introduce how Corca redesigned the way we work and stay together by moving to an independent office.</p>
+                  <div class="meta"><time datetime="2026-02-02">February 2, 2026</time> | 김선영(HR Manager)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/live-activity-schedule/">
-                <img src="/blog/assets/medium-import/live-activity-schedule-figure-01.png" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/live-activity-schedule">
+                <img src="/blog/assets/editorial-cover.jpg" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기</h3>
-                  <p>Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.</p>
-                  <div class="meta"><time datetime="2025-12-10">2025년 12월 10일</time> | 김성훈(iOS Product Engineer)</div>
+                  <h3>Live Activity, a deeper look: Real-time schedule function developer</h3>
+                  <p>We outline how the Trace team implemented a real-time scheduling experience using iOS Live Activity and ActivityKit Push and Push to Start.</p>
+                  <div class="meta"><time datetime="2025-12-10">December 10, 2025</time> | 김성훈(iOS Product Engineer)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/app-store-optimization/">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/app-store-optimization">
                 <img src="/blog/assets/medium-import/app-store-optimization-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기</h3>
-                  <p>앱 스토어 최적화(ASO)를 통해 유료 광고 의존도를 낮추고, 키워드와 스토어 페이지 개선으로 안정적인 유입을 만드는 방법을 소개합니다.</p>
-                  <div class="meta"><time datetime="2025-09-26">2025년 9월 26일</time> | 유현명(Product Engineer)</div>
+                  <h3>App Store Optimization: Marketing&#039;s New Growth Formula. Secure stable inflow to your app through app store optimization</h3>
+                  <p>We introduce how to reduce dependence on paid advertising through App Store Optimization (ASO) and create stable inflow by improving keywords and store pages.</p>
+                  <div class="meta"><time datetime="2025-09-26">September 26, 2025</time> | 유현명(Product Engineer)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/corca-workation-busan-2024/">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-workation-busan-2024">
                 <img src="/blog/assets/medium-import/corca-workation-busan-2024-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>2024 코르카 워케이션 in 부산</h3>
-                  <p>코르카, 부산으로 떠나다! 코르카 팀이 8월 26일~8월 30일 워케이션으로 부산을 다녀왔습니다! 워케이션은 일(Work)과 휴가(Vacation)의 합성어로, 원하는 곳에서 휴식을 취하며 근무도 하는 근무형태입 니다. 이번에 처음 워케이션을 가게 되어 기대 반 걱정 반으로 떠났는데요, 결과는 팀원</p>
-                  <div class="meta"><time datetime="2024-09-13">2024년 9월 13일</time> | 김선영(HR Manager)</div>
+                  <h3>2024 Corca Walk in Busan</h3>
+                  <p>Corca leaves for Busan! The Corca team went to Busan on a work trip from August 26th to August 30th! Workation is a compound word of work and vacation, and is a type of work whe...</p>
+                  <div class="meta"><time datetime="2024-09-13">September 13, 2024</time> | 김선영(HR Manager)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/corca-team-page/">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-team-page">
                 <img src="/blog/assets/medium-import/corca-team-page-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>Want to Join Corca?. 코르카 팀 페이지 소개</h3>
-                  <p>코르카의 팀 페이지 코르카를 보다 자세히 알 수 있는, 새로워진 (corca.team)에 대해 소개해드리겠습니다! 코르카 채용 페이지 코르카의 팀 페이지는 corca.team 링크로 방문하실 수 있습니다! 우리가 살아가는 세상을 AI 기술로 변화시키는 팀, Corca corca.team 코르카의 팀</p>
-                  <div class="meta"><time datetime="2023-04-28">2023년 4월 28일</time> | 류가형 (Product Manager)</div>
+                  <h3>Want to Join Corca?. Introduction to Corca Team Page</h3>
+                  <p>Corca&#039;s team page We would like to introduce you to the new (corca.team) where you can learn more about Corca! Corca Recruitment Page Corca&#039;s team page can be visited through th...</p>
+                  <div class="meta"><time datetime="2023-04-28">April 28, 2023</time> | 류가형 (Product Manager)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/corca-buddy-program/">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-buddy-program">
                 <img src="/blog/assets/medium-import/corca-buddy-program-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>새로운 코르카인의 적응을 돕는 ‘버디 프로그램’. 코르카의 온보딩 문화, ‘버디 프로그램&#039;을 소개합니다.</h3>
-                  <p>이번 글에서는 코르카 온보딩 문화의 하나인 ‘버디 프로그램’에 대해 소개하려고 합니다! 코르카에는 입사 첫날부터 온보딩을 도와주는 오르카봇이 있습니다. (오르카봇에 대해 궁금하시다면 아래 링크를 참고하세요!) Hello 코르카, Hello 오르카봇 코르카 온보딩봇, 오르카봇을 소개합니다</p>
-                  <div class="meta"><time datetime="2023-02-17">2023년 2월 17일</time> | 류가형 (Product Manager)</div>
+                  <h3>‘Buddy program’ to help you adapt to new corkine. Introducing Corca’s onboarding culture, the ‘Buddy Program’.</h3>
+                  <p>In this article, I would like to introduce the ‘Buddy Program’, a part of Corca’s onboarding culture! Corca has an Orcabot that helps with onboarding from the first day of emplo...</p>
+                  <div class="meta"><time datetime="2023-02-17">February 17, 2023</time> | 류가형 (Product Manager)</div>
                 </div>
               </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/corca-lunch-bot/">
-                <img src="/blog/assets/medium-import/corca-lunch-bot-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
-                <div class="post-card-body">
-                  <h3>다들 식사하시나요?. “다들 식사 하시나요?”</h3>
-                  <p>다들 식사 하시나요?” 이 말을 얼마나 자주 들으시나요? 참 정감 있고 좋은 말이지만 희한하게도 이런 말은 요즘 살면서 자주 듣기가 쉽지 않아진 것 같아요. 코르카에서는 하루에 두 번, 오르카봇이 물어봅니다. 다들 식사하시나요 “ ?” 오전 10시 30분, 오늘도 오르카봇이 다정히 말을 걸어오네요.</p>
-                  <div class="meta"><time datetime="2022-05-20">2022년 5월 20일</time> | 한충환 (MLOps Engineer)</div>
-                </div>
-              </a>
-            </article><article class="post-card">
-              <a href="/blog/posts/hello-orca-bot/">
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/hello-orca-bot">
                 <img src="/blog/assets/medium-import/hello-orca-bot-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
                 <div class="post-card-body">
-                  <h3>Hello Corca, ‘오르카봇(Orca-bot)’을 소개합니다</h3>
-                  <p>첫날 . 새로운 학교에 가는 첫날. 새로운 회사에 출근하는 첫날. 혹은 누군가를 처음 만나러 가는 순간. 살면서 참 많은 ‘처음’을 마주하지만 처음은 늘 쉽지 않습니다. 코르카에 입사한 첫날, 저 역시 설렘과 긴장감을 반반 섞은 마음으로 출근을 했습니다. 사실 오랜만에 하는 출근이라 설렘보단 긴장감이</p>
-                  <div class="meta"><time datetime="2022-05-20">2022년 5월 20일</time> | J</div>
+                  <h3>Hello Corca, introducing ‘Orca-bot’</h3>
+                  <p>First day. The first day at a new school. The first day at a new company. Or the moment you meet someone for the first time. We face many ‘firsts’ in our lives, but the first ti...</p>
+                  <div class="meta"><time datetime="2022-05-20">May 20, 2022</time> | J</div>
+                </div>
+              </a>
+            </article>            <article class="post-card">
+              <a href="/en/blog/posts/corca-lunch-bot">
+                <img src="/blog/assets/medium-import/corca-lunch-bot-figure-01.webp" alt="" width="1672" height="941" loading="lazy" decoding="async">
+                <div class="post-card-body">
+                  <h3>Is everyone eating? “Is everyone eating?”</h3>
+                  <p>“Is everyone eating?” How often do you hear this? These are very kind and nice words, but strangely enough, I don&#039;t think it&#039;s easy to hear them often these days. In Corca, Orca...</p>
+                  <div class="meta"><time datetime="2022-05-20">May 20, 2022</time> | 한충환 (MLOps Engineer)</div>
                 </div>
               </a>
             </article>
           </div>
-      </noscript>
+        </noscript>
       </section>
 
-      <section id="archive" class="archive-section" aria-label="글 아카이브">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">아카이브</p>
-            <h2>전체 글 아카이브</h2>
-          </div>
-          <p>발행된 Corca 글을 날짜순으로 빠르게 훑어볼 수 있습니다.</p>
-        </div>
-        <div class="archive-list">
-          <section class="archive-month" aria-labelledby="static-archive-2026-07">
-            <h3 id="static-archive-2026-07">2026년 7월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-newbie-trip/">
-                <span><time datetime="2026-07-06">2026년 7월 6일</time></span>
-                <strong>코르카 신입 적응기</strong>
-                <em class="archive-meta"><strong>씰</strong> · 7분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2026-06">
-            <h3 id="static-archive-2026-06">2026년 6월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/axhibit-ceal-terview-redraft-with-image/">
-                <span><time datetime="2026-06-29">2026년 6월 29일</time></span>
-                <strong>Axhibit: 디자인 리뷰가 상품성 판단이 되는 순간</strong>
-                <em class="archive-meta"><strong>AX</strong> · 7분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a><a class="archive-item" href="/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image/">
-                <span><time datetime="2026-06-25">2026년 6월 25일</time></span>
-                <strong>확인하지 않은 것을 사실처럼 말하지 않기</strong>
-                <em class="archive-meta"><strong>AX</strong> · 7분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2026-05">
-            <h3 id="static-archive-2026-05">2026년 5월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/ceal-terview-locality-cache-with-image/">
-                <span><time datetime="2026-05-28">2026년 5월 28일</time></span>
-                <strong>무엇을 캐시하고, 무엇을 몸에 새길 것인가</strong>
-                <em class="archive-meta"><strong>AX</strong> · 7분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a><a class="archive-item" href="/blog/posts/ceal-operations-team/">
-                <span><time datetime="2026-05-13">2026년 5월 13일</time></span>
-                <strong>오퍼레이션팀의 새로운 동료, Ceal</strong>
-                <em class="archive-meta"><strong>AX</strong> · 3분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2026-04">
-            <h3 id="static-archive-2026-04">2026년 4월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/voc-agent/">
-                <span><time datetime="2026-04-22">2026년 4월 22일</time></span>
-                <strong>VoC 대응 에이전트 구축기</strong>
-                <em class="archive-meta"><strong>AX</strong> · 7분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2026-03">
-            <h3 id="static-archive-2026-03">2026년 3월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-ax-day/">
-                <span><time datetime="2026-03-18">2026년 3월 18일</time></span>
-                <strong>코르카 AX Day</strong>
-                <em class="archive-meta"><strong>AX</strong> · 3분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2026-02">
-            <h3 id="static-archive-2026-02">2026년 2월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-office-move/">
-                <span><time datetime="2026-02-02">2026년 2월 2일</time></span>
-                <strong>우리의 새로운 시작, 코르카 이사 이야기</strong>
-                <em class="archive-meta"><strong>코르카</strong> · 3분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2025-12">
-            <h3 id="static-archive-2025-12">2025년 12월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/live-activity-schedule/">
-                <span><time datetime="2025-12-10">2025년 12월 10일</time></span>
-                <strong>Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기</strong>
-                <em class="archive-meta"><strong>트레이스</strong> · 9분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2025-09">
-            <h3 id="static-archive-2025-09">2025년 9월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/app-store-optimization/">
-                <span><time datetime="2025-09-26">2025년 9월 26일</time></span>
-                <strong>앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기</strong>
-                <em class="archive-meta"><strong>마진</strong> · 7분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2024-09">
-            <h3 id="static-archive-2024-09">2024년 9월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-workation-busan-2024/">
-                <span><time datetime="2024-09-13">2024년 9월 13일</time></span>
-                <strong>2024 코르카 워케이션 in 부산</strong>
-                <em class="archive-meta"><strong>코르카</strong> · 4분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2023-04">
-            <h3 id="static-archive-2023-04">2023년 4월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-team-page/">
-                <span><time datetime="2023-04-28">2023년 4월 28일</time></span>
-                <strong>Want to Join Corca?. 코르카 팀 페이지 소개</strong>
-                <em class="archive-meta"><strong>코르카</strong> · 4분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2023-02">
-            <h3 id="static-archive-2023-02">2023년 2월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-buddy-program/">
-                <span><time datetime="2023-02-17">2023년 2월 17일</time></span>
-                <strong>새로운 코르카인의 적응을 돕는 ‘버디 프로그램’. 코르카의 온보딩 문화, ‘버디 프로그램&#039;을 소개합니다.</strong>
-                <em class="archive-meta"><strong>코르카</strong> · 6분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section><section class="archive-month" aria-labelledby="static-archive-2022-05">
-            <h3 id="static-archive-2022-05">2022년 5월</h3>
-            <div class="archive-items">
-              <a class="archive-item" href="/blog/posts/corca-lunch-bot/">
-                <span><time datetime="2022-05-20">2022년 5월 20일</time></span>
-                <strong>다들 식사하시나요?. “다들 식사 하시나요?”</strong>
-                <em class="archive-meta"><strong>코르카</strong> · 4분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a><a class="archive-item" href="/blog/posts/hello-orca-bot/">
-                <span><time datetime="2022-05-20">2022년 5월 20일</time></span>
-                <strong>Hello Corca, ‘오르카봇(Orca-bot)’을 소개합니다</strong>
-                <em class="archive-meta"><strong>코르카</strong> · 5분 읽기</em>
-                <span class="archive-cue" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </section>
-        </div>
-      </section>
+      <section id="archive" class="archive-section" aria-label="Post pages" hidden></section>
 
       <section id="about" class="about-section" aria-labelledby="aboutTitle">
         <div>
-          <p class="eyebrow">블로그 소개</p>
-          <h2 id="aboutTitle">제품을 만드는 과정 자체를 기록합니다</h2>
-          <p>Corca Blog는 회사의 공식 기록 공간입니다. 제품 의사결정, AI 워크플로, 팀 운영에서 얻은 배움을 독자가 바로 이해할 수 있는 글로 정리합니다.</p>
+          <p class="eyebrow">About the blog</p>
+          <h2 id="aboutTitle">We document how Corca builds products</h2>
+          <p>Corca Blog is the company’s official record for product decisions, AI workflows, and operating lessons written so readers can understand and apply them quickly.</p>
         </div>
         <div class="about-grid">
           <article>
-            <strong>제품 노트</strong>
-            <p>AI 제품을 설계하고 운영하며 마주친 문제와 선택을 기록합니다.</p>
+            <strong>Product notes</strong>
+            <p>Problems and choices we encounter while designing and operating AI products.</p>
           </article>
           <article>
-            <strong>워크플로 에세이</strong>
-            <p>반복 가능한 업무 흐름, 자동화, 리서치 방식을 공유합니다.</p>
+            <strong>Workflow essays</strong>
+            <p>Repeatable workflows, automation patterns, and research practices from our team.</p>
           </article>
           <article>
-            <strong>회사 생각</strong>
-            <p>Corca가 중요하게 보는 원칙과 일하는 방식을 공개합니다.</p>
+            <strong>Company thinking</strong>
+            <p>The principles and working methods Corca chooses to share publicly.</p>
           </article>
         </div>
       </section>

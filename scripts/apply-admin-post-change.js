@@ -646,6 +646,7 @@ function markdownToHtml(markdown) {
   let list = [];
   let listTag = 'ul';
   let quote = [];
+  let table = [];
   let code = [];
   let inCode = false;
 
@@ -657,11 +658,15 @@ function markdownToHtml(markdown) {
   };
   const flushList = () => {
     if (list.length) {
-      html.push(
-        `<${listTag}>${list.map((item) => `<li>${inlineMarkdown(item)}</li>`).join('')}</${listTag}>`,
-      );
+      html.push(`<${listTag}>${list.map((item) => renderListItem(item)).join('')}</${listTag}>`);
       list = [];
       listTag = 'ul';
+    }
+  };
+  const flushTable = () => {
+    if (table.length) {
+      html.push(renderMarkdownTable(table));
+      table = [];
     }
   };
   const flushQuote = () => {
@@ -682,6 +687,7 @@ function markdownToHtml(markdown) {
   const flushTextBlocks = () => {
     flushParagraph();
     flushList();
+    flushTable();
     flushQuote();
   };
 
@@ -716,6 +722,13 @@ function markdownToHtml(markdown) {
       html.push(renderLinkCard(linkCard));
       continue;
     }
+    if (isMarkdownTableRow(trimmed)) {
+      flushParagraph();
+      flushList();
+      flushQuote();
+      table.push(trimmed);
+      continue;
+    }
     const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
     if (heading) {
       flushTextBlocks();
@@ -741,6 +754,7 @@ function markdownToHtml(markdown) {
       continue;
     }
     flushList();
+    flushTable();
     flushQuote();
     paragraph.push(trimmed);
   }
@@ -750,6 +764,43 @@ function markdownToHtml(markdown) {
     flushCode();
   }
   return html.join('\n');
+}
+
+function renderListItem(item) {
+  const task = String(item || '').match(/^\[( |x|X)]\s+(.+)$/);
+  if (task) {
+    const checked = task[1].toLowerCase() === 'x';
+    return `<li class="task-list-item"><input type="checkbox" disabled${checked ? ' checked' : ''}> <span>${inlineMarkdown(task[2])}</span></li>`;
+  }
+  return `<li>${inlineMarkdown(item)}</li>`;
+}
+
+function isMarkdownTableRow(value) {
+  return /^\|.+\|$/.test(value) && value.split('|').length > 2;
+}
+
+function renderMarkdownTable(rows) {
+  const parsedRows = rows.map(parseMarkdownTableRow).filter((row) => row.length);
+  if (!parsedRows.length) return '';
+  const hasDivider = parsedRows[1]?.every((cell) => /^:?-{3,}:?$/.test(cell.trim()));
+  const head = hasDivider ? parsedRows[0] : null;
+  const bodyRows = hasDivider ? parsedRows.slice(2) : parsedRows;
+  const headHtml = head
+    ? `<thead><tr>${head.map((cell) => `<th>${inlineMarkdown(cell)}</th>`).join('')}</tr></thead>`
+    : '';
+  const bodyHtml = `<tbody>${bodyRows
+    .map((row) => `<tr>${row.map((cell) => `<td>${inlineMarkdown(cell)}</td>`).join('')}</tr>`)
+    .join('')}</tbody>`;
+  return `<table>${headHtml}${bodyHtml}</table>`;
+}
+
+function parseMarkdownTableRow(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split('|')
+    .map((cell) => cell.trim());
 }
 
 function inlineMarkdown(value) {
@@ -768,6 +819,7 @@ function inlineMarkdown(value) {
       '<span style="color: $1">$2</span>',
     )
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/~~([^~]+)~~/g, '<del>$1</del>')
     .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
     .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
     .replace(/`([^`]+)`/g, '<code>$1</code>');

@@ -74,6 +74,15 @@ This line has {color=#0066cc}blue text{/color} and a body image.
 
 This line has _italic emphasis_ and an ![inline image](assets/editorial-cover.jpg).
 
+- [x] Checked task item
+- [ ] Open task item
+
+| Feature | Status |
+| --- | --- |
+| Table preview | Works |
+
+This line has ~~removed copy~~ for strike-through preview.
+
 This fixture intentionally includes enough article copy to pass the public post generator while still focusing on the admin edit path. The admin editor should preserve the Markdown source for later editing, render the body into HTML for readers, and regenerate the index from the same metadata that was sent by the Worker dispatch.
 
 - First admin list item
@@ -103,6 +112,9 @@ This fixture intentionally includes enough article copy to pass the public post 
   assert.match(staticPage, /<hr>/);
   assert.match(staticPage, /<em>italic emphasis<\/em>/);
   assert.match(staticPage, /<span style="color: #0066cc">blue text<\/span>/);
+  assert.match(staticPage, /<li class="task-list-item"><input type="checkbox" disabled checked>/);
+  assert.match(staticPage, /<table><thead><tr><th>Feature<\/th><th>Status<\/th><\/tr><\/thead>/);
+  assert.match(staticPage, /<del>removed copy<\/del>/);
   assert.match(staticPage, /<img src="\/blog\/assets\/editorial-cover\.jpg"/);
   assert.match(
     staticPage,

@@ -254,6 +254,7 @@ label {
 .wide,
 .file-field,
 .content-field {
+  position: relative;
   grid-column: 1 / -1;
 }
 
@@ -312,6 +313,49 @@ label {
   clip: rect(0, 0, 0, 0);
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.slash-command-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 6px;
+  max-height: 245px;
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid rgba(0, 102, 204, 0.22);
+  border-radius: var(--radius);
+  background: #ffffff;
+  box-shadow: var(--shadow);
+}
+
+.slash-command-item {
+  display: grid;
+  justify-items: start;
+  min-height: 54px;
+  padding: 8px 10px;
+  background: #ffffff;
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--line);
+  text-align: left;
+}
+
+.slash-command-item strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.slash-command-item span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.slash-command-item:hover,
+.slash-command-item:focus-visible,
+.slash-command-item.is-active {
+  background: #eef5ff;
+  box-shadow: inset 0 0 0 1px rgba(0, 102, 204, 0.35);
 }
 
 .content-editor {
@@ -409,6 +453,19 @@ label {
   padding-left: 22px;
 }
 
+.markdown-preview .task-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  list-style: none;
+}
+
+.markdown-preview .task-list-item input {
+  width: auto;
+  margin-top: 6px;
+  padding: 0;
+}
+
 .markdown-preview code {
   border-radius: 5px;
   background: #f0f1f4;
@@ -435,6 +492,58 @@ label {
   max-width: 100%;
   height: auto;
   border-radius: var(--radius);
+}
+
+.markdown-preview table {
+  width: 100%;
+  margin: 18px 0;
+  border-collapse: collapse;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.markdown-preview th,
+.markdown-preview td {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-preview th {
+  background: #f7f7fb;
+  font-weight: 900;
+}
+
+.markdown-preview del {
+  color: var(--muted);
+}
+
+.markdown-preview .article-link-card {
+  margin: 18px 0;
+}
+
+.markdown-preview .article-link-card a {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fbfbfd;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.markdown-preview .article-link-card-domain,
+.markdown-preview .article-link-card-url {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .markdown-preview hr {

@@ -3084,6 +3084,65 @@ main {
   font-size: 18px;
 }
 
+.hero-topic-filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: -4px;
+}
+
+.hero-topic-filters button {
+  min-height: 30px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1;
+  padding: 5px 10px;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 120ms ease;
+}
+
+.hero-topic-filters button::after {
+  content: attr(data-count);
+  display: inline-grid;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--tag);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.hero-topic-filters button:hover,
+.hero-topic-filters button:focus-visible {
+  border-color: var(--line-strong);
+  background: #ffffff;
+  color: var(--text);
+  outline: none;
+}
+
+.hero-topic-filters button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.hero-topic-filters button.active::after {
+  background: #ffffff;
+  color: var(--accent);
+}
+
+.hero-topic-filters button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
 .hero-actions {
   justify-content: center;
   margin-top: 8px;

@@ -9,6 +9,7 @@ const adminMessage = document.querySelector("#adminMessage");
 const fileInput = document.querySelector("#fileInput");
 const coverFileInput = document.querySelector("#coverFileInput");
 const bodyImageInput = document.querySelector("#bodyImageInput");
+const toastEditorContainer = document.querySelector("#toastEditor");
 const contentInput = document.querySelector("#contentInput");
 const contentLabel = document.querySelector("#contentLabel");
 const markdownToolbar = document.querySelector("#markdownToolbar");
@@ -39,6 +40,8 @@ let pendingCoverImage = null;
 let pendingBodyImages = [];
 let originalContent = "";
 let previewTimer = 0;
+let toastEditor = null;
+let syncingToastEditor = false;
 let slashState = null;
 let activeSlashCommandIndex = 0;
 const slashCommands = [
@@ -62,6 +65,8 @@ const slashCommands = [
   { id: "italic", title: "기울임", hint: "_텍스트_", keywords: ["italic", "em", "기울임"] },
   { id: "strike", title: "취소선", hint: "~~텍스트~~", keywords: ["strike", "delete", "취소선"] }
 ];
+
+initToastEditor();
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -136,7 +141,7 @@ fileInput.addEventListener("change", async () => {
   const file = fileInput.files?.[0];
   if (!file) return;
   const content = await file.text();
-  contentInput.value = content;
+  setEditorContent(content);
   if (/\.md|\.markdown$/i.test(file.name)) {
     fields.format.value = "markdown";
     const title = content.match(/^#\s+(.+)$/m)?.[1]?.trim();
@@ -211,7 +216,11 @@ postForm.addEventListener("submit", async (event) => {
     return;
   }
   adminMessage.textContent = "저장 요청을 보내는 중입니다.";
-  const currentContent = contentInput.value;
+  const currentContent = getEditorContent();
+  if (!currentContent.trim()) {
+    adminMessage.textContent = "본문을 입력하세요.";
+    return;
+  }
   const payload = {
     action: "upsert",
     slug: fields.slug.value,
@@ -349,13 +358,13 @@ async function loadPostSource(slug) {
   fields.format.value = data.format || "html";
   fields.cover.value = metadata.cover || "assets/editorial-cover.jpg";
   pendingCoverImage = null;
+  pendingBodyImages = [];
   coverFileInput.value = "";
   fields.language.value = metadata.language || "ko";
   fields.section.value = metadata.section || "";
   fields.coverAlt.value = metadata.coverAlt || "";
-  contentInput.value = data.content || "";
-  originalContent = contentInput.value;
-  pendingBodyImages = [];
+  setEditorContent(data.content || "");
+  originalContent = getEditorContent();
   fields.format.dispatchEvent(new Event("change"));
   updateMarkdownPreview();
   setEditorDisabled(false);
@@ -375,12 +384,12 @@ function clearEditor() {
   fields.language.value = "ko";
   fields.section.value = "";
   fields.coverAlt.value = "";
-  contentInput.value = "";
+  pendingBodyImages = [];
+  setEditorContent("");
   fileInput.value = "";
   coverFileInput.value = "";
   bodyImageInput.value = "";
   pendingCoverImage = null;
-  pendingBodyImages = [];
   originalContent = "";
   fields.format.dispatchEvent(new Event("change"));
   updateMarkdownPreview();
@@ -418,15 +427,24 @@ function setEditorDisabled(disabled) {
   contentInput.disabled = disabled;
   saveButton.disabled = disabled;
   deleteButton.disabled = disabled || !activeSlug;
+  updateToastEditorState();
   updateMarkdownToolsState();
 }
 
 function updateEditorMode() {
   const isMarkdown = fields.format.value === "markdown";
   contentLabel.textContent = isMarkdown ? "Markdown 수정" : "HTML 파일 재업로드";
-  markdownToolbar.hidden = !isMarkdown;
-  markdownPreviewPanel.hidden = !isMarkdown;
+  const toastActive = isToastEditorActive();
+  markdownToolbar.hidden = !isMarkdown || toastActive;
+  markdownPreviewPanel.hidden = !isMarkdown || toastActive;
+  contentInput.hidden = toastActive;
+  contentInput.required = !toastActive;
+  if (toastEditorContainer) {
+    toastEditorContainer.hidden = !toastActive;
+  }
+  document.body.classList.toggle("toast-editor-active", toastActive);
   if (!isMarkdown) hideSlashCommandMenu();
+  updateToastEditorState();
   updateMarkdownToolsState();
   updateMarkdownPreview();
 }
@@ -446,6 +464,11 @@ function scheduleMarkdownPreview() {
 }
 
 function updateMarkdownPreview() {
+  if (isToastEditorActive()) {
+    previewStatus.textContent = "TOAST UI";
+    hideSlashCommandMenu();
+    return;
+  }
   if (fields.format.value !== "markdown") {
     markdownPreview.innerHTML = "";
     previewStatus.textContent = "HTML";
@@ -459,6 +482,132 @@ function updateMarkdownPreview() {
       ? markdownToHtml(contentInput.value)
       : `<p class="preview-empty">Markdown을 입력하면 여기에 미리보기가 표시됩니다.</p>`;
   });
+}
+
+function initToastEditor() {
+  const Editor = window.toastui?.Editor;
+  if (!Editor || !toastEditorContainer) {
+    return;
+  }
+  toastEditor = new Editor({
+    el: toastEditorContainer,
+    height: "560px",
+    initialEditType: "markdown",
+    previewStyle: "vertical",
+    initialValue: "",
+    language: "ko-KR",
+    usageStatistics: false,
+    autofocus: false,
+    placeholder: "본문을 Markdown 또는 WYSIWYG로 작성하세요.",
+    toolbarItems: [
+      ["heading", "bold", "italic", "strike"],
+      ["hr", "quote"],
+      ["ul", "ol", "task"],
+      ["table", "link", "image"],
+      ["code", "codeblock"]
+    ],
+    hooks: {
+      addImageBlobHook: async (blob, callback) => {
+        if (!activeSlug) {
+          adminMessage.textContent = "이미지를 넣을 글을 먼저 선택하세요.";
+          return false;
+        }
+        if (!/^image\/(?:jpeg|png|webp)$/.test(blob.type)) {
+          adminMessage.textContent = "본문 이미지는 jpg, png, webp 이미지만 업로드할 수 있습니다.";
+          return false;
+        }
+        adminMessage.textContent = "본문 이미지를 준비하는 중입니다.";
+        try {
+          const preparedImage = await prepareBodyImage(blob);
+          pendingBodyImages = [
+            ...pendingBodyImages.filter((item) => item.path !== preparedImage.path),
+            preparedImage
+          ].slice(-6);
+          const altText = blob.name ? blob.name.replace(/\.[^.]+$/, "") : "이미지";
+          callback(preparedImage.previewSrc, altText);
+          syncToastEditorToSource();
+          adminMessage.textContent = "본문 이미지를 삽입했습니다. 저장 요청하면 함께 반영됩니다.";
+        } catch (error) {
+          adminMessage.textContent = error.message || "본문 이미지를 처리하지 못했습니다.";
+        }
+        return false;
+      }
+    },
+    events: {
+      change: () => {
+        syncToastEditorToSource();
+      }
+    }
+  });
+  document.body.classList.add("has-toast-editor");
+  updateEditorMode();
+}
+
+function isToastEditorActive() {
+  return Boolean(toastEditor && fields.format.value === "markdown");
+}
+
+function updateToastEditorState() {
+  if (!toastEditorContainer) {
+    return;
+  }
+  const disabled = contentInput.disabled || fields.format.value !== "markdown";
+  toastEditorContainer.classList.toggle("is-disabled", disabled);
+  if (toastEditor && isToastEditorActive()) {
+    toastEditorContainer.removeAttribute("aria-hidden");
+  } else {
+    toastEditorContainer.setAttribute("aria-hidden", "true");
+  }
+}
+
+function setEditorContent(value) {
+  const source = String(value || "");
+  contentInput.value = source;
+  if (!toastEditor) {
+    return;
+  }
+  syncingToastEditor = true;
+  toastEditor.setMarkdown(sourceMarkdownToToastMarkdown(source), false);
+  syncingToastEditor = false;
+}
+
+function getEditorContent() {
+  if (isToastEditorActive()) {
+    syncToastEditorToSource();
+  }
+  return contentInput.value;
+}
+
+function syncToastEditorToSource() {
+  if (!toastEditor || syncingToastEditor) {
+    return;
+  }
+  contentInput.value = toastMarkdownToSourceMarkdown(toastEditor.getMarkdown());
+}
+
+function sourceMarkdownToToastMarkdown(markdown) {
+  let next = String(markdown || "");
+  for (const image of pendingBodyImages) {
+    if (image.previewSrc) {
+      next = next.replaceAll(`(${image.path})`, `(${image.previewSrc})`);
+      next = next.replaceAll(`(/blog/${image.path})`, `(${image.previewSrc})`);
+    }
+  }
+  return next
+    .replace(/\((assets\/[^)\s]+)\)/g, "(/blog/$1)")
+    .replace(/\(\/assets\/([^)\s]+)\)/g, "(/blog/assets/$1)");
+}
+
+function toastMarkdownToSourceMarkdown(markdown) {
+  let next = String(markdown || "");
+  for (const image of pendingBodyImages) {
+    if (image.previewSrc) {
+      next = next.replaceAll(`(${image.previewSrc})`, `(${image.path})`);
+    }
+  }
+  return next
+    .replace(/\(\/blog\/assets\/([^)\s]+)\)/g, "(assets/$1)")
+    .replace(/\(\/assets\/([^)\s]+)\)/g, "(assets/$1)");
 }
 
 function handleEditorKeydown(event) {

@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex,nofollow">
     <title>Corca Blog Admin</title>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/3.2.2/toastui-editor.min.css">
     <link rel="stylesheet" href="/blog/admin/admin.css">
   </head>
   <body>
@@ -126,6 +127,7 @@
                 </div>
                 <div id="slashCommandMenu" class="slash-command-menu" role="listbox" aria-label="블록 추가 메뉴" hidden></div>
                 <div class="content-editor">
+                  <div id="toastEditor" class="toast-editor-shell" hidden></div>
                   <textarea id="contentInput" rows="20" required></textarea>
                   <aside id="markdownPreviewPanel" class="markdown-preview-panel" aria-label="Markdown 미리보기">
                     <div class="preview-heading">
@@ -147,6 +149,7 @@
         </div>
       </section>
     </main>
+    <script src="https://uicdn.toast.com/editor/3.2.2/toastui-editor-all.min.js"></script>
     <script type="module" src="/blog/admin/admin.js"></script>
   </body>
 </html>

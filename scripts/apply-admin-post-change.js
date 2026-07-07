@@ -213,20 +213,17 @@ async function syncPostIndex() {
 
   const sorted = sortPosts(posts);
   for (const locale of supportedLocales) {
-    const localePosts = sorted.filter((post) => post.language === locale);
     const localePostsDir = join(repoRoot, localePaths[locale], 'posts');
     await mkdir(localePostsDir, { recursive: true });
-    await writeFile(
-      join(localePostsDir, 'index.json'),
-      `${JSON.stringify(localePosts, null, 2)}\n`,
-    );
+    await writeFile(join(localePostsDir, 'index.json'), `${JSON.stringify(sorted, null, 2)}\n`);
   }
   console.log(`Synced ${sorted.length} posts into ${supportedLocales.length} locale post indexes.`);
   return sorted;
 }
 
 async function renderAllStaticPosts(posts) {
-  const postsByLocale = groupPostsByLocale(posts);
+  const sortedPosts = sortPosts(posts);
+  const postsByLocale = groupPostsByLocale(sortedPosts);
   const availableLocalesBySlug = groupLocalesBySlug(posts);
   for (const post of posts) {
     const source = await readFile(join(sourcesDir, `${post.slug}.html`), 'utf8');
@@ -234,10 +231,6 @@ async function renderAllStaticPosts(posts) {
     const articleHtml = prepareArticleHtml(parsed.articleHtml);
     for (const locale of supportedLocales) {
       const outputDir = join(repoRoot, localePaths[locale], 'posts', post.slug);
-      if (locale !== post.language) {
-        await rm(outputDir, { recursive: true, force: true });
-        continue;
-      }
       const localePosts = postsByLocale.get(locale) || [];
       const postBySlug = new Map(localePosts.map((item) => [item.slug, item]));
       const html = renderStaticPostPage(
@@ -252,14 +245,15 @@ async function renderAllStaticPosts(posts) {
       await writeFile(join(outputDir, 'index.html'), html);
     }
   }
-  console.log(`Rendered ${posts.length} static blog posts into their configured locales.`);
+  console.log(
+    `Rendered ${posts.length} static blog posts into ${supportedLocales.length} locales.`,
+  );
 }
 
 function groupPostsByLocale(posts) {
   const groups = new Map(supportedLocales.map((locale) => [locale, []]));
-  for (const post of posts) {
-    const locale = localePaths[post.language] ? post.language : 'ko';
-    groups.get(locale).push(post);
+  for (const locale of supportedLocales) {
+    groups.set(locale, posts);
   }
   return groups;
 }
@@ -267,9 +261,7 @@ function groupPostsByLocale(posts) {
 function groupLocalesBySlug(posts) {
   const groups = new Map();
   for (const post of posts) {
-    const locales = groups.get(post.slug) || new Set();
-    locales.add(localePaths[post.language] ? post.language : 'ko');
-    groups.set(post.slug, locales);
+    groups.set(post.slug, new Set(supportedLocales));
   }
   return groups;
 }

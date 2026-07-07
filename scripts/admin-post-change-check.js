@@ -130,14 +130,17 @@ This fixture intentionally includes enough article copy to pass the public post 
     true,
   );
 
-  const enIndex = JSON.parse(
-    await readFile(join(workDir, 'public/en/blog/posts/index.json'), 'utf8'),
-  );
-  assert.equal(enIndex.length, 0);
-  await assert.rejects(
-    readFile(join(workDir, `public/en/blog/posts/${slug}/index.html`), 'utf8'),
-    /ENOENT/,
-  );
+  for (const locale of ['en', 'ja', 'zh']) {
+    const localeIndex = JSON.parse(
+      await readFile(join(workDir, `public/${locale}/blog/posts/index.json`), 'utf8'),
+    );
+    assert.equal(localeIndex.length, 1);
+    assert.equal(localeIndex[0].slug, slug);
+    assert.match(
+      await readFile(join(workDir, `public/${locale}/blog/posts/${slug}/index.html`), 'utf8'),
+      /Admin Markdown Updated/,
+    );
+  }
 
   runAdminChange({
     action: 'upsert',

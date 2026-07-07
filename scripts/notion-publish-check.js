@@ -152,7 +152,7 @@ try {
   );
   assert.equal(
     posts.some((post) => post.slug === 'notion-html-fixture'),
-    false,
+    true,
   );
   assert.equal(
     enPosts.some((post) => post.slug === 'notion-html-fixture'),

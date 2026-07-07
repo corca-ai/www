@@ -287,6 +287,10 @@ function sanitizeAdminPostChangePayload(value: Record<string, unknown>):
 
   const coverImage = sanitizeAdminCoverImage(value);
   if ('error' in coverImage) return { error: coverImage.error };
+  const bodyImages = sanitizeAdminBodyImages(value, slug);
+  if ('error' in bodyImages) return { error: bodyImages.error };
+  const deleteBodyImages = sanitizeAdminDeletedBodyImages(value, slug);
+  if ('error' in deleteBodyImages) return { error: deleteBodyImages.error };
 
   return {
     value: {
@@ -297,6 +301,8 @@ function sanitizeAdminPostChangePayload(value: Record<string, unknown>):
       metadata,
       contentBase64,
       ...coverImage,
+      ...bodyImages,
+      ...deleteBodyImages,
     },
   };
 }
@@ -323,6 +329,70 @@ function sanitizeAdminCoverImage(
     coverImageMime: mime,
     coverImageFileName: fileName,
   };
+}
+
+function sanitizeAdminBodyImages(
+  value: Record<string, unknown>,
+  slug: string,
+): { bodyImages?: Array<Record<string, string>> } | { error: string } {
+  const rawImages = Array.isArray(value.bodyImages) ? value.bodyImages : [];
+  if (rawImages.length > 6) return { error: 'too_many_body_images' };
+
+  const images = [];
+  let totalSize = 0;
+  for (const item of rawImages) {
+    if (!isRecord(item)) return { error: 'invalid_body_image' };
+    const contentBase64 = String(item.contentBase64 || '').trim();
+    const fileName = String(item.fileName || '')
+      .trim()
+      .slice(0, 120);
+    const mime = String(item.mime || '')
+      .trim()
+      .toLowerCase();
+    totalSize += contentBase64.length;
+    if (
+      !contentBase64 ||
+      !/^[A-Za-z0-9+/=]+$/.test(contentBase64) ||
+      contentBase64.length > 110000
+    ) {
+      return { error: 'invalid_body_image_size' };
+    }
+    if (totalSize > 300000) return { error: 'body_images_too_large' };
+    if (!isSafeAdminImageFileName(fileName, slug)) {
+      return { error: 'invalid_body_image_name' };
+    }
+    if (!/^image\/(?:jpeg|png|webp)$/.test(mime) && !/\.(?:jpe?g|png|webp)$/i.test(fileName)) {
+      return { error: 'invalid_body_image_type' };
+    }
+    images.push({ contentBase64, fileName, mime });
+  }
+  return images.length ? { bodyImages: images } : {};
+}
+
+function sanitizeAdminDeletedBodyImages(
+  value: Record<string, unknown>,
+  slug: string,
+): { deleteBodyImagePaths?: string[] } | { error: string } {
+  const rawPaths = Array.isArray(value.deleteBodyImagePaths) ? value.deleteBodyImagePaths : [];
+  if (rawPaths.length > 20) return { error: 'too_many_deleted_body_images' };
+  const paths = [];
+  for (const item of rawPaths) {
+    const path = String(item || '').trim();
+    if (!path.startsWith(`assets/admin-posts/${slug}-`)) {
+      return { error: 'invalid_deleted_body_image_path' };
+    }
+    const fileName = path.split('/').pop() || '';
+    if (!isSafeAdminImageFileName(fileName, slug)) {
+      return { error: 'invalid_deleted_body_image_path' };
+    }
+    paths.push(path);
+  }
+  return paths.length ? { deleteBodyImagePaths: [...new Set(paths)] } : {};
+}
+
+function isSafeAdminImageFileName(fileName: string, slug: string): boolean {
+  const escapedSlug = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`^${escapedSlug}-[a-f0-9]{12}\\.(?:jpe?g|png|webp)$`, 'i').test(fileName);
 }
 
 function sanitizeAdminMetadata(value: Record<string, unknown>): Record<string, unknown> {

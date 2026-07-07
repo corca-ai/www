@@ -115,9 +115,14 @@
                   <button type="button" class="tool-button" data-markdown-action="unordered-list" aria-label="글머리 목록">•</button>
                   <button type="button" class="tool-button" data-markdown-action="ordered-list" aria-label="번호 목록">1.</button>
                   <button type="button" class="tool-button" data-markdown-action="link" aria-label="링크">↗</button>
-                  <button type="button" class="tool-button" data-markdown-action="image" aria-label="이미지">▧</button>
+                  <button type="button" class="tool-button" data-markdown-action="image" aria-label="이미지 URL">▧</button>
+                  <button type="button" class="tool-button wide-tool" data-markdown-action="image-upload" aria-label="이미지 파일 삽입 또는 교체">+IMG</button>
+                  <button type="button" class="tool-button wide-tool" data-markdown-action="image-delete" aria-label="현재 이미지 삭제">DEL</button>
                   <button type="button" class="tool-button" data-markdown-action="code" aria-label="코드">`</button>
                   <button type="button" class="tool-button" data-markdown-action="rule" aria-label="구분선">—</button>
+                  <input id="colorInput" class="color-input" type="color" value="#0066cc" aria-label="글자 색상">
+                  <button type="button" class="tool-button" data-markdown-action="color" aria-label="글자 색상 적용">색</button>
+                  <input id="bodyImageInput" class="sr-only-file" type="file" accept="image/jpeg,image/png,image/webp">
                 </div>
                 <div class="content-editor">
                   <textarea id="contentInput" rows="20" required></textarea>

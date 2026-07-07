@@ -71,6 +71,8 @@ async function upsertPost(value) {
     content: articleHtml,
   });
   const uploadedCover = await writeCoverImage(value, slug);
+  await writeBodyImages(value, slug);
+  await deleteBodyImages(value, slug);
   const post = {
     ...parsed?.metadata,
     title,
@@ -113,6 +115,42 @@ async function writeCoverImage(value, slug) {
   await mkdir(adminAssetsDir, { recursive: true });
   await writeFile(join(adminAssetsDir, filename), buffer);
   return `assets/admin-posts/${filename}`;
+}
+
+async function writeBodyImages(value, slug) {
+  const images = Array.isArray(value.bodyImages) ? value.bodyImages : [];
+  for (const image of images) {
+    const encoded = String(image?.contentBase64 || '').trim();
+    const fileName = normalizeAdminImageFileName(image?.fileName, slug);
+    if (!encoded || !fileName) fail('Admin body image payload is invalid.');
+
+    const buffer = Buffer.from(encoded, 'base64');
+    if (!buffer.length || buffer.length > 90000) {
+      fail('Admin body image must be a non-empty image under 90KB after encoding.');
+    }
+
+    const extension = normalizeImageExtension(fileName || image?.mime || '');
+    if (!extension) fail('Admin body image must be jpg, png, or webp.');
+
+    await mkdir(adminAssetsDir, { recursive: true });
+    await writeFile(join(adminAssetsDir, fileName), buffer);
+  }
+}
+
+async function deleteBodyImages(value, slug) {
+  const paths = Array.isArray(value.deleteBodyImagePaths) ? value.deleteBodyImagePaths : [];
+  for (const path of paths) {
+    const normalizedPath = String(path || '').trim();
+    const fileName = normalizedPath.split('/').pop() || '';
+    if (
+      !normalizedPath.startsWith(`assets/admin-posts/${slug}-`) ||
+      !normalizeAdminImageFileName(fileName, slug)
+    ) {
+      fail(`Unsafe admin body image delete path: ${normalizedPath}`);
+    }
+    assertSafeRelativePath(normalizedPath, 'body image', 'assets/admin-posts/');
+    await rm(join(blogRoot, normalizedPath), { force: true });
+  }
 }
 
 async function deletePost(value) {
@@ -725,6 +763,10 @@ function inlineMarkdown(value) {
       /\[([^\]]+)\]\(([^)]+)\)/g,
       (_match, text, href) => `<a href="${safeMarkdownUrl(href)}">${text}</a>`,
     )
+    .replace(
+      /\{color=(#[0-9a-fA-F]{6})\}([\s\S]*?)\{\/color\}/g,
+      '<span style="color: $1">$2</span>',
+    )
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
     .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
@@ -886,6 +928,15 @@ function normalizeImageExtension(value) {
   if (extension === 'jpg' || extension === 'jpeg') return 'jpg';
   if (extension === 'png' || extension === 'webp') return extension;
   return '';
+}
+
+function normalizeAdminImageFileName(value, slug) {
+  const fileName = basename(String(value || '').trim());
+  const escapedSlug = slug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (!new RegExp(`^${escapedSlug}-[a-f0-9]{12}\\.(?:jpe?g|png|webp)$`, 'i').test(fileName)) {
+    return '';
+  }
+  return fileName;
 }
 
 function requiredString(value, label) {

@@ -507,7 +507,9 @@ h1 {
   width: 100%;
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-sm);
-  object-fit: cover;
+  background: #f3f4f6;
+  object-fit: contain;
+  object-position: center;
   transition: transform 220ms ease;
 }
 
@@ -1039,7 +1041,9 @@ summary:focus-visible {
 .post-card img {
   width: 100%;
   aspect-ratio: 16 / 9;
-  object-fit: cover;
+  background: #f3f4f6;
+  object-fit: contain;
+  object-position: center;
   transition: transform 220ms ease;
 }
 

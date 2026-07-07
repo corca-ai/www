@@ -62,6 +62,8 @@ try {
 
 ## Markdown Section
 
+#### Deeper Markdown Heading
+
 Admin markdown body with **bold** text and [Corca](https://www.corca.ai/).
 
 This line has {color=#0066cc}blue text{/color} and a body image.
@@ -82,6 +84,10 @@ This line has _italic emphasis_ and an ![inline image](assets/editorial-cover.jp
 | Table preview | Works |
 
 This line has ~~removed copy~~ for strike-through preview.
+
+\`\`\`js
+const markdownRenderer = 'standard';
+\`\`\`
 
 This fixture intentionally includes enough article copy to pass the public post generator while still focusing on the admin edit path. The admin editor should preserve the Markdown source for later editing, render the body into HTML for readers, and regenerate the index from the same metadata that was sent by the Worker dispatch.
 
@@ -107,14 +113,22 @@ This fixture intentionally includes enough article copy to pass the public post 
 
   const staticPage = await readFile(join(workDir, `public/blog/posts/${slug}/index.html`), 'utf8');
   assert.match(staticPage, /Admin Markdown Updated/);
+  assert.match(staticPage, /<h4>Deeper Markdown Heading<\/h4>/);
   assert.match(staticPage, /<strong>bold<\/strong>/);
   assert.match(staticPage, /<blockquote>/);
   assert.match(staticPage, /<hr>/);
   assert.match(staticPage, /<em>italic emphasis<\/em>/);
   assert.match(staticPage, /<span style="color: #0066cc">blue text<\/span>/);
-  assert.match(staticPage, /<li class="task-list-item"><input type="checkbox" disabled checked>/);
-  assert.match(staticPage, /<table><thead><tr><th>Feature<\/th><th>Status<\/th><\/tr><\/thead>/);
+  assert.match(
+    staticPage,
+    /<li class="task-list-item" data-task-checked="true"><input type="checkbox" disabled checked>/,
+  );
+  assert.match(staticPage, /<table>[\s\S]*<th>Feature<\/th>[\s\S]*<th>Status<\/th>/);
   assert.match(staticPage, /<del>removed copy<\/del>/);
+  assert.match(
+    staticPage,
+    /<pre><code class="language-js">const markdownRenderer = 'standard';\n<\/code><\/pre>/,
+  );
   assert.match(staticPage, /<img src="\/blog\/assets\/editorial-cover\.jpg"/);
   assert.match(
     staticPage,

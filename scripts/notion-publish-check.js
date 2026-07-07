@@ -125,10 +125,11 @@ try {
     ),
   );
 
-  execFileSync(process.execPath, ['scripts/sync-notion-posts.js'], {
+  execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
     cwd: workDir,
     env: {
       ...process.env,
+      BLOG_ADMIN_ROOT: workDir,
       NOTION_TOKEN: 'secret_fixture',
       NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
       NOTION_FIXTURE_PAGES_FILE: pagesPath,

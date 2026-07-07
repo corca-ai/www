@@ -143,12 +143,19 @@ try {
   });
 
   const posts = JSON.parse(await readFile(join(workDir, 'public/blog/posts/index.json'), 'utf8'));
+  const enPosts = JSON.parse(
+    await readFile(join(workDir, 'public/en/blog/posts/index.json'), 'utf8'),
+  );
   assert.equal(
     posts.some((post) => post.slug === 'notion-body-fixture'),
     true,
   );
   assert.equal(
     posts.some((post) => post.slug === 'notion-html-fixture'),
+    false,
+  );
+  assert.equal(
+    enPosts.some((post) => post.slug === 'notion-html-fixture'),
     true,
   );
   assert.match(
@@ -164,11 +171,15 @@ try {
   );
   assert.match(
     await readFile(join(workDir, 'public/en/blog/posts/notion-html-fixture/index.html'), 'utf8'),
-    /href="\/en\/blog\/posts\/notion-html-fixture" hreflang="en-US"/,
+    /href="\/en\/blog\/posts\/notion-html-fixture\/" hreflang="en-US"/,
   );
   assert.match(
     await readFile(updatesPath, 'utf8'),
     /https:\/\/www\.borca\.ai\/blog\/posts\/notion-body-fixture\//,
+  );
+  assert.match(
+    await readFile(updatesPath, 'utf8'),
+    /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture\//,
   );
 
   console.log('Notion publish check passed.');

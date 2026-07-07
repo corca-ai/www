@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.corca.ai/blog/sitemap.xml
+Sitemap: https://www.borca.ai/sitemap.xml
+Sitemap: https://www.borca.ai/blog/sitemap.xml
+Sitemap: https://www.borca.ai/blog/rss.xml

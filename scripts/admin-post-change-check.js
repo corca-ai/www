@@ -129,6 +129,22 @@ This fixture intentionally includes enough article copy to pass the public post 
     ).length > 0,
     true,
   );
+  const sitemap = await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8');
+  assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/loc>/);
+  assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/posts\/admin-edit-fixture/);
+  assert.match(sitemap, /hreflang="en-US"/);
+  const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
+  assert.match(rss, /<link>https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/link>/);
+  const feed = JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8'));
+  assert.equal(feed.home_page_url, 'https://www.corca.ai/blog');
+  assert.equal(
+    feed.items.some((item) => item.url === 'https://www.corca.ai/blog/posts/admin-edit-fixture'),
+    true,
+  );
+  assert.match(
+    await readFile(join(workDir, 'public/blog/robots.txt'), 'utf8'),
+    /blog\/sitemap\.xml/,
+  );
 
   for (const locale of ['en', 'ja', 'zh']) {
     const translationSource = await readFile(
@@ -183,6 +199,20 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
   );
   assert.equal(
     deletedIndex.some((post) => post.slug === slug),
+    false,
+  );
+  assert.doesNotMatch(
+    await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8'),
+    /admin-edit-fixture/,
+  );
+  assert.doesNotMatch(
+    await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
+    /admin-edit-fixture/,
+  );
+  assert.equal(
+    JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8')).items.some((item) =>
+      item.url.includes(slug),
+    ),
     false,
   );
   await assert.rejects(

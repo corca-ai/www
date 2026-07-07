@@ -1,48 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.borca.ai/blog</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ko-KR" href="https://www.borca.ai/blog" />
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.borca.ai/en/blog" />
-    <xhtml:link rel="alternate" hreflang="ja-JP" href="https://www.borca.ai/ja/blog" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.borca.ai/zh/blog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.borca.ai/blog" />
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
     <loc>https://www.borca.ai/en/blog</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ko-KR" href="https://www.borca.ai/blog" />
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.borca.ai/en/blog" />
-    <xhtml:link rel="alternate" hreflang="ja-JP" href="https://www.borca.ai/ja/blog" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.borca.ai/zh/blog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.borca.ai/blog" />
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
     <loc>https://www.borca.ai/ja/blog</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ko-KR" href="https://www.borca.ai/blog" />
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.borca.ai/en/blog" />
-    <xhtml:link rel="alternate" hreflang="ja-JP" href="https://www.borca.ai/ja/blog" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.borca.ai/zh/blog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.borca.ai/blog" />
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
     <loc>https://www.borca.ai/zh/blog</loc>
-    <lastmod>2026-07-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ko-KR" href="https://www.borca.ai/blog" />
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://www.borca.ai/en/blog" />
-    <xhtml:link rel="alternate" hreflang="ja-JP" href="https://www.borca.ai/ja/blog" />
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.borca.ai/zh/blog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.borca.ai/blog" />
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
 </urlset>

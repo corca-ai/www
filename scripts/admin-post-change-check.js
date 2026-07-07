@@ -134,7 +134,11 @@ This fixture intentionally includes enough article copy to pass the public post 
   const sitemap = await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8');
   assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/loc>/);
   assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/posts\/admin-edit-fixture/);
-  assert.match(sitemap, /hreflang="en-US"/);
+  assert.match(sitemap, /<\?xml-stylesheet type="text\/xsl" href="\/sitemap\.xsl"\?>/);
+  assert.match(sitemap, /<lastmod>2026-02-03T00:00:00\.000Z<\/lastmod>/);
+  assert.doesNotMatch(sitemap, /hreflang=/);
+  assert.doesNotMatch(sitemap, /<changefreq>/);
+  assert.doesNotMatch(sitemap, /<priority>/);
   assert.match(
     await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8'),
     /\/blog\?topic=product/,

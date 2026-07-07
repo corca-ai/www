@@ -910,17 +910,10 @@ async function renderBlogDiscoveryFiles(postRecordsByLocale) {
 }
 
 function renderBlogPagesSitemap(postRecordsByLocale) {
-  const indexAlternates = supportedLocales.map((locale) => ({
-    locale,
-    path: localeLabels[locale].blogPath,
-  }));
   return renderUrlset(
     supportedLocales.map((locale) => ({
       path: localeLabels[locale].blogPath,
       lastmod: newestPostDate(postRecordsByLocale),
-      changefreq: 'daily',
-      priority: '0.8',
-      alternates: indexAlternates,
     })),
   );
 }
@@ -938,12 +931,6 @@ function renderBlogCategoriesSitemap(postRecordsByLocale) {
       categories.map((category) => ({
         path: `${localeLabels[locale].blogPath}?topic=${category.key}`,
         lastmod,
-        changefreq: 'daily',
-        priority: '0.6',
-        alternates: supportedLocales.map((alternateLocale) => ({
-          locale: alternateLocale,
-          path: `${localeLabels[alternateLocale].blogPath}?topic=${category.key}`,
-        })),
       })),
     ),
   );
@@ -964,8 +951,6 @@ function renderBlogTagsSitemap(postRecordsByLocale) {
       entries.push({
         path: `${localeLabels[locale].blogPath}?search=${encodeURIComponent(tag)}`,
         lastmod,
-        changefreq: 'weekly',
-        priority: '0.5',
       });
     }
   }
@@ -974,18 +959,12 @@ function renderBlogTagsSitemap(postRecordsByLocale) {
 
 function renderBlogPostsSitemap(postRecordsByLocale) {
   const entries = [];
-  const postAlternatesBySlug = groupPostAlternatePaths(postRecordsByLocale);
   for (const locale of supportedLocales) {
     const records = postRecordsByLocale.get(locale) || [];
     for (const { post } of records) {
       entries.push({
         path: staticPostPath(post, locale),
         lastmod: post.date,
-        changefreq: 'weekly',
-        priority: '0.7',
-        alternates: postAlternatesBySlug.get(post.slug) || [
-          { locale, path: staticPostPath(post, locale) },
-        ],
       });
     }
   }
@@ -994,23 +973,27 @@ function renderBlogPostsSitemap(postRecordsByLocale) {
 
 function renderUrlset(entries) {
   const urls = entries
-    .map((entry) => {
-      const alternates = entry.alternates ? renderSitemapAlternates(entry.alternates) : '';
-      return `  <url>
+    .map(
+      (entry) => `  <url>
     <loc>${escapeHtml(absoluteSiteUrl(entry.path))}</loc>
-    <lastmod>${escapeHtml(entry.lastmod)}</lastmod>
-    <changefreq>${entry.changefreq}</changefreq>
-    <priority>${entry.priority}</priority>
-${alternates ? `${alternates}\n` : ''}  </url>`;
-    })
+    <lastmod>${escapeHtml(sitemapDateTime(entry.lastmod))}</lastmod>
+  </url>`,
+    )
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>
 `;
+}
+
+function sitemapDateTime(value) {
+  const text = String(value || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}T/.test(text)) return text;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return `${text}T00:00:00.000Z`;
+  return `${todayInTimeZone('Asia/Seoul')}T00:00:00.000Z`;
 }
 
 function renderBlogSitemapAlias(postRecordsByLocale) {
@@ -1024,19 +1007,6 @@ function renderBlogSitemapAlias(postRecordsByLocale) {
   </sitemap>
 </sitemapindex>
 `;
-}
-
-function renderSitemapAlternates(alternates) {
-  const links = [...alternates]
-    .map(
-      ({ locale, path }) =>
-        `    <xhtml:link rel="alternate" hreflang="${localeLabels[locale].hreflang}" href="${escapeAttribute(absoluteSiteUrl(path))}" />`,
-    )
-    .join('\n');
-  const defaultAlternate = alternates.find((item) => item.locale === 'ko') || alternates[0];
-  if (!defaultAlternate) return links;
-  return `${links}
-    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeAttribute(absoluteSiteUrl(defaultAlternate.path))}" />`;
 }
 
 function renderBlogRss(records) {
@@ -1122,18 +1092,6 @@ Allow: /
 
 Sitemap: ${absoluteSiteUrl('/sitemap.xml')}
 `;
-}
-
-function groupPostAlternatePaths(postRecordsByLocale) {
-  const groups = new Map();
-  for (const [locale, records] of postRecordsByLocale) {
-    for (const { post } of records) {
-      const alternates = groups.get(post.slug) || [];
-      alternates.push({ locale, path: staticPostPath(post, locale) });
-      groups.set(post.slug, alternates);
-    }
-  }
-  return groups;
 }
 
 function newestPostDate(postRecordsByLocale) {

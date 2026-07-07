@@ -37,6 +37,7 @@ try {
         throw new Error('Slug could not be generated. Add Slug/슬러그 or a title.');
       }
       metadata.cover = await resolveCoverAsset(metadata.cover, slug);
+      metadata.language = normalizeLanguage(metadata.language || '');
 
       if (args.dryRun) {
         validatePublishPayload({ source, metadata, slug });
@@ -48,6 +49,7 @@ try {
         page,
         context,
         slug,
+        language: metadata.language,
         title: metadata.title || parsed.metadata.title,
       });
     } catch (error) {
@@ -64,7 +66,7 @@ try {
     for (const item of processed) {
       await updateNotionResult(item.page, config, {
         status: statusFor(item.context.statusName, 'published', config),
-        publicUrl: `${config.publicBaseUrl}/blog/posts/${encodeURIComponent(item.slug)}/`,
+        publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/posts/${encodeURIComponent(item.slug)}/`,
         message: `Published ${item.slug}.`,
       });
     }
@@ -674,8 +676,8 @@ function safeUrlPathname(url) {
 }
 
 function _renderMarkdownDocument(markdown, metadata) {
-  const language = /^en/i.test(metadata.language || '') ? 'en' : 'ko';
-  const locale = language === 'en' ? 'en_US' : 'ko_KR';
+  const language = normalizeLanguage(metadata.language || '');
+  const locale = ogLocaleForLanguage(language);
   const coverAlt = metadata.coverAlt || `${metadata.title} 대표 이미지`;
   const section = metadata.section || metadata.tags[0] || '';
   const postMetadata = {
@@ -720,6 +722,40 @@ ${markdownToHtml(markdown)}
   </article>
 </body>
 </html>`;
+}
+
+function normalizeLanguage(value) {
+  const text = String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace('_', '-');
+  if (!text) return 'ko';
+  if (text.startsWith('en')) return 'en';
+  if (text.startsWith('ko') || text.startsWith('kr') || text === '한국어' || text === 'korean')
+    return 'ko';
+  if (text.startsWith('ja') || text.startsWith('jp') || text === '일본어' || text === 'japanese')
+    return 'ja';
+  if (text.startsWith('zh') || text.startsWith('cn') || text === '중국어' || text === 'chinese')
+    return 'zh';
+  return 'ko';
+}
+
+function blogPathForLanguage(language) {
+  return {
+    ko: '/blog',
+    en: '/en/blog',
+    ja: '/ja/blog',
+    zh: '/zh/blog',
+  }[normalizeLanguage(language)];
+}
+
+function ogLocaleForLanguage(language) {
+  return {
+    ko: 'ko_KR',
+    en: 'en_US',
+    ja: 'ja_JP',
+    zh: 'zh_CN',
+  }[normalizeLanguage(language)];
 }
 
 function markdownToHtml(markdown) {
@@ -1137,6 +1173,7 @@ function safeMarkdownUrl(value) {
     /^(https?:)?\/\//i.test(text) ||
     text.startsWith('assets/') ||
     text.startsWith('/assets/') ||
+    text.startsWith('/blog/assets/') ||
     text.startsWith('#')
   ) {
     return escapeAttribute(text);

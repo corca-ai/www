@@ -1898,6 +1898,15 @@ function toRootPath(path) {
 }
 
 function resolveBasePath(scriptUrl = "") {
+  const pagePath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const localizedBlog = pagePath.match(/^\/(en|ja|zh)\/blog(?:\/|$)/);
+  if (localizedBlog) {
+    return `/${localizedBlog[1]}/blog`;
+  }
+  if (pagePath === "/blog" || pagePath.startsWith("/blog/")) {
+    return "/blog";
+  }
+
   const script = scriptUrl || document.currentScript?.getAttribute("src") || document.currentScript?.src || "";
   const scriptPath = script ? new URL(script, window.location.href).pathname : "";
   const basePath = scriptPath.replace(/\/app\.js$/, "").replace(/\/+$/, "");

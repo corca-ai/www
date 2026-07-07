@@ -57,6 +57,12 @@ try {
 
 Admin markdown body with **bold** text and [Corca](https://www.corca.ai/).
 
+> Admin markdown quote should become a blockquote.
+
+---
+
+This line has _italic emphasis_ and an ![inline image](assets/editorial-cover.jpg).
+
 This fixture intentionally includes enough article copy to pass the public post generator while still focusing on the admin edit path. The admin editor should preserve the Markdown source for later editing, render the body into HTML for readers, and regenerate the index from the same metadata that was sent by the Worker dispatch.
 
 - First admin list item
@@ -82,13 +88,20 @@ This fixture intentionally includes enough article copy to pass the public post 
   const staticPage = await readFile(join(workDir, `public/blog/posts/${slug}/index.html`), 'utf8');
   assert.match(staticPage, /Admin Markdown Updated/);
   assert.match(staticPage, /<strong>bold<\/strong>/);
+  assert.match(staticPage, /<blockquote>/);
+  assert.match(staticPage, /<hr>/);
+  assert.match(staticPage, /<em>italic emphasis<\/em>/);
+  assert.match(staticPage, /<img src="\/blog\/assets\/editorial-cover\.jpg"/);
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
 
-  const localizedPage = await readFile(
-    join(workDir, `public/en/blog/posts/${slug}/index.html`),
-    'utf8',
+  const enIndex = JSON.parse(
+    await readFile(join(workDir, 'public/en/blog/posts/index.json'), 'utf8'),
   );
-  assert.match(localizedPage, /href="\/en\/blog\/posts\/admin-edit-fixture" hreflang="en-US"/);
+  assert.equal(enIndex.length, 0);
+  await assert.rejects(
+    readFile(join(workDir, `public/en/blog/posts/${slug}/index.html`), 'utf8'),
+    /ENOENT/,
+  );
 
   runAdminChange({ action: 'delete', slug });
   const deletedIndex = JSON.parse(

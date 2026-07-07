@@ -18,11 +18,12 @@ const localePaths = {
   zh: 'public/zh/blog',
 };
 const localeLabels = {
-  ko: { lang: 'ko', blogPath: '/blog' },
-  en: { lang: 'en', blogPath: '/en/blog' },
-  ja: { lang: 'ja', blogPath: '/ja/blog' },
-  zh: { lang: 'zh', blogPath: '/zh/blog' },
+  ko: { lang: 'ko', hreflang: 'ko-KR', ogLocale: 'ko_KR', blogPath: '/blog' },
+  en: { lang: 'en', hreflang: 'en-US', ogLocale: 'en_US', blogPath: '/en/blog' },
+  ja: { lang: 'ja', hreflang: 'ja-JP', ogLocale: 'ja_JP', blogPath: '/ja/blog' },
+  zh: { lang: 'zh', hreflang: 'zh-CN', ogLocale: 'zh_CN', blogPath: '/zh/blog' },
 };
+const supportedLocales = Object.keys(localePaths);
 const defaultAuthor = 'Corca Team';
 const defaultCover = 'assets/editorial-cover.jpg';
 
@@ -35,8 +36,10 @@ if (action === 'upsert') {
   await upsertPost(payload);
 } else if (action === 'delete') {
   await deletePost(payload);
+} else if (action === 'sync') {
+  console.log('Syncing existing blog post sources.');
 } else {
-  fail('ADMIN_POST_CHANGE action must be upsert or delete.');
+  fail('ADMIN_POST_CHANGE action must be upsert, delete, or sync.');
 }
 
 const posts = await syncPostIndex();
@@ -171,33 +174,83 @@ async function syncPostIndex() {
   }
 
   const sorted = sortPosts(posts);
-  await writeFile(join(postsDir, 'index.json'), `${JSON.stringify(sorted, null, 2)}\n`);
-  console.log(`Synced ${sorted.length} posts into public/blog/posts/index.json.`);
+  for (const locale of supportedLocales) {
+    const localePosts = sorted.filter((post) => post.language === locale);
+    const localePostsDir = join(repoRoot, localePaths[locale], 'posts');
+    await mkdir(localePostsDir, { recursive: true });
+    await writeFile(
+      join(localePostsDir, 'index.json'),
+      `${JSON.stringify(localePosts, null, 2)}\n`,
+    );
+  }
+  console.log(`Synced ${sorted.length} posts into ${supportedLocales.length} locale post indexes.`);
   return sorted;
 }
 
 async function renderAllStaticPosts(posts) {
-  const postBySlug = new Map(posts.map((post) => [post.slug, post]));
+  const postsByLocale = groupPostsByLocale(posts);
+  const availableLocalesBySlug = groupLocalesBySlug(posts);
   for (const post of posts) {
     const source = await readFile(join(sourcesDir, `${post.slug}.html`), 'utf8');
     const parsed = parsePostSource(source, `${post.slug}.html`);
     const articleHtml = prepareArticleHtml(parsed.articleHtml);
-    for (const locale of Object.keys(localePaths)) {
-      const html = renderStaticPostPage(post, articleHtml, posts, postBySlug, locale);
+    for (const locale of supportedLocales) {
       const outputDir = join(repoRoot, localePaths[locale], 'posts', post.slug);
+      if (locale !== post.language) {
+        await rm(outputDir, { recursive: true, force: true });
+        continue;
+      }
+      const localePosts = postsByLocale.get(locale) || [];
+      const postBySlug = new Map(localePosts.map((item) => [item.slug, item]));
+      const html = renderStaticPostPage(
+        post,
+        articleHtml,
+        localePosts,
+        postBySlug,
+        locale,
+        availableLocalesBySlug,
+      );
       await mkdir(outputDir, { recursive: true });
       await writeFile(join(outputDir, 'index.html'), html);
     }
   }
-  console.log(
-    `Rendered ${posts.length} static blog posts across ${Object.keys(localePaths).length} locales.`,
-  );
+  console.log(`Rendered ${posts.length} static blog posts into their configured locales.`);
 }
 
-function renderStaticPostPage(post, articleHtml, posts, postBySlug, locale) {
-  const shell = getBlogShell(locale, post.slug);
+function groupPostsByLocale(posts) {
+  const groups = new Map(supportedLocales.map((locale) => [locale, []]));
+  for (const post of posts) {
+    const locale = localePaths[post.language] ? post.language : 'ko';
+    groups.get(locale).push(post);
+  }
+  return groups;
+}
+
+function groupLocalesBySlug(posts) {
+  const groups = new Map();
+  for (const post of posts) {
+    const locales = groups.get(post.slug) || new Set();
+    locales.add(localePaths[post.language] ? post.language : 'ko');
+    groups.set(post.slug, locales);
+  }
+  return groups;
+}
+
+function staticPostPath(post, locale) {
+  return `${localeLabels[locale].blogPath}/posts/${encodeURIComponent(post.slug)}/`;
+}
+
+function renderStaticPostPage(
+  post,
+  articleHtml,
+  posts,
+  postBySlug,
+  locale,
+  availableLocalesBySlug,
+) {
+  const shell = getBlogShell(locale, post.slug, availableLocalesBySlug);
   const coverUrl = absoluteBlogAsset(post.cover);
-  const canonical = `https://www.corca.ai/blog/posts/${post.slug}/`;
+  const canonical = `https://www.corca.ai${staticPostPath(post, locale)}`;
   const publishedTime = `${post.date}T00:00:00.000Z`;
   const toc = tableOfContents(articleHtml);
   const recommendations = recommendationPosts(post, posts);
@@ -216,7 +269,7 @@ function renderStaticPostPage(post, articleHtml, posts, postBySlug, locale) {
     <meta property="og:title" content="${escapeAttribute(post.title)}">
     <meta property="og:description" content="${escapeAttribute(post.description)}">
     <meta property="og:site_name" content="Corca Blog">
-    <meta property="og:locale" content="ko_KR">
+    <meta property="og:locale" content="${localeLabels[locale].ogLocale}">
     <meta property="og:type" content="article">
     <meta property="og:image" content="${coverUrl}">
     <meta property="og:image:secure_url" content="${coverUrl}">
@@ -235,7 +288,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
     <meta name="theme-color" content="#ffffff">
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/blog/rss.xml">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
-    <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, canonical, articleSection))}</script>
+    <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, canonical, articleSection, locale))}</script>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="/blog/styles.css">
@@ -263,7 +316,7 @@ ${articleHtml}
           <section class="toc-recommendations" aria-label="추천 글">
             <strong>추천 글</strong>
             <div class="toc-recommendation-list">
-${recommendations.map(renderRecommendation).join('')}
+${recommendations.map((item) => renderRecommendation(item, locale)).join('')}
             </div>
           </section>
         </aside>
@@ -274,7 +327,7 @@ ${recommendations.map(renderRecommendation).join('')}
 `;
 }
 
-function getBlogShell(locale, slug) {
+function getBlogShell(locale, slug, availableLocalesBySlug) {
   const file = join(repoRoot, localePaths[locale], 'index.html');
   const html = readFileSyncText(file);
   const bodyStart = html.indexOf('<body>');
@@ -289,7 +342,7 @@ function getBlogShell(locale, slug) {
   let beforeMain = html.slice(bodyStart + '<body>'.length, mainStart);
   let afterMain = html.slice(mainClose + '</main>'.length, bodyEnd);
   afterMain = afterMain.replace(/<script type="module" src="\/blog\/app\.js"><\/script>/g, '');
-  beforeMain = localizeLanguageLinks(beforeMain, locale, slug);
+  beforeMain = localizeLanguageLinks(beforeMain, locale, slug, availableLocalesBySlug);
   return { beforeMain, afterMain };
 }
 
@@ -297,30 +350,22 @@ function readFileSyncText(file) {
   return readFileSync(file, 'utf8');
 }
 
-function localizeLanguageLinks(html, locale, slug) {
-  const paths = {
-    ko: `/blog/posts/${slug}`,
-    en: `/en/blog/posts/${slug}`,
-    ja: `/ja/blog/posts/${slug}`,
-    zh: `/zh/blog/posts/${slug}`,
-  };
-  const hreflangs = {
-    ko: 'ko-KR',
-    en: 'en-US',
-    ja: 'ja-JP',
-    zh: 'zh-CN',
-  };
+function localizeLanguageLinks(html, locale, slug, availableLocalesBySlug) {
+  const availableLocales = availableLocalesBySlug?.get(slug) || new Set([locale]);
   let next = html;
-  for (const code of Object.keys(paths)) {
+  for (const code of supportedLocales) {
+    const path = availableLocales.has(code)
+      ? staticPostPath({ slug }, code)
+      : localeLabels[code].blogPath;
     next = next.replace(
-      new RegExp(`href="[^"]+" hreflang="${hreflangs[code]}"`, 'g'),
-      `href="${paths[code]}" hreflang="${hreflangs[code]}"`,
+      new RegExp(`href="[^"]+" hreflang="${localeLabels[code].hreflang}"`, 'g'),
+      `href="${path}" hreflang="${localeLabels[code].hreflang}"`,
     );
   }
   return next.replace(/<html lang="[^"]*">/, `<html lang="${localeLabels[locale].lang}">`);
 }
 
-function postStructuredData(post, coverUrl, canonical, section) {
+function postStructuredData(post, coverUrl, canonical, section, locale) {
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -338,7 +383,7 @@ function postStructuredData(post, coverUrl, canonical, section) {
         dateModified: post.date,
         author: { '@type': 'Organization', name: post.author },
         publisher: { '@type': 'Organization', name: 'Corca' },
-        inLanguage: 'ko-KR',
+        inLanguage: localeLabels[locale].hreflang,
         timeRequired: `PT${Math.max(1, Math.ceil(post.wordCount / 500))}M`,
         isPartOf: { '@type': 'Blog', name: 'Corca Blog', url: 'https://www.corca.ai/blog/' },
         mainEntityOfPage: canonical,
@@ -381,8 +426,8 @@ function sharedTagScore(a, b) {
   return (b.tags || []).filter((tag) => tags.has(tag)).length;
 }
 
-function renderRecommendation(post) {
-  return `              <a class="toc-recommendation" href="/blog/posts/${escapeAttribute(post.slug)}/">
+function renderRecommendation(post, locale) {
+  return `              <a class="toc-recommendation" href="${escapeAttribute(staticPostPath(post, locale))}">
                 <span>${escapeHtml(post.title)}</span>
                 <small><time datetime="${post.date}">${formatKoreanDate(post.date)}</time> · ${escapeHtml(post.author)}</small>
               </a>`;
@@ -394,18 +439,20 @@ function adjacentPostNav(post, posts, postBySlug) {
   const next = index > 0 ? posts[index - 1] : null;
   const cards = [];
   if (previous && postBySlug.has(previous.slug)) {
-    cards.push(renderAdjacentCard(previous, '이전 글', '←', 'post-pagination-previous'));
+    cards.push(
+      renderAdjacentCard(previous, post.language, '이전 글', '←', 'post-pagination-previous'),
+    );
   }
   if (next && postBySlug.has(next.slug)) {
-    cards.push(renderAdjacentCard(next, '다음 글', '→', 'post-pagination-next'));
+    cards.push(renderAdjacentCard(next, post.language, '다음 글', '→', 'post-pagination-next'));
   }
   return cards.length
     ? `<nav class="post-pagination" aria-label="글 이동">\n${cards.join('')}\n        </nav>`
     : '';
 }
 
-function renderAdjacentCard(post, label, cue, className) {
-  return `        <a class="related-card post-pagination-card ${className}" href="/blog/posts/${escapeAttribute(post.slug)}/" aria-label="${label}: ${escapeAttribute(post.title)}">
+function renderAdjacentCard(post, locale, label, cue, className) {
+  return `        <a class="related-card post-pagination-card ${className}" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${label}: ${escapeAttribute(post.title)}">
           <span class="related-cue" aria-hidden="true">${cue}</span>
           <span class="related-meta">${label} · <strong>${escapeHtml(post.section || post.tags[0] || '코르카')}</strong> · <time datetime="${post.date}">${formatKoreanDate(post.date)}</time></span>
           <strong>${escapeHtml(post.title)}</strong>
@@ -441,7 +488,10 @@ function parsePostSource(html, relativePath) {
   const source = String(html || '');
   const embeddedMetadata = parseEmbeddedPostMetadata(source, relativePath);
   const publicHtml = stripPostMetadata(source);
-  const articleHtml = extractDocumentArticle(publicHtml) || publicHtml;
+  const articleHtml =
+    embeddedMetadata?.sourceFormat === 'markdown' && embeddedMetadata.sourceMarkdown
+      ? markdownToHtml(embeddedMetadata.sourceMarkdown)
+      : extractDocumentArticle(publicHtml) || publicHtml;
   return {
     articleHtml,
     metadata: embeddedMetadata || inferDocumentMetadata(source),
@@ -557,6 +607,7 @@ function markdownToHtml(markdown) {
   let paragraph = [];
   let list = [];
   let listTag = 'ul';
+  let quote = [];
   let code = [];
   let inCode = false;
 
@@ -575,11 +626,25 @@ function markdownToHtml(markdown) {
       listTag = 'ul';
     }
   };
+  const flushQuote = () => {
+    if (quote.length) {
+      const content = quote.join('\n').trim();
+      if (content) {
+        html.push(`<blockquote>${markdownToHtml(content)}</blockquote>`);
+      }
+      quote = [];
+    }
+  };
   const flushCode = () => {
     if (code.length) {
       html.push(`<pre><code>${escapeHtml(code.join('\n'))}</code></pre>`);
       code = [];
     }
+  };
+  const flushTextBlocks = () => {
+    flushParagraph();
+    flushList();
+    flushQuote();
   };
 
   for (const line of lines) {
@@ -589,8 +654,7 @@ function markdownToHtml(markdown) {
         flushCode();
         inCode = false;
       } else {
-        flushParagraph();
-        flushList();
+        flushTextBlocks();
         inCode = true;
       }
       continue;
@@ -600,42 +664,115 @@ function markdownToHtml(markdown) {
       continue;
     }
     if (!trimmed) {
-      flushParagraph();
-      flushList();
+      flushTextBlocks();
+      continue;
+    }
+    if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      flushTextBlocks();
+      html.push('<hr>');
+      continue;
+    }
+    const linkCard = parseLinkCardMarker(trimmed);
+    if (linkCard) {
+      flushTextBlocks();
+      html.push(renderLinkCard(linkCard));
       continue;
     }
     const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
     if (heading) {
-      flushParagraph();
-      flushList();
+      flushTextBlocks();
       html.push(`<h${heading[1].length}>${inlineMarkdown(heading[2])}</h${heading[1].length}>`);
       continue;
     }
     const unordered = trimmed.match(/^[-*]\s+(.+)$/);
-    const ordered = trimmed.match(/^\d+\.\s+(.+)$/);
+    const ordered = trimmed.match(/^\d+[.)]\s+(.+)$/);
     if (unordered || ordered) {
       flushParagraph();
+      flushQuote();
       const nextTag = ordered ? 'ol' : 'ul';
       if (list.length && listTag !== nextTag) flushList();
       listTag = nextTag;
       list.push(unordered?.[1] || ordered?.[1] || '');
       continue;
     }
+    const quoteItem = trimmed.match(/^>\s?(.*)$/);
+    if (quoteItem) {
+      flushParagraph();
+      flushList();
+      quote.push(quoteItem[1]);
+      continue;
+    }
+    flushList();
+    flushQuote();
     paragraph.push(trimmed);
   }
 
-  flushParagraph();
-  flushList();
-  flushCode();
+  flushTextBlocks();
+  if (inCode) {
+    flushCode();
+  }
   return html.join('\n');
 }
 
 function inlineMarkdown(value) {
-  let html = escapeHtml(value);
-  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2">$1</a>');
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-  return html;
+  return escapeHtml(value)
+    .replace(
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      (_match, alt, src) =>
+        `<img src="${safeMarkdownUrl(src)}" alt="${escapeAttribute(alt)}" loading="lazy" decoding="async">`,
+    )
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (_match, text, href) => `<a href="${safeMarkdownUrl(href)}">${text}</a>`,
+    )
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
+    .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function parseLinkCardMarker(value) {
+  const match = String(value || '').match(/^\{\{corca-link-card:([^}]+)\}\}$/);
+  if (!match) {
+    return null;
+  }
+  try {
+    return JSON.parse(decodeURIComponent(match[1]));
+  } catch {
+    return null;
+  }
+}
+
+function renderLinkCard(card) {
+  const url = String(card.url || '');
+  if (!/^https?:\/\//i.test(url)) {
+    return '';
+  }
+  const host = card.host || linkHost(url);
+  const label = String(card.label || url).trim();
+  return `<aside class="article-link-card"><a href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer"><span class="article-link-card-domain">${escapeHtml(host)}</span><strong>${escapeHtml(label)}</strong><span class="article-link-card-url">${escapeHtml(url)}</span></a></aside>`;
+}
+
+function linkHost(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+function safeMarkdownUrl(value) {
+  const text = decodeHtml(value).trim();
+  if (
+    /^(https?:)?\/\//i.test(text) ||
+    text.startsWith('assets/') ||
+    text.startsWith('/assets/') ||
+    text.startsWith('/blog/assets/') ||
+    text.startsWith('#')
+  ) {
+    return escapeAttribute(text);
+  }
+  return '#';
 }
 
 function normalizePostTags(value, context = {}) {
@@ -775,7 +912,7 @@ function normalizeLanguage(value) {
     return 'ko';
   if (text.startsWith('ja') || text.startsWith('jp')) return 'ja';
   if (text.startsWith('zh') || text.startsWith('cn')) return 'zh';
-  return text.slice(0, 12);
+  return 'ko';
 }
 
 function normalizeSlug(value) {

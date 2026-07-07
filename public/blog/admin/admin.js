@@ -10,6 +10,10 @@ const fileInput = document.querySelector("#fileInput");
 const coverFileInput = document.querySelector("#coverFileInput");
 const contentInput = document.querySelector("#contentInput");
 const contentLabel = document.querySelector("#contentLabel");
+const markdownToolbar = document.querySelector("#markdownToolbar");
+const markdownPreviewPanel = document.querySelector("#markdownPreviewPanel");
+const markdownPreview = document.querySelector("#markdownPreview");
+const previewStatus = document.querySelector("#previewStatus");
 const saveButton = document.querySelector("#saveButton");
 const deleteButton = document.querySelector("#deleteButton");
 const fields = {
@@ -29,6 +33,7 @@ const fields = {
 let posts = [];
 let activeSlug = "";
 let pendingCoverImage = null;
+let previewTimer = 0;
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -54,7 +59,17 @@ loginForm.addEventListener("submit", async (event) => {
 });
 
 fields.format.addEventListener("change", () => {
-  contentLabel.textContent = fields.format.value === "markdown" ? "Markdown 수정" : "HTML 파일 재업로드";
+  updateEditorMode();
+});
+
+contentInput.addEventListener("input", () => {
+  scheduleMarkdownPreview();
+});
+
+markdownToolbar.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-markdown-action]");
+  if (!button || fields.format.value !== "markdown" || contentInput.disabled) return;
+  applyMarkdownAction(button.dataset.markdownAction || "");
 });
 
 fileInput.addEventListener("change", async () => {
@@ -75,6 +90,7 @@ fileInput.addEventListener("change", async () => {
     fields.slug.value = slugify(fields.title.value || file.name.replace(/\.[^.]+$/, ""));
   }
   fields.format.dispatchEvent(new Event("change"));
+  updateMarkdownPreview();
 });
 
 coverFileInput.addEventListener("change", async () => {
@@ -235,6 +251,7 @@ async function loadPostSource(slug) {
   fields.coverAlt.value = metadata.coverAlt || "";
   contentInput.value = data.content || "";
   fields.format.dispatchEvent(new Event("change"));
+  updateMarkdownPreview();
   setEditorDisabled(false);
   adminMessage.textContent = "";
 }
@@ -257,6 +274,7 @@ function clearEditor() {
   coverFileInput.value = "";
   pendingCoverImage = null;
   fields.format.dispatchEvent(new Event("change"));
+  updateMarkdownPreview();
   setEditorDisabled(true);
 }
 
@@ -290,6 +308,342 @@ function setEditorDisabled(disabled) {
   contentInput.disabled = disabled;
   saveButton.disabled = disabled;
   deleteButton.disabled = disabled || !activeSlug;
+  updateMarkdownToolsState();
+}
+
+function updateEditorMode() {
+  const isMarkdown = fields.format.value === "markdown";
+  contentLabel.textContent = isMarkdown ? "Markdown 수정" : "HTML 파일 재업로드";
+  markdownToolbar.hidden = !isMarkdown;
+  markdownPreviewPanel.hidden = !isMarkdown;
+  updateMarkdownToolsState();
+  updateMarkdownPreview();
+}
+
+function updateMarkdownToolsState() {
+  const disabled = fields.format.value !== "markdown" || contentInput.disabled;
+  markdownToolbar.querySelectorAll("button").forEach((button) => {
+    button.disabled = disabled;
+  });
+}
+
+function scheduleMarkdownPreview() {
+  window.clearTimeout(previewTimer);
+  previewTimer = window.setTimeout(updateMarkdownPreview, 120);
+}
+
+function updateMarkdownPreview() {
+  if (fields.format.value !== "markdown") {
+    markdownPreview.innerHTML = "";
+    previewStatus.textContent = "HTML";
+    return;
+  }
+  const markdown = contentInput.value.trim();
+  previewStatus.textContent = markdown ? "실시간" : "비어 있음";
+  markdownPreview.innerHTML = markdown
+    ? markdownToHtml(contentInput.value)
+    : `<p class="preview-empty">Markdown을 입력하면 여기에 미리보기가 표시됩니다.</p>`;
+}
+
+function applyMarkdownAction(action) {
+  const start = contentInput.selectionStart;
+  const end = contentInput.selectionEnd;
+  const selected = contentInput.value.slice(start, end);
+  const lineRange = selectedLineRange(contentInput.value, start, end);
+  let nextValue = contentInput.value;
+  let nextStart = start;
+  let nextEnd = end;
+
+  if (action === "heading") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceLineRange(
+      contentInput.value,
+      lineRange,
+      prefixLines(lineRange.text, "## ", "제목"),
+    ));
+  } else if (action === "quote") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceLineRange(
+      contentInput.value,
+      lineRange,
+      prefixLines(lineRange.text, "> ", "인용문"),
+    ));
+  } else if (action === "unordered-list") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceLineRange(
+      contentInput.value,
+      lineRange,
+      prefixLines(lineRange.text, "- ", "목록 항목"),
+    ));
+  } else if (action === "ordered-list") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceLineRange(
+      contentInput.value,
+      lineRange,
+      numberLines(lineRange.text),
+    ));
+  } else if (action === "rule") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceSelection(
+      contentInput.value,
+      start,
+      end,
+      `${needsLeadingBlank(contentInput.value, start) ? "\n\n" : ""}---\n\n`,
+    ));
+  } else if (action === "link") {
+    const label = selected || "링크 텍스트";
+    const replacement = `[${label}](https://example.com)`;
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceSelection(
+      contentInput.value,
+      start,
+      end,
+      replacement,
+    ));
+    nextStart = start + label.length + 3;
+    nextEnd = nextStart + "https://example.com".length;
+  } else if (action === "image") {
+    const alt = selected || "이미지 설명";
+    const replacement = `![${alt}](assets/example.png)`;
+    ({ value: nextValue, start: nextStart, end: nextEnd } = replaceSelection(
+      contentInput.value,
+      start,
+      end,
+      replacement,
+    ));
+    nextStart = start + alt.length + 4;
+    nextEnd = nextStart + "assets/example.png".length;
+  } else if (action === "code") {
+    const multiline = selected.includes("\n");
+    if (multiline) {
+      ({ value: nextValue, start: nextStart, end: nextEnd } = replaceSelection(
+        contentInput.value,
+        start,
+        end,
+        `\`\`\`\n${selected || "code"}\n\`\`\``,
+      ));
+    } else {
+      ({ value: nextValue, start: nextStart, end: nextEnd } = wrapSelection(
+        contentInput.value,
+        start,
+        end,
+        "`",
+        "`",
+      ));
+    }
+  } else if (action === "bold") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = wrapSelection(
+      contentInput.value,
+      start,
+      end,
+      "**",
+      "**",
+    ));
+  } else if (action === "italic") {
+    ({ value: nextValue, start: nextStart, end: nextEnd } = wrapSelection(
+      contentInput.value,
+      start,
+      end,
+      "_",
+      "_",
+    ));
+  }
+
+  contentInput.value = nextValue;
+  contentInput.focus();
+  contentInput.setSelectionRange(nextStart, nextEnd);
+  updateMarkdownPreview();
+}
+
+function selectedLineRange(value, start, end) {
+  const lineStart = value.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+  const lineEndIndex = value.indexOf("\n", end);
+  const lineEnd = lineEndIndex === -1 ? value.length : lineEndIndex;
+  return {
+    start: lineStart,
+    end: lineEnd,
+    text: value.slice(lineStart, lineEnd)
+  };
+}
+
+function replaceLineRange(value, range, replacement) {
+  const next = `${value.slice(0, range.start)}${replacement}${value.slice(range.end)}`;
+  return { value: next, start: range.start, end: range.start + replacement.length };
+}
+
+function replaceSelection(value, start, end, replacement) {
+  const next = `${value.slice(0, start)}${replacement}${value.slice(end)}`;
+  return { value: next, start, end: start + replacement.length };
+}
+
+function wrapSelection(value, start, end, before, after, selectionStart, selectionEnd) {
+  const selected = value.slice(start, end) || placeholderForWrap(before);
+  const replacement = `${before}${selected}${after}`;
+  const next = `${value.slice(0, start)}${replacement}${value.slice(end)}`;
+  const nextStart = selectionStart ?? start + before.length;
+  const nextEnd = selectionEnd ?? start + before.length + selected.length;
+  return { value: next, start: nextStart, end: nextEnd };
+}
+
+function placeholderForWrap(before) {
+  if (before === "**") return "굵은 텍스트";
+  if (before === "_") return "기울임 텍스트";
+  if (before === "`") return "code";
+  return "";
+}
+
+function prefixLines(text, prefix, fallback) {
+  const source = text.trim() ? text : fallback;
+  return source
+    .split("\n")
+    .map((line) => (line.startsWith(prefix) ? line : `${prefix}${line || fallback}`))
+    .join("\n");
+}
+
+function numberLines(text) {
+  const lines = (text.trim() ? text : "목록 항목").split("\n");
+  return lines.map((line, index) => `${index + 1}. ${line.replace(/^\d+[.)]\s+/, "")}`).join("\n");
+}
+
+function needsLeadingBlank(value, start) {
+  return start > 0 && !value.slice(0, start).endsWith("\n\n");
+}
+
+function markdownToHtml(markdown) {
+  const lines = String(markdown || "")
+    .replace(/\r\n?/g, "\n")
+    .split("\n");
+  const html = [];
+  let paragraph = [];
+  let list = [];
+  let listTag = "ul";
+  let quote = [];
+  let code = [];
+  let inCode = false;
+
+  const flushParagraph = () => {
+    if (paragraph.length) {
+      html.push(`<p>${inlineMarkdown(paragraph.join(" "))}</p>`);
+      paragraph = [];
+    }
+  };
+  const flushList = () => {
+    if (list.length) {
+      html.push(
+        `<${listTag}>${list.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</${listTag}>`,
+      );
+      list = [];
+      listTag = "ul";
+    }
+  };
+  const flushQuote = () => {
+    if (quote.length) {
+      const content = quote.join("\n").trim();
+      if (content) {
+        html.push(`<blockquote>${markdownToHtml(content)}</blockquote>`);
+      }
+      quote = [];
+    }
+  };
+  const flushCode = () => {
+    if (code.length) {
+      html.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`);
+      code = [];
+    }
+  };
+  const flushTextBlocks = () => {
+    flushParagraph();
+    flushList();
+    flushQuote();
+  };
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (/^```/.test(trimmed)) {
+      if (inCode) {
+        flushCode();
+        inCode = false;
+      } else {
+        flushTextBlocks();
+        inCode = true;
+      }
+      continue;
+    }
+    if (inCode) {
+      code.push(line);
+      continue;
+    }
+    if (!trimmed) {
+      flushTextBlocks();
+      continue;
+    }
+    if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      flushTextBlocks();
+      html.push("<hr>");
+      continue;
+    }
+    const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      flushTextBlocks();
+      html.push(`<h${heading[1].length}>${inlineMarkdown(heading[2])}</h${heading[1].length}>`);
+      continue;
+    }
+    const unordered = trimmed.match(/^[-*]\s+(.+)$/);
+    const ordered = trimmed.match(/^\d+[.)]\s+(.+)$/);
+    if (unordered || ordered) {
+      flushParagraph();
+      flushQuote();
+      const nextTag = ordered ? "ol" : "ul";
+      if (list.length && listTag !== nextTag) flushList();
+      listTag = nextTag;
+      list.push(unordered?.[1] || ordered?.[1] || "");
+      continue;
+    }
+    const quoteItem = trimmed.match(/^>\s?(.*)$/);
+    if (quoteItem) {
+      flushParagraph();
+      flushList();
+      quote.push(quoteItem[1]);
+      continue;
+    }
+    flushList();
+    flushQuote();
+    paragraph.push(trimmed);
+  }
+
+  flushTextBlocks();
+  if (inCode) flushCode();
+  return html.join("\n");
+}
+
+function inlineMarkdown(value) {
+  return escapeHtml(value)
+    .replace(
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      (_match, alt, src) =>
+        `<img src="${safeMarkdownUrl(src)}" alt="${escapeAttribute(alt)}" loading="lazy" decoding="async">`,
+    )
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (_match, text, href) =>
+        `<a href="${safeMarkdownUrl(href)}" target="_blank" rel="noopener noreferrer">${text}</a>`,
+    )
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, "$1<em>$2</em>")
+    .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, "$1<em>$2</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>");
+}
+
+function safeMarkdownUrl(value) {
+  const text = decodeHtml(value).trim();
+  if (
+    /^(https?:)?\/\//i.test(text) ||
+    text.startsWith("#") ||
+    text.startsWith("/blog/assets/")
+  ) {
+    return escapeAttribute(text);
+  }
+  if (text.startsWith("assets/")) {
+    return escapeAttribute(`/blog/${text}`);
+  }
+  if (text.startsWith("/assets/")) {
+    return escapeAttribute(`/blog${text}`);
+  }
+  return "#";
 }
 
 async function apiErrorMessage(response, fallback) {
@@ -422,4 +776,10 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
   return escapeHtml(value).replaceAll("`", "&#096;");
+}
+
+function decodeHtml(value) {
+  const textarea = document.createElement("textarea");
+  textarea.innerHTML = String(value || "");
+  return textarea.value;
 }

@@ -16,6 +16,7 @@ const markdownPreviewPanel = document.querySelector("#markdownPreviewPanel");
 const markdownPreview = document.querySelector("#markdownPreview");
 const previewStatus = document.querySelector("#previewStatus");
 const colorInput = document.querySelector("#colorInput");
+const slashCommandMenu = document.querySelector("#slashCommandMenu");
 const saveButton = document.querySelector("#saveButton");
 const deleteButton = document.querySelector("#deleteButton");
 const fields = {
@@ -38,6 +39,29 @@ let pendingCoverImage = null;
 let pendingBodyImages = [];
 let originalContent = "";
 let previewTimer = 0;
+let slashState = null;
+let activeSlashCommandIndex = 0;
+const slashCommands = [
+  { id: "text", title: "텍스트", hint: "일반 문단", keywords: ["text", "paragraph", "p", "텍스트", "문단"] },
+  { id: "h1", title: "제목 1", hint: "# 큰 제목", keywords: ["h1", "title", "제목"] },
+  { id: "h2", title: "제목 2", hint: "## 섹션 제목", keywords: ["h2", "heading", "제목"] },
+  { id: "h3", title: "제목 3", hint: "### 작은 제목", keywords: ["h3", "subheading", "제목"] },
+  { id: "bullets", title: "글머리 목록", hint: "- 목록 항목", keywords: ["bullet", "list", "ul", "목록"] },
+  { id: "numbers", title: "번호 목록", hint: "1. 목록 항목", keywords: ["number", "ordered", "ol", "번호"] },
+  { id: "todo", title: "체크리스트", hint: "- [ ] 할 일", keywords: ["todo", "task", "check", "체크"] },
+  { id: "quote", title: "인용문", hint: "> 인용문", keywords: ["quote", "blockquote", "인용"] },
+  { id: "callout", title: "콜아웃", hint: "강조 메모", keywords: ["callout", "note", "메모", "콜아웃"] },
+  { id: "divider", title: "구분선", hint: "---", keywords: ["divider", "rule", "hr", "구분선"] },
+  { id: "code", title: "코드 블록", hint: "```", keywords: ["code", "pre", "코드"] },
+  { id: "table", title: "표", hint: "2열 표", keywords: ["table", "grid", "표"] },
+  { id: "image-upload", title: "이미지 파일", hint: "파일 업로드 후 삽입", keywords: ["image", "img", "photo", "이미지", "사진"] },
+  { id: "image-url", title: "이미지 URL", hint: "이미지 링크 삽입", keywords: ["image", "url", "이미지"] },
+  { id: "link", title: "링크", hint: "[텍스트](URL)", keywords: ["link", "url", "링크"] },
+  { id: "color", title: "글자 색상", hint: "선택한 색상 적용", keywords: ["color", "색", "색상"] },
+  { id: "bold", title: "굵게", hint: "**텍스트**", keywords: ["bold", "strong", "굵게"] },
+  { id: "italic", title: "기울임", hint: "_텍스트_", keywords: ["italic", "em", "기울임"] },
+  { id: "strike", title: "취소선", hint: "~~텍스트~~", keywords: ["strike", "delete", "취소선"] }
+];
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -68,6 +92,20 @@ fields.format.addEventListener("change", () => {
 
 contentInput.addEventListener("input", () => {
   scheduleMarkdownPreview();
+  updateSlashCommandMenu();
+});
+
+contentInput.addEventListener("click", () => {
+  updateSlashCommandMenu();
+});
+
+contentInput.addEventListener("keyup", (event) => {
+  if (["ArrowUp", "ArrowDown", "Enter", "Tab", "Escape"].includes(event.key)) return;
+  updateSlashCommandMenu();
+});
+
+contentInput.addEventListener("keydown", (event) => {
+  handleEditorKeydown(event);
 });
 
 markdownToolbar.addEventListener("mousedown", (event) => {
@@ -79,7 +117,19 @@ markdownToolbar.addEventListener("mousedown", (event) => {
 markdownToolbar.addEventListener("click", (event) => {
   const button = event.target.closest("[data-markdown-action]");
   if (!button || fields.format.value !== "markdown" || contentInput.disabled) return;
+  hideSlashCommandMenu();
   applyMarkdownAction(button.dataset.markdownAction || "");
+});
+
+slashCommandMenu.addEventListener("mousedown", (event) => {
+  event.preventDefault();
+});
+
+slashCommandMenu.addEventListener("click", (event) => {
+  const item = event.target.closest("[data-slash-command]");
+  if (!item) return;
+  const command = slashCommands.find((entry) => entry.id === item.dataset.slashCommand);
+  if (command) applySlashCommand(command);
 });
 
 fileInput.addEventListener("change", async () => {
@@ -178,7 +228,9 @@ postForm.addEventListener("submit", async (event) => {
   const currentBodyImagePaths = new Set(extractMarkdownImagePaths(currentContent));
   const referencedBodyImages = pendingBodyImages.filter((image) => currentBodyImagePaths.has(image.path));
   if (referencedBodyImages.length) {
-    payload.bodyImages = referencedBodyImages.map(({ path, pathPreview: _pathPreview, ...image }) => image);
+    payload.bodyImages = referencedBodyImages.map(
+      ({ path, pathPreview: _pathPreview, previewSrc: _previewSrc, ...image }) => image,
+    );
   }
   const deleteBodyImagePaths = removedBodyImagePaths(originalContent, currentContent, fields.slug.value);
   if (deleteBodyImagePaths.length) {
@@ -374,6 +426,7 @@ function updateEditorMode() {
   contentLabel.textContent = isMarkdown ? "Markdown 수정" : "HTML 파일 재업로드";
   markdownToolbar.hidden = !isMarkdown;
   markdownPreviewPanel.hidden = !isMarkdown;
+  if (!isMarkdown) hideSlashCommandMenu();
   updateMarkdownToolsState();
   updateMarkdownPreview();
 }
@@ -396,6 +449,7 @@ function updateMarkdownPreview() {
   if (fields.format.value !== "markdown") {
     markdownPreview.innerHTML = "";
     previewStatus.textContent = "HTML";
+    hideSlashCommandMenu();
     return;
   }
   const markdown = contentInput.value.trim();
@@ -407,12 +461,184 @@ function updateMarkdownPreview() {
   });
 }
 
+function handleEditorKeydown(event) {
+  if (!slashState) return;
+  const commands = slashState.commands;
+  if (!commands.length) return;
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    activeSlashCommandIndex = (activeSlashCommandIndex + 1) % commands.length;
+    renderSlashCommandMenu(commands);
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    activeSlashCommandIndex = (activeSlashCommandIndex - 1 + commands.length) % commands.length;
+    renderSlashCommandMenu(commands);
+  } else if (event.key === "Enter" || event.key === "Tab") {
+    event.preventDefault();
+    applySlashCommand(commands[activeSlashCommandIndex]);
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    hideSlashCommandMenu();
+  }
+}
+
+function updateSlashCommandMenu() {
+  if (fields.format.value !== "markdown" || contentInput.disabled) {
+    hideSlashCommandMenu();
+    return;
+  }
+  const nextState = currentSlashState();
+  if (!nextState) {
+    hideSlashCommandMenu();
+    return;
+  }
+  const commands = filterSlashCommands(nextState.query);
+  if (!commands.length) {
+    hideSlashCommandMenu();
+    return;
+  }
+  slashState = { ...nextState, commands };
+  activeSlashCommandIndex = Math.min(activeSlashCommandIndex, commands.length - 1);
+  renderSlashCommandMenu(commands);
+}
+
+function currentSlashState() {
+  if (contentInput.selectionStart !== contentInput.selectionEnd) return null;
+  const caret = contentInput.selectionStart;
+  const value = contentInput.value;
+  const lineRange = selectedLineRange(value, caret, caret);
+  const beforeCaret = value.slice(lineRange.start, caret);
+  const slashIndex = beforeCaret.lastIndexOf("/");
+  if (slashIndex === -1) return null;
+  const beforeSlash = beforeCaret.slice(0, slashIndex);
+  if (beforeSlash.trim() && !/\s$/.test(beforeSlash)) return null;
+  const query = beforeCaret.slice(slashIndex + 1);
+  if (/\s/.test(query)) return null;
+  return {
+    start: lineRange.start + slashIndex,
+    end: caret,
+    query,
+    line: lineRange
+  };
+}
+
+function filterSlashCommands(query) {
+  const normalized = String(query || "").trim().toLowerCase();
+  if (!normalized) return slashCommands;
+  return slashCommands.filter((command) =>
+    [command.id, command.title, command.hint, ...command.keywords]
+      .join(" ")
+      .toLowerCase()
+      .includes(normalized),
+  );
+}
+
+function renderSlashCommandMenu(commands) {
+  slashCommandMenu.hidden = false;
+  slashCommandMenu.innerHTML = commands
+    .map(
+      (command, index) => `
+        <button class="slash-command-item ${index === activeSlashCommandIndex ? "is-active" : ""}" type="button" role="option" aria-selected="${index === activeSlashCommandIndex}" data-slash-command="${escapeAttribute(command.id)}">
+          <strong>${escapeHtml(command.title)}</strong>
+          <span>${escapeHtml(command.hint)}</span>
+        </button>
+      `,
+    )
+    .join("");
+}
+
+function hideSlashCommandMenu() {
+  slashState = null;
+  activeSlashCommandIndex = 0;
+  slashCommandMenu.hidden = true;
+  slashCommandMenu.innerHTML = "";
+}
+
+function applySlashCommand(command) {
+  const state = slashState || currentSlashState();
+  if (!state) return;
+  hideSlashCommandMenu();
+  if (command.id === "image-upload") {
+    const next = replaceSelection(contentInput.value, state.start, state.end, "");
+    commitEditorChange(next.value, state.start, state.start);
+    bodyImageInput.click();
+    return;
+  }
+  const lineText = contentInput.value
+    .slice(state.line.start, state.line.end)
+    .replace(contentInput.value.slice(state.start, state.end), "")
+    .trim();
+  const block = slashCommandBlock(command.id, lineText);
+  if (!block) return;
+  const next = replaceLineRange(contentInput.value, state.line, block.text);
+  commitEditorChange(next.value, state.line.start + block.start, state.line.start + block.end);
+}
+
+function slashCommandBlock(id, lineText) {
+  const text = lineText || slashPlaceholder(id);
+  if (id === "text") return blockResult(text, 0, text.length);
+  if (id === "h1") return blockResult(`# ${text}`, 2, 2 + text.length);
+  if (id === "h2") return blockResult(`## ${text}`, 3, 3 + text.length);
+  if (id === "h3") return blockResult(`### ${text}`, 4, 4 + text.length);
+  if (id === "bullets") return blockResult(`- ${text}`, 2, 2 + text.length);
+  if (id === "numbers") return blockResult(`1. ${text}`, 3, 3 + text.length);
+  if (id === "todo") return blockResult(`- [ ] ${text}`, 6, 6 + text.length);
+  if (id === "quote") return blockResult(`> ${text}`, 2, 2 + text.length);
+  if (id === "callout") {
+    const prefix = "> **메모:** ";
+    return blockResult(`${prefix}${text}`, prefix.length, prefix.length + text.length);
+  }
+  if (id === "divider") return blockResult("---", 3, 3);
+  if (id === "code") return blockResult("```\ncode\n```", 4, 8);
+  if (id === "table") {
+    const table = "| 제목 | 내용 |\n| --- | --- |\n| 항목 | 설명 |";
+    return blockResult(table, 2, 4);
+  }
+  if (id === "image-url") {
+    const alt = escapeMarkdownText(lineText || "이미지 설명");
+    const prefix = `![${alt}](`;
+    const url = "assets/example.png";
+    return blockResult(`${prefix}${url})`, prefix.length, prefix.length + url.length);
+  }
+  if (id === "link") {
+    const label = lineText || "링크 텍스트";
+    const prefix = `[${label}](`;
+    const url = "https://example.com";
+    return blockResult(`${prefix}${url})`, prefix.length, prefix.length + url.length);
+  }
+  if (id === "color") {
+    const prefix = `{color=${normalizeColor(colorInput.value)}}`;
+    return blockResult(`${prefix}${text}{/color}`, prefix.length, prefix.length + text.length);
+  }
+  if (id === "bold") return blockResult(`**${text}**`, 2, 2 + text.length);
+  if (id === "italic") return blockResult(`_${text}_`, 1, 1 + text.length);
+  if (id === "strike") return blockResult(`~~${text}~~`, 2, 2 + text.length);
+  return null;
+}
+
+function slashPlaceholder(id) {
+  if (id === "h1" || id === "h2" || id === "h3") return "제목";
+  if (["bullets", "numbers"].includes(id)) return "목록 항목";
+  if (id === "todo") return "할 일";
+  if (id === "quote") return "인용문";
+  if (id === "callout") return "메모";
+  if (id === "color") return "색상 텍스트";
+  if (["bold", "italic", "strike"].includes(id)) return "텍스트";
+  return "";
+}
+
+function blockResult(text, start, end) {
+  return { text, start, end };
+}
+
 function applyMarkdownAction(action) {
   if (action === "image-upload") {
+    hideSlashCommandMenu();
     bodyImageInput.click();
     return;
   }
   if (action === "image-delete") {
+    hideSlashCommandMenu();
     deleteCurrentImageMarkdown();
     return;
   }
@@ -662,6 +888,7 @@ function markdownToHtml(markdown) {
   let list = [];
   let listTag = "ul";
   let quote = [];
+  let table = [];
   let code = [];
   let inCode = false;
 
@@ -674,10 +901,16 @@ function markdownToHtml(markdown) {
   const flushList = () => {
     if (list.length) {
       html.push(
-        `<${listTag}>${list.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</${listTag}>`,
+        `<${listTag}>${list.map((item) => renderListItem(item)).join("")}</${listTag}>`,
       );
       list = [];
       listTag = "ul";
+    }
+  };
+  const flushTable = () => {
+    if (table.length) {
+      html.push(renderMarkdownTable(table));
+      table = [];
     }
   };
   const flushQuote = () => {
@@ -698,6 +931,7 @@ function markdownToHtml(markdown) {
   const flushTextBlocks = () => {
     flushParagraph();
     flushList();
+    flushTable();
     flushQuote();
   };
 
@@ -726,6 +960,19 @@ function markdownToHtml(markdown) {
       html.push("<hr>");
       continue;
     }
+    const linkCard = parseLinkCardMarker(trimmed);
+    if (linkCard) {
+      flushTextBlocks();
+      html.push(renderLinkCard(linkCard));
+      continue;
+    }
+    if (isMarkdownTableRow(trimmed)) {
+      flushParagraph();
+      flushList();
+      flushQuote();
+      table.push(trimmed);
+      continue;
+    }
     const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
     if (heading) {
       flushTextBlocks();
@@ -751,6 +998,7 @@ function markdownToHtml(markdown) {
       continue;
     }
     flushList();
+    flushTable();
     flushQuote();
     paragraph.push(trimmed);
   }
@@ -758,6 +1006,43 @@ function markdownToHtml(markdown) {
   flushTextBlocks();
   if (inCode) flushCode();
   return html.join("\n");
+}
+
+function renderListItem(item) {
+  const task = String(item || "").match(/^\[( |x|X)]\s+(.+)$/);
+  if (task) {
+    const checked = task[1].toLowerCase() === "x";
+    return `<li class="task-list-item"><input type="checkbox" disabled${checked ? " checked" : ""}> <span>${inlineMarkdown(task[2])}</span></li>`;
+  }
+  return `<li>${inlineMarkdown(item)}</li>`;
+}
+
+function isMarkdownTableRow(value) {
+  return /^\|.+\|$/.test(value) && value.split("|").length > 2;
+}
+
+function renderMarkdownTable(rows) {
+  const parsedRows = rows.map(parseMarkdownTableRow).filter((row) => row.length);
+  if (!parsedRows.length) return "";
+  const hasDivider = parsedRows[1]?.every((cell) => /^:?-{3,}:?$/.test(cell.trim()));
+  const head = hasDivider ? parsedRows[0] : null;
+  const bodyRows = hasDivider ? parsedRows.slice(2) : parsedRows;
+  const headHtml = head
+    ? `<thead><tr>${head.map((cell) => `<th>${inlineMarkdown(cell)}</th>`).join("")}</tr></thead>`
+    : "";
+  const bodyHtml = `<tbody>${bodyRows
+    .map((row) => `<tr>${row.map((cell) => `<td>${inlineMarkdown(cell)}</td>`).join("")}</tr>`)
+    .join("")}</tbody>`;
+  return `<table>${headHtml}${bodyHtml}</table>`;
+}
+
+function parseMarkdownTableRow(value) {
+  return String(value || "")
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((cell) => cell.trim());
 }
 
 function inlineMarkdown(value) {
@@ -777,13 +1062,42 @@ function inlineMarkdown(value) {
       '<span style="color: $1">$2</span>',
     )
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/~~([^~]+)~~/g, "<del>$1</del>")
     .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, "$1<em>$2</em>")
     .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, "$1<em>$2</em>")
     .replace(/`([^`]+)`/g, "<code>$1</code>");
 }
 
+function parseLinkCardMarker(value) {
+  const match = String(value || "").match(/^\{\{corca-link-card:([^}]+)\}\}$/);
+  if (!match) return null;
+  try {
+    return JSON.parse(decodeURIComponent(match[1]));
+  } catch {
+    return null;
+  }
+}
+
+function renderLinkCard(card) {
+  const url = String(card.url || "");
+  if (!/^https?:\/\//i.test(url)) return "";
+  const host = card.host || linkHost(url);
+  const label = String(card.label || url).trim();
+  return `<aside class="article-link-card"><a href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer"><span class="article-link-card-domain">${escapeHtml(host)}</span><strong>${escapeHtml(label)}</strong><span class="article-link-card-url">${escapeHtml(url)}</span></a></aside>`;
+}
+
+function linkHost(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
 function safeMarkdownUrl(value) {
   const text = decodeHtml(value).trim();
+  const pendingPreview = pendingBodyImagePreview(text);
+  if (pendingPreview) return pendingPreview;
   if (
     /^(https?:)?\/\//i.test(text) ||
     text.startsWith("#") ||
@@ -798,6 +1112,12 @@ function safeMarkdownUrl(value) {
     return escapeAttribute(`/blog${text}`);
   }
   return "#";
+}
+
+function pendingBodyImagePreview(path) {
+  const normalized = normalizeMarkdownImagePath(path);
+  if (!normalized) return "";
+  return pendingBodyImages.find((image) => image.path === normalized)?.previewSrc || "";
 }
 
 async function apiErrorMessage(response, fallback) {
@@ -948,7 +1268,8 @@ async function prepareBodyImage(file) {
     contentBase64,
     fileName,
     mime: "image/jpeg",
-    path: `assets/admin-posts/${fileName}`
+    path: `assets/admin-posts/${fileName}`,
+    previewSrc: `data:image/jpeg;base64,${contentBase64}`
   };
 }
 

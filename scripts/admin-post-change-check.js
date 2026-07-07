@@ -51,11 +51,22 @@ try {
     coverImageBase64: tinyPngBase64,
     coverImageFileName: 'uploaded-cover.png',
     coverImageMime: 'image/png',
+    bodyImages: [
+      {
+        contentBase64: tinyPngBase64,
+        fileName: 'admin-edit-fixture-111111111111.png',
+        mime: 'image/png',
+      },
+    ],
     contentBase64: toBase64(`# Admin Markdown Updated
 
 ## Markdown Section
 
 Admin markdown body with **bold** text and [Corca](https://www.corca.ai/).
+
+This line has {color=#0066cc}blue text{/color} and a body image.
+
+![Body fixture](assets/admin-posts/admin-edit-fixture-111111111111.png)
 
 > Admin markdown quote should become a blockquote.
 
@@ -91,8 +102,21 @@ This fixture intentionally includes enough article copy to pass the public post 
   assert.match(staticPage, /<blockquote>/);
   assert.match(staticPage, /<hr>/);
   assert.match(staticPage, /<em>italic emphasis<\/em>/);
+  assert.match(staticPage, /<span style="color: #0066cc">blue text<\/span>/);
   assert.match(staticPage, /<img src="\/blog\/assets\/editorial-cover\.jpg"/);
+  assert.match(
+    staticPage,
+    /<img src="\/blog\/assets\/admin-posts\/admin-edit-fixture-111111111111\.png"/,
+  );
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
+  assert.equal(
+    (
+      await readFile(
+        join(workDir, 'public/blog/assets/admin-posts/admin-edit-fixture-111111111111.png'),
+      )
+    ).length > 0,
+    true,
+  );
 
   const enIndex = JSON.parse(
     await readFile(join(workDir, 'public/en/blog/posts/index.json'), 'utf8'),
@@ -100,6 +124,34 @@ This fixture intentionally includes enough article copy to pass the public post 
   assert.equal(enIndex.length, 0);
   await assert.rejects(
     readFile(join(workDir, `public/en/blog/posts/${slug}/index.html`), 'utf8'),
+    /ENOENT/,
+  );
+
+  runAdminChange({
+    action: 'upsert',
+    slug,
+    format: 'markdown',
+    fileName: 'admin-edit-fixture.md',
+    metadata: {
+      title: 'Admin Markdown Updated',
+      description: 'Markdown description updated through the admin editor.',
+      date: '2026-02-03',
+      tags: '문라이트,제품',
+      author: 'Markdown Author',
+      cover: metadata.cover,
+      language: 'ko',
+      coverAlt: 'Markdown cover alt',
+      section: '문라이트',
+    },
+    deleteBodyImagePaths: ['assets/admin-posts/admin-edit-fixture-111111111111.png'],
+    contentBase64: toBase64(`# Admin Markdown Updated
+
+## Markdown Section
+
+Admin markdown body after deleting the inline image. This fixture intentionally includes enough article copy to pass the public post generator while still focusing on the admin edit path. The admin editor should preserve the Markdown source for later editing, render the body into HTML for readers, and regenerate the index from the same metadata that was sent by the Worker dispatch.`),
+  });
+  await assert.rejects(
+    readFile(join(workDir, 'public/blog/assets/admin-posts/admin-edit-fixture-111111111111.png')),
     /ENOENT/,
   );
 

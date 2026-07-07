@@ -8,12 +8,14 @@ const postForm = document.querySelector("#postForm");
 const adminMessage = document.querySelector("#adminMessage");
 const fileInput = document.querySelector("#fileInput");
 const coverFileInput = document.querySelector("#coverFileInput");
+const bodyImageInput = document.querySelector("#bodyImageInput");
 const contentInput = document.querySelector("#contentInput");
 const contentLabel = document.querySelector("#contentLabel");
 const markdownToolbar = document.querySelector("#markdownToolbar");
 const markdownPreviewPanel = document.querySelector("#markdownPreviewPanel");
 const markdownPreview = document.querySelector("#markdownPreview");
 const previewStatus = document.querySelector("#previewStatus");
+const colorInput = document.querySelector("#colorInput");
 const saveButton = document.querySelector("#saveButton");
 const deleteButton = document.querySelector("#deleteButton");
 const fields = {
@@ -33,6 +35,8 @@ const fields = {
 let posts = [];
 let activeSlug = "";
 let pendingCoverImage = null;
+let pendingBodyImages = [];
+let originalContent = "";
 let previewTimer = 0;
 
 loginForm.addEventListener("submit", async (event) => {
@@ -64,6 +68,12 @@ fields.format.addEventListener("change", () => {
 
 contentInput.addEventListener("input", () => {
   scheduleMarkdownPreview();
+});
+
+markdownToolbar.addEventListener("mousedown", (event) => {
+  if (event.target.closest("[data-markdown-action]")) {
+    event.preventDefault();
+  }
 });
 
 markdownToolbar.addEventListener("click", (event) => {
@@ -114,6 +124,36 @@ coverFileInput.addEventListener("change", async () => {
   }
 });
 
+bodyImageInput.addEventListener("change", async () => {
+  const file = bodyImageInput.files?.[0];
+  bodyImageInput.value = "";
+  if (!file) return;
+  if (!activeSlug) {
+    adminMessage.textContent = "이미지를 넣을 글을 먼저 선택하세요.";
+    return;
+  }
+  if (fields.format.value !== "markdown") {
+    adminMessage.textContent = "본문 이미지 파일 삽입은 Markdown 모드에서만 사용할 수 있습니다.";
+    return;
+  }
+  if (!/^image\/(?:jpeg|png|webp)$/.test(file.type)) {
+    adminMessage.textContent = "본문 이미지는 jpg, png, webp 이미지만 업로드할 수 있습니다.";
+    return;
+  }
+  adminMessage.textContent = "본문 이미지를 준비하는 중입니다.";
+  try {
+    const preparedImage = await prepareBodyImage(file);
+    pendingBodyImages = [
+      ...pendingBodyImages.filter((item) => item.path !== preparedImage.path),
+      preparedImage
+    ].slice(-6);
+    insertOrReplaceImageMarkdown(preparedImage.path, file.name.replace(/\.[^.]+$/, ""));
+    adminMessage.textContent = "본문 이미지를 Markdown에 삽입했습니다. 저장 요청하면 함께 반영됩니다.";
+  } catch (error) {
+    adminMessage.textContent = error.message || "본문 이미지를 처리하지 못했습니다.";
+  }
+});
+
 postForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!activeSlug || fields.slug.value !== activeSlug) {
@@ -121,18 +161,28 @@ postForm.addEventListener("submit", async (event) => {
     return;
   }
   adminMessage.textContent = "저장 요청을 보내는 중입니다.";
+  const currentContent = contentInput.value;
   const payload = {
     action: "upsert",
     slug: fields.slug.value,
     format: fields.format.value,
     fileName: fileInput.files?.[0]?.name || "",
     metadata: readMetadata(),
-    contentBase64: await toBase64(contentInput.value)
+    contentBase64: await toBase64(currentContent)
   };
   if (pendingCoverImage) {
     payload.coverImageBase64 = pendingCoverImage.contentBase64;
     payload.coverImageFileName = pendingCoverImage.fileName;
     payload.coverImageMime = pendingCoverImage.mime;
+  }
+  const currentBodyImagePaths = new Set(extractMarkdownImagePaths(currentContent));
+  const referencedBodyImages = pendingBodyImages.filter((image) => currentBodyImagePaths.has(image.path));
+  if (referencedBodyImages.length) {
+    payload.bodyImages = referencedBodyImages.map(({ path, pathPreview: _pathPreview, ...image }) => image);
+  }
+  const deleteBodyImagePaths = removedBodyImagePaths(originalContent, currentContent, fields.slug.value);
+  if (deleteBodyImagePaths.length) {
+    payload.deleteBodyImagePaths = deleteBodyImagePaths;
   }
   const response = await fetch("/api/admin/posts", {
     method: "POST",
@@ -144,6 +194,8 @@ postForm.addEventListener("submit", async (event) => {
     return;
   }
   pendingCoverImage = null;
+  pendingBodyImages = [];
+  originalContent = currentContent;
   coverFileInput.value = "";
   adminMessage.textContent = "저장 요청을 보냈습니다. GitHub Actions 반영 후 목록이 갱신됩니다.";
 });
@@ -250,6 +302,8 @@ async function loadPostSource(slug) {
   fields.section.value = metadata.section || "";
   fields.coverAlt.value = metadata.coverAlt || "";
   contentInput.value = data.content || "";
+  originalContent = contentInput.value;
+  pendingBodyImages = [];
   fields.format.dispatchEvent(new Event("change"));
   updateMarkdownPreview();
   setEditorDisabled(false);
@@ -272,7 +326,10 @@ function clearEditor() {
   contentInput.value = "";
   fileInput.value = "";
   coverFileInput.value = "";
+  bodyImageInput.value = "";
   pendingCoverImage = null;
+  pendingBodyImages = [];
+  originalContent = "";
   fields.format.dispatchEvent(new Event("change"));
   updateMarkdownPreview();
   setEditorDisabled(true);
@@ -305,6 +362,7 @@ function setEditorDisabled(disabled) {
   });
   fileInput.disabled = disabled;
   coverFileInput.disabled = disabled;
+  bodyImageInput.disabled = disabled;
   contentInput.disabled = disabled;
   saveButton.disabled = disabled;
   deleteButton.disabled = disabled || !activeSlug;
@@ -325,6 +383,8 @@ function updateMarkdownToolsState() {
   markdownToolbar.querySelectorAll("button").forEach((button) => {
     button.disabled = disabled;
   });
+  colorInput.disabled = disabled;
+  bodyImageInput.disabled = disabled;
 }
 
 function scheduleMarkdownPreview() {
@@ -340,12 +400,23 @@ function updateMarkdownPreview() {
   }
   const markdown = contentInput.value.trim();
   previewStatus.textContent = markdown ? "실시간" : "비어 있음";
-  markdownPreview.innerHTML = markdown
-    ? markdownToHtml(contentInput.value)
-    : `<p class="preview-empty">Markdown을 입력하면 여기에 미리보기가 표시됩니다.</p>`;
+  preserveEditorScroll(() => {
+    markdownPreview.innerHTML = markdown
+      ? markdownToHtml(contentInput.value)
+      : `<p class="preview-empty">Markdown을 입력하면 여기에 미리보기가 표시됩니다.</p>`;
+  });
 }
 
 function applyMarkdownAction(action) {
+  if (action === "image-upload") {
+    bodyImageInput.click();
+    return;
+  }
+  if (action === "image-delete") {
+    deleteCurrentImageMarkdown();
+    return;
+  }
+
   const start = contentInput.selectionStart;
   const end = contentInput.selectionEnd;
   const selected = contentInput.value.slice(start, end);
@@ -441,12 +512,91 @@ function applyMarkdownAction(action) {
       "_",
       "_",
     ));
+  } else if (action === "color") {
+    const color = normalizeColor(colorInput.value);
+    ({ value: nextValue, start: nextStart, end: nextEnd } = wrapSelection(
+      contentInput.value,
+      start,
+      end,
+      `{color=${color}}`,
+      "{/color}",
+    ));
   }
 
-  contentInput.value = nextValue;
-  contentInput.focus();
-  contentInput.setSelectionRange(nextStart, nextEnd);
-  updateMarkdownPreview();
+  commitEditorChange(nextValue, nextStart, nextEnd);
+}
+
+function commitEditorChange(nextValue, nextStart, nextEnd) {
+  preserveEditorScroll(() => {
+    contentInput.value = nextValue;
+    contentInput.focus({ preventScroll: true });
+    contentInput.setSelectionRange(nextStart, nextEnd);
+    updateMarkdownPreview();
+  });
+}
+
+function preserveEditorScroll(callback) {
+  const windowX = window.scrollX;
+  const windowY = window.scrollY;
+  const editorScrollTop = contentInput.scrollTop;
+  const previewScrollTop = markdownPreview.scrollTop;
+  callback();
+  contentInput.scrollTop = editorScrollTop;
+  markdownPreview.scrollTop = previewScrollTop;
+  window.scrollTo(windowX, windowY);
+}
+
+function insertOrReplaceImageMarkdown(path, altText) {
+  const imageMarkdown = `![${escapeMarkdownText(altText || "이미지")}](${path})`;
+  const replacement = replaceCurrentImageSyntax(contentInput.value, imageMarkdown);
+  if (replacement) {
+    commitEditorChange(replacement.value, replacement.start, replacement.end);
+    return;
+  }
+  const start = contentInput.selectionStart;
+  const end = contentInput.selectionEnd;
+  const prefix = needsLeadingBlank(contentInput.value, start) ? "\n\n" : "";
+  const suffix = contentInput.value.slice(end).startsWith("\n\n") ? "" : "\n\n";
+  const inserted = `${prefix}${imageMarkdown}${suffix}`;
+  const next = replaceSelection(contentInput.value, start, end, inserted);
+  commitEditorChange(next.value, start + prefix.length, start + prefix.length + imageMarkdown.length);
+}
+
+function deleteCurrentImageMarkdown() {
+  const replacement = replaceCurrentImageSyntax(contentInput.value, "");
+  if (!replacement) {
+    adminMessage.textContent = "삭제할 이미지 Markdown에 커서를 두거나 이미지 구문을 선택하세요.";
+    return;
+  }
+  commitEditorChange(replacement.value, replacement.start, replacement.end);
+  adminMessage.textContent = "본문에서 이미지 구문을 삭제했습니다. 저장 요청하면 반영됩니다.";
+}
+
+function replaceCurrentImageSyntax(value, replacement) {
+  const start = contentInput.selectionStart;
+  const end = contentInput.selectionEnd;
+  const selected = value.slice(start, end);
+  const selectedMatch = selected.match(/!\[[^\]]*]\([^)]+\)/);
+  if (selectedMatch) {
+    const matchStart = start + selectedMatch.index;
+    const matchEnd = matchStart + selectedMatch[0].length;
+    const next = replaceSelection(value, matchStart, matchEnd, replacement);
+    return { value: next.value, start: matchStart, end: matchStart + replacement.length };
+  }
+
+  const lineRange = selectedLineRange(value, start, end);
+  const lineMatches = [...lineRange.text.matchAll(/!\[[^\]]*]\([^)]+\)/g)];
+  const relativeCaret = start - lineRange.start;
+  const match =
+    lineMatches.find((item) => {
+      const matchStart = item.index || 0;
+      return relativeCaret >= matchStart && relativeCaret <= matchStart + item[0].length;
+    }) || lineMatches[0];
+  if (!match) return null;
+  const matchStart = lineRange.start + (match.index || 0);
+  const matchEnd = matchStart + match[0].length;
+  const next = replaceSelection(value, matchStart, matchEnd, replacement);
+  return { value: next.value, start: matchStart, end: matchStart + replacement.length };
 }
 
 function selectedLineRange(value, start, end) {
@@ -622,6 +772,10 @@ function inlineMarkdown(value) {
       (_match, text, href) =>
         `<a href="${safeMarkdownUrl(href)}" target="_blank" rel="noopener noreferrer">${text}</a>`,
     )
+    .replace(
+      /\{color=(#[0-9a-fA-F]{6})\}([\s\S]*?)\{\/color\}/g,
+      '<span style="color: $1">$2</span>',
+    )
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, "$1<em>$2</em>")
     .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, "$1<em>$2</em>")
@@ -693,6 +847,39 @@ function slugify(value) {
     .replace(/-{2,}/g, "");
 }
 
+function normalizeColor(value) {
+  return /^#[0-9a-f]{6}$/i.test(String(value || "")) ? String(value) : "#0066cc";
+}
+
+function escapeMarkdownText(value) {
+  return String(value || "")
+    .replace(/[[\]()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractMarkdownImagePaths(markdown) {
+  return [...String(markdown || "").matchAll(/!\[[^\]]*]\(([^)\s]+)\)/g)]
+    .map((match) => normalizeMarkdownImagePath(match[1]))
+    .filter(Boolean);
+}
+
+function normalizeMarkdownImagePath(path) {
+  const text = String(path || "").trim();
+  if (text.startsWith("/blog/assets/")) return text.slice("/blog/".length);
+  if (text.startsWith("/assets/")) return text.slice(1);
+  if (text.startsWith("assets/")) return text;
+  return "";
+}
+
+function removedBodyImagePaths(before, after, slug) {
+  const current = new Set(extractMarkdownImagePaths(after));
+  return [...new Set(extractMarkdownImagePaths(before))]
+    .filter((path) => !current.has(path))
+    .filter((path) => path.startsWith(`assets/admin-posts/${slug}-`))
+    .slice(0, 20);
+}
+
 async function prepareCoverImage(file) {
   const image = await loadImage(file);
   const maxWidth = 1200;
@@ -726,6 +913,53 @@ async function prepareCoverImage(file) {
     mime: "image/jpeg",
     pathPreview: `assets/admin-posts/${slug || "post"}-cover.jpg`
   };
+}
+
+async function prepareBodyImage(file) {
+  const image = await loadImage(file);
+  const maxWidth = 1600;
+  const maxHeight = 1200;
+  const scale = Math.min(1, maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("브라우저에서 이미지 처리를 지원하지 않습니다.");
+  }
+  context.drawImage(image, 0, 0, width, height);
+
+  let blob = null;
+  for (const quality of [0.86, 0.78, 0.7, 0.62, 0.54]) {
+    blob = await canvasToBlob(canvas, "image/jpeg", quality);
+    if (blob.size <= 62000) break;
+  }
+  if (!blob || blob.size > 80000) {
+    throw new Error("본문 이미지 용량이 큽니다. 더 작은 이미지를 선택해 주세요.");
+  }
+
+  const contentBase64 = await blobToBase64(blob);
+  const hash = await sha256Hex(await blob.arrayBuffer());
+  const slug = fields.slug.value || slugify(fields.title.value || file.name.replace(/\.[^.]+$/, ""));
+  const fileName = `${slug || "post"}-${hash.slice(0, 12)}.jpg`;
+  return {
+    contentBase64,
+    fileName,
+    mime: "image/jpeg",
+    path: `assets/admin-posts/${fileName}`
+  };
+}
+
+async function sha256Hex(buffer) {
+  if (!window.crypto?.subtle) {
+    throw new Error("브라우저에서 이미지 해시 생성을 지원하지 않습니다.");
+  }
+  const digest = await window.crypto.subtle.digest("SHA-256", buffer);
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function loadImage(file) {

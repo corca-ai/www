@@ -86,6 +86,8 @@
                   <select id="languageInput" name="language">
                     <option value="ko">ko</option>
                     <option value="en">en</option>
+                    <option value="ja">ja</option>
+                    <option value="zh">zh</option>
                   </select>
                 </label>
                 <label>
@@ -105,7 +107,28 @@
 
               <label class="content-field">
                 <span id="contentLabel">Markdown 수정</span>
-                <textarea id="contentInput" rows="20" required></textarea>
+                <div id="markdownToolbar" class="markdown-toolbar" aria-label="Markdown 작성 도구">
+                  <button type="button" class="tool-button" data-markdown-action="heading" aria-label="제목 2 삽입">H2</button>
+                  <button type="button" class="tool-button" data-markdown-action="bold" aria-label="굵게">B</button>
+                  <button type="button" class="tool-button" data-markdown-action="italic" aria-label="기울임">I</button>
+                  <button type="button" class="tool-button" data-markdown-action="quote" aria-label="인용문">“</button>
+                  <button type="button" class="tool-button" data-markdown-action="unordered-list" aria-label="글머리 목록">•</button>
+                  <button type="button" class="tool-button" data-markdown-action="ordered-list" aria-label="번호 목록">1.</button>
+                  <button type="button" class="tool-button" data-markdown-action="link" aria-label="링크">↗</button>
+                  <button type="button" class="tool-button" data-markdown-action="image" aria-label="이미지">▧</button>
+                  <button type="button" class="tool-button" data-markdown-action="code" aria-label="코드">`</button>
+                  <button type="button" class="tool-button" data-markdown-action="rule" aria-label="구분선">—</button>
+                </div>
+                <div class="content-editor">
+                  <textarea id="contentInput" rows="20" required></textarea>
+                  <aside id="markdownPreviewPanel" class="markdown-preview-panel" aria-label="Markdown 미리보기">
+                    <div class="preview-heading">
+                      <strong>미리보기</strong>
+                      <span id="previewStatus">Markdown</span>
+                    </div>
+                    <div id="markdownPreview" class="markdown-preview article-content"></div>
+                  </aside>
+                </div>
               </label>
 
               <div class="editor-actions">

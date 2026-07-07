@@ -1245,8 +1245,8 @@ function linkHost(url) {
 
 function safeMarkdownUrl(value) {
   const text = decodeHtml(value).trim();
-  const pendingPreview = pendingBodyImagePreview(text);
-  if (pendingPreview) return pendingPreview;
+  const previewUrl = previewMarkdownAssetUrl(text);
+  if (previewUrl) return escapeAttribute(previewUrl);
   if (
     /^(https?:)?\/\//i.test(text) ||
     text.startsWith("#") ||
@@ -1263,10 +1263,12 @@ function safeMarkdownUrl(value) {
   return "#";
 }
 
-function pendingBodyImagePreview(path) {
+function previewMarkdownAssetUrl(path) {
   const normalized = normalizeMarkdownImagePath(path);
   if (!normalized) return "";
-  return pendingBodyImages.find((image) => image.path === normalized)?.previewSrc || "";
+  const pendingPreview = pendingBodyImages.find((image) => image.path === normalized)?.previewSrc;
+  if (pendingPreview) return pendingPreview;
+  return `/blog/${normalized}`;
 }
 
 async function apiErrorMessage(response, fallback) {
@@ -1418,7 +1420,7 @@ async function prepareBodyImage(file) {
     fileName,
     mime: "image/jpeg",
     path: `assets/admin-posts/${fileName}`,
-    previewSrc: `data:image/jpeg;base64,${contentBase64}`
+    previewSrc: URL.createObjectURL(blob)
   };
 }
 

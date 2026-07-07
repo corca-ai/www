@@ -1,6 +1,7 @@
 const state = {
   posts: [],
   search: "",
+  topic: "",
   sort: "newest",
   savedOnly: false,
   currentPage: 1,
@@ -31,8 +32,14 @@ const REACTION_OPTIONS = [
   { key: "useful", icon: "👍", label: "좋아요" }
 ];
 const POSTS_PER_PAGE = 9;
-const PUBLIC_POST_TOPICS = ["AX", "문라이트", "트레이스", "크라켄", "씰", "마진", "코르카"];
+const PUBLIC_POST_TOPICS = ["AX", "Tech", "문라이트", "트레이스", "크라켄", "씰", "마진", "코르카"];
 const DEFAULT_POST_TOPIC = "코르카";
+const HERO_TOPIC_FILTERS = [
+  { key: "product", label: "Product", aliases: ["문라이트", "moonlight", "트레이스", "trace", "크라켄", "kraken", "마진", "margin", "씰", "ceal"] },
+  { key: "ax", label: "AX", aliases: ["ax", "ai transformation"] },
+  { key: "corca", label: "Corca", aliases: ["corca", "코르카"] },
+  { key: "tech", label: "Tech", aliases: ["tech", "기술"] }
+];
 const listShareIcon = `<svg class="action-icon share-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.7 10.7 15.3 7.3"></path><path d="M8.7 13.3 15.3 16.7"></path></svg>`;
 const listDownloadIcon = `<svg class="action-icon download-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>`;
 const buttonFeedbackTimers = new WeakMap();
@@ -42,6 +49,7 @@ const postList = document.querySelector("#postList");
 const siteHeader = document.querySelector(".corca-main-header");
 const siteFooter = document.querySelector(".corca-main-footer");
 const heroSection = document.querySelector(".hero");
+const heroTopicFilters = document.querySelector("#heroTopicFilters");
 const featuredPost = document.querySelector("#featuredPost");
 const recentReads = document.querySelector("#recentReads");
 const savedReads = document.querySelector("#savedReads");
@@ -177,6 +185,19 @@ function bindEvents() {
     savePrefs();
     updateDiscoveryUrl();
     renderPosts();
+  });
+  heroTopicFilters?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-topic-filter]");
+    if (!button) {
+      return;
+    }
+    const topic = normalizeHeroTopic(button.dataset.topicFilter);
+    state.topic = state.topic === topic ? "" : topic;
+    state.currentPage = 1;
+    hideListMessage();
+    updateDiscoveryUrl({ replace: false });
+    renderPosts();
+    postsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   });
   savedOnlyButton?.addEventListener("click", () => {
     state.savedOnly = !state.savedOnly;
@@ -357,6 +378,7 @@ function renderPosts() {
   renderPostList(pagePosts);
   renderPostPagination(listPosts.length);
   updateToolbarState(listPosts.length, visiblePosts.length);
+  updateHeroTopicFilters();
   renderListReactions(pagePosts);
 }
 
@@ -422,6 +444,9 @@ function normalizePosts(posts) {
       tags: Array.isArray(post.tags) ? post.tags.map(String).map((tag) => tag.trim()).filter(Boolean) : [],
       author: String(post.author || "Corca Team").trim(),
       cover: String(post.cover || "assets/editorial-cover.jpg").trim(),
+      section: String(post.section || "").trim(),
+      language: String(post.language || "").trim(),
+      coverAlt: String(post.coverAlt || "").trim(),
       file: String(post.file || "").trim(),
       contentPath: String(post.contentPath || post.file || "").trim(),
       wordCount: Number(post.wordCount || 800),
@@ -727,13 +752,32 @@ function updateToolbarState(listCount, matchCount = listCount) {
   emptyState.innerHTML = getEmptyStateHtml();
 }
 
+function updateHeroTopicFilters() {
+  if (!heroTopicFilters) {
+    return;
+  }
+  for (const button of heroTopicFilters.querySelectorAll("[data-topic-filter]")) {
+    const topic = normalizeHeroTopic(button.dataset.topicFilter);
+    const active = state.topic === topic;
+    const count = state.posts.filter((post) => matchesHeroTopic(post, topic)).length;
+    button.disabled = false;
+    button.setAttribute("aria-pressed", String(active));
+    button.classList.toggle("active", active);
+    button.dataset.count = String(count);
+    button.setAttribute("aria-label", `${heroTopicLabel(topic)} 글 ${count}개${active ? " 필터 해제" : " 보기"}`);
+  }
+}
+
 function getVisiblePosts() {
   const query = normalizeSearchText(state.search);
   const posts = state.posts.filter((post) => {
     if (state.savedOnly && !state.savedSlugs.includes(post.slug)) {
       return false;
     }
-    const haystack = normalizeSearchText([post.title, post.description, post.author, ...(post.tags || []), post.searchText].join(" "));
+    if (state.topic && !matchesHeroTopic(post, state.topic)) {
+      return false;
+    }
+    const haystack = normalizeSearchText([post.title, post.description, post.author, post.section, ...(post.tags || []), post.searchText].join(" "));
     return !query || haystack.includes(query);
   });
 
@@ -742,6 +786,28 @@ function getVisiblePosts() {
 
 function getListPosts(posts) {
   return posts;
+}
+
+function matchesHeroTopic(post, topic) {
+  const filter = HERO_TOPIC_FILTERS.find((item) => item.key === topic);
+  if (!filter) {
+    return false;
+  }
+  const values = [
+    ...(post.tags || []),
+    post.section,
+    getPrimaryPostTopic(post)
+  ].filter(Boolean).map((value) => normalizeSearchText(value));
+  return filter.aliases.some((alias) => values.includes(normalizeSearchText(alias)));
+}
+
+function normalizeHeroTopic(value) {
+  const topic = String(value || "").trim().toLowerCase();
+  return HERO_TOPIC_FILTERS.some((item) => item.key === topic) ? topic : "";
+}
+
+function heroTopicLabel(topic) {
+  return HERO_TOPIC_FILTERS.find((item) => item.key === topic)?.label || "";
 }
 
 function renderSearchContext(post) {
@@ -1306,6 +1372,7 @@ function applyDiscoveryParamsFromLocation() {
   if (params.has("q")) {
     state.search = String(params.get("q") || "").trim();
   }
+  state.topic = normalizeHeroTopic(params.get("topic"));
   state.savedOnly = params.get("saved") === "1";
   if (["newest", "oldest", "title"].includes(params.get("sort"))) {
     state.sort = params.get("sort");
@@ -1320,6 +1387,9 @@ function updateDiscoveryUrl(options = {}) {
   const params = new URLSearchParams();
   if (state.search) {
     params.set("q", state.search);
+  }
+  if (state.topic) {
+    params.set("topic", state.topic);
   }
   if (state.savedOnly) {
     params.set("saved", "1");
@@ -1337,7 +1407,7 @@ function updateDiscoveryUrl(options = {}) {
 }
 
 function hasDiscoveryState() {
-  return Boolean(state.search || state.savedOnly || state.sort !== "newest");
+  return Boolean(state.search || state.topic || state.savedOnly || state.sort !== "newest");
 }
 
 async function copyPostLink() {
@@ -2076,6 +2146,7 @@ function reconcileDiscoveryPrefs() {
   if (state.posts.length === 0) {
     discoveryChanged = hasDiscoveryState();
     state.search = "";
+    state.topic = "";
     state.savedOnly = false;
     state.sort = "newest";
     state.currentPage = 1;
@@ -2167,6 +2238,9 @@ function getFilterSummary(count) {
   if (state.search) {
     parts.push(`"${state.search}" 검색`);
   }
+  if (state.topic) {
+    parts.push(`${heroTopicLabel(state.topic)} 주제`);
+  }
   if (state.savedOnly) {
     parts.push("저장한 글");
   }
@@ -2180,6 +2254,9 @@ function getResultCountText(listCount) {
   if (state.savedOnly) {
     return `저장한 글 ${listCount}개`;
   }
+  if (state.topic) {
+    return `${heroTopicLabel(state.topic)} 글 ${listCount}개`;
+  }
   return `${listCount}개의 글`;
 }
 
@@ -2189,6 +2266,9 @@ function getEmptyStateHtml() {
   }
   if (state.search) {
     return "조건에 맞는 글이 없습니다. 검색어를 바꿔보세요.";
+  }
+  if (state.topic) {
+    return `${heroTopicLabel(state.topic)} 주제에 맞는 글이 없습니다. 다른 주제를 선택해 보세요.`;
   }
   if (state.savedOnly) {
     return "저장한 글이 없습니다. 글 카드에 마우스를 올린 뒤 별 버튼을 눌러 저장해 보세요.";

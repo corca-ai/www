@@ -783,6 +783,7 @@ async function renderBlogIndexPages(postRecordsByLocale) {
         /<meta name="twitter:description" content="[^"]*">/,
         `<meta name="twitter:description" content="${escapeAttribute(labels.description)}">`,
       )
+      .replace(/href="\/blog\/rss\.xml"/g, 'href="/rss"')
       .replace(/"description":\s*"[^"]*"/, `"description": ${JSON.stringify(labels.description)}`)
       .replace(
         /"inLanguage":\s*"[^"]*"/,
@@ -888,35 +889,91 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 }
 
 async function renderBlogDiscoveryFiles(postRecordsByLocale) {
-  const sitemap = renderBlogSitemap(postRecordsByLocale);
+  const sitemapPages = renderBlogPagesSitemap(postRecordsByLocale);
+  const sitemapCategories = renderBlogCategoriesSitemap(postRecordsByLocale);
+  const sitemapTags = renderBlogTagsSitemap(postRecordsByLocale);
+  const sitemapPosts = renderBlogPostsSitemap(postRecordsByLocale);
+  const sitemap = renderBlogSitemapAlias(postRecordsByLocale);
   const rss = renderBlogRss(postRecordsByLocale.get('ko') || []);
   const feed = renderBlogJsonFeed(postRecordsByLocale.get('ko') || []);
   const robots = renderBlogRobotsTxt();
 
+  await writeFile(join(repoRoot, 'public/sitemap-pages.xml'), sitemapPages);
+  await writeFile(join(repoRoot, 'public/sitemap-categories.xml'), sitemapCategories);
+  await writeFile(join(repoRoot, 'public/sitemap-tags.xml'), sitemapTags);
+  await writeFile(join(repoRoot, 'public/sitemap-posts.xml'), sitemapPosts);
   await writeFile(join(blogRoot, 'sitemap.xml'), sitemap);
   await writeFile(join(blogRoot, 'rss.xml'), rss);
   await writeFile(join(blogRoot, 'feed.json'), feed);
   await writeFile(join(blogRoot, 'robots.txt'), robots);
-  console.log('Rendered blog sitemap, RSS, JSON feed and robots.txt.');
+  console.log('Rendered blog sitemap index children, RSS, JSON feed and robots.txt.');
 }
 
-function renderBlogSitemap(postRecordsByLocale) {
-  const entries = [];
+function renderBlogPagesSitemap(postRecordsByLocale) {
   const indexAlternates = supportedLocales.map((locale) => ({
     locale,
     path: localeLabels[locale].blogPath,
   }));
-
-  for (const locale of supportedLocales) {
-    entries.push({
+  return renderUrlset(
+    supportedLocales.map((locale) => ({
       path: localeLabels[locale].blogPath,
       lastmod: newestPostDate(postRecordsByLocale),
       changefreq: 'daily',
       priority: '0.8',
       alternates: indexAlternates,
-    });
-  }
+    })),
+  );
+}
 
+function renderBlogCategoriesSitemap(postRecordsByLocale) {
+  const categories = [
+    { key: 'product', label: 'Product' },
+    { key: 'ax', label: 'AX' },
+    { key: 'corca', label: 'Corca' },
+    { key: 'tech', label: 'Tech' },
+  ];
+  const lastmod = newestPostDate(postRecordsByLocale);
+  return renderUrlset(
+    supportedLocales.flatMap((locale) =>
+      categories.map((category) => ({
+        path: `${localeLabels[locale].blogPath}?topic=${category.key}`,
+        lastmod,
+        changefreq: 'daily',
+        priority: '0.6',
+        alternates: supportedLocales.map((alternateLocale) => ({
+          locale: alternateLocale,
+          path: `${localeLabels[alternateLocale].blogPath}?topic=${category.key}`,
+        })),
+      })),
+    ),
+  );
+}
+
+function renderBlogTagsSitemap(postRecordsByLocale) {
+  const lastmod = newestPostDate(postRecordsByLocale);
+  const entries = [];
+  for (const locale of supportedLocales) {
+    const tags = [
+      ...new Set(
+        (postRecordsByLocale.get(locale) || []).flatMap(({ post }) =>
+          [...(post.tags || []), post.section].filter(Boolean),
+        ),
+      ),
+    ].sort((a, b) => a.localeCompare(b, localeLabels[locale].lang));
+    for (const tag of tags) {
+      entries.push({
+        path: `${localeLabels[locale].blogPath}?search=${encodeURIComponent(tag)}`,
+        lastmod,
+        changefreq: 'weekly',
+        priority: '0.5',
+      });
+    }
+  }
+  return renderUrlset(entries);
+}
+
+function renderBlogPostsSitemap(postRecordsByLocale) {
+  const entries = [];
   const postAlternatesBySlug = groupPostAlternatePaths(postRecordsByLocale);
   for (const locale of supportedLocales) {
     const records = postRecordsByLocale.get(locale) || [];
@@ -932,24 +989,40 @@ function renderBlogSitemap(postRecordsByLocale) {
       });
     }
   }
+  return renderUrlset(entries);
+}
 
+function renderUrlset(entries) {
   const urls = entries
     .map((entry) => {
-      const alternates = renderSitemapAlternates(entry.alternates);
+      const alternates = entry.alternates ? renderSitemapAlternates(entry.alternates) : '';
       return `  <url>
     <loc>${escapeHtml(absoluteSiteUrl(entry.path))}</loc>
     <lastmod>${escapeHtml(entry.lastmod)}</lastmod>
     <changefreq>${entry.changefreq}</changefreq>
     <priority>${entry.priority}</priority>
-${alternates}
-  </url>`;
+${alternates ? `${alternates}\n` : ''}  </url>`;
     })
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls}
 </urlset>
+`;
+}
+
+function renderBlogSitemapAlias(postRecordsByLocale) {
+  const lastmod = `${newestPostDate(postRecordsByLocale)}T00:00:00.000Z`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${escapeHtml(absoluteSiteUrl('/sitemap-posts.xml'))}</loc>
+    <lastmod>${escapeHtml(lastmod)}</lastmod>
+  </sitemap>
+</sitemapindex>
 `;
 }
 
@@ -972,29 +1045,46 @@ function renderBlogRss(records) {
     .map(({ post }) => {
       const url = absoluteSiteUrl(staticPostPath(post, 'ko'));
       return `    <item>
-      <title>${escapeHtml(post.title)}</title>
+      <title><![CDATA[${cdata(post.title)}]]></title>
       <link>${escapeHtml(url)}</link>
       <guid isPermaLink="true">${escapeHtml(url)}</guid>
       <pubDate>${escapeHtml(rssDate(post.date))}</pubDate>
-      <description>${escapeHtml(post.description)}</description>
+      <description><![CDATA[${cdata(post.description)}]]></description>
+      <category><![CDATA[${cdata(getRssCategory(post))}]]></category>
+      <dc:creator><![CDATA[${cdata(post.author || defaultAuthor)}]]></dc:creator>
     </item>`;
     })
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<?xml-stylesheet type="text/xsl" href="/rss.xsl"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Corca Blog</title>
+    <title><![CDATA[Corca Blog]]></title>
     <link>${escapeHtml(absoluteSiteUrl('/blog'))}</link>
-    <atom:link href="${escapeAttribute(absoluteSiteUrl('/blog/rss.xml'))}" rel="self" type="application/rss+xml" />
-    <description>${escapeHtml(blogIndexLabels.ko.description)}</description>
-    <language>ko</language>
+    <atom:link href="${escapeAttribute(absoluteSiteUrl('/rss'))}" rel="self" type="application/rss+xml" />
+    <description><![CDATA[${cdata(blogIndexLabels.ko.description)}]]></description>
+    <language>ko-KR</language>
     <lastBuildDate>${escapeHtml(rssDate(latestDate))}</lastBuildDate>
+    <generator>Astro</generator>
     <ttl>60</ttl>
 ${items}
   </channel>
 </rss>
 `;
+}
+
+function getRssCategory(post) {
+  return [post.section || post.tags?.[0] || 'Corca', ...(post.tags || []).slice(1, 2)]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+function cdata(value) {
+  return String(value || '').replaceAll(']]>', ']]]]><![CDATA[>');
 }
 
 function renderBlogJsonFeed(records) {
@@ -1031,8 +1121,6 @@ function renderBlogRobotsTxt() {
 Allow: /
 
 Sitemap: ${absoluteSiteUrl('/sitemap.xml')}
-Sitemap: ${absoluteSiteUrl('/blog/sitemap.xml')}
-Sitemap: ${absoluteSiteUrl('/blog/rss.xml')}
 `;
 }
 
@@ -1221,7 +1309,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
     <meta name="twitter:image" content="${coverUrl}">
     <meta name="twitter:image:alt" content="${escapeAttribute(imageAlt)}">
     <meta name="theme-color" content="#ffffff">
-    <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/blog/rss.xml">
+    <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
     <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, canonical, articleSection, locale))}</script>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">

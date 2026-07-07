@@ -1,16 +1,25 @@
 import type { APIRoute } from 'astro';
 import { SITE_ORIGIN } from '../site';
 
-// Serve the sitemap at the conventional /sitemap.xml. @astrojs/sitemap emits
-// the static site map; the public blog renderer owns blog discovery files.
+const sitemapNames = ['pages', 'categories', 'tags', 'posts'];
+
+// Reference-style sitemap index for crawler entrypoints. The blog renderer
+// owns the child XML files because admin and Notion publishing update them.
 export const GET: APIRoute = ({ site }) => {
   const base = (site ?? new URL(SITE_ORIGIN)).href;
+  const lastmod = new Date().toISOString();
+  const entries = sitemapNames
+    .map(
+      (name) => `  <sitemap>
+    <loc>${base}sitemap-${name}.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>`,
+    )
+    .join('\n');
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap><loc>${base}sitemap-0.xml</loc></sitemap>
-  <sitemap><loc>${base}blog/sitemap.xml</loc></sitemap>
-  <sitemap><loc>${base}blog/rss.xml</loc></sitemap>
-  <sitemap><loc>${base}rss.xml</loc></sitemap>
+${entries}
 </sitemapindex>
 `;
   return new Response(xml, { headers: { 'content-type': 'application/xml; charset=utf-8' } });

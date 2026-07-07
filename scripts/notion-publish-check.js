@@ -190,12 +190,16 @@ try {
     /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture/,
   );
   assert.match(
-    await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8'),
+    await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
     /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
     /https:\/\/www\.borca\.ai\/blog\/posts\/notion-body-fixture/,
+  );
+  assert.match(
+    await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
+    /<atom:link href="https:\/\/www\.borca\.ai\/rss"/,
   );
   assert.equal(
     JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8')).feed_url,

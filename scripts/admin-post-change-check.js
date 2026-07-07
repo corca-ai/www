@@ -129,12 +129,21 @@ This fixture intentionally includes enough article copy to pass the public post 
     ).length > 0,
     true,
   );
-  const sitemap = await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8');
+  const sitemapIndex = await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8');
+  assert.match(sitemapIndex, /\/sitemap-posts\.xml/);
+  const sitemap = await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8');
   assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/loc>/);
   assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/posts\/admin-edit-fixture/);
   assert.match(sitemap, /hreflang="en-US"/);
+  assert.match(
+    await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8'),
+    /\/blog\?topic=product/,
+  );
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
+  assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);
+  assert.match(rss, /<atom:link href="https:\/\/www\.corca\.ai\/rss"/);
   assert.match(rss, /<link>https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/link>/);
+  assert.match(rss, /<dc:creator><!\[CDATA\[Markdown Author\]\]><\/dc:creator>/);
   const feed = JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8'));
   assert.equal(feed.home_page_url, 'https://www.corca.ai/blog');
   assert.equal(
@@ -143,7 +152,7 @@ This fixture intentionally includes enough article copy to pass the public post 
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/robots.txt'), 'utf8'),
-    /blog\/sitemap\.xml/,
+    /Sitemap: https:\/\/www\.corca\.ai\/sitemap\.xml/,
   );
 
   for (const locale of ['en', 'ja', 'zh']) {
@@ -202,7 +211,7 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
     false,
   );
   assert.doesNotMatch(
-    await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8'),
+    await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
     /admin-edit-fixture/,
   );
   assert.doesNotMatch(

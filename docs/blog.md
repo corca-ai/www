@@ -60,17 +60,22 @@ database for published posts.
   content.
 - Admin write and delete requests dispatch a GitHub workflow when
   `GITHUB_DISPATCH_TOKEN` is configured. The workflow updates the static blog
-  files and redeploys them as assets.
+  files on a generated branch and opens a pull request against `main`.
 - The dispatch target is `.github/workflows/admin-post-change.yml`. It runs
   `scripts/apply-admin-post-change.js`, then commits changes under
   `public/blog/`, `public/en/blog/`, `public/ja/blog/` and `public/zh/blog/`.
-  Set the optional `BLOG_ADMIN_DEPLOY_WORKFLOW` repository variable when a
-  separate deployment workflow must be triggered after that commit.
+  The pull request must be merged for the normal main-branch Cloudflare
+  deployment flow to publish those static assets.
+- By default these pull requests use the repository `GITHUB_TOKEN`. Set the
+  optional GitHub Actions secret `CONTENT_CHANGE_TOKEN` to a GitHub App token or
+  PAT with content and pull request write access when automation-created PRs
+  should start CI without the GitHub approval prompt.
 - Notion publishing uses `.github/workflows/notion-publish.yml` and
   `scripts/sync-notion-posts.js`. The script reads ready pages from Notion,
   converts page body blocks or attached HTML files into the shared admin post
-  format, then writes the same static files under `public/blog/` and localized
-  blog aliases.
+  format, writes the same static files under `public/blog/` and localized blog
+  aliases, then opens a pull request instead of pushing directly to protected
+  `main`.
 
 Because `/blog/admin` lives under the blog base path, admin HTML references
 admin scripts and styles with `/blog/admin/*` and shared blog images with
@@ -100,8 +105,8 @@ require the Worker runtime because the API routes are implemented in
 The Notion publishing path can be run manually from GitHub Actions or triggered
 by a Notion automation webhook.
 
-- `workflow_dispatch` on `Publish Notion Posts` publishes all ready Notion
-  pages.
+- `workflow_dispatch` on `Publish Notion Posts` opens a pull request for all
+  ready Notion pages that produce static file changes.
 - `POST /api/notion/publish` validates `X-Corca-Webhook-Secret` or a bearer
   token against `CORCA_NOTION_WEBHOOK_SECRET`, then dispatches the
   `notion-post-publish` GitHub event.
@@ -117,6 +122,13 @@ by a Notion automation webhook.
   `NOTION_SKIP_UPDATES` and `NOTION_RECENT_READY_MINUTES`.
 - Required Worker secrets for webhook-triggered publishing:
   `CORCA_NOTION_WEBHOOK_SECRET` and `GITHUB_DISPATCH_TOKEN`.
+- Optional GitHub Actions secret: `CONTENT_CHANGE_TOKEN`, used instead of the
+  repository `GITHUB_TOKEN` for creating content-change branches and pull
+  requests when CI should run without an automation approval prompt.
+
+Keep `NOTION_SKIP_UPDATES=1` when publishing through pull requests. With
+protected branches, generated static files are not live until the PR is merged
+and the main-branch Cloudflare deployment completes.
 
 `NOTION_BLOG_DATABASE` is not read by this repository. Use
 `NOTION_BLOG_DATABASE_URL` or `NOTION_BLOG_DATABASE_ID` instead.

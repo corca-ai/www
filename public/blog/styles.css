@@ -3089,7 +3089,7 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   gap: 6px;
-  margin-top: -4px;
+  margin-top: 4px;
 }
 
 .hero-topic-filters button {

@@ -32,12 +32,13 @@ const REACTION_OPTIONS = [
   { key: "useful", icon: "👍", label: "좋아요" }
 ];
 const POSTS_PER_PAGE = 9;
-const PUBLIC_POST_TOPICS = ["AX", "문라이트", "트레이스", "크라켄", "씰", "마진", "코르카"];
+const PUBLIC_POST_TOPICS = ["AX", "Tech", "문라이트", "트레이스", "크라켄", "씰", "마진", "코르카"];
 const DEFAULT_POST_TOPIC = "코르카";
 const HERO_TOPIC_FILTERS = [
-  { key: "product", label: "Product", aliases: ["product", "products", "제품", "문라이트", "트레이스", "크라켄", "마진", "씰"] },
+  { key: "product", label: "Product", aliases: ["문라이트", "moonlight", "트레이스", "trace", "크라켄", "kraken", "마진", "margin", "씰", "ceal"] },
   { key: "ax", label: "AX", aliases: ["ax", "ai transformation"] },
-  { key: "corca", label: "Corca", aliases: ["corca", "코르카"] }
+  { key: "corca", label: "Corca", aliases: ["corca", "코르카"] },
+  { key: "tech", label: "Tech", aliases: ["tech", "기술"] }
 ];
 const listShareIcon = `<svg class="action-icon share-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.7 10.7 15.3 7.3"></path><path d="M8.7 13.3 15.3 16.7"></path></svg>`;
 const listDownloadIcon = `<svg class="action-icon download-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>`;
@@ -759,7 +760,7 @@ function updateHeroTopicFilters() {
     const topic = normalizeHeroTopic(button.dataset.topicFilter);
     const active = state.topic === topic;
     const count = state.posts.filter((post) => matchesHeroTopic(post, topic)).length;
-    button.disabled = count === 0;
+    button.disabled = false;
     button.setAttribute("aria-pressed", String(active));
     button.classList.toggle("active", active);
     button.dataset.count = String(count);

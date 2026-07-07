@@ -129,6 +129,35 @@ This fixture intentionally includes enough article copy to pass the public post 
     ).length > 0,
     true,
   );
+  const sitemapIndex = await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8');
+  assert.match(sitemapIndex, /\/sitemap-posts\.xml/);
+  const sitemap = await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8');
+  assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/loc>/);
+  assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/posts\/admin-edit-fixture/);
+  assert.match(sitemap, /<\?xml-stylesheet type="text\/xsl" href="\/sitemap\.xsl"\?>/);
+  assert.match(sitemap, /<lastmod>2026-02-03T00:00:00\.000Z<\/lastmod>/);
+  assert.doesNotMatch(sitemap, /hreflang=/);
+  assert.doesNotMatch(sitemap, /<changefreq>/);
+  assert.doesNotMatch(sitemap, /<priority>/);
+  assert.match(
+    await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8'),
+    /\/blog\?topic=product/,
+  );
+  const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
+  assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);
+  assert.match(rss, /<atom:link href="https:\/\/www\.corca\.ai\/rss"/);
+  assert.match(rss, /<link>https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/link>/);
+  assert.match(rss, /<dc:creator><!\[CDATA\[Markdown Author\]\]><\/dc:creator>/);
+  const feed = JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8'));
+  assert.equal(feed.home_page_url, 'https://www.corca.ai/blog');
+  assert.equal(
+    feed.items.some((item) => item.url === 'https://www.corca.ai/blog/posts/admin-edit-fixture'),
+    true,
+  );
+  assert.match(
+    await readFile(join(workDir, 'public/blog/robots.txt'), 'utf8'),
+    /Sitemap: https:\/\/www\.corca\.ai\/sitemap\.xml/,
+  );
 
   for (const locale of ['en', 'ja', 'zh']) {
     const translationSource = await readFile(
@@ -183,6 +212,20 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
   );
   assert.equal(
     deletedIndex.some((post) => post.slug === slug),
+    false,
+  );
+  assert.doesNotMatch(
+    await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
+    /admin-edit-fixture/,
+  );
+  assert.doesNotMatch(
+    await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
+    /admin-edit-fixture/,
+  );
+  assert.equal(
+    JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8')).items.some((item) =>
+      item.url.includes(slug),
+    ),
     false,
   );
   await assert.rejects(

@@ -2,10 +2,10 @@
 # (worker/index.ts) runs first and strips trailing slashes, so every request
 # reaching these rules already has no trailing slash — sources are slash-less.
 
-# RSS: /rss is the conventional feed URL (issue #17); the feed is emitted at
-# /rss.xml so it carries the correct content-type on static hosting.
-/rss     /rss.xml    302
-/blog/rss     /blog/rss.xml    302
+# RSS: /rss is served by an Astro endpoint. Legacy blog feed URLs redirect
+# there so subscription tools and crawlers share one canonical feed.
+/blog/rss      /rss    302
+/blog/rss.xml  /rss    302
 
 # Legacy Corca Blog URLs now live inside the integrated /blog section.
 /posts/:slug       /blog/posts/:slug       301

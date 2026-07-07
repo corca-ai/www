@@ -1,8 +1,11 @@
 import { execFileSync } from 'node:child_process';
 import { appendFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { basename, extname, join } from 'node:path';
+import { basename, dirname, extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { markdownToHtml } from './lib/markdown-renderer.js';
 
+const scriptDir = dirname(fileURLToPath(import.meta.url));
 const args = parseArgs(process.argv.slice(2));
 const config = loadConfig();
 const workDir = await mkdtemp(join(tmpdir(), 'corca-notion-posts-'));
@@ -229,10 +232,11 @@ function runAdminPostChange({ source, metadata, slug }) {
     contentBase64: Buffer.from(source.content, 'utf8').toString('base64'),
   };
 
-  execFileSync(process.execPath, ['scripts/apply-admin-post-change.js'], {
+  execFileSync(process.execPath, [join(scriptDir, 'apply-admin-post-change.js')], {
     cwd: process.cwd(),
     env: {
       ...process.env,
+      BLOG_ADMIN_ROOT: process.env.BLOG_ADMIN_ROOT || process.cwd(),
       ADMIN_POST_CHANGE: JSON.stringify(payload),
     },
     stdio: 'inherit',
@@ -758,148 +762,6 @@ function ogLocaleForLanguage(language) {
   }[normalizeLanguage(language)];
 }
 
-function markdownToHtml(markdown) {
-  const lines = String(markdown || '')
-    .replace(/\r\n?/g, '\n')
-    .split('\n');
-  const html = [];
-  let paragraph = [];
-  let list = [];
-  let listTag = 'ul';
-  let quote = [];
-  let code = [];
-  let inCode = false;
-
-  const flushParagraph = () => {
-    if (paragraph.length) {
-      html.push(`<p>${inlineMarkdown(paragraph.join(' '))}</p>`);
-      paragraph = [];
-    }
-  };
-  const flushList = () => {
-    if (list.length) {
-      html.push(
-        `<${listTag}>${list.map((item) => `<li>${inlineMarkdown(item)}</li>`).join('')}</${listTag}>`,
-      );
-      list = [];
-      listTag = 'ul';
-    }
-  };
-  const flushQuote = () => {
-    if (quote.length) {
-      const content = quote.join('\n').trim();
-      if (content) {
-        html.push(`<blockquote>${markdownToHtml(content)}</blockquote>`);
-      }
-      quote = [];
-    }
-  };
-  const flushCode = () => {
-    if (code.length) {
-      html.push(`<pre><code>${escapeHtml(code.join('\n'))}</code></pre>`);
-      code = [];
-    }
-  };
-  const flushTextBlocks = () => {
-    flushParagraph();
-    flushList();
-    flushQuote();
-  };
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (/^```/.test(trimmed)) {
-      if (inCode) {
-        flushCode();
-        inCode = false;
-      } else {
-        flushTextBlocks();
-        inCode = true;
-      }
-      continue;
-    }
-    if (inCode) {
-      code.push(line);
-      continue;
-    }
-    if (!trimmed) {
-      flushTextBlocks();
-      continue;
-    }
-    if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
-      flushTextBlocks();
-      html.push('<hr>');
-      continue;
-    }
-    const linkCard = parseLinkCardMarker(trimmed);
-    if (linkCard) {
-      flushTextBlocks();
-      html.push(renderLinkCard(linkCard));
-      continue;
-    }
-    const heading = trimmed.match(/^(#{1,3})\s+(.+)$/);
-    if (heading) {
-      flushTextBlocks();
-      html.push(`<h${heading[1].length}>${inlineMarkdown(heading[2])}</h${heading[1].length}>`);
-      continue;
-    }
-    const unorderedListItem = trimmed.match(/^[-*]\s+(.+)$/);
-    if (unorderedListItem) {
-      flushParagraph();
-      flushQuote();
-      if (list.length && listTag !== 'ul') {
-        flushList();
-      }
-      listTag = 'ul';
-      list.push(unorderedListItem[1]);
-      continue;
-    }
-    const orderedListItem = trimmed.match(/^\d+[.)]\s+(.+)$/);
-    if (orderedListItem) {
-      flushParagraph();
-      flushQuote();
-      if (list.length && listTag !== 'ol') {
-        flushList();
-      }
-      listTag = 'ol';
-      list.push(orderedListItem[1]);
-      continue;
-    }
-    const quoteItem = trimmed.match(/^>\s?(.*)$/);
-    if (quoteItem) {
-      flushParagraph();
-      flushList();
-      quote.push(quoteItem[1]);
-      continue;
-    }
-    flushList();
-    flushQuote();
-    paragraph.push(trimmed);
-  }
-  flushTextBlocks();
-  if (inCode) {
-    flushCode();
-  }
-  return html.join('\n');
-}
-
-function inlineMarkdown(value) {
-  return escapeHtml(value)
-    .replace(
-      /!\[([^\]]*)\]\(([^)]+)\)/g,
-      (_match, alt, src) =>
-        `<img src="${safeMarkdownUrl(src)}" alt="${escapeAttribute(alt)}" loading="lazy" decoding="async">`,
-    )
-    .replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      (_match, text, href) => `<a href="${safeMarkdownUrl(href)}">${text}</a>`,
-    )
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/(^|[\s([{])_([^_\s][^_]*?)_(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
-    .replace(/(^|[\s([{])\*([^*\s][^*]*?)\*(?=$|[\s.,!?;:)\]}])/g, '$1<em>$2</em>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>');
-}
-
 function richTextMarkdown(value) {
   return (value || [])
     .map((item) => {
@@ -997,28 +859,6 @@ function linkCardMarkdown(url, label) {
     }),
   );
   return `{{corca-link-card:${payload}}}`;
-}
-
-function parseLinkCardMarker(value) {
-  const match = String(value || '').match(/^\{\{corca-link-card:([^}]+)\}\}$/);
-  if (!match) {
-    return null;
-  }
-  try {
-    return JSON.parse(decodeURIComponent(match[1]));
-  } catch {
-    return null;
-  }
-}
-
-function renderLinkCard(card) {
-  const url = String(card.url || '');
-  if (!/^https?:\/\//i.test(url)) {
-    return '';
-  }
-  const host = card.host || linkHost(url);
-  const label = String(card.label || url).trim();
-  return `<aside class="article-link-card"><a href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer"><span class="article-link-card-domain">${escapeHtml(host)}</span><strong>${escapeHtml(label)}</strong><span class="article-link-card-url">${escapeHtml(url)}</span></a></aside>`;
 }
 
 function linkHost(url) {
@@ -1165,20 +1005,6 @@ function fileUrl(file) {
     return file.external?.url || '';
   }
   return '';
-}
-
-function safeMarkdownUrl(value) {
-  const text = decodeHtmlEntities(value).trim();
-  if (
-    /^(https?:)?\/\//i.test(text) ||
-    text.startsWith('assets/') ||
-    text.startsWith('/assets/') ||
-    text.startsWith('/blog/assets/') ||
-    text.startsWith('#')
-  ) {
-    return escapeAttribute(text);
-  }
-  return '#';
 }
 
 function decodeHtmlEntities(value) {
@@ -1541,10 +1367,6 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-}
-
-function escapeAttribute(value) {
-  return escapeHtml(value).replaceAll('`', '&#96;');
 }
 
 function fail(message) {

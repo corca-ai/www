@@ -138,6 +138,7 @@ try {
       NOTION_POST_READY_STATUS: '배포 완료',
       NOTION_SKIP_UPDATES: '0',
       CORCA_SITE_URL: 'https://www.borca.ai',
+      BLOG_TRANSLATION_PROVIDER: 'fixture',
     },
     stdio: 'inherit',
   });
@@ -152,7 +153,7 @@ try {
   );
   assert.equal(
     posts.some((post) => post.slug === 'notion-html-fixture'),
-    false,
+    true,
   );
   assert.equal(
     enPosts.some((post) => post.slug === 'notion-html-fixture'),
@@ -170,16 +171,23 @@ try {
     /노션 본문 발행 확인/,
   );
   assert.match(
+    await readFile(
+      join(workDir, 'public/blog/admin/post-translations/en/notion-body-fixture.html'),
+      'utf8',
+    ),
+    /\[en\] 노션 본문 발행 확인/,
+  );
+  assert.match(
     await readFile(join(workDir, 'public/en/blog/posts/notion-html-fixture/index.html'), 'utf8'),
-    /href="\/en\/blog\/posts\/notion-html-fixture\/" hreflang="en-US"/,
+    /href="\/en\/blog\/posts\/notion-html-fixture" hreflang="en-US"/,
   );
   assert.match(
     await readFile(updatesPath, 'utf8'),
-    /https:\/\/www\.borca\.ai\/blog\/posts\/notion-body-fixture\//,
+    /https:\/\/www\.borca\.ai\/blog\/posts\/notion-body-fixture/,
   );
   assert.match(
     await readFile(updatesPath, 'utf8'),
-    /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture\//,
+    /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture/,
   );
 
   console.log('Notion publish check passed.');

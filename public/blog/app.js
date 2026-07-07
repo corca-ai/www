@@ -28,14 +28,345 @@ const STORAGE_KEYS = {
 };
 
 const BASE_PATH = resolveBasePath(import.meta.url);
+const CURRENT_LOCALE = resolveCurrentLocale();
+const UI_TEXT = {
+  ko: {
+    imageAltSuffix: "대표 이미지",
+    emptyPreparing: "첫 공개 글을 준비하고 있습니다.",
+    savedPosts: "저장한 글",
+    postCount: (count) => `${count}개의 글`,
+    topicCount: (topic, count) => `${topic} 글 ${count}개`,
+    noPosts: "아직 공개된 글이 없습니다.",
+    noPostsDetail: "Corca가 어떤 관점으로 제품과 워크플로를 기록하는지 먼저 확인해 보세요.",
+    aboutBlog: "블로그 소개 보기",
+    noSearch: "조건에 맞는 글이 없습니다. 검색어를 바꿔보세요.",
+    noTopic: (topic) => `${topic} 주제에 맞는 글이 없습니다. 다른 주제를 선택해 보세요.`,
+    noSaved: "저장한 글이 없습니다. 글 카드에 마우스를 올린 뒤 별 버튼을 눌러 저장해 보세요.",
+    searchLabel: "검색",
+    topicLabel: "주제",
+    resultLabel: (parts, count) => `${parts.join(", ")} 결과 ${count}개`,
+    minRead: (count) => `${count}분 읽기`,
+    postListLabel: "글 목록",
+    retryLater: "잠시 후 다시 시도해 주세요.",
+    loadFailure: "글 목록을 불러오지 못했습니다.",
+    networkRetry: "네트워크 상태를 확인한 뒤 다시 시도해 주세요.",
+    retry: "다시 불러오기",
+    readPost: (title) => `${title} 읽기`,
+    latestPost: "최신 글",
+    saved: "저장됨",
+    saveVerb: "저장",
+    untitled: "제목 없는 글",
+    noDescription: "설명이 없는 글입니다.",
+    recentEyebrow: "다시 읽기",
+    recentTitle: "최근 읽은 글",
+    recentDescription: "방금 읽던 흐름으로 다시 돌아갈 수 있습니다.",
+    savedEyebrow: "보관함",
+    savedTitle: "저장한 글",
+    savedDescription: "다시 읽고 싶은 글을 모아둡니다.",
+    archiveEyebrow: "아카이브",
+    archiveTitle: "전체 글 아카이브",
+    archiveDescription: "발행된 Corca 글을 날짜순으로 빠르게 훑어볼 수 있습니다.",
+    dateUnknown: "날짜 미정",
+    quickActions: (title) => `${title} 빠른 동작`,
+    shareAction: (title) => `${title} 공유`,
+    downloadAction: (title) => `${title} 다운로드`,
+    likeAction: (title) => `${title} 좋아요`,
+    unlikeAction: (title) => `${title} 좋아요 취소`,
+    previousPage: "이전 글 목록 페이지",
+    nextPage: "다음 글 목록 페이지",
+    pageSummary: (current, total) => `페이지 ${current} / ${total}`,
+    currentPostSave: "현재 글 저장",
+    heroTopicAria: (topic, count, active) => `${topic} 글 ${count}개${active ? " 필터 해제" : " 보기"}`,
+    bodyMatch: "본문 일치",
+    postNotFound: "글을 찾을 수 없습니다. 목록에서 다시 선택해 주세요.",
+    articleLoadFailed: "글 본문을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    articleLoading: "글 본문을 불러오는 중",
+    toc: "목차",
+    tocAria: "글 목차",
+    sectionLink: (heading) => `${heading} 섹션 링크`,
+    recommendations: "추천 글",
+    copied: "복사됨",
+    copyFailed: "링크 복사에 실패했습니다. 주소창의 URL을 직접 복사해 주세요.",
+    linkCopied: "링크 복사됨",
+    shared: "공유 완료",
+    shareCopied: "공유 링크 복사됨",
+    shareOpened: "공유 창을 열었습니다.",
+    shareLinkCopied: "공유 링크를 복사했습니다.",
+    shareFailed: "공유 링크 복사에 실패했습니다. 주소창의 URL을 직접 복사해 주세요.",
+    saveFailed: "글 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+    readingLineHeight: (label) => `행간 ${label}`,
+    readingFont: (label) => `글꼴 ${label}`,
+    readingWidth: (label) => `폭 ${label}`,
+    readingParagraph: (label) => `문단 ${label}`,
+    resetDefault: "기본값",
+    readingStart: "처음부터",
+    readingDone: "완독",
+    readingPercent: (percent) => `${percent}% 읽음`,
+    readingProgress: (title) => `${title} 읽기 진행률`,
+    optionLabels: { normal: "보통", wide: "넓게", compact: "좁게", narrow: "좁게", sans: "산세", serif: "세리프" },
+    breadcrumbPosts: "글",
+    metaImageAlt: "Corca 블로그 글쓰기와 제품 리서치를 위한 작업 공간",
+    dateLocale: "ko-KR"
+  },
+  en: {
+    imageAltSuffix: "representative image",
+    emptyPreparing: "The first public post is being prepared.",
+    savedPosts: "Saved posts",
+    postCount: (count) => `${count} posts`,
+    topicCount: (topic, count) => `${count} ${topic} posts`,
+    noPosts: "No public posts yet.",
+    noPostsDetail: "See how Corca records product and workflow learnings.",
+    aboutBlog: "About the blog",
+    noSearch: "No posts match these conditions. Try another search term.",
+    noTopic: (topic) => `No posts match the ${topic} topic. Try another topic.`,
+    noSaved: "No saved posts yet. Save posts with the star button on a card.",
+    searchLabel: "search",
+    topicLabel: "topic",
+    resultLabel: (parts, count) => `${count} results for ${parts.join(", ")}`,
+    minRead: (count) => `${count} min read`,
+    postListLabel: "Post list",
+    retryLater: "Please try again shortly.",
+    loadFailure: "Could not load the post list.",
+    networkRetry: "Check your network connection and try again.",
+    retry: "Reload",
+    readPost: (title) => `Read ${title}`,
+    latestPost: "Latest post",
+    saved: "Saved",
+    saveVerb: "Save",
+    untitled: "Untitled post",
+    noDescription: "No description is available.",
+    recentEyebrow: "Read again",
+    recentTitle: "Recently read",
+    recentDescription: "Jump back into what you were reading.",
+    savedEyebrow: "Library",
+    savedTitle: "Saved posts",
+    savedDescription: "Keep posts you want to read again.",
+    archiveEyebrow: "Archive",
+    archiveTitle: "All posts",
+    archiveDescription: "Browse published Corca posts by date.",
+    dateUnknown: "Date unknown",
+    quickActions: (title) => `${title} quick actions`,
+    shareAction: (title) => `Share ${title}`,
+    downloadAction: (title) => `Download ${title}`,
+    likeAction: (title) => `Like ${title}`,
+    unlikeAction: (title) => `Remove like from ${title}`,
+    previousPage: "Previous post list page",
+    nextPage: "Next post list page",
+    pageSummary: (current, total) => `Page ${current} / ${total}`,
+    currentPostSave: "Save current post",
+    heroTopicAria: (topic, count, active) => `${count} ${topic} posts${active ? ", clear filter" : ", view"}`,
+    bodyMatch: "Body match",
+    postNotFound: "Could not find this post. Please choose it again from the list.",
+    articleLoadFailed: "Could not load the article body. Please try again shortly.",
+    articleLoading: "Loading article body",
+    toc: "Table of contents",
+    tocAria: "Table of contents",
+    sectionLink: (heading) => `Link to ${heading}`,
+    recommendations: "Recommended posts",
+    copied: "Copied",
+    copyFailed: "Could not copy the link. Copy the URL from the address bar.",
+    linkCopied: "Link copied",
+    shared: "Shared",
+    shareCopied: "Share link copied",
+    shareOpened: "Share sheet opened.",
+    shareLinkCopied: "Share link copied.",
+    shareFailed: "Could not copy the share link. Copy the URL from the address bar.",
+    saveFailed: "Could not save the post. Please try again shortly.",
+    readingLineHeight: (label) => `Line height ${label}`,
+    readingFont: (label) => `Font ${label}`,
+    readingWidth: (label) => `Width ${label}`,
+    readingParagraph: (label) => `Paragraph ${label}`,
+    resetDefault: "Default",
+    readingStart: "Start",
+    readingDone: "Finished",
+    readingPercent: (percent) => `${percent}% read`,
+    readingProgress: (title) => `${title} reading progress`,
+    optionLabels: { normal: "Normal", wide: "Wide", compact: "Compact", narrow: "Narrow", sans: "Sans", serif: "Serif" },
+    breadcrumbPosts: "Posts",
+    metaImageAlt: "Corca Blog workspace for writing and product research",
+    dateLocale: "en-US"
+  },
+  ja: {
+    imageAltSuffix: "代表画像",
+    emptyPreparing: "最初の公開記事を準備しています。",
+    savedPosts: "保存した記事",
+    postCount: (count) => `${count}件の記事`,
+    topicCount: (topic, count) => `${topic}の記事 ${count}件`,
+    noPosts: "公開された記事はまだありません。",
+    noPostsDetail: "Corcaが製品とワークフローの学びをどう記録しているかをご覧ください。",
+    aboutBlog: "ブログについて",
+    noSearch: "条件に一致する記事がありません。検索語を変えてください。",
+    noTopic: (topic) => `${topic}に一致する記事がありません。別のトピックを選んでください。`,
+    noSaved: "保存した記事はありません。カードの星ボタンで保存できます。",
+    searchLabel: "検索",
+    topicLabel: "トピック",
+    resultLabel: (parts, count) => `${parts.join(", ")} の結果 ${count}件`,
+    minRead: (count) => `${count}分で読めます`,
+    postListLabel: "記事一覧",
+    retryLater: "しばらくしてからもう一度お試しください。",
+    loadFailure: "記事一覧を読み込めませんでした。",
+    networkRetry: "ネットワーク状態を確認して、もう一度お試しください。",
+    retry: "再読み込み",
+    readPost: (title) => `${title}を読む`,
+    latestPost: "最新記事",
+    saved: "保存済み",
+    saveVerb: "保存",
+    untitled: "無題の記事",
+    noDescription: "説明はありません。",
+    recentEyebrow: "もう一度読む",
+    recentTitle: "最近読んだ記事",
+    recentDescription: "直前に読んでいた流れへ戻れます。",
+    savedEyebrow: "保存",
+    savedTitle: "保存した記事",
+    savedDescription: "もう一度読みたい記事をまとめます。",
+    archiveEyebrow: "アーカイブ",
+    archiveTitle: "すべての記事",
+    archiveDescription: "公開済みのCorca記事を日付順に確認できます。",
+    dateUnknown: "日付未定",
+    quickActions: (title) => `${title}のクイック操作`,
+    shareAction: (title) => `${title}を共有`,
+    downloadAction: (title) => `${title}をダウンロード`,
+    likeAction: (title) => `${title}にいいね`,
+    unlikeAction: (title) => `${title}のいいねを取り消す`,
+    previousPage: "前の記事一覧ページ",
+    nextPage: "次の記事一覧ページ",
+    pageSummary: (current, total) => `${current} / ${total}ページ`,
+    currentPostSave: "現在の記事を保存",
+    heroTopicAria: (topic, count, active) => `${topic}の記事 ${count}件${active ? "、フィルター解除" : "、表示"}`,
+    bodyMatch: "本文一致",
+    postNotFound: "記事が見つかりません。一覧からもう一度選択してください。",
+    articleLoadFailed: "記事本文を読み込めませんでした。しばらくしてからもう一度お試しください。",
+    articleLoading: "記事本文を読み込み中",
+    toc: "目次",
+    tocAria: "目次",
+    sectionLink: (heading) => `${heading}へのリンク`,
+    recommendations: "おすすめ記事",
+    copied: "コピー済み",
+    copyFailed: "リンクをコピーできませんでした。アドレスバーのURLをコピーしてください。",
+    linkCopied: "リンクをコピーしました",
+    shared: "共有しました",
+    shareCopied: "共有リンクをコピーしました",
+    shareOpened: "共有画面を開きました。",
+    shareLinkCopied: "共有リンクをコピーしました。",
+    shareFailed: "共有リンクをコピーできませんでした。アドレスバーのURLをコピーしてください。",
+    saveFailed: "記事を保存できませんでした。しばらくしてからもう一度お試しください。",
+    readingLineHeight: (label) => `行間 ${label}`,
+    readingFont: (label) => `フォント ${label}`,
+    readingWidth: (label) => `幅 ${label}`,
+    readingParagraph: (label) => `段落 ${label}`,
+    resetDefault: "初期値",
+    readingStart: "最初から",
+    readingDone: "読了",
+    readingPercent: (percent) => `${percent}%読了`,
+    readingProgress: (title) => `${title}の読書進捗`,
+    optionLabels: { normal: "標準", wide: "広め", compact: "狭め", narrow: "狭め", sans: "サンセリフ", serif: "セリフ" },
+    breadcrumbPosts: "記事",
+    metaImageAlt: "Corca Blogの記事執筆とプロダクトリサーチの作業空間",
+    dateLocale: "ja-JP"
+  },
+  zh: {
+    imageAltSuffix: "代表图片",
+    emptyPreparing: "第一篇公开文章正在准备中。",
+    savedPosts: "已保存文章",
+    postCount: (count) => `${count} 篇文章`,
+    topicCount: (topic, count) => `${count} 篇 ${topic} 文章`,
+    noPosts: "还没有公开文章。",
+    noPostsDetail: "了解 Corca 如何记录产品和工作流经验。",
+    aboutBlog: "关于博客",
+    noSearch: "没有符合条件的文章。请更换搜索词。",
+    noTopic: (topic) => `没有符合 ${topic} 主题的文章。请选择其他主题。`,
+    noSaved: "还没有保存的文章。可以用卡片上的星标按钮保存。",
+    searchLabel: "搜索",
+    topicLabel: "主题",
+    resultLabel: (parts, count) => `${parts.join(", ")} 的结果：${count} 篇`,
+    minRead: (count) => `${count} 分钟阅读`,
+    postListLabel: "文章列表",
+    retryLater: "请稍后再试。",
+    loadFailure: "无法加载文章列表。",
+    networkRetry: "请检查网络状态后重试。",
+    retry: "重新加载",
+    readPost: (title) => `阅读 ${title}`,
+    latestPost: "最新文章",
+    saved: "已保存",
+    saveVerb: "保存",
+    untitled: "未命名文章",
+    noDescription: "暂无描述。",
+    recentEyebrow: "继续阅读",
+    recentTitle: "最近阅读",
+    recentDescription: "回到刚才的阅读进度。",
+    savedEyebrow: "收藏",
+    savedTitle: "已保存文章",
+    savedDescription: "整理想再次阅读的文章。",
+    archiveEyebrow: "归档",
+    archiveTitle: "全部文章",
+    archiveDescription: "按日期快速浏览已发布的 Corca 文章。",
+    dateUnknown: "日期未定",
+    quickActions: (title) => `${title} 快捷操作`,
+    shareAction: (title) => `分享 ${title}`,
+    downloadAction: (title) => `下载 ${title}`,
+    likeAction: (title) => `点赞 ${title}`,
+    unlikeAction: (title) => `取消点赞 ${title}`,
+    previousPage: "上一页文章列表",
+    nextPage: "下一页文章列表",
+    pageSummary: (current, total) => `第 ${current} / ${total} 页`,
+    currentPostSave: "保存当前文章",
+    heroTopicAria: (topic, count, active) => `${topic} 文章 ${count} 篇${active ? "，清除筛选" : "，查看"}`,
+    bodyMatch: "正文匹配",
+    postNotFound: "找不到该文章。请从列表中重新选择。",
+    articleLoadFailed: "无法加载文章正文。请稍后再试。",
+    articleLoading: "正在加载文章正文",
+    toc: "目录",
+    tocAria: "目录",
+    sectionLink: (heading) => `${heading} 的链接`,
+    recommendations: "推荐文章",
+    copied: "已复制",
+    copyFailed: "无法复制链接。请从地址栏复制 URL。",
+    linkCopied: "链接已复制",
+    shared: "已分享",
+    shareCopied: "分享链接已复制",
+    shareOpened: "已打开分享窗口。",
+    shareLinkCopied: "分享链接已复制。",
+    shareFailed: "无法复制分享链接。请从地址栏复制 URL。",
+    saveFailed: "无法保存文章。请稍后再试。",
+    readingLineHeight: (label) => `行距 ${label}`,
+    readingFont: (label) => `字体 ${label}`,
+    readingWidth: (label) => `宽度 ${label}`,
+    readingParagraph: (label) => `段落 ${label}`,
+    resetDefault: "默认",
+    readingStart: "从头开始",
+    readingDone: "已读完",
+    readingPercent: (percent) => `已读 ${percent}%`,
+    readingProgress: (title) => `${title} 阅读进度`,
+    optionLabels: { normal: "标准", wide: "较宽", compact: "紧凑", narrow: "较窄", sans: "无衬线", serif: "衬线" },
+    breadcrumbPosts: "文章",
+    metaImageAlt: "用于 Corca Blog 写作和产品研究的工作空间",
+    dateLocale: "zh-CN"
+  }
+};
 const REACTION_OPTIONS = [
-  { key: "useful", icon: "👍", label: "좋아요" }
+  { key: "useful", icon: "👍" }
 ];
 const POSTS_PER_PAGE = 9;
-const PUBLIC_POST_TOPICS = ["AX", "Tech", "문라이트", "트레이스", "크라켄", "씰", "마진", "코르카"];
-const DEFAULT_POST_TOPIC = "코르카";
+const PUBLIC_POST_TOPICS = [
+  "AX",
+  "Tech",
+  "Product",
+  "Moonlight",
+  "Trace",
+  "Kraken",
+  "Ceal",
+  "Margin",
+  "Corca",
+  "문라이트",
+  "트레이스",
+  "크라켄",
+  "씰",
+  "마진",
+  "코르카"
+];
+const DEFAULT_POST_TOPIC = "Corca";
 const HERO_TOPIC_FILTERS = [
-  { key: "product", label: "Product", aliases: ["문라이트", "moonlight", "트레이스", "trace", "크라켄", "kraken", "마진", "margin", "씰", "ceal"] },
+  { key: "product", label: "Product", aliases: ["product", "products", "제품", "문라이트", "moonlight", "트레이스", "trace", "크라켄", "kraken", "마진", "margin", "씰", "ceal"] },
   { key: "ax", label: "AX", aliases: ["ax", "ai transformation"] },
   { key: "corca", label: "Corca", aliases: ["corca", "코르카"] },
   { key: "tech", label: "Tech", aliases: ["tech", "기술"] }
@@ -121,12 +452,12 @@ async function init() {
     showList();
     postList.classList.remove("is-loading");
     postList.removeAttribute("aria-busy");
-    postList.setAttribute("aria-label", "글 목록");
+    postList.setAttribute("aria-label", localeText().postListLabel);
     postList.hidden = true;
     postList.innerHTML = "";
-    resultCount.textContent = "잠시 후 다시 시도해 주세요.";
+    resultCount.textContent = localeText().retryLater;
     emptyState.hidden = false;
-    emptyState.innerHTML = `글 목록을 불러오지 못했습니다. <span class="empty-state-detail">네트워크 상태를 확인한 뒤 다시 시도해 주세요.</span> <button class="text-button compact empty-state-action" type="button" data-retry-post-load>다시 불러오기</button>`;
+    emptyState.innerHTML = `${escapeHtml(localeText().loadFailure)} <span class="empty-state-detail">${escapeHtml(localeText().networkRetry)}</span> <button class="text-button compact empty-state-action" type="button" data-retry-post-load>${escapeHtml(localeText().retry)}</button>`;
     emptyState.querySelector("[data-retry-post-load]")?.addEventListener("click", () => {
       window.location.reload();
     });
@@ -412,18 +743,18 @@ function renderFeaturedPost() {
   const saved = state.savedSlugs.includes(post.slug);
   featuredPost.innerHTML = `
     <article class="featured-card">
-      <a class="featured-media-link" href="${escapeAttribute(getStaticPostPath(post))}" aria-label="${escapeAttribute(`${post.title} 읽기`)}">
-        <img src="${escapeAttribute(appPath(toRootPath(post.cover)))}" alt="" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">
+      <a class="featured-media-link" href="${escapeAttribute(getStaticPostPath(post))}" aria-label="${escapeAttribute(localeText().readPost(post.title))}">
+        <img src="${escapeAttribute(blogAssetPath(post.cover))}" alt="" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">
       </a>
       <div class="featured-copy">
         <a class="featured-card-link" href="${escapeAttribute(getStaticPostPath(post))}">
-          <p class="eyebrow">최신 글 · <span class="featured-topic">${escapeHtml(getPrimaryPostTopic(post))}</span></p>
+          <p class="eyebrow">${escapeHtml(localeText().latestPost)} · <span class="featured-topic">${escapeHtml(getPrimaryPostTopic(post))}</span></p>
           <h2>${escapeHtml(post.title)}</h2>
           <p>${escapeHtml(post.description)}</p>
         </a>
         <div class="featured-actions">
           <span class="featured-meta">${renderPostMeta(post)}</span>
-          <button class="icon-button featured-save-button save-button ${saved ? "active" : ""}" type="button" data-save-post="${escapeAttribute(post.slug)}" aria-pressed="${saved}" aria-label="${escapeAttribute(`${post.title} ${saved ? "저장됨" : "저장"}`)}"><span class="save-icon save-icon-off" aria-hidden="true">☆</span><span class="save-icon save-icon-on" aria-hidden="true">★</span></button>
+          <button class="icon-button featured-save-button save-button ${saved ? "active" : ""}" type="button" data-save-post="${escapeAttribute(post.slug)}" aria-pressed="${saved}" aria-label="${escapeAttribute(`${post.title} ${saved ? localeText().saved : localeText().saveVerb}`)}"><span class="save-icon save-icon-off" aria-hidden="true">☆</span><span class="save-icon save-icon-on" aria-hidden="true">★</span></button>
         </div>
       </div>
     </article>
@@ -438,8 +769,8 @@ function normalizePosts(posts) {
   return (Array.isArray(posts) ? posts : [])
     .map((post) => ({
       slug: String(post.slug || "").trim(),
-      title: String(post.title || "제목 없는 글").trim(),
-      description: String(post.description || "설명이 없는 글입니다.").trim(),
+      title: String(post.title || localeText().untitled).trim(),
+      description: String(post.description || localeText().noDescription).trim(),
       date: String(post.date || new Date().toISOString().slice(0, 10)).trim(),
       tags: Array.isArray(post.tags) ? post.tags.map(String).map((tag) => tag.trim()).filter(Boolean) : [],
       author: String(post.author || "Corca Team").trim(),
@@ -465,10 +796,10 @@ function renderRecentReads() {
   recentReads.innerHTML = recent.length ? `
     <div class="section-heading compact-heading">
       <div>
-        <p class="eyebrow">다시 읽기</p>
-        <h2>최근 읽은 글</h2>
+        <p class="eyebrow">${escapeHtml(localeText().recentEyebrow)}</p>
+        <h2>${escapeHtml(localeText().recentTitle)}</h2>
       </div>
-      <p>방금 읽던 흐름으로 다시 돌아갈 수 있습니다.</p>
+      <p>${escapeHtml(localeText().recentDescription)}</p>
     </div>
     <div class="recent-grid">
       ${recent.map((post) => `
@@ -492,10 +823,10 @@ function renderSavedReads() {
   savedReads.innerHTML = saved.length ? `
     <div class="section-heading compact-heading">
       <div>
-        <p class="eyebrow">보관함</p>
-        <h2>저장한 글</h2>
+        <p class="eyebrow">${escapeHtml(localeText().savedEyebrow)}</p>
+        <h2>${escapeHtml(localeText().savedTitle)}</h2>
       </div>
-      <p>다시 읽고 싶은 글을 모아둡니다.</p>
+      <p>${escapeHtml(localeText().savedDescription)}</p>
     </div>
     <div class="saved-grid">
       ${saved.map((post) => `
@@ -505,7 +836,7 @@ function renderSavedReads() {
             <strong>${escapeHtml(post.title)}</strong>
             <span class="saved-cue" aria-hidden="true">→</span>
           </a>
-          <button class="text-button compact save-button active" type="button" data-save-post="${escapeAttribute(post.slug)}" aria-pressed="true" aria-label="${escapeAttribute(`${post.title} 저장됨`)}">저장됨</button>
+          <button class="text-button compact save-button active" type="button" data-save-post="${escapeAttribute(post.slug)}" aria-pressed="true" aria-label="${escapeAttribute(`${post.title} ${localeText().saved}`)}">${escapeHtml(localeText().saved)}</button>
         </article>
       `).join("")}
     </div>
@@ -525,10 +856,10 @@ function renderArchive() {
   archiveSection.innerHTML = posts.length ? `
     <div class="section-heading">
       <div>
-        <p class="eyebrow">아카이브</p>
-        <h2>전체 글 아카이브</h2>
+        <p class="eyebrow">${escapeHtml(localeText().archiveEyebrow)}</p>
+        <h2>${escapeHtml(localeText().archiveTitle)}</h2>
       </div>
-      <p>발행된 Corca 글을 날짜순으로 빠르게 훑어볼 수 있습니다.</p>
+      <p>${escapeHtml(localeText().archiveDescription)}</p>
     </div>
     <div class="archive-list">
       ${groupPostsByMonth(posts).map((group) => `
@@ -571,15 +902,15 @@ function formatArchiveMonth(date) {
   const year = value.slice(0, 4);
   const month = value.slice(5, 7);
   if (!year || !month) {
-    return "날짜 미정";
+    return localeText().dateUnknown;
   }
-  return `${year}년 ${Number(month)}월`;
+  return new Intl.DateTimeFormat(localeText().dateLocale, { year: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${year}-${month}-01T00:00:00.000Z`));
 }
 
 function renderPostList(posts) {
   postList.classList.remove("is-loading");
   postList.removeAttribute("aria-busy");
-  postList.setAttribute("aria-label", "글 목록");
+  postList.setAttribute("aria-label", localeText().postListLabel);
   postList.hidden = posts.length === 0;
   postList.innerHTML = posts.map((post) => {
     const saved = state.savedSlugs.includes(post.slug);
@@ -588,7 +919,7 @@ function renderPostList(posts) {
     return `
       <article class="post-card">
         <a class="post-card-link" href="${escapeAttribute(getStaticPostPath(post))}">
-          <img src="${escapeAttribute(appPath(toRootPath(post.cover)))}" alt="" width="1672" height="941" loading="lazy" decoding="async">
+          <img src="${escapeAttribute(blogAssetPath(post.cover))}" alt="" width="1672" height="941" loading="lazy" decoding="async">
           <div class="post-card-body">
             <h3>${highlightText(post.title, state.search)}</h3>
             <div class="meta post-card-meta">${renderPostMeta(post)}<span class="meta-item post-card-topic">${escapeHtml(getPrimaryPostTopic(post))}</span><span class="read-cue" aria-hidden="true">→</span></div>
@@ -596,11 +927,11 @@ function renderPostList(posts) {
             ${renderSearchContext(post)}
           </div>
         </a>
-        <div class="post-card-actions" aria-label="${escapeAttribute(`${post.title} 빠른 동작`)}">
-          <button class="icon-button list-share-button" type="button" data-list-share-post="${escapeAttribute(post.slug)}" aria-label="${escapeAttribute(`${post.title} 공유`)}">${listShareIcon}</button>
-          <button class="icon-button list-download-button" type="button" data-list-download-post="${escapeAttribute(post.slug)}" aria-label="${escapeAttribute(`${post.title} 다운로드`)}">${listDownloadIcon}</button>
-          <button class="icon-button list-reaction-button ${reacted ? "active" : ""}" type="button" data-list-reaction-post="${escapeAttribute(post.slug)}" aria-pressed="${reacted}" aria-label="${escapeAttribute(`${post.title} 좋아요`)}" ${interaction.unavailable ? "disabled" : ""}><span aria-hidden="true">👍</span></button>
-          <button class="icon-button save-button ${saved ? "active" : ""}" type="button" data-save-post="${escapeAttribute(post.slug)}" aria-pressed="${saved}" aria-label="${escapeAttribute(`${post.title} ${saved ? "저장됨" : "저장"}`)}"><span class="save-icon save-icon-off" aria-hidden="true">☆</span><span class="save-icon save-icon-on" aria-hidden="true">★</span></button>
+        <div class="post-card-actions" aria-label="${escapeAttribute(localeText().quickActions(post.title))}">
+          <button class="icon-button list-share-button" type="button" data-list-share-post="${escapeAttribute(post.slug)}" aria-label="${escapeAttribute(localeText().shareAction(post.title))}">${listShareIcon}</button>
+          <button class="icon-button list-download-button" type="button" data-list-download-post="${escapeAttribute(post.slug)}" aria-label="${escapeAttribute(localeText().downloadAction(post.title))}">${listDownloadIcon}</button>
+          <button class="icon-button list-reaction-button ${reacted ? "active" : ""}" type="button" data-list-reaction-post="${escapeAttribute(post.slug)}" aria-pressed="${reacted}" aria-label="${escapeAttribute(localeText().likeAction(post.title))}" ${interaction.unavailable ? "disabled" : ""}><span aria-hidden="true">👍</span></button>
+          <button class="icon-button save-button ${saved ? "active" : ""}" type="button" data-save-post="${escapeAttribute(post.slug)}" aria-pressed="${saved}" aria-label="${escapeAttribute(`${post.title} ${saved ? localeText().saved : localeText().saveVerb}`)}"><span class="save-icon save-icon-off" aria-hidden="true">☆</span><span class="save-icon save-icon-on" aria-hidden="true">★</span></button>
         </div>
       </article>
     `;
@@ -634,10 +965,10 @@ function renderPostPagination(totalPosts) {
   }).join("");
   postPagination.hidden = false;
   postPagination.innerHTML = `
-    <button class="text-button compact pagination-step" type="button" data-page-direction="prev" aria-label="이전 글 목록 페이지" ${state.currentPage <= 1 ? "disabled" : ""}><span aria-hidden="true">‹</span></button>
+    <button class="text-button compact pagination-step" type="button" data-page-direction="prev" aria-label="${escapeAttribute(localeText().previousPage)}" ${state.currentPage <= 1 ? "disabled" : ""}><span aria-hidden="true">‹</span></button>
     <span class="pagination-pages">${pageButtons}</span>
-    <button class="text-button compact pagination-step" type="button" data-page-direction="next" aria-label="다음 글 목록 페이지" ${state.currentPage >= totalPages ? "disabled" : ""}><span aria-hidden="true">›</span></button>
-    <span class="pagination-summary" aria-live="polite">페이지 ${state.currentPage} / ${totalPages}</span>
+    <button class="text-button compact pagination-step" type="button" data-page-direction="next" aria-label="${escapeAttribute(localeText().nextPage)}" ${state.currentPage >= totalPages ? "disabled" : ""}><span aria-hidden="true">›</span></button>
+    <span class="pagination-summary" aria-live="polite">${escapeHtml(localeText().pageSummary(state.currentPage, totalPages))}</span>
   `;
 }
 
@@ -727,17 +1058,17 @@ function updateCurrentPostSaveButton() {
     currentPostSaveButton.hidden = true;
     currentPostSaveButton.removeAttribute("data-save-post");
     currentPostSaveButton.setAttribute("aria-pressed", "false");
-    currentPostSaveButton.textContent = "저장";
+    currentPostSaveButton.textContent = localeText().saveVerb;
     currentPostSaveButton.classList.remove("active");
-    currentPostSaveButton.setAttribute("aria-label", "현재 글 저장");
+    currentPostSaveButton.setAttribute("aria-label", localeText().currentPostSave);
     return;
   }
   const saved = state.savedSlugs.includes(post.slug);
   currentPostSaveButton.hidden = false;
   currentPostSaveButton.dataset.savePost = post.slug;
   currentPostSaveButton.setAttribute("aria-pressed", String(saved));
-  currentPostSaveButton.setAttribute("aria-label", `${post.title} ${saved ? "저장됨" : "저장"}`);
-  currentPostSaveButton.textContent = saved ? "저장됨" : "저장";
+  currentPostSaveButton.setAttribute("aria-label", `${post.title} ${saved ? localeText().saved : localeText().saveVerb}`);
+  currentPostSaveButton.textContent = saved ? localeText().saved : localeText().saveVerb;
   currentPostSaveButton.classList.toggle("active", saved);
 }
 
@@ -764,7 +1095,7 @@ function updateHeroTopicFilters() {
     button.setAttribute("aria-pressed", String(active));
     button.classList.toggle("active", active);
     button.dataset.count = String(count);
-    button.setAttribute("aria-label", `${heroTopicLabel(topic)} 글 ${count}개${active ? " 필터 해제" : " 보기"}`);
+    button.setAttribute("aria-label", localeText().heroTopicAria(heroTopicLabel(topic), count, active));
   }
 }
 
@@ -815,7 +1146,7 @@ function renderSearchContext(post) {
   if (!context) {
     return "";
   }
-  return `<p class="search-context"><span class="search-context-label">본문 일치</span><span class="search-context-snippet">${highlightText(context, state.search)}</span></p>`;
+  return `<p class="search-context"><span class="search-context-label">${escapeHtml(localeText().bodyMatch)}</span><span class="search-context-snippet">${highlightText(context, state.search)}</span></p>`;
 }
 
 function getSearchContext(post, query) {
@@ -856,7 +1187,7 @@ async function openPost(slug, options = {}) {
   const post = state.posts.find((item) => item.slug === slug);
   if (!post) {
     showList();
-    showListMessage("글을 찾을 수 없습니다. 목록에서 다시 선택해 주세요.");
+    showListMessage(localeText().postNotFound);
     if (options.replace) {
       history.replaceState({}, "", homePath("#posts"));
     }
@@ -896,7 +1227,7 @@ async function openPost(slug, options = {}) {
       return;
     }
     showList();
-    showListMessage("글 본문을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+    showListMessage(localeText().articleLoadFailed);
     if (getPostSlugFromLocation() === slug) {
       history.replaceState({}, "", homePath("#posts"));
     }
@@ -922,7 +1253,7 @@ function renderArticleLoading(post) {
         <span class="meta-item">${escapeHtml(post.author)}</span>
       </div>
     </header>
-    <div class="article-loading" aria-label="글 본문을 불러오는 중">
+    <div class="article-loading" aria-label="${escapeAttribute(localeText().articleLoading)}">
       <div class="skeleton-media"></div>
       <div class="skeleton-line title"></div>
       <div class="skeleton-line"></div>
@@ -960,7 +1291,7 @@ function renderArticleCover(post, html) {
   if (!shouldRenderArticleCover(post, html)) {
     return "";
   }
-  return `<img class="article-cover" src="${escapeAttribute(appPath(toRootPath(post.cover)))}" alt="" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">`;
+  return `<img class="article-cover" src="${escapeAttribute(blogAssetPath(post.cover))}" alt="" width="1672" height="941" loading="eager" decoding="async" fetchpriority="high">`;
 }
 
 function shouldRenderArticleCover(post, html) {
@@ -1056,13 +1387,15 @@ function normalizeArticleAssetUrl(value, sourcePath) {
     return text;
   }
   if (text.startsWith("/")) {
+    if (text.startsWith("/blog/assets/")) return text;
+    if (text.startsWith("/assets/")) return `/blog${text}`;
     return appPath(text);
   }
   const source = toRootPath(sourcePath || "/posts/post.html").replace(/^\//, "");
   const resolved = new URL(text, `${window.location.origin}/${source}`);
   const assetIndex = resolved.pathname.indexOf("/assets/");
   if (assetIndex >= 0) {
-    return appPath(resolved.pathname.slice(assetIndex));
+    return `/blog${resolved.pathname.slice(assetIndex)}`;
   }
   const postIndex = resolved.pathname.indexOf("/posts/");
   if (postIndex >= 0) {
@@ -1081,8 +1414,8 @@ function renderTableOfContents() {
   }
 
   tableOfContents.innerHTML = `
-    <section class="toc-section" aria-label="글 목차">
-      <strong>목차</strong>
+    <section class="toc-section" aria-label="${escapeAttribute(localeText().tocAria)}">
+      <strong>${escapeHtml(localeText().toc)}</strong>
       <ol>
         ${headings.map((heading, index) => {
           const id = heading.id || `section-${index + 1}`;
@@ -1104,7 +1437,7 @@ function decorateArticleHeadings() {
     anchor.className = "heading-anchor";
     anchor.href = `#${heading.id}`;
     anchor.tabIndex = -1;
-    anchor.setAttribute("aria-label", `${heading.textContent.trim()} 섹션 링크`);
+    anchor.setAttribute("aria-label", localeText().sectionLink(heading.textContent.trim()));
     heading.append(anchor);
   });
 }
@@ -1157,8 +1490,8 @@ function renderSidebarRecommendations(posts) {
 
   tableOfContents.hidden = false;
   tableOfContents.insertAdjacentHTML("beforeend", `
-    <section class="toc-recommendations" aria-label="추천 글">
-      <strong>추천 글</strong>
+    <section class="toc-recommendations" aria-label="${escapeAttribute(localeText().recommendations)}">
+      <strong>${escapeHtml(localeText().recommendations)}</strong>
       <div class="toc-recommendation-list">
         ${posts.slice(0, 3).map((item) => `
           <a class="toc-recommendation" href="${escapeAttribute(getStaticPostPath(item))}">
@@ -1189,16 +1522,51 @@ function getPostSection(post) {
 }
 
 function getPostImageAlt(post) {
-  return String(post.coverAlt || `${post.title} 대표 이미지`).replace(/\s+/g, " ").trim();
+  return String(post.coverAlt || `${post.title} ${localeText().imageAltSuffix}`).replace(/\s+/g, " ").trim();
 }
 
 function getPostLanguage(post) {
   const language = String(post.language || "").trim().toLowerCase().replace("_", "-");
-  return language.startsWith("en") ? "en" : "ko";
+  if (language.startsWith("en")) return "en";
+  if (language.startsWith("ja")) return "ja";
+  if (language.startsWith("zh")) return "zh";
+  return CURRENT_LOCALE;
 }
 
 function getPostLocale(post) {
-  return getPostLanguage(post) === "en" ? "en_US" : "ko_KR";
+  return {
+    en: "en_US",
+    ja: "ja_JP",
+    zh: "zh_CN",
+    ko: "ko_KR"
+  }[getPostLanguage(post)] || "ko_KR";
+}
+
+function getPostInLanguage(post) {
+  return {
+    en: "en-US",
+    ja: "ja-JP",
+    zh: "zh-CN",
+    ko: "ko-KR"
+  }[getPostLanguage(post)] || "ko-KR";
+}
+
+function getCurrentOgLocale() {
+  return {
+    en: "en_US",
+    ja: "ja_JP",
+    zh: "zh_CN",
+    ko: "ko_KR"
+  }[CURRENT_LOCALE] || "ko_KR";
+}
+
+function getCurrentInLanguage() {
+  return {
+    en: "en-US",
+    ja: "ja-JP",
+    zh: "zh-CN",
+    ko: "ko-KR"
+  }[CURRENT_LOCALE] || "ko-KR";
 }
 
 function renderPostDate(post) {
@@ -1418,10 +1786,10 @@ async function copyPostLink() {
   const url = post ? getStaticPostUrl(post) : `${window.location.origin}${window.location.pathname}`;
   try {
     await writeClipboardText(url);
-    flashButtonLabel(copyLinkButton, "복사됨");
+    flashButtonLabel(copyLinkButton, localeText().copied);
   } catch {
     postViewMessage.hidden = false;
-    postViewMessage.textContent = "링크 복사에 실패했습니다. 주소창의 URL을 직접 복사해 주세요.";
+    postViewMessage.textContent = localeText().copyFailed;
   }
 }
 
@@ -1431,7 +1799,7 @@ async function shareCurrentPost() {
     return;
   }
   await sharePost(post, {
-    onSuccess: (message) => flashButtonLabel(sharePostButton, message.includes("복사") ? "링크 복사됨" : "공유 완료"),
+    onSuccess: (message) => flashButtonLabel(sharePostButton, message.includes(localeText().copied) || message.includes(localeText().shareLinkCopied) ? localeText().linkCopied : localeText().shared),
     onError: (message) => showPostViewMessage(message)
   });
 }
@@ -1444,7 +1812,7 @@ async function shareListPost(slug) {
   const selector = `[data-list-share-post="${cssEscape(slug)}"]`;
   const button = document.querySelector(selector);
   await withListActionButtonDisabled(selector, () => sharePost(post, {
-    onSuccess: () => flashIconButtonState(button, "공유 링크 복사됨"),
+    onSuccess: () => flashIconButtonState(button, localeText().shareCopied),
     onError: (message) => showListMessage(message)
   }));
 }
@@ -1461,7 +1829,7 @@ async function sharePost(post, feedback = {}) {
     try {
       await navigator.share(payload);
       trackAnalyticsEvent("post_share", getPostAnalyticsParams(post));
-      feedback.onSuccess?.("공유 창을 열었습니다.");
+      feedback.onSuccess?.(localeText().shareOpened);
       return;
     } catch (error) {
       if (error?.name === "AbortError") {
@@ -1473,9 +1841,9 @@ async function sharePost(post, feedback = {}) {
   try {
     await writeClipboardText(url);
     trackAnalyticsEvent("post_share", getPostAnalyticsParams(post));
-    feedback.onSuccess?.("공유 링크를 복사했습니다.");
+    feedback.onSuccess?.(localeText().shareLinkCopied);
   } catch {
-    feedback.onError?.("공유 링크 복사에 실패했습니다. 주소창의 URL을 직접 복사해 주세요.");
+    feedback.onError?.(localeText().shareFailed);
   }
 }
 
@@ -1506,7 +1874,7 @@ async function downloadPostHtml(post, feedback = {}) {
     trackAnalyticsEvent("post_download", getPostAnalyticsParams(post));
   } catch (error) {
     console.warn(error);
-    feedback.onError?.("글 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    feedback.onError?.(localeText().saveFailed);
   }
 }
 
@@ -1599,8 +1967,8 @@ function renderListReactionButton(post) {
   button.disabled = false;
   button.classList.toggle("active", active);
   button.setAttribute("aria-pressed", String(active));
-  button.setAttribute("aria-label", active ? `${post.title} 좋아요 취소` : `${post.title} 좋아요`);
-  button.title = "좋아요";
+  button.setAttribute("aria-label", active ? localeText().unlikeAction(post.title) : localeText().likeAction(post.title));
+  button.title = localeText().likeAction("").trim();
 }
 
 function normalizeReactionCounts(counts) {
@@ -1729,11 +2097,11 @@ function updateArticleClass() {
 }
 
 function updateReadingControls() {
-  lineHeightButton.textContent = `행간 ${labelFor(state.articleLeading)}`;
-  fontFamilyButton.textContent = `글꼴 ${state.articleFont === "sans" ? "산세" : "세리프"}`;
-  articleWidthButton.textContent = `폭 ${labelFor(state.articleWidth)}`;
-  paragraphSpacingButton.textContent = `문단 ${labelFor(state.paragraphSpacing)}`;
-  resetReadingButton.textContent = "기본값";
+  lineHeightButton.textContent = localeText().readingLineHeight(labelFor(state.articleLeading));
+  fontFamilyButton.textContent = localeText().readingFont(labelFor(state.articleFont));
+  articleWidthButton.textContent = localeText().readingWidth(labelFor(state.articleWidth));
+  paragraphSpacingButton.textContent = localeText().readingParagraph(labelFor(state.paragraphSpacing));
+  resetReadingButton.textContent = localeText().resetDefault;
   resetReadingButton.hidden = !hasCustomReadingSettings();
 }
 
@@ -1873,7 +2241,7 @@ function makePostStructuredData(post) {
           "@type": "Organization",
           name: "Corca"
         },
-        inLanguage: getPostLanguage(post) === "en" ? "en-US" : "ko-KR",
+        inLanguage: getPostInLanguage(post),
         isPartOf: {
           "@type": "Blog",
           name: "Corca Blog",
@@ -1893,7 +2261,7 @@ function makePostStructuredData(post) {
           {
             "@type": "ListItem",
             position: 2,
-            name: "글",
+            name: localeText().breadcrumbPosts,
             item: new URL(appPath("/#posts"), window.location.origin).href
           },
           {
@@ -1912,7 +2280,7 @@ function getStaticPostUrl(post) {
 }
 
 function getStaticPostPath(post) {
-  return appPath(`/posts/${encodeURIComponent(post.slug)}/`);
+  return appPath(`/posts/${encodeURIComponent(post.slug)}`);
 }
 
 function getPostSlugFromLocation() {
@@ -1967,6 +2335,20 @@ function toRootPath(path) {
   return `/${String(path || "").replace(/^\/+/, "")}`;
 }
 
+function blogAssetPath(path) {
+  const value = String(path || "assets/editorial-cover.jpg").trim();
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+  if (value.startsWith("/blog/assets/")) {
+    return value;
+  }
+  if (value.startsWith("/assets/")) {
+    return `/blog${value}`;
+  }
+  return `/blog/${value.replace(/^\/+/, "")}`;
+}
+
 function resolveBasePath(scriptUrl = "") {
   const pagePath = window.location.pathname.replace(/\/+$/, "") || "/";
   const localizedBlog = pagePath.match(/^\/(en|ja|zh)\/blog(?:\/|$)/);
@@ -2018,19 +2400,19 @@ function resetDocumentMeta() {
   setMeta("property", "og:title", "Corca Blog");
   setMeta("property", "og:description", defaultDocumentMeta.description);
   setMeta("property", "og:site_name", "Corca Blog");
-  setMeta("property", "og:locale", "ko_KR");
+  setMeta("property", "og:locale", getCurrentOgLocale());
   setMeta("property", "og:type", "website");
   setMeta("property", "og:image", defaultDocumentMeta.image);
   setMeta("property", "og:image:secure_url", defaultDocumentMeta.image);
   setMeta("property", "og:image:type", imageMimeType(defaultDocumentMeta.image));
   setMeta("property", "og:image:width", "1672");
   setMeta("property", "og:image:height", "941");
-  setMeta("property", "og:image:alt", "Corca 블로그 글쓰기와 제품 리서치를 위한 작업 공간");
+  setMeta("property", "og:image:alt", localeText().metaImageAlt);
   setMeta("property", "og:url", defaultDocumentMeta.url);
   setMeta("name", "twitter:title", "Corca Blog");
   setMeta("name", "twitter:description", defaultDocumentMeta.description);
   setMeta("name", "twitter:image", defaultDocumentMeta.image);
-  setMeta("name", "twitter:image:alt", "Corca 블로그 글쓰기와 제품 리서치를 위한 작업 공간");
+  setMeta("name", "twitter:image:alt", localeText().metaImageAlt);
   removeMeta("property", "article:published_time");
   removeMeta("property", "article:modified_time");
   removeMeta("property", "article:author");
@@ -2042,7 +2424,7 @@ function resetDocumentMeta() {
     name: "Corca Blog",
     description: defaultDocumentMeta.description,
     url: defaultDocumentMeta.url,
-    inLanguage: "ko-KR",
+    inLanguage: getCurrentInLanguage(),
     publisher: {
       "@type": "Organization",
       name: "Corca"
@@ -2101,7 +2483,7 @@ function absoluteUrl(path) {
   if (/^https?:\/\//i.test(value)) {
     return value;
   }
-  return new URL(appPath(toRootPath(value)), window.location.origin).href;
+  return new URL(blogAssetPath(value), window.location.origin).href;
 }
 
 function imageMimeType(image) {
@@ -2206,12 +2588,12 @@ function getReadingProgress(post) {
 function formatReadingProgress(post) {
   const progress = getReadingProgress(post);
   if (progress < 0.05) {
-    return "처음부터";
+    return localeText().readingStart;
   }
   if (progress > 0.96) {
-    return "완독";
+    return localeText().readingDone;
   }
-  return `${Math.round(progress * 100)}% 읽음`;
+  return localeText().readingPercent(Math.round(progress * 100));
 }
 
 function renderReadingProgressBar(post) {
@@ -2221,7 +2603,7 @@ function renderReadingProgressBar(post) {
   }
   const bucket = Math.min(100, Math.max(5, Math.round(progress * 20) * 5));
   const percent = Math.round(progress * 100);
-  return `<span class="recent-progress progress-${bucket}" role="progressbar" aria-label="${escapeAttribute(`${post.title} 읽기 진행률`)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}" aria-valuetext="${escapeAttribute(formatReadingProgress(post))}"><span></span></span>`;
+  return `<span class="recent-progress progress-${bucket}" role="progressbar" aria-label="${escapeAttribute(localeText().readingProgress(post.title))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}" aria-valuetext="${escapeAttribute(formatReadingProgress(post))}"><span></span></span>`;
 }
 
 function sanitizeProgressMap(value) {
@@ -2236,44 +2618,44 @@ function sanitizeProgressMap(value) {
 function getFilterSummary(count) {
   const parts = [];
   if (state.search) {
-    parts.push(`"${state.search}" 검색`);
+    parts.push(`"${state.search}" ${localeText().searchLabel}`);
   }
   if (state.topic) {
-    parts.push(`${heroTopicLabel(state.topic)} 주제`);
+    parts.push(`${heroTopicLabel(state.topic)} ${localeText().topicLabel}`);
   }
   if (state.savedOnly) {
-    parts.push("저장한 글");
+    parts.push(localeText().savedPosts);
   }
-  return parts.length ? `${parts.join(", ")} 결과 ${count}개` : "";
+  return parts.length ? localeText().resultLabel(parts, count) : "";
 }
 
 function getResultCountText(listCount) {
   if (state.posts.length === 0) {
-    return "첫 공개 글을 준비하고 있습니다.";
+    return localeText().emptyPreparing;
   }
   if (state.savedOnly) {
-    return `저장한 글 ${listCount}개`;
+    return localeText().topicCount(localeText().savedPosts, listCount);
   }
   if (state.topic) {
-    return `${heroTopicLabel(state.topic)} 글 ${listCount}개`;
+    return localeText().topicCount(heroTopicLabel(state.topic), listCount);
   }
-  return `${listCount}개의 글`;
+  return localeText().postCount(listCount);
 }
 
 function getEmptyStateHtml() {
   if (state.posts.length === 0) {
-    return `아직 공개된 글이 없습니다. <span class="empty-state-detail">Corca가 어떤 관점으로 제품과 워크플로를 기록하는지 먼저 확인해 보세요.</span> <a class="text-button compact empty-state-action" href="${escapeAttribute(homePath("#about"))}" data-list-anchor="about">블로그 소개 보기</a>`;
+    return `${localeText().noPosts} <span class="empty-state-detail">${escapeHtml(localeText().noPostsDetail)}</span> <a class="text-button compact empty-state-action" href="${escapeAttribute(homePath("#about"))}" data-list-anchor="about">${escapeHtml(localeText().aboutBlog)}</a>`;
   }
   if (state.search) {
-    return "조건에 맞는 글이 없습니다. 검색어를 바꿔보세요.";
+    return localeText().noSearch;
   }
   if (state.topic) {
-    return `${heroTopicLabel(state.topic)} 주제에 맞는 글이 없습니다. 다른 주제를 선택해 보세요.`;
+    return localeText().noTopic(heroTopicLabel(state.topic));
   }
   if (state.savedOnly) {
-    return "저장한 글이 없습니다. 글 카드에 마우스를 올린 뒤 별 버튼을 눌러 저장해 보세요.";
+    return localeText().noSaved;
   }
-  return "아직 공개된 글이 없습니다.";
+  return localeText().noPosts;
 }
 
 function updateSavedOnlyButton() {
@@ -2282,7 +2664,7 @@ function updateSavedOnlyButton() {
   }
   const savedCount = state.savedSlugs.length;
   const hasSavedFilter = savedCount > 0 || state.savedOnly;
-  savedOnlyButton.textContent = `저장한 글 ${savedCount}`;
+  savedOnlyButton.textContent = localeText().topicCount(localeText().savedPosts, savedCount);
   savedOnlyButton.hidden = !hasSavedFilter;
   savedOnlyButton.disabled = savedCount === 0;
   savedOnlyButton.setAttribute("aria-pressed", String(state.savedOnly));
@@ -2292,20 +2674,26 @@ function updateSavedOnlyButton() {
 
 function estimateReadingTime(post) {
   const words = [post.title, post.description, ...(post.tags || [])].join(" ").length + Number(post.wordCount || 800);
-  return `${Math.max(1, Math.ceil(words / 600))}분 읽기`;
+  return localeText().minRead(Math.max(1, Math.ceil(words / 600)));
 }
 
 function formatDate(date) {
-  return new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(date));
+  return new Intl.DateTimeFormat(localeText().dateLocale, { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" }).format(new Date(date));
+}
+
+function resolveCurrentLocale() {
+  if (BASE_PATH.startsWith("/en/blog")) return "en";
+  if (BASE_PATH.startsWith("/ja/blog")) return "ja";
+  if (BASE_PATH.startsWith("/zh/blog")) return "zh";
+  return "ko";
+}
+
+function localeText() {
+  return UI_TEXT[CURRENT_LOCALE] || UI_TEXT.ko;
 }
 
 function labelFor(value) {
-  return {
-    normal: "보통",
-    wide: "넓게",
-    compact: "좁게",
-    narrow: "좁게"
-  }[value] || "보통";
+  return localeText().optionLabels[value] || localeText().optionLabels.normal;
 }
 
 function highlightText(value, query) {

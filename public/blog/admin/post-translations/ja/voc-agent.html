@@ -1,0 +1,99 @@
+<!--
+corca-post
+{
+  "title": "VoC対応エージェントビルダー",
+  "description": "ムーンライトチームがVoC応対プロセスをエージェントとして構造化し、基礎探索と回答草案作成コストを削減したプロセスを紹介します。",
+  "date": "2026-04-22",
+  "tags": [
+    "AI 제품"
+  ],
+  "author": "하동훈(Software Engineer)",
+  "cover": "assets/editorial-cover.jpg",
+  "language": "ja"
+}
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VoC対応エージェントビルダー</title>
+  <style>
+    :root { --bg: #f7f8fa; --paper: #ffffff; --text: #1f2937; --muted: #6b7280; --line: #e5e7eb; --accent: #2563eb; --soft: #eff6ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; line-height: 1.72; }
+    .page { max-width: 860px; margin: 0 auto; padding: 48px 20px 72px; }
+    article { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 48px; box-shadow: 0 18px 50px rgba(15, 23, 42, 0.06); }
+    .eyebrow { margin: 0 0 12px; color: var(--accent); font-size: 14px; font-weight: 700; }
+    h1 { margin: 0; font-size: clamp(30px, 5vw, 46px); line-height: 1.2; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; color: var(--muted); font-size: 14px; }
+    .pill { padding: 6px 11px; background: var(--soft); border-radius: 999px; color: #1e40af; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+    h2 { margin: 40px 0 14px; font-size: 26px; line-height: 1.35; }
+    p { margin: 14px 0; }
+    ol { padding-left: 24px; }
+    li { margin: 8px 0; }
+    pre { overflow-x: auto; margin: 28px 0; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #f8fafc; color: #111827; white-space: pre-wrap; word-break: break-word; line-height: 1.62; }
+    code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 0.9em; }
+    pre code { display: block; }
+    figure { margin: 28px 0; }
+    img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--line); }
+    @media (max-width: 720px) { .page { padding: 32px 16px 56px; } article { padding: 30px 22px; border-radius: 18px; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <article>
+      <p class="eyebrow">Corca Medium アーカイブ</p>
+      <h1>VoC対応エージェントビルダー</h1>
+      <div class="meta"><span class="pill">2026-04-22</span><span class="pill">ハ・ドンフン(Software Engineer)</span></div>
+      <hr />
+      <figure><img alt="" src="../assets/medium-import/voc-agent-figure-01.png" width="1020" height="574" loading="lazy" decoding="async" /></figure>
+      <h2>入る</h2>
+      <p>最近、ムーンライトチームはVoC応対プロセスをエージェントと共に処理しています。この記事では、その過程で何を問題として見て、どんな構造で解いたかをまとめてみます。</p>
+      <p>このプロジェクトを始めたきっかけは、小さなチームで数多くのVoCを処理し、チームメンバーの疲労感が蓄積されており、これをどのようにより効率的に余裕ができるかという問題解決方法を悩んでいます。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/231/1*ag8Ao0EvjZlmFLLproywuQ.png" loading="lazy" decoding="async" /><figcaption>VoC対応支援を要請する様子</figcaption></figure>
+      <p>実際のVoCの応対は、答えた文を書くことで終わりません。問い合わせを読んで、ポリシー文書を確認し、コードベースを見て、必要に応じてDBを照会しますが、判断が難しい場合は、その状況をよく知っているチームメンバーに再び質問する必要があります。言い換えれば、VoCの応対は、書き込みよりも照会と判断に近い仕事です。</p>
+      <p>最近、さまざまなAI機能を備えた顧客応対自動化ツールがあります。ただし、チームに必要だったのは、一般的な回答ジェネレータではなく、私たちのサービスのポリシー、コード、データ、コンテキストに近づきながら、実際のチームメンバーのように照会してクエリできる方法が必要でした。</p>
+      <h2>どんな問題がありましたか？</h2>
+      <p>問題は3つでした。</p>
+      <p>まず、少数のチームが毎日10件以上の着信VoCを処理しながら、時間とコンテキスト切り替えのコストを一緒に費やす必要がありました。</p>
+      <p>第二に、チームメンバーごとに持っているコンテキストが異なり、確認する根拠と回答方法にも違いがありました。必要な根拠をどこで確認する必要があるのかすぐに思い出せない場合は、他のチームメンバーに再び質問する必要がありました。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/590/1*FhYCa3yZXehklgT7rcUb5Q.png" loading="lazy" decoding="async" /></figure>
+      <p>第三に、回答の自動化を試みても、一般的なAI回答機能だけでは内部コンテキストにアクセスすることが困難でした。実際の操作では、自然な文章よりも根拠のある答えがより重要だったため、この限界が明らかでした。</p>
+      <p>それで、私たちが解決しようとした問題は2つありました。 1つは少ない人員でより多くのVoCを余裕ができる運用効率の問題であり、もう1つは実際のサービスコンテキストと内部根拠を反映する品質の問題でした。</p>
+      <p>この目的のために、ムーンライトチームはVoCを収集し、必要な根拠を探索し、ドラフトを作成し、最後に人が検収する処理フローを構築しました。</p>
+      <h2>エージェントVoC処理フロー</h2>
+      <p>このプロジェクトを進めながら、まず集中したのは応対過程を構造化することでした。</p>
+      <p>最初に悩んだのは「何を先に見るのか」でした。実際のチームメンバーが応対する際に繰り返し踏む順序をまとめてみると、概ね下の流れを見せました。</p>
+      <ol><li>既存の会話履歴を確認する</li><li>ポリシー文書の確認</li><li>コードベースの確認</li><li>必要に応じてDB検索</li><li>回答ドラフトの整理</li></ol>
+      <p>最初の目標は、このフローをエージェントが再現できるようにすることでした。</p>
+      <p>2番目の目標は、責任を依然として人に持たせることです。自動発送は品質とセキュリティの面で負担があったため、探索とドラフト作成はエージェントが引き受け、最終判断は人がするように構成しました。よく言うヒューマンであるザ・ループ方式です。</p>
+      <p>そのため、このプロジェクトは単純な回答ジェネレータではなく、VoCを収集し、根拠を探索し、ドラフトを作成し、人の検収を経て発送する処理フローを作成する作業に近かった。</p>
+      <h2>Moonlight VoC処理フロー</h2>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*N2Ds1aMmz3EYG7HTORBTkw.png" loading="lazy" decoding="async" /></figure>
+      <h2>お問い合わせ</h2>
+      <ol><li>顧客の問い合わせがVoCチャンネルに入ります。</li><li>顧客の問い合わせはWebフックで受け取り、欠落回復のために周期的な照会を補助的に使用します。</li><li>対応するVoCが処理対象であるかどうかを判断します。</li><li>処理対象の場合は、人が行っていたフローと同様の順序で根拠を探索します。<br>- 埋め込まれた既存の会話の照会<br>- コードベースとポリシー文書の照会<br>- 必要に応じてデータベース照会</li><li>ナビゲーション結果とテンプレートに基づいて回答草案を作成します。</li><li>ドラフトをスラックに渡します。</li></ol>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/826/1*15drl70F6JAfBJinFDKwbA.png" loading="lazy" decoding="async" /><figcaption>スラックに表示される回答ドラフト</figcaption></figure>
+      <p>7. 担当者がスラックの要約と詳細を確認した後、Send、Retry、Denyボタンで処理方式を選択します。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/760/1*W6ahXWDs9c1zTLQ7tOHgDA.png" loading="lazy" decoding="async" /><figcaption>Sendボタンをクリックすると、VoCチャンネルに送信</figcaption></figure>
+      <h2>エージェンティックフローを適用した結果</h2>
+      <p>この構造を適用した後で最も大きく変わったのは、チームメンバーが応対過程の最初から最後まで直接行う必要がないということです。以前は問い合わせを読んで、どんな根拠を確認するかを判断し、必要な情報を見つけて草案を整理する過程を人がすべて引き受けなければなりませんでした。一方、現在では、全体の問い合わせの50％程度は、繰り返しの照会とドラフト作成段階をエージェントが先に処理し、担当者はスラックで最終判断するだけです。</p>
+      <p>この変化は応答速度だけの問題ではなかった。チームメンバーごとに違ったコンテキスト差を減らし、「これは誰に尋ねなければならないのか」に対する費用も一緒に下げることができました。特に、既存の会話履歴、ポリシー文書、コードベース、データ照会を1つのフローにまとめることで、根拠を見つけるプロセス自体をより一貫して作成することができました。</p>
+      <p>そこで、このプロジェクトは回答を自動的に送るシステムというよりも、VoC応対過程で繰り返されたナビゲーションとドラフト作成コストを削減する運用ツールとして位置づけられました。</p>
+      <h2>MoonClawとの接続</h2>
+      <p>基本的なVoC収集、基礎探索、ドラフト作成、検収、出荷は、前述のVoC処理フローだけに戻ります。ただし実際に運営してみると、このフローだけで終わらない場合があります。ドラフトを少し手に入れる必要がある場合もあり、現在の問い合わせに関連するプロジェクトの文脈をもう一度確認する必要がある場合もあります。エージェントがやってきた根拠が今の基準でも合うかどうか、また会いたい場合もあります。</p>
+      <p>こんなとき上で一緒に書いているのが<strong>MoonClaw</strong>です。 MoonClawはVoC処理フロー自体に代わるツールというより、その上で動作する<strong>スーパーバイザーエージェント</strong>に近いです。通常、VoC処理フローはほとんどの問い合わせを処理し、追加の確認や修正が必要な瞬間にのみMoonClawと会話しながら結果をトリミングする方法です。</p>
+      <p>たとえば、チームメンバーはMoonClawに、「この回答で支払いポリシーの部分だけを最新のコードで再確認してください」と尋ねることができます。あるいは、エージェントが参照する根拠が現在の運用コンテキストでも依然として有効であるかどうか、特定の表現が実際の方針と矛盾しないかどうかをもう一度確認することもできます。言い換えれば、VoC処理フローがデフォルトパスである場合、MoonClawはその上で例外状況または追加のクエリを受け取るパスと見なすことができます。</p>
+      <p>この構造が与える最大の利点は<strong>操作の柔軟性</strong>です。</p>
+      <ol><li><strong>独立エンジン：</strong>VoC対応フローは、親エージェントなしで24時間の安定したルーチン作業を処理します。</li><li><strong>インタラクティブ強化：</strong>複雑な判断や修正が必要な場合にのみ、MoonClawを介してエージェントと話し合い、結果をトリミングします。</li><li><strong>文脈の共有：</strong>MoonClawはプロジェクト全体のコンテキストを握っているので、単純なVoC処理を超えて、サービス全体の更新方向に合った応対を保証できます。</li></ol>
+      <p>親エージェントとの疎接続により、ルーチン処理は自動化され、複雑な問題はエージェント間のコラボレーションに解放される<strong>拡張可能な運用構造</strong>を揃えました。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/753/1*k5uT6VkGXBV4KZ60DdBnvg.png" loading="lazy" decoding="async" /></figure>
+      <h2>仕上げ</h2>
+      <p>今回の構築で最も大きく得たのは、エージェンティックシステムが人の仕事をどのように分けて取ることができるのかという感覚でした。人の仕事を丸ごと置き換えるのではなく、探索、根拠収集、ドラフト作成、承認に分けて、そのうち繰り返し可能な部分をまずシステムに任せる方法が効果的であることを確認しました。</p>
+      <p>逆に最後まで人に残さなければならないことも明らかでした。顧客に実際に出荷するかどうかを決定すること、例外の状況でどのような文脈をより反映するかを判断すること、間違った応対に対して責任を負うことは依然として人の分け前でした。だから今回のプロジェクトは人を取り除く自動化ではなく、人が責任を維持したまま繰り返し作業を減らす構造を作る作業に近かった。</p>
+      <p>結局のところ、このプロジェクトはVoCオートメーション自体よりも、実際の運用業務をエージェントシステムにどのように移行できるかを実験したケースです。ムーンライトチームには、この経験が単純な応対自動化を超えて、今後他の運営領域を扱う際にも適用できる基準となりました。</p>
+    </article>
+  </main>
+</body>
+</html>

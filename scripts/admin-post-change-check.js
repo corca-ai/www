@@ -130,14 +130,24 @@ This fixture intentionally includes enough article copy to pass the public post 
     true,
   );
 
-  const enIndex = JSON.parse(
-    await readFile(join(workDir, 'public/en/blog/posts/index.json'), 'utf8'),
-  );
-  assert.equal(enIndex.length, 0);
-  await assert.rejects(
-    readFile(join(workDir, `public/en/blog/posts/${slug}/index.html`), 'utf8'),
-    /ENOENT/,
-  );
+  for (const locale of ['en', 'ja', 'zh']) {
+    const translationSource = await readFile(
+      join(workDir, `public/blog/admin/post-translations/${locale}/${slug}.html`),
+      'utf8',
+    );
+    assert.match(translationSource, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
+
+    const localeIndex = JSON.parse(
+      await readFile(join(workDir, `public/${locale}/blog/posts/index.json`), 'utf8'),
+    );
+    assert.equal(localeIndex.length, 1);
+    assert.equal(localeIndex[0].slug, slug);
+    assert.match(localeIndex[0].title, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
+    assert.match(
+      await readFile(join(workDir, `public/${locale}/blog/posts/${slug}/index.html`), 'utf8'),
+      /Admin Markdown Updated/,
+    );
+  }
 
   runAdminChange({
     action: 'upsert',
@@ -179,6 +189,10 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
     readFile(join(workDir, `public/blog/posts/${slug}/index.html`), 'utf8'),
     /ENOENT/,
   );
+  await assert.rejects(
+    readFile(join(workDir, `public/blog/admin/post-translations/en/${slug}.html`), 'utf8'),
+    /ENOENT/,
+  );
 
   console.log('Admin post change check passed.');
 } finally {
@@ -192,6 +206,7 @@ function runAdminChange(payload) {
       ...process.env,
       BLOG_ADMIN_ROOT: workDir,
       ADMIN_POST_CHANGE: JSON.stringify(payload),
+      BLOG_TRANSLATION_PROVIDER: 'fixture',
     },
     stdio: 'inherit',
   });

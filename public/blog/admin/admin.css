@@ -369,6 +369,40 @@ label {
   min-height: 560px;
 }
 
+.toast-editor-shell {
+  min-height: 560px;
+}
+
+.toast-editor-shell .toastui-editor-defaultUI {
+  border-color: var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.toast-editor-shell .toastui-editor-toolbar {
+  background: #f7f7fb;
+}
+
+.toast-editor-shell .toastui-editor-contents,
+.toast-editor-shell .toastui-editor-md-container .toastui-editor {
+  font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.toast-editor-shell .toastui-editor-md-container .toastui-editor {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.62;
+}
+
+.toast-editor-shell.is-disabled {
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+body.toast-editor-active .content-editor {
+  grid-template-columns: 1fr;
+}
+
 .markdown-preview-panel {
   min-height: 560px;
   overflow: hidden;

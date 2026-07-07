@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>不要说一些你尚未证实的事实的话 | Corca Blog</title>
+    <meta name="description" content="基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://www.corca.ai/zh/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image">
+    <meta property="og:title" content="不要说一些你尚未证实的事实的话">
+    <meta property="og:description" content="基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。">
+    <meta property="og:site_name" content="Corca Blog">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://www.corca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:secure_url" content="https://www.corca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:alt" content="不要说一些你尚未证实的事实的话 代表图片">
+    <meta property="og:url" content="https://www.corca.ai/zh/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image">
+    <meta property="article:published_time" content="2026-06-25T00:00:00.000Z">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00.000Z">
+    <meta property="article:author" content="김예린">
+    <meta property="article:section" content="AX">
+    <meta property="article:tag" content="AX">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="不要说一些你尚未证实的事实的话">
+    <meta name="twitter:description" content="基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。">
+    <meta name="twitter:image" content="https://www.corca.ai/blog/assets/editorial-cover.jpg">
+    <meta name="twitter:image:alt" content="不要说一些你尚未证实的事实的话 代表图片">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/blog/rss.xml">
+    <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
+    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"不要说一些你尚未证实的事实的话","description":"基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。","image":"https://www.corca.ai/blog/assets/editorial-cover.jpg","thumbnailUrl":"https://www.corca.ai/blog/assets/editorial-cover.jpg","url":"https://www.corca.ai/zh/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image","keywords":["AX"],"articleSection":"AX","wordCount":2859,"datePublished":"2026-06-25","dateModified":"2026-06-25","author":{"@type":"Organization","name":"김예린"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"zh-CN","timeRequired":"PT6M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.corca.ai/blog/"},"mainEntityOfPage":"https://www.corca.ai/zh/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.corca.ai/blog/"},{"@type":"ListItem","position":2,"name":"文章","item":"https://www.corca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"不要说一些你尚未证实的事实的话"}]}]}</script>
+    <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
+    <link rel="stylesheet" href="/blog/styles.css">
+  </head>
+  <body><a href="#main" class="sr-only rounded-lg bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]">跳转到正文</a><header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur corca-main-header" data-astro-cid-nen7h5rs><div class="container-c flex h-[66px] items-center justify-between gap-4" data-astro-cid-nen7h5rs><!-- Logo --><a href="/zh" class="flex shrink-0 items-center" aria-label="Corca home" data-astro-cid-nen7h5rs><img src="/_astro/logo.CMq5nUD9_2vNMar.webp" srcset="/_astro/logo.CMq5nUD9_2vNMar.webp 1x, /_astro/logo.CMq5nUD9_UUefI.webp 2x, /_astro/logo.CMq5nUD9_ZCyRCx.webp 3x" alt="Corca" loading="eager" data-astro-cid-nen7h5rs="true" decoding="async" width="104" height="30" class="h-[20px] w-auto md:h-[32px]"></a><!-- Desktop navigation --><nav class="hidden items-center gap-11 md:flex" aria-label="主导航" data-astro-cid-nen7h5rs><!-- Products (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/zh/products" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>产品介绍<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/zh/products/moonlight" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Moonlight</a><a href="/zh/products/trace" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Trace</a></div></div><!-- About (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/zh/about" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>公司介绍<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/zh/about/vision-mission" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>愿景与使命</a><a href="/zh/about/how-we-work" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>我们的工作方式</a><a href="/zh/news" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>新闻报道</a><a href="/zh/about/colleagues" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Corca 的伙伴们</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>招聘</a><a href="/zh/blog" aria-current="page" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>博客</a></nav><!-- Right side: language switcher (desktop) + hamburger (mobile) --><div class="flex items-center gap-2" data-astro-cid-nen7h5rs><details class="lang-switch relative block" data-astro-cid-nen7h5rs><summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-[14px] font-medium text-[#324158]" aria-label="选择语言" data-astro-cid-nen7h5rs>ZH<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></summary><ul class="absolute right-0 top-full mt-2 min-w-[72px] overflow-hidden rounded-xl border border-black/5 bg-white py-1 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)]" data-astro-cid-nen7h5rs><li data-astro-cid-nen7h5rs><a href="/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="ko-KR" aria-label="한국어" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>KO</a></li><li data-astro-cid-nen7h5rs><a href="/en/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="en-US" aria-label="English" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>EN</a></li><li data-astro-cid-nen7h5rs><a href="/ja/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="ja-JP" aria-label="日本語" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>JA</a></li><li data-astro-cid-nen7h5rs><a href="/zh/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="zh-CN" aria-label="中文" aria-current="true" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 font-semibold text-brand" data-astro-cid-nen7h5rs>ZH</a></li></ul></details><!-- Mobile hamburger (JS-enhanced, keyboard accessible) --><button type="button" id="menu-btn" class="flex cursor-pointer items-center p-2 md:hidden" aria-label="菜单" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-nen7h5rs><svg class="menu-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg><svg class="menu-icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg></button><!-- Mobile menu panel --><div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white md:hidden" data-astro-cid-nen7h5rs><nav class="container-c flex flex-col py-2" aria-label="菜单" data-astro-cid-nen7h5rs><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/zh/products" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>产品介绍</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/zh/products/moonlight" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Moonlight</a><a href="/zh/products/trace" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Trace</a></div></div><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/zh/about" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>公司介绍</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/zh/about/vision-mission" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>愿景与使命</a><a href="/zh/about/how-we-work" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>我们的工作方式</a><a href="/zh/news" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>新闻报道</a><a href="/zh/about/colleagues" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Corca 的伙伴们</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>招聘</a><a href="/zh/blog" aria-current="page" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>博客</a><div class="flex gap-2 py-4" data-astro-cid-nen7h5rs><a href="/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="ko-KR" aria-label="한국어" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>KO</a><a href="/en/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="en-US" aria-label="English" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>EN</a><a href="/ja/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="ja-JP" aria-label="日本語" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>JA</a><a href="/zh/blog/posts/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" hreflang="zh-CN" aria-label="中文" aria-current="true" class="rounded-full border px-4 py-1.5 text-[14px] border-brand font-semibold text-brand" data-astro-cid-nen7h5rs>ZH</a></div></nav></div></div></div></header><script type="module">var e=document.getElementById(`menu-btn`),t=document.getElementById(`mobile-menu`);if(e&&t){let n=e.querySelector(`.menu-icon-open`),r=e.querySelector(`.menu-icon-close`),i=i=>{e.setAttribute(`aria-expanded`,String(i)),t.hidden=!i,n?.classList.toggle(`hidden`,i),r?.classList.toggle(`hidden`,!i),document.documentElement.style.overflow=i?`hidden`:``};e.addEventListener(`click`,()=>i(!!t.hidden)),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&i(!1)}),document.addEventListener(`keydown`,n=>{n.key===`Escape`&&!t.hidden&&(i(!1),e.focus())}),window.addEventListener(`resize`,()=>{window.innerWidth>=768&&!t.hidden&&i(!1)})}var n=document.querySelector(`details.lang-switch`);n&&(document.addEventListener(`click`,e=>{n.open&&!n.contains(e.target)&&(n.open=!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n.open&&(n.open=!1,n.querySelector(`summary`)?.focus())}));</script><main id="main" tabindex="-1">
+      <section class="post-view static-post-view">
+        <article id="article" class="article static-article">
+          <header class="article-header">
+            <h1>不要说一些你尚未证实的事实的话</h1>
+            <p>基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。</p>
+            <div class="article-meta">
+              <span class="meta-item"><time datetime="2026-06-25">2026年6月25日</time></span>
+              <span class="meta-item">김예린</span>
+            </div>
+          </header>
+          <div class="article-content">
+<header>
+        <p class="eyebrow">ceal-terview · 2026-06-25 基于AX共享会议的内部博客草案</p>
+        <h1>不要说一些你尚未证实的事实的话</h1>
+        <p class="subtitle">当 Yerin Kim 计划与 AI 一起举办两周年活动时，她需要的是“这是可能的”。
+          他说，这是一种态度，揭示了核查的实际范围。这篇文章就从那个场景开始，
+          组织在 Moonlight 存储库中执行 CLI 操作时使用的可靠性指南框架。</p>
+        <ul class="meta" aria-label="article metadata">
+          <li>根据主持人采访</li>
+          <li>主题：AI任务可靠性</li>
+          <li>目标：moonlight repo CLI操作说明</li>
+        </ul>
+      </header>
+
+      <figure class="visual-summary" aria-label="AI 작업 신뢰도 지침을 설명하는 16컷 만화">
+        <img src="/blog/assets/post-images/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image-figure-01.png" alt="Claude Code로 이벤트 페이지를 만들고 PR 리뷰와 오류를 겪은 뒤, 추측하지 말고 DB와 리뷰부터 확인하라는 규칙을 세우는 과정을 보여주는 16컷 만화" />
+        <figcaption>
+          <strong>一章总结。</strong>首先表现的是演示案例的情感。它并没有以“人工智能很快就实现了”结束，
+          审核、DB、风险工作确认后<em>不用猜测，先检查数据库，先阅读评论</em>这是一种随规则而变化的趋势。</figcaption>
+      </figure>
+
+      <section>
+        <div class="ceal-q">实际场景是什么让您想到“我需要将此作为指导”？</div>
+        <h2 id="section-1">问题在于“假装检查”而不是错误的答案。<a class="heading-anchor" href="#section-1" tabindex="-1" aria-label="问题在于“假装检查”而不是错误的答案。 섹션 링크"></a></h2>
+        <div class="scene">
+          <p>规划两周年活动时的重要条件之一是尽量减少操作用户数据库的负载。
+            因此，Yerin 不会直接查询或重复读取 AI 的 DB。
+            我们要求他们一起考虑当前结构内可能的方法。</p>
+          <p>然而，AI 不会检查实际的用户数据库结构或存储的数据。
+            他回答：“可以通过用户DB来实现。”是否实际存储了所需的数据；
+            无需检查所需列是否存在或是否有可以使用的缓存，无需查询操作DB
+            可能性被视为事实。</p>
+        </div>
+        <p>在这个场景中信任动摇的原因不仅仅是因为人工智能是错误的。
+          后来，当AI说：“我检查过了，现在我是对的，我也会纠正我之前说错的地方。”
+          作为倾听者，自然会产生这些问题。</p>
+        <blockquote>“那你刚才的说法有何根据？”</blockquote>
+        <p>如果前面的答案是猜测，你就应该说这是猜测。即使这是一个可能性很大的决定，
+          我必须将实际已确认的事实与尚未确认的部分分开。</p>
+      </section>
+
+      <section>
+        <div class="ceal-q">在说人工智能“可能”之前，我们至少应该检查什么？</div>
+        <h2 id="section-2">在你知道这是可能的之前你需要知道两件事<a class="heading-anchor" href="#section-2" tabindex="-1" aria-label="在你知道这是可能的之前你需要知道两件事 섹션 링크"></a></h2>
+        <p>艺琳选择的最低验证标准很简单。首先，所需的列是否确实存在。
+          其次，是否有缓存或现有聚合数据可以在不直接查询操作数据库的情况下使用？</p>
+        <div class="principle-grid">
+          <div class="principle">
+            <b>必填栏</b>检查事件实现所需的信息是否在实际模式中。</div>
+          <div class="principle">
+            <b>无需查找的数据源</b>查找可以使用的缓存或聚合数据，而无需重复查询操作数据库。</div>
+          <div class="principle">
+            <b>检查边界</b>如果您还没有看到，请说“我还没有确认”。</div>
+        </div>
+        <p>良好的人工智能协作并不以快速谈论“合理的实施方法”而结束。
+          尤其是当有一些需要仔细关注的东西时，例如操作数据，我们首先询问可以安全验证的信息的边界。
+          必须在这些界限内做出判断。</p>
+      </section>
+
+      <section>
+        <div class="ceal-q">那时人工智能会说些什么来使其更值得信赖？</div>
+        <h2 id="section-3">单独的主张、事实和未知数<a class="heading-anchor" href="#section-3" tabindex="-1" aria-label="单独的主张、事实和未知数 섹션 링크"></a></h2>
+        <p>Yerin提出的表述成为本文的核心原则。
+          不要将未经证实的信息当作事实来谈论，而要区分“主张”和“事实”。</p>
+        <pre class="example">유저 DB에 필요한 데이터가 있을 가능성이 높습니다. — 주장
+하지만 필요한 컬럼 존재 여부와, 운영 DB 조회 없이 사용할 수 있는 캐시/집계 데이터가 있는지는 아직 확인하지 못했습니다. — 미확인 상태
+다음으로 확인할 것은 필요한 컬럼과 조회 없이 사용할 수 있는 데이터 소스입니다. — 다음 행동</pre>
+        <p>这种格式并不是为了使答案更长。而是减少不必要的解释，
+          这是一个最小的标志，可以帮助用户快速决定他们现在可以信任什么。</p>
+      </section>
+
+      <section>
+        <div class="ceal-q">如果这个指南制作精良，AI 答案应该如何改变？</div>
+        <h2 id="section-4">成功的标准不是“形式更丰富”，而是“证据更清晰”<a class="heading-anchor" href="#section-4" tabindex="-1" aria-label="成功的标准不是“形式更丰富”，而是“证据更清晰” 섹션 링크"></a></h2>
+        <p>Yerin 表示，如果能够看到 AI 答案中引用了哪个技能句子，那就太好了。
+          例如，“这<code>/rule-check</code>例如，“我通过参考第 12 条来回答。”
+          它是一种简要揭示其所依据的指南位置的方法。</p>
+        <p>然而，这个标志并不是每次都必须贴上的装饰。当信任的界限被动摇的那一刻，
+          当你说“我检查了”、“我反思了”或“我完成了”时，这一点尤其重要。
+          用户必须能够知道该表达式是否伴随着实际的读取、修改、执行或验证。</p>
+        <ul>
+          <li>必要时简要透露其所依据的指南的位置。</li>
+          <li>区分主张、已确认的事实和未确认的状态。</li>
+          <li>未经实际确认，请勿说“完成”、“反映”或“确认”。</li>
+          <li>不要再次询问已经回答过的问题，而是继续执行下一个操作或产品。</li>
+        </ul>
+      </section>
+
+      <section class="quiz" aria-labelledby="quiz-title" data-next-label="다음 질문" data-finish-label="마무리" data-complete-title="점검 완료: 이 글의 핵심은 ‘더 많은 형식’이 아니라 ‘확인 경계를 선명하게 말하기’입니다." data-quiz='[{"question":"AI가 운영 DB를 활용하면 된다고 말하기 전에 먼저 해야 할 말에 가장 가까운 것은?","choices":["유저 DB에 대부분 데이터가 있을 테니 바로 구현하겠습니다.","필요한 컬럼과 조회 없이 쓸 수 있는 캐시가 있는지 먼저 확인해야 합니다.","운영 DB는 중요하니 아무 것도 하지 않는 편이 낫습니다."],"answer":1,"explanation":"가능성을 말하기 전에 필요한 컬럼 존재 여부와 운영 DB 조회 없이 쓸 수 있는 데이터 소스를 확인해야 합니다."},{"question":"‘확인했습니다’라는 표현을 신뢰 가능하게 만들려면 무엇이 필요할까요?","choices":["무엇을 읽고, 실행하고, 검증했는지의 근거","답변 끝에 rule 번호를 항상 붙이는 습관","자신감 있는 문장과 빠른 결론"],"answer":0,"explanation":"핵심은 형식이 아니라 실제 확인 행동입니다. 읽기·수정·실행·검증의 범위를 짧게 드러내야 합니다."},{"question":"이 지침이 실패하는 모습은 무엇일까요?","choices":["주장과 미확인 상태를 구분해서 말한다.","필요한 순간에만 근거 지침을 짧게 드러낸다.","매번 형식적으로 rule 번호만 붙이고 실제 작업 상태는 여전히 불투명하다."],"answer":2,"explanation":"지침은 투명성을 위한 것이지 장식이 아닙니다. 형식만 남고 실제 상태가 보이지 않으면 실패입니다."}]'>
+        <h2 id="quiz-title">快速检查：什么答案可以保持对这个场景的信任？</h2>
+        <p class="quiz-question" id="quiz-question"></p>
+        <div class="choices" id="quiz-choices"></div>
+        <p class="feedback" id="quiz-feedback" aria-live="polite"></p>
+        <button class="next-btn" id="quiz-next" type="button" disabled>下一个问题</button>
+      </section>
+
+      <section>
+        <div class="ceal-q">应用指南时必须避免哪些副作用？</div>
+        <h2 id="section-5">一定要短。如果只剩下格式，那就是失败。<a class="heading-anchor" href="#section-5" tabindex="-1" aria-label="一定要短。如果只剩下格式，那就是失败。 섹션 링크"></a></h2>
+        <p>仅仅因为指导方针已经到位，并不是所有的答案都应该变得冗长。
+          您还应该避免每次都正式添加规则编号。
+          重要的不是“假装遵守规则”，而是让实际工作状况和理由更加透明。</p>
+        <p>有时候，一句话“我不会下任何结论，因为还没有得到证实”就足够了。
+          相反，当你不得不说它完成的那一刻，你读了什么，你改变了什么，
+          您必须简要披露进行了哪些验证。指导方针不是增加讲话量的手段；而是一种手段。
+          它是一种区分什么可以整洁和什么不能整洁的装置。</p>
+      </section>
+
+      <section>
+        <div class="ceal-q">这个技能是用来做什么的？</div>
+        <h2 id="section-6">不适用于 Ceal，而是在 Moonlight 存储库中使用 CLI 时使用的技能<a class="heading-anchor" href="#section-6" tabindex="-1" aria-label="不适用于 Ceal，而是在 Moonlight 存储库中使用 CLI 时使用的技能 섹션 링크"></a></h2>
+        <p>采访过程中有一处流程出现了偏差。我试图将此指南解释为 Ceal 运行时响应的技能，但是
+          艺琳纠正了它。这个技能并不是针对Ceal本身的，
+          这些是 Yerin 在打开 CLI 并在 Moonlight 存储库中工作时将参考的工作说明。</p>
+        <p>因此，焦点不是“卡尔将如何应对？”
+          问题在于 CLI 工作人员如何在工作中透明地表达判断、理由、进展情况和完成情况。</p>
+        <div class="skill-card">
+          <h3>月光仓库的技能草案方向</h3>
+          <ul class="rule-list">
+            <li><strong>目的：</strong>它区分 CLI 操作过程中的实际性能和未确认的状态，使用户可以信任操作的状态。</li>
+            <li><strong>适用范围：</strong>在 Moonlight 存储库中打开并使用 CLI 的整个过程。</li>
+            <li><strong>默认输出：</strong>结论 → 基于 → 下一步行动的指南或确认。</li>
+            <li><strong>信任边界：</strong>如有必要，在证据解释中包括已确认和未确认的信息。</li>
+            <li><strong>禁止：</strong>未经实际确认，请勿说“我已确认”、“我已反映”或“我已完成”。</li>
+            <li><strong>进度原则：</strong>一旦做出了必要的判断，就继续下一步，即创建输出或实际反映输出，而不是重复总结。</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="checkpoint" aria-labelledby="checkpoint-title">
+        <h2 id="checkpoint-title">安静的检查站</h2>
+        <p>下次当人工智能说“我明白了”时，你应该首先问什么？</p>
+        <button class="reveal-btn" type="button" id="checkpoint-toggle" aria-expanded="false">查看评论</button>
+        <div class="checkpoint-answer" id="checkpoint-answer">
+          <p>第一个问题是“你检查了什么以及如何检查？”就像检查文件、执行命令、查看文档和验证结果一样。
+            必须有一个导致实际行动的理由。如果没有依据，答案应被视为主张或假设，而不是事实。</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="ceal-q">阅读本文的同事应该采取哪些不同的做法？</div>
+        <h2 id="section-7">完成前，说明完成的基础<a class="heading-anchor" href="#section-7" tabindex="-1" aria-label="完成前，说明完成的基础 섹션 링크"></a></h2>
+        <p>这篇文章的结论很简单。使用 AI 和 CLI 时，在使用“我可以”或“我已经做到了”时需要更加小心。
+          如果有可能性，就说它是一种可能性，如果是真的，就说它是哪种已证实的事实。
+          如果尚未得到证实，则称其为未证实。</p>
+        <p>这样，用户可以检查人工智能是否真正高效地工作，
+          您可以确定是否按照指示的方式进行。信任并非来自花哨的表达。
+          当员工清楚地区分他们所知道的和他们不知道的事情时，信任就会产生。</p>
+        <div class="risk-note">
+          <strong>出版须知：</strong>此草案供内部共享。提供了与操作数据库、用户数据和内部存储库结构相关的详细信息。
+          向外界披露时，将信息概括化或匿名化会更安全。</div>
+      </section>
+
+      <footer>后续行动：检查完moonlight仓库中的实际部署位置后，将这些内容浓缩整理成仓库的技能文档。</footer>
+          </div>
+        </article>
+        <aside class="toc static-toc" aria-label="目录">
+          <section class="toc-section" aria-label="目录">
+            <strong>目录</strong>
+            <ol>
+              <li><a href="#section-1">问题在于“假装检查”而不是错误的答案。</a></li>
+              <li><a href="#section-2">在你知道这是可能的之前你需要知道两件事</a></li>
+              <li><a href="#section-3">单独的主张、事实和未知数</a></li>
+              <li><a href="#section-4">成功的标准不是“形式更丰富”，而是“证据更清晰”</a></li>
+              <li><a href="#quiz-title">快速检查：什么答案可以保持对这个场景的信任？</a></li>
+              <li><a href="#section-5">一定要短。如果只剩下格式，那就是失败。</a></li>
+              <li><a href="#section-6">不适用于 Ceal，而是在 Moonlight 存储库中使用 CLI 时使用的技能</a></li>
+              <li><a href="#checkpoint-title">安静的检查站</a></li>
+              <li><a href="#section-7">完成前，说明完成的基础</a></li>
+            </ol>
+          </section>
+          <section class="toc-recommendations" aria-label="推荐文章">
+            <strong>推荐文章</strong>
+            <div class="toc-recommendation-list">
+              <a class="toc-recommendation" href="/zh/blog/posts/axhibit-ceal-terview-redraft-with-image">
+                <span>Axhibit：设计评审成为可生产性判断的时刻</span>
+                <small><time datetime="2026-06-29">2026年6月29日</time> · 송기성</small>
+              </a>              <a class="toc-recommendation" href="/zh/blog/posts/ceal-terview-locality-cache-with-image">
+                <span>缓存什么以及在你的身上刻上什么</span>
+                <small><time datetime="2026-05-28">2026年5月28日</time> · 최정혁</small>
+              </a>              <a class="toc-recommendation" href="/zh/blog/posts/ceal-operations-team">
+                <span>运营团队的新同事 Ceal</span>
+                <small><time datetime="2026-05-13">2026年5月13日</time> · 김선영(HR Manager)</small>
+              </a>
+            </div>
+          </section>
+        </aside>
+        <nav class="post-pagination" aria-label="글 이동">
+        <a class="related-card post-pagination-card post-pagination-previous" href="/zh/blog/posts/ceal-terview-locality-cache-with-image" aria-label="上一篇: 缓存什么以及在你的身上刻上什么">
+          <span class="related-cue" aria-hidden="true">←</span>
+          <span class="related-meta">上一篇 · <strong>AX</strong> · <time datetime="2026-05-28">2026年5月28日</time></span>
+          <strong>缓存什么以及在你的身上刻上什么</strong>
+        </a>        <a class="related-card post-pagination-card post-pagination-next" href="/zh/blog/posts/axhibit-ceal-terview-redraft-with-image" aria-label="下一篇: Axhibit：设计评审成为可生产性判断的时刻">
+          <span class="related-cue" aria-hidden="true">→</span>
+          <span class="related-meta">下一篇 · <strong>AX</strong> · <time datetime="2026-06-29">2026年6月29日</time></span>
+          <strong>Axhibit：设计评审成为可生产性判断的时刻</strong>
+        </a>
+        </nav>
+      </section>
+    </main><footer class="bg-footer text-white/70 corca-main-footer"><div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left"><img src="/_astro/logo-white.YSg021rB_Z1XeFQO.webp" srcset="/_astro/logo-white.YSg021rB_Z1XeFQO.webp 1x, /_astro/logo-white.YSg021rB_qFSmC.webp 2x, /_astro/logo-white.YSg021rB_1zm5a0.webp 3x" alt="Corca" loading="lazy" decoding="async" width="120" height="35" class="h-[34px] w-auto opacity-90"><address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]"><p>韩国首尔特别市江南区德黑兰路77街11-8, 6层 Corca株式会社</p><p><a href="tel:+82-2-6925-6978">Tel: +82-2-6925-6978</a><span class="inline-block w-3"></span><a href="mailto:contact@corca.ai">contact@corca.ai</a></p></address><p class="text-[12px] text-[#bbbbbb]">© 2026 Corca, Inc.</p></div></footer><script type="module">var e=document.querySelectorAll(`[data-reveal]`);if(e.length>0&&`IntersectionObserver`in window){let t=new IntersectionObserver(e=>{for(let n of e)n.isIntersecting&&(n.target.classList.add(`is-visible`),t.unobserve(n.target))},{threshold:.15,rootMargin:`0px 0px -10% 0px`});for(let n of e)t.observe(n)}else for(let t of e)t.classList.add(`is-visible`);</script></body>
+</html>

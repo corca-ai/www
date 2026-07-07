@@ -1,0 +1,544 @@
+<!--
+corca-post
+{
+  "title": "Axhibit: The moment when a design review becomes a judgment of productability",
+  "description": "Axhibit's product direction summarized in a live interview with Song Ki-seong. A story about a tool to gauge the potential of advertising designs earlier through expert reviews and virtual public reactions.",
+  "date": "2026-06-29",
+  "tags": [
+    "AX"
+  ],
+  "author": "송기성",
+  "cover": "assets/editorial-cover.jpg",
+  "language": "en"
+}
+-->
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Axhibit: The moment when a design review becomes a judgment of productability</title>
+  <style>
+    :root {
+      --bg: #f6f5f1;
+      --paper: #fffdfa;
+      --ink: #202124;
+      --muted: #6b7280;
+      --soft: #f3f4f6;
+      --line: #e5e1d8;
+      --accent: #315c9b;
+      --accent-ink: #1f3e6d;
+      --accent-soft: #edf4ff;
+      --warm: #fff7ed;
+      --good: #0f766e;
+      --bad: #b45309;
+      --shadow: 0 24px 70px rgba(31, 41, 55, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(49, 92, 155, .10), transparent 34rem),
+        radial-gradient(circle at bottom right, rgba(180, 83, 9, .07), transparent 32rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      line-height: 1.74;
+      word-break: keep-all;
+    }
+
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 54px 20px 88px;
+    }
+
+    article {
+      background: rgba(255, 253, 250, .96);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 58px 60px;
+      box-shadow: var(--shadow);
+    }
+
+    header { margin-bottom: 46px; }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 1.14;
+      letter-spacing: -0.045em;
+      margin: 0 0 18px;
+    }
+
+    .subtitle {
+      color: #4b5563;
+      font-size: 18px;
+      line-height: 1.68;
+      max-width: 720px;
+      margin: 0;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 26px;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .meta span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: #fff;
+    }
+
+    section { margin: 46px 0; }
+
+    h2 {
+      font-size: 25px;
+      line-height: 1.36;
+      letter-spacing: -0.028em;
+      margin: 0 0 16px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin: 0 0 10px;
+      letter-spacing: -0.015em;
+    }
+
+    p { margin: 0 0 16px; }
+
+    strong { font-weight: 800; }
+
+    .ceal-question {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      background: var(--accent-soft);
+      border: 1px solid #d7e7ff;
+      color: var(--accent-ink);
+      padding: 14px 16px;
+      border-radius: 18px;
+      margin: 0 0 18px;
+      font-weight: 700;
+    }
+
+    .ceal-question .label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #c7dcfb;
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
+
+    .lead-box {
+      margin: 30px 0 0;
+      padding: 24px 26px;
+      border-radius: 24px;
+      background: #111827;
+      color: #fff;
+      font-size: 19px;
+      line-height: 1.66;
+      letter-spacing: -0.018em;
+    }
+
+    .pull {
+      margin: 26px 0;
+      padding: 24px 26px;
+      border-radius: 22px;
+      background: var(--warm);
+      border: 1px solid #fed7aa;
+      color: #431407;
+      font-size: 18px;
+      line-height: 1.65;
+      letter-spacing: -0.018em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .card .tag {
+      display: inline-block;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .card p { color: #4b5563; margin: 0; font-size: 15px; }
+
+    .report {
+      margin: 24px 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+    }
+
+    .report-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px;
+      background: #f9fafb;
+      border-bottom: 1px solid var(--line);
+      font-weight: 800;
+    }
+
+    .bars { padding: 16px 20px 20px; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 92px 1fr 98px;
+      align-items: center;
+      gap: 12px;
+      margin: 13px 0;
+      font-size: 14px;
+    }
+
+    .track {
+      height: 14px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #315c9b, #5b8bd7);
+      border-radius: 999px;
+    }
+
+    .bar-value { color: #374151; text-align: right; }
+
+    .note-list {
+      padding-left: 1.2em;
+      margin: 16px 0 0;
+    }
+
+    .note-list li { margin: 8px 0; }
+
+    .quiz, .checkpoint {
+      margin: 44px 0;
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid #dbe4f0;
+      background: #f8fbff;
+    }
+
+    .quiz-kicker, .checkpoint-kicker {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .quiz-title, .checkpoint-title {
+      margin: 0 0 12px;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .quiz-progress {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    button.choice, button.action, button.reveal {
+      font: inherit;
+      border-radius: 14px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: var(--ink);
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    button.choice:hover, button.reveal:hover { border-color: #93b6e8; background: #fbfdff; }
+    button.choice[disabled] { cursor: default; opacity: .82; }
+    button.choice.correct { border-color: #14b8a6; background: #ecfdf5; }
+    button.choice.wrong { border-color: #f59e0b; background: #fffbeb; }
+
+    .feedback {
+      display: none;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .feedback.visible { display: block; }
+    .feedback strong.good { color: var(--good); }
+    .feedback strong.bad { color: var(--bad); }
+
+    button.action {
+      display: none;
+      margin-top: 14px;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    button.action.visible { display: inline-block; }
+
+    .checkpoint {
+      background: #fffdf8;
+      border-color: #eadfca;
+    }
+
+    .checkpoint-answer {
+      display: none;
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #374151;
+    }
+
+    .checkpoint-answer.visible { display: block; }
+
+    .closing {
+      border-top: 1px solid var(--line);
+      margin-top: 48px;
+      padding-top: 26px;
+      color: #4b5563;
+    }
+
+
+    .visual-figure {
+      margin: 32px 0 0;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      background: #f5f2ec;
+      box-shadow: 0 16px 42px rgba(31, 41, 55, .06);
+    }
+
+    .visual-figure img {
+      display: block;
+      width: 100%;
+      max-height: 560px;
+      object-fit: contain;
+      background: #f5f2ec;
+    }
+
+    .visual-caption {
+      margin: 0;
+      padding: 14px 18px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.62;
+      border-top: 1px solid rgba(229, 225, 216, .82);
+      background: rgba(255, 253, 250, .72);
+    }
+
+    .source-note {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      main { padding: 24px 12px 58px; }
+      article { padding: 34px 24px; border-radius: 24px; }
+      .grid { grid-template-columns: 1fr; }
+      .ceal-question { grid-template-columns: 1fr; }
+      .bar-row { grid-template-columns: 76px 1fr; }
+      .bar-value { grid-column: 2; text-align: left; margin-top: -6px; }
+      .report-head { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <article>
+    <header>
+      <div class="eyebrow">Ceal-terview / Internal blog draft</div>
+      <h1>Axhibit: The moment when a design review becomes a judgment of productability</h1>
+      <p class="subtitle">Axhibit's product direction summarized in a live interview with Song Ki-seong. A story about a tool that allows experts to identify problems, the virtual public to gather responses, and gauge the potential of advertising design earlier.</p>
+      <div class="meta" aria-label="문서 메타 정보">
+        <span>Topic: Axhibit</span>
+        <span>Interviewee: Song Ki-seong</span>
+        <span>Context: AX Day 7th</span>
+        <span>Format: Interactive HTML Draft</span>
+      </div>
+      <div class="lead-box">Axhibit is not a tool that simply asks “Is the design pretty?” If an advertising image is shown to the public in advance, it is more of a tool to ask which age group will be attracted to it, which target group will ignore it, and what kind of signal the difference will provide in judging the productability.</div>
+
+      <figure class="visual-figure" aria-label="첨부 이미지: apple.com 디자인 평가 리포트">
+        <img src="../assets/post-images/axhibit-ceal-terview-redraft-with-image-figure-01.png" alt="apple.com 디자인을 평가한 화면으로, 전체 점수 6.8과 10가지 원칙별 평가 막대가 보인다" />
+        <figcaption class="visual-caption">Attached image placement: It is placed as an example of an Axhibit-type report that looks at both the surface impression of the design and the actual evaluation criteria.</figcaption>
+      </figure>
+    </header>
+
+    <section>
+      <div class="ceal-question"><span class="label">Ceal</span><span>“If you could pick just one scene where this product became clear, where would it be?”</span></div>
+      <h2>The starting point was between the Nemotron interview and the Dieter Rams-style design review.</h2>
+      <p>The idea for Axhibit didn't start with a list of features. While talking about the Nemotron interview that Jaeho had previously created, the experience of personally using the “Design Review Site from the Perspective of Dieter Rams,” which Kisung had introduced in a recent design study, naturally led to this.</p>
+      <p>What caught my eye during that experience was that it was not a method of evaluating the entire screen in a lumpy manner. When a user pointed out a specific area, it was structured to review that area in detail from an expert's perspective. A way of saying, “Users may be confused in this part,” rather than “It’s okay overall.” Axhibit's first axis was captured here.</p>
+      <div class="pull">A good design review is more of a discovery rather than an opinion piece. First, we find problems that users have overlooked and make them understand why they are problems.</div>
+    </section>
+
+    <section>
+      <div class="ceal-question"><span class="label">Ceal</span><span>“What form is expert feedback most useful for?”</span></div>
+      <h2>Experts point out ‘problems’. However, not as a judgment but as an explanation.</h2>
+      <p>Ki Seong-nim viewed the core of expert feedback as “pointing out problems.” This is because general users often pass by design problems without noticing them. The value of an expert lies in first catching the invisible problem.</p>
+      <p>However, the experts that Axhibit aims for are not sharp judges. If you only conclude, “This part is not good,” it is difficult for users to know what they need to learn. The tone set in the interview is closer to a coaching type that calmly explains the reason. Trust is created only when the cause of the problem and its impact on the user are shown.</p>
+      <div class="grid">
+        <div class="card">
+          <span class="tag">Less helpful reviews</span>
+          <h3>Feedback that only leaves judgment</h3>
+          <p>There is a conclusion such as “the main button is weak,” but it is difficult for the user to know why the problem is and what criteria to look at.</p>
+        </div>
+        <div class="card">
+          <span class="tag">Axhibit download review</span>
+          <h3>Feedback that points out causes and effects together</h3>
+          <p>Leave an understandable explanation like, “Key actions aren’t prominent enough on the first screen, so users may be confused about what to do next.”</p>
+        </div>
+      </div>
+      <p>The results screen should also follow this principle. The first thing the user sees is a short one-line summary of the overall evaluation. However, that one line should not be a grade table, but a “diagnosis that objectively points out one of the most important problems in simple language.” Below, the cause of the problem and its impact on users are explained in detail.</p>
+    </section>
+
+    <section>
+      <div class="ceal-question"><span class="label">Ceal</span><span>“What should be the difference between expert feedback and virtual public feedback?”</span></div>
+      <h2>The public doesn't analyze design. I saw it for the first time, glanced at it briefly, and passed it on.</h2>
+      <p>The second pillar of Axhibit is virtual public feedback. The important thing here is not to make expert feedback and public feedback the same language. Experts analyze “why this design is problematic.” The virtual public, on the other hand, must react entirely from the perspective of an ordinary person.</p>
+      <p>Public feedback is closer to first impressions and first impressions than from a design perspective. Words like “I don’t know what the screen is doing,” “I think I’ll skip it because it looks like an advertisement,” and “It looks pretty, but I’m not sure what the product is” actually become key data. This is because advertisements are not documents that are read for a long time, but rather materials that diverge interest, understanding, and desire to purchase in a short period of time.</p>
+      <p>Therefore, advertising design images, especially SNS feed advertising images, are natural representative materials. It is a format that many people intuitively look at and pass on, and the difference in first impressions and reactions by target is immediately revealed in the product value.</p>
+    </section>
+
+    <section>
+      <div class="ceal-question"><span class="label">Ceal</span><span>“Would it be enough to look at the reaction as the opinion of one or two people?”</span></div>
+      <h2>The key is not a few comments, but the probability of a response in units of 10,000 people.</h2>
+      <p>The most important turning point in the interview was here. Public reaction should not end with “what a few fictional characters said.” Ki Seong-nim pointed out that advertising decisions are not made based on one or two judgments from the public. The purpose is to confirm marketability. In other words, it looks at the possibility of purchase desire or interest.</p>
+      <p>The public feedback that Axhibit needs to create is close to a structure that collects responses from 10,000 or 100,000 people and views them at the same rate of preference. This is to probabilistically determine the likelihood that this advertisement will receive good feedback from the actual public. Therefore, the center of the report is not the overall average, but the ratio of likes and dislikes for each age group and the difference.</p>
+
+      <div class="report" role="img" aria-label="연령대별 호감 비율 예시 리포트">
+        <div class="report-head">
+          <span>Example: Predicting SNS feed ad image response</span>
+          <span>Like/dislike gap</span>
+        </div>
+        <div class="bars">
+          <div class="bar-row">
+            <strong>teenager</strong>
+            <div class="track"><div class="fill" style="width: 68%"></div></div>
+            <span class="bar-value">Likeable 68%</span>
+          </div>
+          <div class="bar-row">
+            <strong>20s</strong>
+            <div class="track"><div class="fill" style="width: 74%"></div></div>
+            <span class="bar-value">Likeable 74%</span>
+          </div>
+          <div class="bar-row">
+            <strong>30s</strong>
+            <div class="track"><div class="fill" style="width: 55%"></div></div>
+            <span class="bar-value">Likeable 55%</span>
+          </div>
+          <div class="bar-row">
+            <strong>40s</strong>
+            <div class="track"><div class="fill" style="width: 38%"></div></div>
+            <span class="bar-value">Favorable 38%</span>
+          </div>
+        </div>
+      </div>
+
+      <p>What these reports show is not “good/bad.” Who is it working for, who is it going astray, and where should the message be changed? For example, if the likes of the product are high among those in their 20s but the unfavorability of those in their 40s is high, advertisers should reexamine their targets and media strategies rather than taking comfort in looking at the overall average.</p>
+    </section>
+
+    <section class="quiz" aria-labelledby="quiz-title" data-incorrect-class="wrong" data-next-label="다음 질문 보기" data-finish-label="마무리하기" data-complete-title="핵심 판단 기준을 모두 확인했습니다." data-complete-message="이 글의 핵심은 전문가의 문제 발견과 대중 반응의 확률적 집계를 분리해서 보는 것입니다." data-quiz='[{"question":"Axhibit에서 전문가 피드백의 핵심 가치는 무엇에 가까울까요?","choices":["디자인을 점수로 빠르게 줄 세우는 것","사용자가 놓친 문제를 발견하고, 왜 문제인지 설명하는 것","대중이 좋아할 만한 문구를 대신 써주는 것"],"answer":1,"explanation":"인터뷰에서 전문가 피드백은 문제점 지적이 핵심으로 정리됐다. 다만 결론만 던지는 것이 아니라 문제 원인과 사용자 영향까지 설명해야 신뢰가 생긴다."},{"question":"가상 대중 피드백이 전문가 피드백과 달라야 하는 이유는 무엇일까요?","choices":["대중은 디자인을 분석하기보다 첫인상과 대충 봤을 때의 느낌으로 반응하기 때문에","전문가보다 더 어려운 디자인 용어를 써야 하기 때문에","대중 피드백은 항상 한 명의 대표 사용자 문장만 있으면 충분하기 때문에"],"answer":0,"explanation":"가상 대중 피드백은 보통사람의 관점이어야 한다. 특히 광고 이미지는 짧게 보고 넘기는 소재라 첫인상, 관심, 구매 욕구가 중요하다."},{"question":"Axhibit 리포트에서 전체 평균보다 연령대별 호감/비호감 격차가 중요한 이유는 무엇일까요?","choices":["전체 평균은 언제나 틀린 지표라서","광고의 타깃별 반응 차이를 봐야 누구에게 먹히고 어디서 빗나가는지 판단할 수 있어서","연령대별 지표가 있으면 전문가 리뷰가 필요 없어져서"],"answer":1,"explanation":"상품성 판단은 대규모 반응의 가능성을 보는 일이다. 연령대별 격차는 타깃 적합성, 메시지 수정 방향, 매체 전략을 판단하는 신호가 된다."}]'>
+      <div class="quiz-kicker">Inline quiz</div>
+      <h2 id="quiz-title" class="quiz-title">Guess the criteria for judgment while reading</h2>
+      <p class="quiz-progress" id="quiz-progress">1 / 3</p>
+      <div id="quiz-question"></div>
+      <div class="choices" id="quiz-choices"></div>
+      <div class="feedback" id="quiz-feedback" aria-live="polite"></div>
+      <button class="action" id="quiz-next" type="button">View next question</button>
+    </section>
+
+    <section>
+      <div class="ceal-question"><span class="label">Ceal</span><span>“So what decisions should Axhibit’s results screen help you make?”</span></div>
+      <h2>Axhibit is more of a tool to read the commercial risks of an advertisement than a tool to select a pretty design.</h2>
+      <p>Through this interview, Axhibit’s direction became clearer. Expert feedback finds design problems that users missed and explains why they are problematic. Virtual public feedback shows the first impressions and reactions of ordinary people. And in materials where public reaction is important, such as advertising images, this reaction is aggregated into large-scale ratios and differences to determine marketability.</p>
+      <p>Therefore, Axhibit’s question does not stop at “Is this design pretty?” More important questions are, “Does this ad have the potential to generate interest?”, “Can it lead to a desire to purchase?”, and “Which age group or target group will the response differ?”</p>
+      <ul class="note-list">
+        <li><strong>First line summary:</strong>Present one of the most important issues in simple terms and objectively like an expert.</li>
+        <li><strong>Expert review:</strong>Explains the causes of problems in specific areas and their impact on users.</li>
+        <li><strong>Virtual public reaction:</strong>It is presented not from a design perspective, but from a first impression, interest, and desire to purchase.</li>
+        <li><strong>Aggregated metrics:</strong>Marketability is judged through the like/dislike ratio and gap by age group.</li>
+      </ul>
+    </section>
+
+    <section class="checkpoint" aria-labelledby="checkpoint-title" data-open-class="visible" data-open-label="해설 보기" data-close-label="해설 닫기">
+      <div class="checkpoint-kicker">Judgment criteria</div>
+      <h2 id="checkpoint-title" class="checkpoint-title">Stop and think for a moment</h2>
+      <p>Advertisement design A received an overall favorable rating of 62%. However, 78% of people in their 20s have a favorable opinion, and 34% of people in their 40s have a favorable opinion. What should advertisers check first after seeing these results?</p>
+      <button class="reveal" id="checkpoint-toggle" type="button" aria-expanded="false">View commentary</button>
+      <div class="checkpoint-answer" id="checkpoint-answer">Looking at the overall favorability rating alone, it may seem like a “good advertisement,” but from Axhibit’s perspective, the age gap is a more important signal. First, you need to check who the actual target of this advertisement is. If your core target is people in their 20s, you can push your strengths further, but if your product needs to persuade people in their 40s, you need to reexamine the message, trust factors, and utility explanation.</div>
+    </section>
+
+    <section>
+      <div class="ceal-question"><span class="label">Ceal</span><span>“What is one sentence that your colleagues who read this should take with them to their next product discussion?”</span></div>
+      <h2>Design evaluation should not be about appreciation, but rather a signal for the next decision.</h2>
+      <p>The interesting point about Axhibit is that it brings in experts and the public at the same time, but does not mix the two roles. Experts explain the cause of the problem, and the public shows their reaction when they actually see it. And the response turns into aggregated possibilities rather than individual comments.</p>
+      <p>If this structure works well, Axhibit can go beyond a design review tool and become an experimental tool that quickly reads the commercial risks of advertising and design proposals. Teams can see “where the problems are” and “who is likely to respond” before releasing the draft. At that time, the design review is not a battle of tastes, but becomes the basis for the next decision.</p>
+      <div class="pull">The core sentences of Axhibit can be summarized like this. “Before asking if it’s pretty, let’s first see who will want to buy it.”</div>
+    </section>
+
+  </article>
+</main>
+
+<script src="../assets/post-interactions.js"></script>
+</body>
+</html>

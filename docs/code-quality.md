@@ -15,8 +15,8 @@ and the `pnpm check` script (see [development](development.md)).
   product pages load through framework conventions and `import.meta.glob`, so
   `knip.json` lists `src/pages/**/*.astro`, `src/pages/**/*.ts`,
   `src/products/*/manifest.ts` and `src/products/*/Page.astro` as entry points.
-  It also ignores `public/blog/**` and `public/blog-assets/**` because those
-  static blog files are deployed as assets rather than imported from TypeScript.
+  It also ignores `public/blog/**` because those static blog files are deployed
+  as assets rather than imported from TypeScript.
   The native `nose`/`awiki` binaries are ignored as external tools.
 - **nose** detects code duplication across `src/**/*.ts` as a jscpd replacement;
   its gate is configured in `nose.toml`. It does not analyze `.astro` files, so

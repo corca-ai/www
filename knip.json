@@ -6,6 +6,6 @@
     "src/products/*/manifest.ts",
     "src/products/*/Page.astro"
   ],
-  "ignore": ["public/blog/**", "public/blog-assets/**"],
+  "ignore": ["public/blog/**"],
   "ignoreBinaries": ["awiki", "nose"]
 }

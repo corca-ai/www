@@ -524,8 +524,9 @@ function initToastEditor() {
             preparedImage
           ].slice(-6);
           const altText = blob.name ? blob.name.replace(/\.[^.]+$/, "") : "이미지";
-          callback(preparedImage.previewSrc, altText);
-          syncToastEditorToSource();
+          callback(`/blog/${preparedImage.path}`, altText);
+          scheduleToastPreviewImageRefresh();
+          window.setTimeout(syncToastEditorToSource, 0);
           adminMessage.textContent = "본문 이미지를 삽입했습니다. 저장 요청하면 함께 반영됩니다.";
         } catch (error) {
           adminMessage.textContent = error.message || "본문 이미지를 처리하지 못했습니다.";
@@ -536,6 +537,7 @@ function initToastEditor() {
     events: {
       change: () => {
         syncToastEditorToSource();
+        scheduleToastPreviewImageRefresh();
       }
     }
   });
@@ -569,6 +571,7 @@ function setEditorContent(value) {
   syncingToastEditor = true;
   toastEditor.setMarkdown(sourceMarkdownToToastMarkdown(source), false);
   syncingToastEditor = false;
+  scheduleToastPreviewImageRefresh();
 }
 
 function getEditorContent() {
@@ -586,14 +589,7 @@ function syncToastEditorToSource() {
 }
 
 function sourceMarkdownToToastMarkdown(markdown) {
-  let next = String(markdown || "");
-  for (const image of pendingBodyImages) {
-    if (image.previewSrc) {
-      next = next.replaceAll(`(${image.path})`, `(${image.previewSrc})`);
-      next = next.replaceAll(`(/blog/${image.path})`, `(${image.previewSrc})`);
-    }
-  }
-  return next
+  return String(markdown || "")
     .replace(/\((assets\/[^)\s]+)\)/g, "(/blog/$1)")
     .replace(/\(\/assets\/([^)\s]+)\)/g, "(/blog/assets/$1)");
 }
@@ -603,11 +599,39 @@ function toastMarkdownToSourceMarkdown(markdown) {
   for (const image of pendingBodyImages) {
     if (image.previewSrc) {
       next = next.replaceAll(`(${image.previewSrc})`, `(${image.path})`);
+      next = next.replaceAll(`(${encodeURI(image.previewSrc)})`, `(${image.path})`);
     }
   }
   return next
+    .replace(/\(blob:[^)]+\)/g, (match) => {
+      const blobUrl = match.slice(1, -1);
+      const image = pendingBodyImages.find((item) => item.previewSrc === blobUrl);
+      return image ? `(${image.path})` : match;
+    })
     .replace(/\(\/blog\/assets\/([^)\s]+)\)/g, "(assets/$1)")
     .replace(/\(\/assets\/([^)\s]+)\)/g, "(assets/$1)");
+}
+
+function scheduleToastPreviewImageRefresh() {
+  if (!toastEditorContainer || !pendingBodyImages.length) return;
+  window.requestAnimationFrame(() => {
+    window.setTimeout(refreshToastPreviewImages, 0);
+  });
+}
+
+function refreshToastPreviewImages() {
+  if (!toastEditorContainer || !pendingBodyImages.length) return;
+  toastEditorContainer.querySelectorAll("img").forEach((imageElement) => {
+    const normalized = normalizeMarkdownImagePath(
+      imageElement.getAttribute("src") || imageElement.currentSrc || "",
+    );
+    if (!normalized) return;
+    const pendingImage = pendingBodyImages.find((image) => image.path === normalized);
+    if (!pendingImage?.previewSrc || imageElement.getAttribute("src") === pendingImage.previewSrc) {
+      return;
+    }
+    imageElement.setAttribute("src", pendingImage.previewSrc);
+  });
 }
 
 function handleEditorKeydown(event) {
@@ -1337,6 +1361,15 @@ function extractMarkdownImagePaths(markdown) {
 
 function normalizeMarkdownImagePath(path) {
   const text = String(path || "").trim();
+  if (/^https?:\/\//i.test(text)) {
+    try {
+      const url = new URL(text);
+      if (url.pathname.startsWith("/blog/assets/")) return url.pathname.slice("/blog/".length);
+      if (url.pathname.startsWith("/assets/")) return url.pathname.slice(1);
+    } catch {
+      return "";
+    }
+  }
   if (text.startsWith("/blog/assets/")) return text.slice("/blog/".length);
   if (text.startsWith("/assets/")) return text.slice(1);
   if (text.startsWith("assets/")) return text;

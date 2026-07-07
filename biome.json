@@ -18,7 +18,6 @@
       "!public/en/blog",
       "!public/ja/blog",
       "!public/zh/blog",
-      "!public/blog-assets",
       "!src/blog/posts",
       "!public/fonts",
       "!pnpm-lock.yaml",

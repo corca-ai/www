@@ -404,11 +404,24 @@ label {
 .toast-editor-shell .toastui-editor-defaultUI {
   border-color: var(--line);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .toast-editor-shell .toastui-editor-toolbar {
+  min-height: 62px;
+  overflow: visible;
+  padding-bottom: 8px;
   background: #f7f7fb;
+}
+
+.toast-editor-shell .toastui-editor-toolbar-group,
+.toast-editor-shell .toastui-editor-toolbar-icons,
+.toast-editor-shell .toastui-editor-defaultUI-toolbar {
+  overflow: visible;
+}
+
+.toast-editor-shell .toastui-editor-toolbar-icons {
+  min-height: 34px;
 }
 
 .toast-editor-shell .toastui-editor-contents,

@@ -145,9 +145,15 @@ try {
   });
 
   const posts = JSON.parse(await readFile(join(workDir, 'public/blog/posts/index.json'), 'utf8'));
+  const postsAlias = JSON.parse(await readFile(join(workDir, 'public/blog/index.json'), 'utf8'));
   const enPosts = JSON.parse(
     await readFile(join(workDir, 'public/en/blog/posts/index.json'), 'utf8'),
   );
+  const enPostsAlias = JSON.parse(
+    await readFile(join(workDir, 'public/en/blog/index.json'), 'utf8'),
+  );
+  assert.deepEqual(postsAlias, posts);
+  assert.deepEqual(enPostsAlias, enPosts);
   assert.equal(
     posts.some((post) => post.slug === 'notion-body-fixture'),
     true,

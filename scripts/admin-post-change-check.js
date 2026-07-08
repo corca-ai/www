@@ -106,10 +106,12 @@ This fixture intentionally includes enough article copy to pass the public post 
   assert.match(metadata.cover, /^assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png$/);
 
   const index = JSON.parse(await readFile(join(workDir, 'public/blog/posts/index.json'), 'utf8'));
+  const indexAlias = JSON.parse(await readFile(join(workDir, 'public/blog/index.json'), 'utf8'));
   assert.equal(index.length, 1);
   assert.equal(index[0].slug, slug);
   assert.equal(index[0].title, 'Admin Markdown Updated');
   assert.equal(index[0].cover, metadata.cover);
+  assert.deepEqual(indexAlias, index);
 
   const staticPage = await readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8');
   assert.match(staticPage, /Admin Markdown Updated/);
@@ -188,9 +190,13 @@ This fixture intentionally includes enough article copy to pass the public post 
     const localeIndex = JSON.parse(
       await readFile(join(workDir, `public/${locale}/blog/posts/index.json`), 'utf8'),
     );
+    const localeIndexAlias = JSON.parse(
+      await readFile(join(workDir, `public/${locale}/blog/index.json`), 'utf8'),
+    );
     assert.equal(localeIndex.length, 1);
     assert.equal(localeIndex[0].slug, slug);
     assert.match(localeIndex[0].title, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
+    assert.deepEqual(localeIndexAlias, localeIndex);
     assert.match(
       await readFile(join(workDir, `public/${locale}/blog/${slug}/index.html`), 'utf8'),
       /Admin Markdown Updated/,

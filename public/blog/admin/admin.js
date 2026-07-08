@@ -204,7 +204,7 @@ bodyImageInput.addEventListener("change", async () => {
       ...pendingBodyImages.filter((item) => item.path !== preparedImage.path),
       preparedImage
     ].slice(-6);
-    insertOrReplaceImageMarkdown(preparedImage.path, file.name.replace(/\.[^.]+$/, ""));
+    insertPreparedBodyImage(preparedImage, file.name.replace(/\.[^.]+$/, ""));
     adminMessage.textContent = "본문 이미지를 Markdown에 삽입했습니다. 저장 요청하면 함께 반영됩니다.";
   } catch (error) {
     adminMessage.textContent = error.message || "본문 이미지를 처리하지 못했습니다.";
@@ -765,9 +765,11 @@ function toastMarkdownToSourceMarkdown(markdown) {
 
 function scheduleToastPreviewImageRefresh() {
   if (!toastEditorContainer || !pendingBodyImages.length) return;
-  window.requestAnimationFrame(() => {
-    window.setTimeout(refreshToastPreviewImages, 0);
-  });
+  for (const delay of [0, 60, 180]) {
+    window.setTimeout(() => {
+      window.requestAnimationFrame(refreshToastPreviewImages);
+    }, delay);
+  }
 }
 
 function refreshToastPreviewImages() {
@@ -1112,6 +1114,28 @@ function insertOrReplaceImageMarkdown(path, altText) {
   commitEditorChange(next.value, start + prefix.length, start + prefix.length + imageMarkdown.length);
 }
 
+function insertPreparedBodyImage(preparedImage, altText) {
+  const imageMarkdown = `![${escapeMarkdownText(altText || "이미지")}](${preparedImage.path})`;
+  if (isToastEditorActive()) {
+    insertToastMarkdown(sourceMarkdownToToastMarkdown(imageMarkdown));
+    syncToastEditorToSource();
+    window.setTimeout(syncToastEditorToSource, 0);
+    scheduleToastPreviewImageRefresh();
+    return;
+  }
+  insertOrReplaceImageMarkdown(preparedImage.path, altText);
+}
+
+function insertToastMarkdown(markdown) {
+  const insertion = `\n\n${String(markdown || "").trim()}\n\n`;
+  if (typeof toastEditor.insertText === "function") {
+    toastEditor.insertText(insertion);
+    return;
+  }
+  const current = toastEditor.getMarkdown();
+  toastEditor.setMarkdown(`${String(current || "").trimEnd()}${insertion}`, true);
+}
+
 function deleteCurrentImageMarkdown() {
   const replacement = replaceCurrentImageSyntax(contentInput.value, "");
   if (!replacement) {
@@ -1454,7 +1478,7 @@ async function apiErrorMessage(response, fallback) {
   if (response.status === 503) {
     const detail = await responseErrorCode(response);
     if (detail === "asset_binding_unavailable") {
-      return "글 목록은 빌드된 /posts/index.json에서 읽습니다. 현재 Worker ASSETS binding이 없어 목록을 불러올 수 없습니다.";
+      return "글 목록은 빌드된 /index.json에서 읽습니다. 현재 Worker ASSETS binding이 없어 목록을 불러올 수 없습니다.";
     }
     if (detail === "missing_github_dispatch_token") {
       return `${fallback} (GitHub dispatch token이 설정되어 있지 않습니다.)`;

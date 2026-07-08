@@ -425,7 +425,7 @@ const defaultDocumentMeta = {
   title: document.title,
   description: document.querySelector('meta[name="description"]')?.getAttribute("content") || "",
   image: absoluteUrl(document.querySelector('meta[property="og:image"]')?.getAttribute("content") || "assets/editorial-cover.jpg"),
-  url: document.querySelector('link[rel="canonical"]')?.href || new URL(appPath("/"), window.location.origin).href
+  url: new URL(appPath("/"), window.location.origin).href
 };
 
 init();
@@ -1389,6 +1389,8 @@ function normalizeArticleAssetUrl(value, sourcePath) {
   if (text.startsWith("/")) {
     if (text.startsWith("/blog/assets/")) return text;
     if (text.startsWith("/assets/")) return `/blog${text}`;
+    if (text.startsWith("/blog/posts/")) return `/blog/${text.slice("/blog/posts/".length)}`;
+    if (text.startsWith("/posts/")) return appPath(`/${text.slice("/posts/".length)}`);
     return appPath(text);
   }
   const source = toRootPath(sourcePath || "/posts/post.html").replace(/^\//, "");
@@ -1399,7 +1401,7 @@ function normalizeArticleAssetUrl(value, sourcePath) {
   }
   const postIndex = resolved.pathname.indexOf("/posts/");
   if (postIndex >= 0) {
-    return appPath(resolved.pathname.slice(postIndex));
+    return appPath(`/${resolved.pathname.slice(postIndex + "/posts/".length)}`);
   }
   return text;
 }
@@ -2189,7 +2191,6 @@ function updateDocumentMeta(post) {
   const image = absoluteUrl(post.cover);
   const imageAlt = getPostImageAlt(post);
   document.title = `${post.title} | Corca Blog`;
-  setCanonical(getStaticPostUrl(post));
   setMeta("name", "description", post.description);
   setMeta("property", "og:title", post.title);
   setMeta("property", "og:description", post.description);
@@ -2280,11 +2281,16 @@ function getStaticPostUrl(post) {
 }
 
 function getStaticPostPath(post) {
-  return appPath(`/posts/${encodeURIComponent(post.slug)}`);
+  return appPath(`/${encodeURIComponent(post.slug)}`);
 }
 
 function getPostSlugFromLocation() {
-  return "";
+  const path = stripBasePath(window.location.pathname);
+  const match = path.match(/^\/([^/]+)\/?$/);
+  if (!match || match[1] === "index.html") {
+    return "";
+  }
+  return decodeURIComponent(match[1]);
 }
 
 function isLegacyPostQuery() {
@@ -2395,7 +2401,6 @@ function isHomePath() {
 
 function resetDocumentMeta() {
   document.title = defaultDocumentMeta.title;
-  setCanonical(defaultDocumentMeta.url);
   setMeta("name", "description", defaultDocumentMeta.description);
   setMeta("property", "og:title", "Corca Blog");
   setMeta("property", "og:description", defaultDocumentMeta.description);
@@ -2455,16 +2460,6 @@ function setRepeatedMeta(attribute, key, values) {
     element.setAttribute("content", value);
     document.head.append(element);
   }
-}
-
-function setCanonical(value) {
-  let element = document.querySelector('link[rel="canonical"]');
-  if (!element) {
-    element = document.createElement("link");
-    element.rel = "canonical";
-    document.head.append(element);
-  }
-  element.href = value;
 }
 
 function setStructuredData(payload) {

@@ -111,8 +111,13 @@ This fixture intentionally includes enough article copy to pass the public post 
   assert.equal(index[0].title, 'Admin Markdown Updated');
   assert.equal(index[0].cover, metadata.cover);
 
-  const staticPage = await readFile(join(workDir, `public/blog/posts/${slug}/index.html`), 'utf8');
+  const staticPage = await readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8');
   assert.match(staticPage, /Admin Markdown Updated/);
+  assert.doesNotMatch(
+    staticPage,
+    /<meta name="robots" content="index,follow,max-image-preview:large">/,
+  );
+  assert.doesNotMatch(staticPage, /<link rel="canonical"/);
   assert.match(staticPage, /<h4>Deeper Markdown Heading<\/h4>/);
   assert.match(staticPage, /<strong>bold<\/strong>/);
   assert.match(staticPage, /<blockquote>/);
@@ -146,8 +151,8 @@ This fixture intentionally includes enough article copy to pass the public post 
   const sitemapIndex = await readFile(join(workDir, 'public/blog/sitemap.xml'), 'utf8');
   assert.match(sitemapIndex, /\/sitemap-posts\.xml/);
   const sitemap = await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8');
-  assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/loc>/);
-  assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/posts\/admin-edit-fixture/);
+  assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture<\/loc>/);
+  assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/admin-edit-fixture/);
   assert.match(sitemap, /<\?xml-stylesheet type="text\/xsl" href="\/sitemap\.xsl"\?>/);
   assert.match(sitemap, /<lastmod>2026-02-03T00:00:00\.000Z<\/lastmod>/);
   assert.doesNotMatch(sitemap, /hreflang=/);
@@ -160,12 +165,12 @@ This fixture intentionally includes enough article copy to pass the public post 
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
   assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);
   assert.match(rss, /<atom:link href="https:\/\/www\.corca\.ai\/rss"/);
-  assert.match(rss, /<link>https:\/\/www\.corca\.ai\/blog\/posts\/admin-edit-fixture<\/link>/);
+  assert.match(rss, /<link>https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture<\/link>/);
   assert.match(rss, /<dc:creator><!\[CDATA\[Markdown Author\]\]><\/dc:creator>/);
   const feed = JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8'));
   assert.equal(feed.home_page_url, 'https://www.corca.ai/blog');
   assert.equal(
-    feed.items.some((item) => item.url === 'https://www.corca.ai/blog/posts/admin-edit-fixture'),
+    feed.items.some((item) => item.url === 'https://www.corca.ai/blog/admin-edit-fixture'),
     true,
   );
   assert.match(
@@ -187,7 +192,7 @@ This fixture intentionally includes enough article copy to pass the public post 
     assert.equal(localeIndex[0].slug, slug);
     assert.match(localeIndex[0].title, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
     assert.match(
-      await readFile(join(workDir, `public/${locale}/blog/posts/${slug}/index.html`), 'utf8'),
+      await readFile(join(workDir, `public/${locale}/blog/${slug}/index.html`), 'utf8'),
       /Admin Markdown Updated/,
     );
   }
@@ -242,6 +247,7 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
     ),
     false,
   );
+  await assert.rejects(readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8'), /ENOENT/);
   await assert.rejects(
     readFile(join(workDir, `public/blog/posts/${slug}/index.html`), 'utf8'),
     /ENOENT/,

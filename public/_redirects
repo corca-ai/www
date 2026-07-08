@@ -8,8 +8,12 @@
 /blog/rss.xml  /rss    302
 
 # Legacy Corca Blog URLs now live inside the integrated /blog section.
-/posts/:slug       /blog/posts/:slug       301
-/posts/:slug.html  /blog/posts/:slug       301
+/posts/:slug.html     /blog/:slug       301
+/posts/:slug          /blog/:slug       301
+/blog/posts/:slug     /blog/:slug       301
+/en/blog/posts/:slug  /en/blog/:slug    301
+/ja/blog/posts/:slug  /ja/blog/:slug    301
+/zh/blog/posts/:slug  /zh/blog/:slug    301
 
 # Page relocations (issues #26 #27 #30 #31 #32): the old flat URLs 301 to the
 # new /products and /about structure, per locale (ko default is un-prefixed).

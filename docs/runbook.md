@@ -49,7 +49,7 @@ described in [blog](blog.md).
 Published posts do not require a runtime database. When a post changes, keep
 `public/blog/posts/index.json`, the static post page, localized aliases, RSS,
 JSON feed and sitemap in sync. Verify `/blog`, `/en/blog`, `/ja/blog`,
-`/zh/blog`, `/blog/posts/<slug>`, `/blog/rss.xml` and `/blog/feed.json` before
+`/zh/blog`, `/blog/<slug>`, `/blog/rss.xml` and `/blog/feed.json` before
 shipping.
 
 ## Add a colleague

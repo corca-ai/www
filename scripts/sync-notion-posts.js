@@ -69,7 +69,7 @@ try {
     for (const item of processed) {
       await updateNotionResult(item.page, config, {
         status: statusFor(item.context.statusName, 'published', config),
-        publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/posts/${encodeURIComponent(item.slug)}`,
+        publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
         message: `Published ${item.slug}.`,
       });
     }

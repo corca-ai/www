@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>缓存什么以及在你的身上刻上什么 | Corca Blog</title>
+    <meta name="description" content="这是一篇关于谷物的文章，将局部性和缓存重新解读为生产力的语言，并总结了区分什么应该托付给法学硕士和什么应该刻在自己身上的意义。">
+    <meta property="og:title" content="缓存什么以及在你的身上刻上什么">
+    <meta property="og:description" content="这是一篇关于谷物的文章，将局部性和缓存重新解读为生产力的语言，并总结了区分什么应该托付给法学硕士和什么应该刻在自己身上的意义。">
+    <meta property="og:site_name" content="Corca Blog">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:secure_url" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:alt" content="缓存什么以及在你的身上刻上什么 代表图片">
+    <meta property="og:url" content="https://www.borca.ai/zh/blog/ceal-terview-locality-cache-with-image">
+    <meta property="article:published_time" content="2026-05-28T00:00:00.000Z">
+    <meta property="article:modified_time" content="2026-05-28T00:00:00.000Z">
+    <meta property="article:author" content="최정혁">
+    <meta property="article:section" content="AX">
+    <meta property="article:tag" content="AX">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="缓存什么以及在你的身上刻上什么">
+    <meta name="twitter:description" content="这是一篇关于谷物的文章，将局部性和缓存重新解读为生产力的语言，并总结了区分什么应该托付给法学硕士和什么应该刻在自己身上的意义。">
+    <meta name="twitter:image" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta name="twitter:image:alt" content="缓存什么以及在你的身上刻上什么 代表图片">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
+    <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
+    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"缓存什么以及在你的身上刻上什么","description":"这是一篇关于谷物的文章，将局部性和缓存重新解读为生产力的语言，并总结了区分什么应该托付给法学硕士和什么应该刻在自己身上的意义。","image":"https://www.borca.ai/blog/assets/editorial-cover.jpg","thumbnailUrl":"https://www.borca.ai/blog/assets/editorial-cover.jpg","url":"https://www.borca.ai/zh/blog/ceal-terview-locality-cache-with-image","keywords":["AX"],"articleSection":"AX","wordCount":2637,"datePublished":"2026-05-28","dateModified":"2026-05-28","author":{"@type":"Organization","name":"최정혁"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"zh-CN","timeRequired":"PT6M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.borca.ai/blog"},"mainEntityOfPage":"https://www.borca.ai/zh/blog/ceal-terview-locality-cache-with-image"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.borca.ai/blog"},{"@type":"ListItem","position":2,"name":"文章","item":"https://www.borca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"缓存什么以及在你的身上刻上什么"}]}]}</script>
+    <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
+    <link rel="stylesheet" href="/blog/styles.css">
+  </head>
+  <body><a href="#main" class="sr-only rounded-lg bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]">跳转到正文</a><header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur corca-main-header" data-astro-cid-nen7h5rs><div class="container-c flex h-[66px] items-center justify-between gap-4" data-astro-cid-nen7h5rs><!-- Logo --><a href="/zh" class="flex shrink-0 items-center" aria-label="Corca home" data-astro-cid-nen7h5rs><img src="/_astro/logo.CMq5nUD9_2vNMar.webp" srcset="/_astro/logo.CMq5nUD9_2vNMar.webp 1x, /_astro/logo.CMq5nUD9_UUefI.webp 2x, /_astro/logo.CMq5nUD9_ZCyRCx.webp 3x" alt="Corca" loading="eager" data-astro-cid-nen7h5rs="true" decoding="async" width="104" height="30" class="h-[20px] w-auto md:h-[32px]"></a><!-- Desktop navigation --><nav class="hidden items-center gap-11 md:flex" aria-label="主导航" data-astro-cid-nen7h5rs><!-- Products (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/zh/products" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>产品介绍<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/zh/products/moonlight" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Moonlight</a><a href="/zh/products/trace" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Trace</a></div></div><!-- About (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/zh/about" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>公司介绍<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/zh/about/vision-mission" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>愿景与使命</a><a href="/zh/about/how-we-work" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>我们的工作方式</a><a href="/zh/news" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>新闻报道</a><a href="/zh/about/colleagues" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Corca 的伙伴们</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>招聘</a><a href="/zh/blog" aria-current="page" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>博客</a></nav><!-- Right side: language switcher (desktop) + hamburger (mobile) --><div class="flex items-center gap-2" data-astro-cid-nen7h5rs><details class="lang-switch relative block" data-astro-cid-nen7h5rs><summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-[14px] font-medium text-[#324158]" aria-label="选择语言" data-astro-cid-nen7h5rs>ZH<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></summary><ul class="absolute right-0 top-full mt-2 min-w-[72px] overflow-hidden rounded-xl border border-black/5 bg-white py-1 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)]" data-astro-cid-nen7h5rs><li data-astro-cid-nen7h5rs><a href="/blog/ceal-terview-locality-cache-with-image" hreflang="ko-KR" aria-label="한국어" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>KO</a></li><li data-astro-cid-nen7h5rs><a href="/en/blog/ceal-terview-locality-cache-with-image" hreflang="en-US" aria-label="English" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>EN</a></li><li data-astro-cid-nen7h5rs><a href="/ja/blog/ceal-terview-locality-cache-with-image" hreflang="ja-JP" aria-label="日本語" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>JA</a></li><li data-astro-cid-nen7h5rs><a href="/zh/blog/ceal-terview-locality-cache-with-image" hreflang="zh-CN" aria-label="中文" aria-current="true" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 font-semibold text-brand" data-astro-cid-nen7h5rs>ZH</a></li></ul></details><!-- Mobile hamburger (JS-enhanced, keyboard accessible) --><button type="button" id="menu-btn" class="flex cursor-pointer items-center p-2 md:hidden" aria-label="菜单" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-nen7h5rs><svg class="menu-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg><svg class="menu-icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg></button><!-- Mobile menu panel --><div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white md:hidden" data-astro-cid-nen7h5rs><nav class="container-c flex flex-col py-2" aria-label="菜单" data-astro-cid-nen7h5rs><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/zh/products" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>产品介绍</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/zh/products/moonlight" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Moonlight</a><a href="/zh/products/trace" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Trace</a></div></div><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/zh/about" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>公司介绍</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/zh/about/vision-mission" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>愿景与使命</a><a href="/zh/about/how-we-work" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>我们的工作方式</a><a href="/zh/news" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>新闻报道</a><a href="/zh/about/colleagues" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Corca 的伙伴们</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>招聘</a><a href="/zh/blog" aria-current="page" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>博客</a><div class="flex gap-2 py-4" data-astro-cid-nen7h5rs><a href="/blog/ceal-terview-locality-cache-with-image" hreflang="ko-KR" aria-label="한국어" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>KO</a><a href="/en/blog/ceal-terview-locality-cache-with-image" hreflang="en-US" aria-label="English" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>EN</a><a href="/ja/blog/ceal-terview-locality-cache-with-image" hreflang="ja-JP" aria-label="日本語" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>JA</a><a href="/zh/blog/ceal-terview-locality-cache-with-image" hreflang="zh-CN" aria-label="中文" aria-current="true" class="rounded-full border px-4 py-1.5 text-[14px] border-brand font-semibold text-brand" data-astro-cid-nen7h5rs>ZH</a></div></nav></div></div></div></header><script type="module">var e=document.getElementById(`menu-btn`),t=document.getElementById(`mobile-menu`);if(e&&t){let n=e.querySelector(`.menu-icon-open`),r=e.querySelector(`.menu-icon-close`),i=i=>{e.setAttribute(`aria-expanded`,String(i)),t.hidden=!i,n?.classList.toggle(`hidden`,i),r?.classList.toggle(`hidden`,!i),document.documentElement.style.overflow=i?`hidden`:``};e.addEventListener(`click`,()=>i(!!t.hidden)),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&i(!1)}),document.addEventListener(`keydown`,n=>{n.key===`Escape`&&!t.hidden&&(i(!1),e.focus())}),window.addEventListener(`resize`,()=>{window.innerWidth>=768&&!t.hidden&&i(!1)})}var n=document.querySelector(`details.lang-switch`);n&&(document.addEventListener(`click`,e=>{n.open&&!n.contains(e.target)&&(n.open=!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n.open&&(n.open=!1,n.querySelector(`summary`)?.focus())}));</script><main id="main" tabindex="-1">
+      <section class="post-view static-post-view">
+        <article id="article" class="article static-article">
+          <header class="article-header">
+            <h1>缓存什么以及在你的身上刻上什么</h1>
+            <p>这是一篇关于谷物的文章，将局部性和缓存重新解读为生产力的语言，并总结了区分什么应该托付给法学硕士和什么应该刻在自己身上的意义。</p>
+            <div class="article-meta">
+              <span class="meta-item"><time datetime="2026-05-28">2026年5月28日</time></span>
+              <span class="meta-item">최정혁</span>
+            </div>
+          </header>
+          <div class="article-content">
+<header class="hero">
+        <div class="eyebrow">Ceal-terview·AX分享会</div>
+        <h1>缓存什么，<br/>身体上要刻什么</h1>
+        <p class="subtitle">崔正赫5/28 AX分享活动公告<strong>“地点和我自己的缓存”</strong>基于此，我们将生产力重新解读为一种选择“靠近什么”和“有意通过什么”的感觉，而不是简单的自动化。</p>
+        <div class="meta">
+          <span class="pill">主讲人：崔正赫</span>
+          <span class="pill">来源：2026-05-28 AX分享会</span>
+          <span class="pill">主题：局部性·缓存·LLM委托判断</span>
+        </div>
+      </header>
+
+      <div class="content">
+        <p class="lead">本文并不是止于“写入剪贴板历史记录”的提示集合。正赫在演讲和采访中提出的观点更为广泛。我们刚刚写的命令、刚刚复制的句子、刚刚打开的对话都保留了我们当前工作的流程。与其每次都把它放在抽屉深处，不如把它放在靠近桌子的地方。正赫在CS里说过这句话<em>参考地点</em>哇，用凯茜的感觉解释了。</p>
+
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">尽管这是一个仓促选择的主题，但为什么这次演讲感觉像是你可以立即谈论的事情，正赫？</p>
+        </div>
+        <p>正赫的第一个回答从演讲一开始就出奇地诚实。话题很快就定下来了。原来的主持人辉东前一天出现了困难，因此请正赫代替他进行演示。然而，虽然这是一个仓促的项目，但这并不意味着它是空手而归。</p>
+        <p>在此之前的一周，Jeong Hyeok已经给几位同事传授了剪贴板管理和shell命令历史管理等技巧。 “现在，我们来总结一下这一部分。这是我长期以来保持的心智模型，所以我想我可以很快地准备好，而且还是有营养的。”演示来得突然，但资料已经放在了工作台上。</p>
+
+        <div class="quote"><strong>关键句候选</strong><br/>最近的命令和剪贴板历史记录是我刚刚经历过的想法的密切痕迹。</div>
+
+        <h2 id="section-1">将本地化视为一种商业工具<a class="heading-anchor" href="#section-1" tabindex="-1" aria-label="将本地化视为一种商业工具 섹션 링크"></a></h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">您希望同事在听到您的演讲后立即采取的一项行动是什么？</p>
+        </div>
+        <p>正赫建议的最具体的行动是每个人都有自己的<strong>剪贴板历史记录</strong>我们的想法是安装该功能并使用它。工具可以是 Raycast、Alfred 或 Hammerspoon 等选项。在 shell 端，执行历史搜索和先前命令的重写。<code>hstr</code>, 熟悉的<code>ctrl+r</code>相同的习惯属于同一个系列。</p>
+        <p>这个习惯的价值比“使复制和粘贴更快”更深一些。最近复制的文本和最近输入的命令保留了您刚刚执行的操作的上下文。当前的工作很大程度上与之前的工作相关。既然如此，自然就留下痕迹，以便可以从附近的地方找回，而不是每次都得重新寻找。</p>
+
+        <div class="grid">
+          <section class="card">
+            <h3>很高兴保持在附近</h3>
+            <ul>
+              <li>刚刚输入的shell命令</li>
+              <li>最近复制的文本和链接</li>
+              <li>AI聊天上下文刚刚交换</li>
+              <li>关闭与当前工作相关的 Slack、Notion 和 Figma 的记录</li>
+            </ul>
+          </section>
+          <section class="card">
+            <h3>预期的变化</h3>
+            <ul>
+              <li>不要重复相同的搜索</li>
+              <li>不要中断工作流程</li>
+              <li>将刚刚经过的想法视为可重复使用的线索</li>
+              <li>创建适合您的小型缓存层次结构</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="quiz" id="quiz" data-next-label="다음 질문" data-finish-label="연습 마치기" data-complete-title="판단 연습 완료" data-complete-message="이제 글의 기준을 실제 작업 하나에 적용해보면 됩니다." data-quiz='[{"question":"정혁님 발표에서 “로컬 캐시”에 가장 가까운 예는 무엇인가요?","choices":["오래된 문서를 매번 처음부터 검색하기","최근 명령어와 클립보드 히스토리를 다시 꺼내 쓰기","모든 작업을 LLM에게 바로 위임하기"],"answer":1,"explanation":"최근 작업에는 현재 사고의 흐름이 남아 있으므로, 가까운 흔적을 다시 꺼내 쓰는 것이 locality의 업무적 활용에 가깝습니다."},{"question":"LLM에게 바로 맡기기보다 일부러 직접 해볼 만한 경우는?","choices":["이미 충분히 잘하고 결과만 필요한 일","당장 내 것으로 만들 생각이 없는 일","도구의 조작감과 멘탈 모델을 손에 익혀야 하는 일"],"answer":2,"explanation":"tmux 단축키처럼 몸에 새겨야 하는 조작은 느리게 직접 통과하는 시간이 나중의 fluency를 만듭니다."},{"question":"이 글의 생산성 관점에 가장 가까운 문장은?","choices":["생산성은 가능한 모든 일을 위임하는 능력이다","생산성은 무엇을 가까이 두고, 무엇을 직접 새길지 고르는 감각이다","생산성은 자동화를 최대한 미루는 태도다"],"answer":1,"explanation":"핵심은 자동화 찬반이 아니라, 캐시할 것과 몸에 새길 것을 구분하는 판단입니다."}]'>
+          <h3>简短的判断练习</h3>
+          <p class="note">他们一次一个地出来。目的是练习写作的判断标准，而不是猜测正确答案。</p>
+          <div id="quizQuestion" data-quiz-question></div>
+          <div class="choices" id="quizChoices" data-quiz-choices></div>
+          <div class="feedback" id="quizFeedback" data-quiz-feedback aria-live="polite"></div>
+          <button id="quizNext" data-quiz-next style="display:none" disabled>下一个问题</button>
+        </div>
+
+        <h2 id="section-2">但你不应该缓存所有内容<a class="heading-anchor" href="#section-2" tabindex="-1" aria-label="但你不应该缓存所有内容 섹션 링크"></a></h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">您用什么标准来判断演讲原文中“需要刻意把握时机的例外”？</p>
+        </div>
+        <p>这是写作方向发生重要转变的地方。起初，“为我缓存”这个表达似乎集中在将所有内容放入附近的存储中并快速将其取出。然而，正赫显然例外了。在学习 UI 或掌握心智模型时，有时您必须有意识地手动进行操作。</p>
+        <p>与正赫的场景是<code>tmux</code>是的。我本可以告诉法学硕士，“像这样分割窗口。”不过，他特意翻看了几遍快捷键列表，手动调整了一下。<code>ctrl+b</code>目的是为了学习入门的感觉。只要有结果，LLM就很快。然而，为了掌握工作空间，有时需要缓慢遍历。</p>
+
+        <div class="quote"><strong>校正对比度</strong><br/>命令历史记录和剪贴板历史记录是“紧密的痕迹”。然而，你在身体和思维中需要学习的不是缓存，而是正确的雕刻。</div>
+
+
+
+        <figure class="visual-figure" aria-label="Before와 After 방식의 에이전트 위임 구조 비교 이미지">
+          <img src="/blog/assets/post-images/ceal-terview-locality-cache-with-image-figure-01.png" alt="Before: delegate 안에 rigor가 들어가고 그 안에 doubt가 중첩된 구조. After: delegate, rigor, doubt가 각각 분리되어 agent로 내려가는 구조." />
+          <figcaption><strong>改变授权结构的例证。</strong>不是将验证和怀疑分层到一个请求中，而是将需要委托的任务、需要严格确认的任务和需要怀疑的任务分开并发送给坐席，判断标准会变得更加清晰。</figcaption>
+        </figure>
+
+        <h2 id="section-3">什么可以委托给LLM，什么不可以委托给LLM<a class="heading-anchor" href="#section-3" tabindex="-1" aria-label="什么可以委托给LLM，什么不可以委托给LLM 섹션 링크"></a></h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">希尔问道。</span>
+          <p class="ceal-q-text">区分必须有目的地处理而不是留给LLM的任务和可以简单地命令给LLM的任务的标准是什么？</p>
+        </div>
+        <p>正赫的标准很简单。如果这是你已经擅长的事情或者你不打算立即自己做的事情，你可以要求LLM去做。另一方面，需要掌握的东西、需要培养肌肉记忆的东西、需要学习理解的东西，都是自己刻意一步步做的，甚至要求LLM“帮我做”。</p>
+        <p>该标准并不是为了减少 LLM 的使用。相反，它更接近更好授权的标准。要知道什么可以留给外部工具，你必须知道什么应该留在你自己内部。正赫提到的“雕刻”这个词在这里很重要。缓存是可以快速访问和使用的就近存储。铭刻是慢慢地、反复地放入身体和思想的基本层中的东西。</p>
+        <p>正赫主要使用“雕刻”这个词来表示熟悉的重复。然而，重复并不以简单的机械训练结束。随着重复处理碎片的流畅度的提高，最终会带来更高层次的理解。换句话说，记住快捷方式的行为会在某些时候改变您查看工作区的方式。</p>
+
+        <div class="checkpoint">
+          <h3>安静的检查站</h3>
+          <p>想一想今天我想委托给我的法学硕士的一项任务。这项工作是“我已经知道的东西，或者不需要立即制作成我自己的东西”，还是“我需要雕刻到自己手中的东西，即使它很慢”？</p>
+          <button id="revealCheckpoint" data-checkpoint-toggle aria-expanded="false">查看评论</button>
+          <div class="quiet-answer" id="checkpointAnswer" data-checkpoint-answer>
+            <p>作为这篇文章的标准，我先看“是否应该留在我体内”，然后再看速度。如果你只需要结果并且对你的下一个决定没有太大影响，那么委托是可以的。另一方面，如果它是你将来会经常处理的基本操作、思维方式和工具的心智模型，那么从长远来看，至少自己过一遍会带来更大的流畅性。</p>
+          </div>
+        </div>
+
+        <h2 id="section-4">仅通过授权技巧无法实现生产力。<a class="heading-anchor" href="#section-4" tabindex="-1" aria-label="仅通过授权技巧无法实现生产力。 섹션 링크"></a></h2>
+        <div class="ceal-q">
+          <span class="ceal-q-label">小麦打结了</span>
+          <p class="ceal-q-text">这篇文章的结论是更接近于“区分什么该托付给LLM，什么该刻自己”，还是更接近“故意低效地重复需要刻的东西”？</p>
+        </div>
+        <p>正赫要求采访者以理智的方式结束这一部分。因此，本文不是仅选择两者之一，而是将这两个句子连接起来。</p>
+        <p><strong>人工智能时代的生产力不是来自于将一切委托给别人的能力，而是来自于选择不委托什么的意识。</strong></p>
+        <p>不授权并不意味着拒绝工具。是否攻读LLM并不是禁欲的问题。标准是：“这个能力是可以放在我的体外，还是应该刻在我的身体和思想里？”你可以把你已经擅长的或者你现在不需要自己做的LLM工作留给你。但是<code>tmux</code>的<code>ctrl+b</code>就像，当谈到创造我的工作空间感时，暂时采取缓慢的路径实际上会在以后走上更快的路径。</p>
+        <p>Locality 和 Cathy 告诉我们“不要忘记过去的想法”。至于正赫的例外，这里补充一句。 “该靠近的就靠近，该刻的不要太快。”</p>
+
+        <div class="ending">
+          <h2 id="section-5">您可以立即尝试的一个小实验<a class="heading-anchor" href="#section-5" tabindex="-1" aria-label="您可以立即尝试的一个小实验 섹션 링크"></a></h2>
+          <ul>
+            <li>打开剪贴板历史记录工具，全天记录您检索和重写“刚刚复制的内容”的时刻。</li>
+            <li>有意识地使用shell命令历史搜索，减少重复输入的命令数量。</li>
+            <li>在询问 LLM 之前，请停顿 10 秒并询问。 “我只需要一个结果，还是应该把它刻在手上？”</li>
+          </ul>
+        </div>
+      </div>
+          </div>
+        </article>
+        <aside class="toc static-toc" aria-label="目录">
+          <section class="toc-section" aria-label="目录">
+            <strong>目录</strong>
+            <ol>
+              <li><a href="#section-1">将本地化视为一种商业工具</a></li>
+              <li><a href="#section-2">但你不应该缓存所有内容</a></li>
+              <li><a href="#section-3">什么可以委托给LLM，什么不可以委托给LLM</a></li>
+              <li><a href="#section-4">仅通过授权技巧无法实现生产力。</a></li>
+              <li><a href="#section-5">您可以立即尝试的一个小实验</a></li>
+            </ol>
+          </section>
+          <section class="toc-recommendations" aria-label="推荐文章">
+            <strong>推荐文章</strong>
+            <div class="toc-recommendation-list">
+              <a class="toc-recommendation" href="/zh/blog/axhibit-ceal-terview-redraft-with-image">
+                <span>Axhibit：设计评审成为可生产性判断的时刻</span>
+                <small><time datetime="2026-06-29">2026年6月29日</time> · 송기성</small>
+              </a>              <a class="toc-recommendation" href="/zh/blog/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image">
+                <span>不要说一些你尚未证实的事实的话</span>
+                <small><time datetime="2026-06-25">2026年6月25日</time> · 김예린</small>
+              </a>              <a class="toc-recommendation" href="/zh/blog/ceal-operations-team">
+                <span>运营团队的新同事 Ceal</span>
+                <small><time datetime="2026-05-13">2026年5月13日</time> · 김선영(HR Manager)</small>
+              </a>
+            </div>
+          </section>
+        </aside>
+        <nav class="post-pagination" aria-label="글 이동">
+        <a class="related-card post-pagination-card post-pagination-previous" href="/zh/blog/ceal-operations-team" aria-label="上一篇: 运营团队的新同事 Ceal">
+          <span class="related-cue" aria-hidden="true">←</span>
+          <span class="related-meta">上一篇 · <strong>AX</strong> · <time datetime="2026-05-13">2026年5月13日</time></span>
+          <strong>运营团队的新同事 Ceal</strong>
+        </a>        <a class="related-card post-pagination-card post-pagination-next" href="/zh/blog/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image" aria-label="下一篇: 不要说一些你尚未证实的事实的话">
+          <span class="related-cue" aria-hidden="true">→</span>
+          <span class="related-meta">下一篇 · <strong>AX</strong> · <time datetime="2026-06-25">2026年6月25日</time></span>
+          <strong>不要说一些你尚未证实的事实的话</strong>
+        </a>
+        </nav>
+      </section>
+    </main><footer class="bg-footer text-white/70 corca-main-footer"><div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left"><img src="/_astro/logo-white.YSg021rB_Z1XeFQO.webp" srcset="/_astro/logo-white.YSg021rB_Z1XeFQO.webp 1x, /_astro/logo-white.YSg021rB_qFSmC.webp 2x, /_astro/logo-white.YSg021rB_1zm5a0.webp 3x" alt="Corca" loading="lazy" decoding="async" width="120" height="35" class="h-[34px] w-auto opacity-90"><address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]"><p>韩国首尔特别市江南区德黑兰路77街11-8, 6层 Corca株式会社</p><p><a href="tel:+82-2-6925-6978">Tel: +82-2-6925-6978</a><span class="inline-block w-3"></span><a href="mailto:contact@corca.ai">contact@corca.ai</a></p></address><p class="text-[12px] text-[#bbbbbb]">© 2026 Corca, Inc.</p></div></footer><script type="module">var e=document.querySelectorAll(`[data-reveal]`);if(e.length>0&&`IntersectionObserver`in window){let t=new IntersectionObserver(e=>{for(let n of e)n.isIntersecting&&(n.target.classList.add(`is-visible`),t.unobserve(n.target))},{threshold:.15,rootMargin:`0px 0px -10% 0px`});for(let n of e)t.observe(n)}else for(let t of e)t.classList.add(`is-visible`);</script></body>
+</html>

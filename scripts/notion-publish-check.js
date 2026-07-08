@@ -168,7 +168,7 @@ try {
     /"sourceFormat": "markdown"/,
   );
   assert.match(
-    await readFile(join(workDir, 'public/blog/posts/notion-body-fixture/index.html'), 'utf8'),
+    await readFile(join(workDir, 'public/blog/notion-body-fixture/index.html'), 'utf8'),
     /노션 본문 발행 확인/,
   );
   assert.match(
@@ -179,24 +179,24 @@ try {
     /\[en\] 노션 본문 발행 확인/,
   );
   assert.match(
-    await readFile(join(workDir, 'public/en/blog/posts/notion-html-fixture/index.html'), 'utf8'),
-    /href="\/en\/blog\/posts\/notion-html-fixture" hreflang="en-US"/,
+    await readFile(join(workDir, 'public/en/blog/notion-html-fixture/index.html'), 'utf8'),
+    /href="\/en\/blog\/notion-html-fixture" hreflang="en-US"/,
   );
   assert.match(
     await readFile(updatesPath, 'utf8'),
-    /https:\/\/www\.borca\.ai\/blog\/posts\/notion-body-fixture/,
+    /https:\/\/www\.borca\.ai\/blog\/notion-body-fixture/,
   );
   assert.match(
     await readFile(updatesPath, 'utf8'),
-    /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture/,
+    /https:\/\/www\.borca\.ai\/en\/blog\/notion-html-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
-    /https:\/\/www\.borca\.ai\/en\/blog\/posts\/notion-html-fixture/,
+    /https:\/\/www\.borca\.ai\/en\/blog\/notion-html-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
-    /https:\/\/www\.borca\.ai\/blog\/posts\/notion-body-fixture/,
+    /https:\/\/www\.borca\.ai\/blog\/notion-body-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),

@@ -16,8 +16,8 @@ top-level pages.
 - `public/blog/app.js` and `public/blog/styles.css` — the client-side blog
   experience: search, sorting, pagination, saved posts, recent reads, reading
   settings, reading progress, reactions, sharing and download actions.
-- `public/blog/posts/` — static article pages and `posts/index.json`, the public
-  post index consumed by the blog app.
+- `public/blog/<slug>/` — static article pages.
+- `public/blog/posts/index.json` — the public post index consumed by the blog app.
 - `public/en/blog/`, `public/ja/blog/` and `public/zh/blog/` — localized public
   blog shells that reuse the same Korean article content while matching the
   main site's language-specific header, footer and language switcher.
@@ -35,9 +35,9 @@ places them in `dist/blog/`.
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
   the corresponding main-site navigation language.
-- `/blog/posts/<slug>` loads the corresponding static article page.
-- `/en/blog/posts/<slug>`, `/ja/blog/posts/<slug>` and
-  `/zh/blog/posts/<slug>` provide localized-shell aliases for public articles.
+- `/blog/<slug>` loads the corresponding static article page.
+- `/en/blog/<slug>`, `/ja/blog/<slug>` and `/zh/blog/<slug>` provide
+  localized-shell aliases for public articles.
 - `/blog/posts/index.json` powers the public article list.
 - `/blog/admin` loads the admin UI.
 - `/api/admin/*` is handled by `worker/index.ts`.
@@ -52,7 +52,7 @@ Blog data is deployed as Cloudflare Workers Static Assets. There is no runtime
 database for published posts.
 
 - Public reads use static files such as `/blog/posts/index.json` and
-  `/blog/posts/<slug>/index.html`.
+  `/blog/<slug>/index.html`.
 - Admin read APIs use the `ASSETS` binding to read `/blog/posts/index.json` and
   `/blog/admin/post-sources/<slug>.html`.
 - Direct browser access to `/blog/admin/post-sources/*.html` is blocked by the

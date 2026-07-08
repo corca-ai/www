@@ -375,7 +375,7 @@ const listShareIcon = `<svg class="action-icon share-icon" aria-hidden="true" fo
 const listDownloadIcon = `<svg class="action-icon download-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>`;
 const buttonFeedbackTimers = new WeakMap();
 
-const skipLink = document.querySelector(".skip-link");
+const skipLink = document.querySelector(".skip-link, body > a[href='#main']");
 const postList = document.querySelector("#postList");
 const siteHeader = document.querySelector(".corca-main-header");
 const siteFooter = document.querySelector(".corca-main-footer");
@@ -433,7 +433,7 @@ init();
 async function init() {
   try {
     restorePrefs();
-    state.posts = normalizePosts(await fetchJson(appPath("/posts/index.json")));
+    state.posts = normalizePosts(await fetchPostIndex());
     applyDiscoveryParamsFromLocation();
     reconcileDiscoveryPrefs();
     renderPosts();
@@ -450,15 +450,21 @@ async function init() {
     }
   } catch (error) {
     showList();
-    postList.classList.remove("is-loading");
-    postList.removeAttribute("aria-busy");
-    postList.setAttribute("aria-label", localeText().postListLabel);
-    postList.hidden = true;
-    postList.innerHTML = "";
-    resultCount.textContent = localeText().retryLater;
-    emptyState.hidden = false;
-    emptyState.innerHTML = `${escapeHtml(localeText().loadFailure)} <span class="empty-state-detail">${escapeHtml(localeText().networkRetry)}</span> <button class="text-button compact empty-state-action" type="button" data-retry-post-load>${escapeHtml(localeText().retry)}</button>`;
-    emptyState.querySelector("[data-retry-post-load]")?.addEventListener("click", () => {
+    postList?.classList.remove("is-loading");
+    postList?.removeAttribute("aria-busy");
+    postList?.setAttribute("aria-label", localeText().postListLabel);
+    if (postList) {
+      postList.hidden = true;
+      postList.innerHTML = "";
+    }
+    if (resultCount) {
+      resultCount.textContent = localeText().retryLater;
+    }
+    if (emptyState) {
+      emptyState.hidden = false;
+      emptyState.innerHTML = `${escapeHtml(localeText().loadFailure)} <span class="empty-state-detail">${escapeHtml(localeText().networkRetry)}</span> <button class="text-button compact empty-state-action" type="button" data-retry-post-load>${escapeHtml(localeText().retry)}</button>`;
+    }
+    emptyState?.querySelector("[data-retry-post-load]")?.addEventListener("click", () => {
       window.location.reload();
     });
     console.error(error);
@@ -683,6 +689,19 @@ async function fetchJson(path) {
     throw new Error(`${path} fetch failed`);
   }
   return response.json();
+}
+
+async function fetchPostIndex() {
+  const preferredPath = appPath("/index.json");
+  try {
+    return await fetchJson(preferredPath);
+  } catch (error) {
+    const legacyPath = appPath("/posts/index.json");
+    if (legacyPath === preferredPath) {
+      throw error;
+    }
+    return fetchJson(legacyPath);
+  }
 }
 
 async function fetchText(path) {
@@ -1596,7 +1615,9 @@ function renderArchiveMeta(post) {
 function showList() {
   state.articleRequestId += 1;
   closeReadingSettings();
-  skipLink.href = "#posts";
+  if (skipLink) {
+    skipLink.href = "#posts";
+  }
   setHidden(postView, true);
   setHidden(siteHeader, false);
   setHidden(siteFooter, false);
@@ -1618,7 +1639,9 @@ function showList() {
 
 function showPostView() {
   closeReadingSettings();
-  skipLink.href = "#postArticle";
+  if (skipLink) {
+    skipLink.href = "#postArticle";
+  }
   setHidden(siteHeader, false);
   setHidden(siteFooter, false);
   setHidden(heroSection, true);

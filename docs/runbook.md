@@ -47,10 +47,10 @@ Notion publishing can also update those static files through the workflows
 described in [blog](blog.md).
 
 Published posts do not require a runtime database. When a post changes, keep
-`public/blog/posts/index.json`, the static post page, localized aliases, RSS,
-JSON feed and sitemap in sync. Verify `/blog`, `/en/blog`, `/ja/blog`,
-`/zh/blog`, `/blog/<slug>`, `/blog/rss.xml` and `/blog/feed.json` before
-shipping.
+`public/blog/index.json`, `public/blog/posts/index.json`, the static post page,
+localized aliases, RSS, JSON feed and sitemap in sync. Verify `/blog`,
+`/en/blog`, `/ja/blog`, `/zh/blog`, `/blog/<slug>`, `/rss` and
+`/blog/feed.json` before shipping.
 
 ## Add a colleague
 

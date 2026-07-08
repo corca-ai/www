@@ -17,7 +17,9 @@ top-level pages.
   experience: search, sorting, pagination, saved posts, recent reads, reading
   settings, reading progress, reactions, sharing and download actions.
 - `public/blog/<slug>/` — static article pages.
-- `public/blog/posts/index.json` — the public post index consumed by the blog app.
+- `public/blog/index.json` — the public post index consumed by the blog app.
+- `public/blog/posts/index.json` — the legacy-compatible public post index used
+  by admin APIs and older clients.
 - `public/en/blog/`, `public/ja/blog/` and `public/zh/blog/` — localized public
   blog shells that reuse the same Korean article content while matching the
   main site's language-specific header, footer and language switcher.
@@ -38,7 +40,8 @@ places them in `dist/blog/`.
 - `/blog/<slug>` loads the corresponding static article page.
 - `/en/blog/<slug>`, `/ja/blog/<slug>` and `/zh/blog/<slug>` provide
   localized-shell aliases for public articles.
-- `/blog/posts/index.json` powers the public article list.
+- `/blog/index.json` powers the public article list. `/blog/posts/index.json`
+  remains available for admin APIs and older clients.
 - `/blog/admin` loads the admin UI.
 - `/api/admin/*` is handled by `worker/index.ts`.
 - `/blog/rss.xml` and `/blog/feed.json` expose the blog feeds.
@@ -51,7 +54,7 @@ host and no trailing slash except for the root path.
 Blog data is deployed as Cloudflare Workers Static Assets. There is no runtime
 database for published posts.
 
-- Public reads use static files such as `/blog/posts/index.json` and
+- Public reads use static files such as `/blog/index.json` and
   `/blog/<slug>/index.html`.
 - Admin read APIs use the `ASSETS` binding to read `/blog/posts/index.json` and
   `/blog/admin/post-sources/<slug>.html`.
@@ -144,8 +147,8 @@ When changing blog files, keep these invariants:
   `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`.
 - Admin source files under `/blog/admin/post-sources/` must remain unavailable
   to direct browser requests.
-- `posts/index.json`, static post pages, RSS, JSON feed and sitemap should be
-  updated together.
+- `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
+  sitemap should be updated together.
 - Admin-driven post changes should be checked with `npm run blog:admin:check`
   when changing the workflow or scripts.
 - Run the normal project gates from [development](development.md) before

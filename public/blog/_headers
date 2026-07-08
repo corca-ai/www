@@ -19,6 +19,9 @@
 /posts/index.json
   Cache-Control: no-store
 
+/index.json
+  Cache-Control: no-store
+
 /feed.json
   Cache-Control: no-store
 

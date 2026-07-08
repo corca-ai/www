@@ -611,11 +611,10 @@ async function syncPostIndex() {
   for (const locale of supportedLocales) {
     const localePostsDir = join(repoRoot, localePaths[locale], 'posts');
     const localePosts = postRecordsByLocale.get(locale).map((record) => record.post);
+    const indexJson = `${JSON.stringify(localePosts, null, 2)}\n`;
     await mkdir(localePostsDir, { recursive: true });
-    await writeFile(
-      join(localePostsDir, 'index.json'),
-      `${JSON.stringify(localePosts, null, 2)}\n`,
-    );
+    await writeFile(join(localePostsDir, 'index.json'), indexJson);
+    await writeFile(join(repoRoot, localePaths[locale], 'index.json'), indexJson);
   }
   console.log(
     `Synced ${baseRecords.length} posts into ${supportedLocales.length} locale post indexes.`,

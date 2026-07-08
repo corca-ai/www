@@ -3,98 +3,86 @@ Date: 2026-07-08
 
 ## Problem
 
-www.borca.ai blog list loading fails with a 404 and `Uncaught (in promise) TypeError: Cannot set properties of null (setting 'href')` at `showList` in `public/blog/app.js`; the blog admin post list also fails after login with `Failed to load resource: the server responded with a status of 502 ()`.
+In the blog admin Markdown editor, inserting a body image does not show the image in the Markdown preview/editor preview.
 
 ## Correct Behavior
 
-Given a visitor opens `/blog`, when the blog script initializes, then it should load the static post index, render posts, and update optional feed/share links only when the corresponding DOM nodes exist. Given an authenticated admin opens `/blog/admin`, when the admin UI requests `/api/admin/posts`, then the Worker should read the same static post index without hitting legacy article redirects.
+Given an admin edits a Markdown post, when they insert an uploaded body image through the custom `+IMG` control or Toast UI image control, then the editor content should include image Markdown, the preview should display the selected local image before save, and the saved payload should still reference the deployable `assets/admin-posts/...` path.
 
 ## Observed Facts
 
-- User reported console errors: `Failed to load resource: the server responded with a status of 404 ()` and `app.js:1599 Uncaught (in promise) TypeError: Cannot set properties of null (setting 'href')`.
-- User then reported the admin page still has no post list and logs `Failed to load resource: the server responded with a status of 502 ()`.
-- Blog architecture expects public reads from static `/blog/posts/index.json`.
-- Investigation is on `agent/fix-blog-loading` branched from updated `main`.
+- User reported that image insertion in Markdown format does not show images in Markdown preview.
+- The admin UI has two editor surfaces: a hidden source textarea/manual preview and a Toast UI Markdown editor.
+- Previous related incident in this PR fixed blog/admin post-index loading by moving read paths to `/blog/index.json`.
 
 ## Reproduction
 
-- Production `curl -I https://www.borca.ai/blog/posts/index.json` returned `301` to `/blog/index.json`.
-- Production `curl -L https://www.borca.ai/blog/posts/index.json` returned the blog 404 HTML, not JSON.
-- Source inspection showed `_redirects` maps `/blog/posts/:slug` to `/blog/:slug`, so `index.json` was treated as a slug.
-- Source inspection showed `showList()` assigns `skipLink.href`, but the generated shell skip link has no `.skip-link` class.
-- Source inspection showed `worker/index.ts` still read `/blog/posts/index.json` for authenticated `GET /api/admin/posts`, and returns `502` when the asset response is not OK.
+- Source inspection showed `bodyImageInput` always called `insertOrReplaceImageMarkdown(...)`, which mutates `contentInput` and manual preview only.
+- Source inspection showed `updateMarkdownPreview()` exits early when Toast UI is active, so the manual preview updated by `insertOrReplaceImageMarkdown(...)` is hidden/reset.
+- Source inspection showed Toast UI's own `addImageBlobHook` inserted `/blog/assets/...` first and depended on a single async DOM refresh to replace that not-yet-uploaded URL with the local blob preview.
 
 ## Candidate Causes
 
-- Confirmed: static post index path was redirected incorrectly, producing the 404 before rendering.
-- Confirmed: `showList()` assumed `.skip-link` exists, but the generated shell exposes only `body > a[href="#main"]`.
-- Confirmed: admin post list used the same redirect-conflicted post index path through the Worker ASSETS binding.
-- Disconfirmed for the primary failure: locale shell divergence was not required; the Korean `/blog/posts/index.json` path also redirected to a missing alias.
+- Confirmed: custom image upload path updated the hidden textarea while Toast UI was the visible Markdown editor.
+- Confirmed: Toast preview image refresh was timing-sensitive and could run before Toast UI rendered its image DOM.
+- Disconfirmed: final post generation image handling is not the immediate preview failure; `apply-admin-post-change.js` already accepts `bodyImages` and writes `assets/admin-posts/...`.
 
 ## Hypothesis
 
 - Claim type: attribution.
-- Candidate claim: `/blog/posts/:slug` redirects capture `index.json`, and the missing redirect target plus missing skip-link class cause the observed public 404/null error; the Worker admin list endpoint reuses the same conflicted asset path and therefore can return 502 after authentication.
-- disconfirmer: production `curl -I`/`curl -L` for `/blog/posts/index.json`, source grep for `.skip-link` and generated blog shell skip link, source grep for Worker admin asset reads, then local alias HEAD checks after the fix.
-- Result: confirmed.
+- Candidate claim: the visible Toast UI preview misses uploaded images because custom uploads bypass Toast insertion, and Toast image DOM replacement only runs once.
+- disconfirmer: inspect `bodyImageInput` and Toast image hook control flow, then verify the fix updates Toast content and retries preview image refresh while preserving source `assets/admin-posts/...` paths.
+- Result: confirmed by source inspection and implemented control-flow change.
 
 ## Verification
 
-- `npm run blog:admin:check` passed.
-- `npm run notion:check` passed.
-- `node --check public/blog/app.js` passed.
-- `curl -I http://127.0.0.1:8097/{blog,en/blog,ja/blog,zh/blog}/index.json` returned `200 OK` for all four aliases.
-- `npm run build` passed and produced `dist/{blog,en/blog,ja/blog,zh/blog}/index.json`.
+- `node --check public/blog/admin/admin.js` passed.
+- `python3 /Users/koleuka/.codex/plugins/cache/charness/charness/0.62.0/scripts/validate_debug_artifact.py --repo-root .` passed.
 - `npm exec pnpm@10.22.0 -- run check` passed; only existing deprecation hints were reported.
-- Follow-up admin fix changed `worker/index.ts` to read `/blog/index.json` for `GET /api/admin/posts`.
+- `npm run build` passed.
 
 ## Root Cause
 
-The public app and admin Worker list endpoint fetched `/blog/posts/index.json`, but production redirect rules treat `/blog/posts/:slug` as legacy article URLs. That rule captured `index.json` and redirected to `/blog/index.json`, which did not exist. The public init catch path then called `showList()`, where `skipLink` was `null` because generated blog HTML did not include `.skip-link`, causing the reported uncaught promise rejection. The admin endpoint returned `502` because its asset read was not OK.
+The admin editor kept two Markdown surfaces in sync, but the custom image upload path only wrote to the hidden source textarea. When Toast UI was active, the visible editor and its preview did not receive the inserted image Markdown. Toast UI image insertion also rendered a deploy path before save, so the code had to replace rendered image nodes with local blob URLs; the refresh was scheduled only once and could miss Toast's render timing.
 
 ## Invariant Proof
 
-- Invariant: public post-list data URLs must not share the legacy article redirect namespace.
-- Producer Proof: `scripts/apply-admin-post-change.js` now writes both `posts/index.json` and `index.json` for all locales.
-- Final-Consumer Proof: `public/blog/app.js` now reads `appPath("/index.json")` first, and `worker/index.ts` now reads `/blog/index.json` for admin lists; local server HEAD checks proved all four aliases exist.
-- Interface-Shape Sibling Scan: blog shell skip links are selected by `.skip-link` or `body > a[href="#main"]`, and assignment is guarded.
-- Non-Claims: in-app browser automation was unavailable in this session; no visual browser screenshot is claimed.
+- Invariant: inserted body images must update the currently visible Markdown editor and preview while preserving deployable source Markdown paths.
+- Producer Proof: `prepareBodyImage(...)` still produces `path: assets/admin-posts/...` and `previewSrc: blob:...`.
+- Final-Consumer Proof: custom upload now inserts into Toast UI when active; source sync still converts Toast `/blog/assets/...` or blob URLs back to `assets/...`.
+- Interface-Shape Sibling Scan: Toast UI hook and custom `+IMG` now both schedule repeated preview image refreshes.
+- Non-Claims: no authenticated production browser roundtrip was run in this session.
 
 ## Detection Gap
 
-- `scripts/admin-post-change-check.js` and `scripts/notion-publish-check.js` | checked `posts/index.json` but not the public app alias path that avoids `_redirects` | added deep equality assertions for root and locale `index.json` aliases.
-- `worker/index.ts` admin path | reused the legacy public post index path after the public app moved to the alias | updated admin API to consume `/blog/index.json`.
-- Static route check | no check caught `_redirects` capturing a data file path | prevention is to keep the app's primary fetch under `index.json`, outside the legacy article namespace.
+- `node --check`/build | syntax only, no editor interaction coverage | add focused UI/e2e coverage for Markdown image insertion if this surface keeps changing.
+- Manual preview checks | custom textarea preview and Toast preview were treated as equivalent | fix updates the visible editor path directly.
 
 ## Sibling Search
 
-- Mental model: public data files can live under the same path segment as legacy article redirects without being captured.
-- same layer: `public/_redirects:13-16` legacy `/blog/posts/:slug` rules | decision: same bug, fix now through non-conflicting public alias | proof: production curl plus source inspection.
-- abstraction up: generated post index writers in `scripts/apply-admin-post-change.js` | decision: same bug, fix now by writing alias files for all locales | proof: admin and Notion checks.
-- mental-model sibling: `public/blog/app.js` assumed optional shell DOM existed on failure | decision: same bug, fix now by selecting the generated skip link and guarding writes | proof: static shell inspection and JS syntax check.
-- same layer: `worker/index.ts` admin list asset read | decision: same bug, fix now by switching to `/blog/index.json` | proof: source grep and user-reported 502 matches the endpoint's non-OK asset response branch.
-- cross-file: `scripts/admin-post-change-check.js` and `scripts/notion-publish-check.js` now assert alias parity outside the subject file.
+- Mental model: updating the source textarea is equivalent to updating the visible Markdown editor.
+- same layer: `bodyImageInput` custom upload path | decision: same bug, fix now | proof: source inspection.
+- same layer: Toast `addImageBlobHook` preview replacement | decision: same class, diagnostic-only for this slice | proof: source inspection; fixed with retry refresh.
+- abstraction up: saved payload extraction from `pendingBodyImages` | decision: intentional boundary, no change | proof: source path remains `assets/admin-posts/...`.
+- cross-file: `scripts/apply-admin-post-change.js` body image handling inspected as final consumer.
 
 ## Seam Risk
 
-- Interrupt ID: blog-static-dom-contract
+- Interrupt ID: admin-markdown-image-preview
 - Risk Class: none
-- Seam: static HTML shell to client script selectors
-- Disproving Observation: none
-- What Local Reasoning Cannot Prove: none
+- Seam: Toast UI editor DOM render timing
+- Disproving Observation: source-level fix and syntax checks only
+- What Local Reasoning Cannot Prove: exact production browser timing after Toast UI CDN load
 - Generalization Pressure: none
 
 ## Interrupt Decision
 
 - Resolution: resolved
-- Critique Required: yes
+- Critique Required: no
 - Next Step: impl
 - Handoff Artifact: none
 
 ## Prevention
 
-- Keep public app data reads on `/blog/index.json` and locale equivalents, outside `/blog/posts/:slug`.
-- Keep admin Worker list reads on `/blog/index.json` too, so public and admin consumers share the redirect-safe post index.
-- Generate and test `index.json` aliases together with `posts/index.json` for admin and Notion publishing flows.
-- Guard optional shell DOM writes in failure paths so the recovery UI cannot mask the original network failure with a second exception.
-- Repair-risk critique completed inline: alias drift and cached app.js were the main risks; generator assertions and script URL cache busting mitigate them.
+- Keep editor mutations routed through the visible editor when Toast UI is active.
+- Retry Toast preview blob substitution across short render delays instead of assuming one DOM pass is enough.

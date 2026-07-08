@@ -18,6 +18,7 @@ interface Env {
 const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const adminApiPattern = /^\/api\/admin(?:\/(.*))?$/;
 const adminPostSourcePattern = /^\/blog\/admin\/post-sources\/[^/]+\.html$/;
+const blogPostIndexPath = '/blog/index.json';
 const adminSessionCookie = 'corca_blog_admin';
 const adminSessionMaxAge = 60 * 60 * 12;
 const defaultAdminPasswordHash = '364c4b1132e54f92e32e55339d44679dda228d5073b0f6e77afabbf7ce088800';
@@ -185,7 +186,7 @@ function adminPasswordHash(env: Env): string {
 }
 
 async function listAdminPosts(request: Request, env: Env): Promise<Response> {
-  const response = await fetchAsset(env, request, '/blog/posts/index.json');
+  const response = await fetchAsset(env, request, blogPostIndexPath);
   if (!response.ok) return json({ error: 'posts_unavailable', status: response.status }, 502);
   return json({ posts: await response.json() }, 200);
 }

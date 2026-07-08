@@ -56,7 +56,7 @@ database for published posts.
 
 - Public reads use static files such as `/blog/index.json` and
   `/blog/<slug>/index.html`.
-- Admin read APIs use the `ASSETS` binding to read `/blog/posts/index.json` and
+- Admin read APIs use the `ASSETS` binding to read `/blog/index.json` and
   `/blog/admin/post-sources/<slug>.html`.
 - Direct browser access to `/blog/admin/post-sources/*.html` is blocked by the
   Worker; those files exist so authenticated admin APIs can load editable source

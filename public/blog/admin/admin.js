@@ -1454,7 +1454,7 @@ async function apiErrorMessage(response, fallback) {
   if (response.status === 503) {
     const detail = await responseErrorCode(response);
     if (detail === "asset_binding_unavailable") {
-      return "글 목록은 빌드된 /posts/index.json에서 읽습니다. 현재 Worker ASSETS binding이 없어 목록을 불러올 수 없습니다.";
+      return "글 목록은 빌드된 /index.json에서 읽습니다. 현재 Worker ASSETS binding이 없어 목록을 불러올 수 없습니다.";
     }
     if (detail === "missing_github_dispatch_token") {
       return `${fallback} (GitHub dispatch token이 설정되어 있지 않습니다.)`;

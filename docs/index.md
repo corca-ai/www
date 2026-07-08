@@ -17,6 +17,7 @@ in front of you:
 | understand the stack, route ownership, canonical URLs, analytics, or Worker role | [Architecture](architecture.md) |
 | understand the integrated blog structure, admin APIs, Notion publishing, or static asset contract | [Blog](blog.md) |
 | add or update news, blog posts, colleagues, static pages, locales, domains, or analytics | [Runbook](runbook.md) |
+| write or review inclusive, accessible, evidence-based content | [Content guidelines](content-guidelines.md) |
 | add or update a product page | [Product pages](products.md) |
 | change translations, localized content, or locale behavior | [Internationalization](i18n.md) |
 | inspect exact lint, formatting, duplication, docs, hook, and CI gates | [Code quality](code-quality.md) |

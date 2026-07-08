@@ -129,12 +129,20 @@
                 <div class="content-editor">
                   <div id="toastEditor" class="toast-editor-shell" hidden></div>
                   <textarea id="contentInput" rows="20" required></textarea>
-                  <aside id="markdownPreviewPanel" class="markdown-preview-panel" aria-label="Markdown 미리보기">
+                  <aside id="markdownPreviewPanel" class="markdown-preview-panel" aria-label="본문 미리보기">
                     <div class="preview-heading">
                       <strong>미리보기</strong>
                       <span id="previewStatus">Markdown</span>
                     </div>
                     <div id="markdownPreview" class="markdown-preview article-content"></div>
+                    <iframe
+                      id="htmlPreview"
+                      class="html-preview-frame"
+                      title="HTML 미리보기"
+                      sandbox="allow-popups allow-popups-to-escape-sandbox"
+                      hidden
+                    ></iframe>
+                    <dl id="previewInspector" class="preview-inspector" hidden></dl>
                   </aside>
                 </div>
               </label>

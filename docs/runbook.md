@@ -9,7 +9,8 @@ self-contained edit that flows through the normal build, so after any of them ru
 the gates described in [contributing](contributing.md) and ship with
 [deployment](deployment.md). The structure these steps touch is mapped in
 [architecture](architecture.md), and the translation model behind them is
-covered in [i18n](i18n.md).
+covered in [i18n](i18n.md). Before publishing user-facing copy, check it against
+the inclusive and evidence-based standards in the [content guidelines](content-guidelines.md).
 
 ## Add a news article
 

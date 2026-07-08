@@ -15,6 +15,8 @@ const contentLabel = document.querySelector("#contentLabel");
 const markdownToolbar = document.querySelector("#markdownToolbar");
 const markdownPreviewPanel = document.querySelector("#markdownPreviewPanel");
 const markdownPreview = document.querySelector("#markdownPreview");
+const htmlPreview = document.querySelector("#htmlPreview");
+const previewInspector = document.querySelector("#previewInspector");
 const previewStatus = document.querySelector("#previewStatus");
 const colorInput = document.querySelector("#colorInput");
 const slashCommandMenu = document.querySelector("#slashCommandMenu");
@@ -433,10 +435,10 @@ function setEditorDisabled(disabled) {
 
 function updateEditorMode() {
   const isMarkdown = fields.format.value === "markdown";
-  contentLabel.textContent = isMarkdown ? "Markdown 수정" : "HTML 파일 재업로드";
+  contentLabel.textContent = isMarkdown ? "Markdown 수정" : "HTML 수정";
   const toastActive = isToastEditorActive();
   markdownToolbar.hidden = !isMarkdown || toastActive;
-  markdownPreviewPanel.hidden = !isMarkdown || toastActive;
+  markdownPreviewPanel.hidden = toastActive;
   contentInput.hidden = toastActive;
   contentInput.required = !toastActive;
   if (toastEditorContainer) {
@@ -466,22 +468,171 @@ function scheduleMarkdownPreview() {
 function updateMarkdownPreview() {
   if (isToastEditorActive()) {
     previewStatus.textContent = "TOAST UI";
+    resetManualPreview();
     hideSlashCommandMenu();
     return;
   }
   if (fields.format.value !== "markdown") {
-    markdownPreview.innerHTML = "";
-    previewStatus.textContent = "HTML";
+    renderHtmlPreview(contentInput.value);
     hideSlashCommandMenu();
     return;
   }
   const markdown = contentInput.value.trim();
+  htmlPreview.hidden = true;
+  previewInspector.hidden = true;
+  markdownPreview.hidden = false;
   previewStatus.textContent = markdown ? "실시간" : "비어 있음";
   preserveEditorScroll(() => {
     markdownPreview.innerHTML = markdown
       ? markdownToHtml(contentInput.value)
       : `<p class="preview-empty">Markdown을 입력하면 여기에 미리보기가 표시됩니다.</p>`;
   });
+}
+
+function resetManualPreview() {
+  markdownPreview.innerHTML = "";
+  markdownPreview.hidden = false;
+  htmlPreview.hidden = true;
+  htmlPreview.removeAttribute("srcdoc");
+  previewInspector.hidden = true;
+  previewInspector.innerHTML = "";
+}
+
+function renderHtmlPreview(source) {
+  const html = String(source || "").trim();
+  markdownPreview.hidden = true;
+  htmlPreview.hidden = false;
+  previewInspector.hidden = false;
+  previewStatus.textContent = html ? "HTML 실시간" : "비어 있음";
+  htmlPreview.srcdoc = html ? buildHtmlPreviewDocument(html) : emptyHtmlPreviewDocument();
+  renderPreviewInspector(html ? summarizeHtml(html) : emptyHtmlSummary());
+}
+
+function buildHtmlPreviewDocument(source) {
+  const parser = new DOMParser();
+  const parsed = parser.parseFromString(source, "text/html");
+  sanitizePreviewDocument(parsed);
+
+  const hasDocumentShell = /<html[\s>]/i.test(source) || /<!doctype/i.test(source);
+  if (hasDocumentShell) {
+    ensurePreviewBase(parsed);
+    ensurePreviewViewport(parsed);
+    return `<!doctype html>\n${parsed.documentElement.outerHTML}`;
+  }
+
+  const fragment = parsed.body.innerHTML;
+  return `<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/blog/admin/post-sources/${encodeURIComponent(activeSlug || "preview")}.html">
+    <style>${htmlPreviewCss()}</style>
+  </head>
+  <body>
+    <article class="article-content">${fragment || '<p class="preview-empty">HTML을 입력하면 여기에 미리보기가 표시됩니다.</p>'}</article>
+  </body>
+</html>`;
+}
+
+function emptyHtmlPreviewDocument() {
+  return `<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>${htmlPreviewCss()}</style>
+  </head>
+  <body><p class="preview-empty">HTML을 입력하면 여기에 미리보기가 표시됩니다.</p></body>
+</html>`;
+}
+
+function sanitizePreviewDocument(documentNode) {
+  documentNode.querySelectorAll("script, object, embed").forEach((element) => element.remove());
+  documentNode.querySelectorAll("*").forEach((element) => {
+    for (const attribute of [...element.attributes]) {
+      const name = attribute.name.toLowerCase();
+      const value = String(attribute.value || "").trim();
+      if (name.startsWith("on") || /^javascript:/i.test(value)) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+  });
+}
+
+function ensurePreviewBase(documentNode) {
+  if (documentNode.head.querySelector("base")) return;
+  const base = documentNode.createElement("base");
+  base.href = `/blog/admin/post-sources/${encodeURIComponent(activeSlug || "preview")}.html`;
+  documentNode.head.prepend(base);
+}
+
+function ensurePreviewViewport(documentNode) {
+  if (documentNode.head.querySelector('meta[name="viewport"]')) return;
+  const viewport = documentNode.createElement("meta");
+  viewport.name = "viewport";
+  viewport.content = "width=device-width, initial-scale=1";
+  documentNode.head.prepend(viewport);
+}
+
+function htmlPreviewCss() {
+  return `
+    :root { color-scheme: light; }
+    body {
+      margin: 0;
+      padding: 20px;
+      color: #1d1d1f;
+      font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Inter, system-ui, sans-serif;
+      line-height: 1.65;
+    }
+    img, video, iframe { max-width: 100%; }
+    img { height: auto; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #e4e4ea; padding: 8px; text-align: left; }
+    pre { overflow: auto; border-radius: 8px; background: #17181c; color: #f6f7fb; padding: 14px; }
+    code { border-radius: 5px; background: #f0f1f4; padding: 2px 5px; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+    blockquote { margin: 18px 0; padding: 12px 14px; border-left: 3px solid #0066cc; background: #f7f9fc; }
+    .preview-empty { color: #6e6e73; font-weight: 700; }
+  `;
+}
+
+function summarizeHtml(source) {
+  const parser = new DOMParser();
+  const parsed = parser.parseFromString(source, "text/html");
+  const headings = parsed.querySelectorAll("h1,h2,h3,h4,h5,h6").length;
+  const links = parsed.querySelectorAll("a[href]").length;
+  const images = parsed.querySelectorAll("img[src]").length;
+  const tables = parsed.querySelectorAll("table").length;
+  const forms = parsed.querySelectorAll("form,input,button,select,textarea").length;
+  const scripts = parsed.querySelectorAll("script,[onclick],[onload],[onerror],[onchange],[onsubmit]").length;
+  return [
+    ["제목", `${headings}개`],
+    ["링크", `${links}개`],
+    ["이미지", `${images}개`],
+    ["표", `${tables}개`],
+    ["폼 요소", `${forms}개`],
+    ["스크립트 차단", scripts ? `${scripts}개` : "없음"]
+  ];
+}
+
+function emptyHtmlSummary() {
+  return [
+    ["제목", "0개"],
+    ["링크", "0개"],
+    ["이미지", "0개"],
+    ["표", "0개"],
+    ["폼 요소", "0개"],
+    ["스크립트 차단", "없음"]
+  ];
+}
+
+function renderPreviewInspector(items) {
+  previewInspector.innerHTML = items
+    .map(
+      ([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`,
+    )
+    .join("");
 }
 
 function initToastEditor() {

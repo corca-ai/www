@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VOC 响应代理构建器 | Corca Blog</title>
+    <meta name="description" content="我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。">
+    <meta property="og:title" content="VOC 响应代理构建器">
+    <meta property="og:description" content="我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。">
+    <meta property="og:site_name" content="Corca Blog">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:secure_url" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:alt" content="VOC 响应代理构建器 代表图片">
+    <meta property="og:url" content="https://www.borca.ai/zh/blog/voc-agent">
+    <meta property="article:published_time" content="2026-04-22T00:00:00.000Z">
+    <meta property="article:modified_time" content="2026-04-22T00:00:00.000Z">
+    <meta property="article:author" content="하동훈(Software Engineer)">
+    <meta property="article:section" content="AX">
+    <meta property="article:tag" content="AX">
+    <meta property="article:tag" content="Product">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VOC 响应代理构建器">
+    <meta name="twitter:description" content="我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。">
+    <meta name="twitter:image" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta name="twitter:image:alt" content="VOC 响应代理构建器 代表图片">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
+    <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
+    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"VOC 响应代理构建器","description":"我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。","image":"https://www.borca.ai/blog/assets/editorial-cover.jpg","thumbnailUrl":"https://www.borca.ai/blog/assets/editorial-cover.jpg","url":"https://www.borca.ai/zh/blog/voc-agent","keywords":["AX","Product"],"articleSection":"AX","wordCount":2564,"datePublished":"2026-04-22","dateModified":"2026-04-22","author":{"@type":"Organization","name":"하동훈(Software Engineer)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"zh-CN","timeRequired":"PT6M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.borca.ai/blog"},"mainEntityOfPage":"https://www.borca.ai/zh/blog/voc-agent"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.borca.ai/blog"},{"@type":"ListItem","position":2,"name":"文章","item":"https://www.borca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"VOC 响应代理构建器"}]}]}</script>
+    <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
+    <link rel="stylesheet" href="/blog/styles.css">
+  </head>
+  <body><a href="#main" class="sr-only rounded-lg bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]">跳转到正文</a><header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur corca-main-header" data-astro-cid-nen7h5rs><div class="container-c flex h-[66px] items-center justify-between gap-4" data-astro-cid-nen7h5rs><!-- Logo --><a href="/zh" class="flex shrink-0 items-center" aria-label="Corca home" data-astro-cid-nen7h5rs><img src="/_astro/logo.CMq5nUD9_2vNMar.webp" srcset="/_astro/logo.CMq5nUD9_2vNMar.webp 1x, /_astro/logo.CMq5nUD9_UUefI.webp 2x, /_astro/logo.CMq5nUD9_ZCyRCx.webp 3x" alt="Corca" loading="eager" data-astro-cid-nen7h5rs="true" decoding="async" width="104" height="30" class="h-[20px] w-auto md:h-[32px]"></a><!-- Desktop navigation --><nav class="hidden items-center gap-11 md:flex" aria-label="主导航" data-astro-cid-nen7h5rs><!-- Products (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/zh/products" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>产品介绍<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/zh/products/moonlight" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Moonlight</a><a href="/zh/products/trace" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Trace</a></div></div><!-- About (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/zh/about" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>公司介绍<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/zh/about/vision-mission" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>愿景与使命</a><a href="/zh/about/how-we-work" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>我们的工作方式</a><a href="/zh/news" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>新闻报道</a><a href="/zh/about/colleagues" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Corca 的伙伴们</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>招聘</a><a href="/zh/blog" aria-current="page" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>博客</a></nav><!-- Right side: language switcher (desktop) + hamburger (mobile) --><div class="flex items-center gap-2" data-astro-cid-nen7h5rs><details class="lang-switch relative block" data-astro-cid-nen7h5rs><summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-[14px] font-medium text-[#324158]" aria-label="选择语言" data-astro-cid-nen7h5rs>ZH<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></summary><ul class="absolute right-0 top-full mt-2 min-w-[72px] overflow-hidden rounded-xl border border-black/5 bg-white py-1 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)]" data-astro-cid-nen7h5rs><li data-astro-cid-nen7h5rs><a href="/blog/voc-agent" hreflang="ko-KR" aria-label="한국어" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>KO</a></li><li data-astro-cid-nen7h5rs><a href="/en/blog/voc-agent" hreflang="en-US" aria-label="English" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>EN</a></li><li data-astro-cid-nen7h5rs><a href="/ja/blog/voc-agent" hreflang="ja-JP" aria-label="日本語" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>JA</a></li><li data-astro-cid-nen7h5rs><a href="/zh/blog/voc-agent" hreflang="zh-CN" aria-label="中文" aria-current="true" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 font-semibold text-brand" data-astro-cid-nen7h5rs>ZH</a></li></ul></details><!-- Mobile hamburger (JS-enhanced, keyboard accessible) --><button type="button" id="menu-btn" class="flex cursor-pointer items-center p-2 md:hidden" aria-label="菜单" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-nen7h5rs><svg class="menu-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg><svg class="menu-icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg></button><!-- Mobile menu panel --><div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white md:hidden" data-astro-cid-nen7h5rs><nav class="container-c flex flex-col py-2" aria-label="菜单" data-astro-cid-nen7h5rs><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/zh/products" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>产品介绍</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/zh/products/moonlight" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Moonlight</a><a href="/zh/products/trace" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Trace</a></div></div><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/zh/about" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>公司介绍</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/zh/about/vision-mission" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>愿景与使命</a><a href="/zh/about/how-we-work" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>我们的工作方式</a><a href="/zh/news" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>新闻报道</a><a href="/zh/about/colleagues" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Corca 的伙伴们</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>招聘</a><a href="/zh/blog" aria-current="page" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>博客</a><div class="flex gap-2 py-4" data-astro-cid-nen7h5rs><a href="/blog/voc-agent" hreflang="ko-KR" aria-label="한국어" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>KO</a><a href="/en/blog/voc-agent" hreflang="en-US" aria-label="English" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>EN</a><a href="/ja/blog/voc-agent" hreflang="ja-JP" aria-label="日本語" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>JA</a><a href="/zh/blog/voc-agent" hreflang="zh-CN" aria-label="中文" aria-current="true" class="rounded-full border px-4 py-1.5 text-[14px] border-brand font-semibold text-brand" data-astro-cid-nen7h5rs>ZH</a></div></nav></div></div></div></header><script type="module">var e=document.getElementById(`menu-btn`),t=document.getElementById(`mobile-menu`);if(e&&t){let n=e.querySelector(`.menu-icon-open`),r=e.querySelector(`.menu-icon-close`),i=i=>{e.setAttribute(`aria-expanded`,String(i)),t.hidden=!i,n?.classList.toggle(`hidden`,i),r?.classList.toggle(`hidden`,!i),document.documentElement.style.overflow=i?`hidden`:``};e.addEventListener(`click`,()=>i(!!t.hidden)),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&i(!1)}),document.addEventListener(`keydown`,n=>{n.key===`Escape`&&!t.hidden&&(i(!1),e.focus())}),window.addEventListener(`resize`,()=>{window.innerWidth>=768&&!t.hidden&&i(!1)})}var n=document.querySelector(`details.lang-switch`);n&&(document.addEventListener(`click`,e=>{n.open&&!n.contains(e.target)&&(n.open=!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n.open&&(n.open=!1,n.querySelector(`summary`)?.focus())}));</script><main id="main" tabindex="-1">
+      <section class="post-view static-post-view">
+        <article id="article" class="article static-article">
+          <header class="article-header">
+            <h1>VOC 响应代理构建器</h1>
+            <p>我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。</p>
+            <div class="article-meta">
+              <span class="meta-item"><time datetime="2026-04-22">2026年4月22日</time></span>
+              <span class="meta-item">하동훈(Software Engineer)</span>
+            </div>
+          </header>
+          <div class="article-content">
+<p class="eyebrow">Corca 中档案</p>
+      <h1>VOC 响应代理构建器</h1>
+      <div class="meta"><span class="pill">2026-04-22</span><span class="pill">河东勋（软件工程师）</span></div>
+      <hr />
+      <figure><img alt="" src="/blog/assets/medium-import/voc-agent-figure-01.png" width="1020" height="574" loading="lazy" decoding="async" /></figure>
+      <h2 id="section-1">进入<a class="heading-anchor" href="#section-1" tabindex="-1" aria-label="进入 섹션 링크"></a></h2>
+      <p>最近，Moonlight团队一直在与代理一起处理VoC响应流程。在这篇文章中，我将尝试总结一下我在这个过程中遇到的问题以及我是如何解决的。</p>
+      <p>我开始这个项目的原因是因为一个小团队正在处理大量的 VoC，团队成员之间的疲劳正在积累，我开始思考如何解决这个问题以及如何更有效地处理它。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/231/1*ag8Ao0EvjZlmFLLproywuQ.png" loading="lazy" decoding="async" /><figcaption>请求对 VOC 响应的支持</figcaption></figure>
+      <p>实际的 VoC 响应并不以写下一个句子作为响应而结束。您应该阅读查询，检查政策文档，查看代码库，必要时搜索数据库，如果您仍然难以决定，请向熟悉上下文的团队成员再次询问问题。换句话说，VoC回应是一项比写作更接近询问和判断的任务。</p>
+      <p>最近出现了具有各种人工智能功能的客户服务自动化工具。然而，团队需要的不是一个通用的答案生成器，而是一种像实际团队成员一样访问我们服务的策略、代码、数据和上下文以及查询和查询的方法。</p>
+      <h2 id="section-2">问题出在哪里？<a class="heading-anchor" href="#section-2" tabindex="-1" aria-label="问题出在哪里？ 섹션 링크"></a></h2>
+      <p>存在三个问题。</p>
+      <p>首先，一个小团队每天必须处理超过 10 个传入的 VoC，无论是时间还是上下文切换成本都是如此。</p>
+      <p>其次，每个团队成员的背景不同，因此确认的依据和回答的方法也存在差异。如果我无法立即记住在哪里可以找到我需要的证据，我就必须询问另一位团队成员。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/590/1*FhYCa3yZXehklgT7rcUb5Q.png" loading="lazy" decoding="async" /></figure>
+      <p>第三，即使我们尝试自动化回答，仅用通用的人工智能回答功能也很难访问内部上下文。在现实世界的操作中，这种限制很明显，因为扎根的反应比自然的句子更重要。</p>
+      <p>所以我们想解决两个问题。一是运营效率问题，可以用更少的人员处理更多的 VoC；另一个是质量问题，反映实际的服务环境和内部原理。</p>
+      <p>为了实现这一目标，Moonlight 团队构建了一个处理流程来收集 VoC、探索所需证据、起草证据，最后由人工审核。</p>
+      <h2 id="section-3">代理VOC处理流程<a class="heading-anchor" href="#section-3" tabindex="-1" aria-label="代理VOC处理流程 섹션 링크"></a></h2>
+      <p>在从事这个项目时，我关注的第一件事是构建响应流程。</p>
+      <p>我首先想到的是“我应该先看什么？”当我总结团队成员在响应时重复采取的步骤时，总体流程如下。</p>
+      <ol><li>检查现有的对话历史记录</li><li>检查保单文件</li><li>检查代码库</li><li>如有需要可查询DB</li><li>起草您的回复</li></ol>
+      <p>第一个目标是使代理可以重现此流程。</p>
+      <p>第二个目标是确保责任仍然在于人类。由于自动发送在质量和安全性方面很繁重，因此我们将其配置为让代理进行搜索和起草，并让人类做出最终决定。这就是通常所说的“人在环”方法。</p>
+      <p>因此，这个项目不仅仅是一个答案生成器，它更多的是创建一个处理流程来收集 VoC、探索证据、创建草稿并将其发送以供人工审核。</p>
+      <h2 id="section-4">月光VOC处理流程<a class="heading-anchor" href="#section-4" tabindex="-1" aria-label="月光VOC处理流程 섹션 링크"></a></h2>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/1*N2Ds1aMmz3EYG7HTORBTkw.png" loading="lazy" decoding="async" /></figure>
+      <h2 id="section-5">客户询价<a class="heading-anchor" href="#section-5" tabindex="-1" aria-label="客户询价 섹션 링크"></a></h2>
+      <ol><li>客户查询进入 VoC 渠道。</li><li>通过webhooks接收客户询价，并以循环询价作为补漏的辅助手段。</li><li>确定 VoC 是否符合处理条件。</li><li>出于处理目的，证据按照类似于人流的顺序进行探索。<br>- 查看嵌入的现有对话<br>- 查看代码库和策略文档<br>- 必要时数据库查询</li><li>根据导航结果和模板创建响应草稿。</li><li>将草稿转发到 Slack。</li></ol>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/826/1*15drl70F6JAfBJinFDKwbA.png" loading="lazy" decoding="async" /><figcaption>Slack 中显示的草稿回复</figcaption></figure>
+      <p>7. 负责人检查Slack的摘要和详细信息后，通过“发送”、“重试”和“拒绝”按钮选择处理方法。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/760/1*W6ahXWDs9c1zTLQ7tOHgDA.png" loading="lazy" decoding="async" /><figcaption>单击发送按钮后，将发送到 VoC 通道</figcaption></figure>
+      <h2 id="section-6">应用代理流的结果<a class="heading-anchor" href="#section-6" tabindex="-1" aria-label="应用代理流的结果 섹션 링크"></a></h2>
+      <p>应用这种结构后最大的变化是团队成员不再需要亲自从头到尾执行响应过程。以前，人们必须阅读调查，决定检查哪些证据，找到必要的信息，并组织草案。另一方面，大约50%的询问，代理商首先处理重复的询问和起草阶段，负责人只需在Slack中做出最终决定。</p>
+      <p>这种变化不仅仅是响应速度。我们能够减少每个团队成员的背景差异，并降低“我应该向谁提出这个问题？”的成本。特别是，通过将现有的对话历史记录、政策文档、代码库和数据查询合并到一个流程中，我们能够使寻找证据的过程更加一致。</p>
+      <p>因此，该项目不是一个自动发送响应的系统，而是被定位为一个操作工具，以减少 VoC 响应过程中重复探索和起草的成本。</p>
+      <h2 id="section-7">与月爪的联系<a class="heading-anchor" href="#section-7" tabindex="-1" aria-label="与月爪的联系 섹션 링크"></a></h2>
+      <p>基本的 VoC 收集、证据搜索、草稿创建、审核和发送可以使用前面描述的 VoC 处理流程来完成。但在实际操作中，也存在该流程并未结束的情况。有时您需要对草稿进行一些调整，有时您需要仔细检查与当前查询相关的项目上下文。有时您想再次检查代理提出的基础是否正确（即使按照当前标准）。</p>
+      <p>在这种情况下，我上面写的是<strong>月爪</strong>是的。 MoonClaw 并不是一个取代 VoC 处理流程本身的工具，而是一个在其之上运行的工具。<strong>主管代理</strong>接近 .通常，VoC 处理流程会处理大多数查询，并且仅在需要额外确认或更正时才与 MoonClaw 对话以完善结果。</p>
+      <p>例如，团队成员可能会要求 MoonClaw“请仅根据最新代码仔细检查此答案的付款政策部分。”或者，您可以再次检查代理引用的基础在当前操作上下文中是否仍然有效，以及某些表达式是否与实际策略一致。换句话说，如果 VoC 处理流程是基本路径，MoonClaw 可以被视为接受异常情况或在其之上的附加查询的路径。</p>
+      <p>这种结构的最大优点是<strong>运营灵活性</strong>是的。</p>
+      <ol><li><strong>独立发动机：</strong>VoC 响应流程每天 24 小时可靠地处理日常任务，无需更高级别的代理。</li><li><strong>互动强化：</strong>只有当需要进行复杂的判断或修改时，我们才会通过MoonClaw与智能体进行沟通并完善结果。</li><li><strong>分享背景：</strong>由于MoonClaw掌握了整个项目的上下文，因此除了简单的VoC处理之外，它还可以确保按照整个服务的更新方向进行响应。</li></ol>
+      <p>通过与上级代理的松散连接，日常处理实现自动化，复杂问题通过代理之间的协作得到解决。<strong>可扩展的运营结构</strong>已装备。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/753/1*k5uT6VkGXBV4KZ60DdBnvg.png" loading="lazy" decoding="async" /></figure>
+      <h2 id="section-8">完成<a class="heading-anchor" href="#section-8" tabindex="-1" aria-label="完成 섹션 링크"></a></h2>
+      <p>我从这次部署中获得的最大收获是了解了代理系统如何分担人类的工作。我们发现，与其取代所有人类工作，不如将其分为探索、收集证据、起草和批准，然后将可重复的部分先委托给系统，这是有效的。</p>
+      <p>相反，事情显然要留给人，直到最后。仍然由人类决定是否真正将其发送给客户、确定在特殊情况下添加什么上下文以及对错误响应承担责任。因此，这个项目并不是关于消除人员的自动化，而是更接近于创建一个减少重复任务的结构，同时保持对人员的责任。</p>
+      <p>最后，这个项目是一个尝试如何将实际操作任务转移到代理系统而不是 VoC 自动化本身的案例。对于 Moonlight 团队来说，这种体验超越了简单的响应自动化，成为了未来处理其他运营领域时可以应用的标准。</p>
+          </div>
+        </article>
+        <aside class="toc static-toc" aria-label="目录">
+          <section class="toc-section" aria-label="目录">
+            <strong>目录</strong>
+            <ol>
+              <li><a href="#section-1">进入</a></li>
+              <li><a href="#section-2">问题出在哪里？</a></li>
+              <li><a href="#section-3">代理VOC处理流程</a></li>
+              <li><a href="#section-4">月光VOC处理流程</a></li>
+              <li><a href="#section-5">客户询价</a></li>
+              <li><a href="#section-6">应用代理流的结果</a></li>
+              <li><a href="#section-7">与月爪的联系</a></li>
+              <li><a href="#section-8">完成</a></li>
+            </ol>
+          </section>
+          <section class="toc-recommendations" aria-label="推荐文章">
+            <strong>推荐文章</strong>
+            <div class="toc-recommendation-list">
+              <a class="toc-recommendation" href="/zh/blog/app-store-optimization">
+                <span>应用商店优化：营销的新增长公式。通过应用商店优化确保您的应用稳定流入</span>
+                <small><time datetime="2025-09-26">2025年9月26日</time> · 유현명(Product Engineer)</small>
+              </a>              <a class="toc-recommendation" href="/zh/blog/we-make-ai-colleague">
+                <span>我们想要创造的AI同事</span>
+                <small><time datetime="2026-07-07">2026年7月7日</time> · 김선영</small>
+              </a>              <a class="toc-recommendation" href="/zh/blog/corca-newbie-trip">
+                <span>Corca的新适应期</span>
+                <small><time datetime="2026-07-06">2026年7月6日</time> · 문정민</small>
+              </a>
+            </div>
+          </section>
+        </aside>
+        <nav class="post-pagination" aria-label="글 이동">
+        <a class="related-card post-pagination-card post-pagination-previous" href="/zh/blog/corca-ax-day" aria-label="上一篇: 科卡斧日">
+          <span class="related-cue" aria-hidden="true">←</span>
+          <span class="related-meta">上一篇 · <strong>AX</strong> · <time datetime="2026-03-18">2026年3月18日</time></span>
+          <strong>科卡斧日</strong>
+        </a>        <a class="related-card post-pagination-card post-pagination-next" href="/zh/blog/ceal-operations-team" aria-label="下一篇: 运营团队的新同事 Ceal">
+          <span class="related-cue" aria-hidden="true">→</span>
+          <span class="related-meta">下一篇 · <strong>AX</strong> · <time datetime="2026-05-13">2026年5月13日</time></span>
+          <strong>运营团队的新同事 Ceal</strong>
+        </a>
+        </nav>
+      </section>
+    </main><footer class="bg-footer text-white/70 corca-main-footer"><div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left"><img src="/_astro/logo-white.YSg021rB_Z1XeFQO.webp" srcset="/_astro/logo-white.YSg021rB_Z1XeFQO.webp 1x, /_astro/logo-white.YSg021rB_qFSmC.webp 2x, /_astro/logo-white.YSg021rB_1zm5a0.webp 3x" alt="Corca" loading="lazy" decoding="async" width="120" height="35" class="h-[34px] w-auto opacity-90"><address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]"><p>韩国首尔特别市江南区德黑兰路77街11-8, 6层 Corca株式会社</p><p><a href="tel:+82-2-6925-6978">Tel: +82-2-6925-6978</a><span class="inline-block w-3"></span><a href="mailto:contact@corca.ai">contact@corca.ai</a></p></address><p class="text-[12px] text-[#bbbbbb]">© 2026 Corca, Inc.</p></div></footer><script type="module">var e=document.querySelectorAll(`[data-reveal]`);if(e.length>0&&`IntersectionObserver`in window){let t=new IntersectionObserver(e=>{for(let n of e)n.isIntersecting&&(n.target.classList.add(`is-visible`),t.unobserve(n.target))},{threshold:.15,rootMargin:`0px 0px -10% 0px`});for(let n of e)t.observe(n)}else for(let t of e)t.classList.add(`is-visible`);</script></body>
+</html>

@@ -107,7 +107,6 @@ const blogIndexLabels = {
     empty: '조건에 맞는 글이 없습니다.',
     fallback: 'JavaScript 없이 볼 수 있는 글 목록입니다.',
     aboutEyebrow: '블로그 소개',
-    aboutTitle: '제품을 만드는 과정 자체를 기록합니다',
     aboutCopy:
       'Corca Blog는 회사의 공식 기록 공간입니다. 제품 의사결정, AI 워크플로, 팀 운영에서 얻은 배움을 독자가 바로 이해할 수 있는 글로 정리합니다.',
     aboutProductTitle: '제품 노트',
@@ -148,7 +147,6 @@ const blogIndexLabels = {
     empty: 'No posts match these conditions.',
     fallback: 'Posts available without JavaScript.',
     aboutEyebrow: 'About the blog',
-    aboutTitle: 'We document how Corca builds products',
     aboutCopy:
       'Corca Blog is the company’s official record for product decisions, AI workflows, and operating lessons written so readers can understand and apply them quickly.',
     aboutProductTitle: 'Product notes',
@@ -189,7 +187,6 @@ const blogIndexLabels = {
     empty: '条件に一致する記事がありません。',
     fallback: 'JavaScriptなしで表示できる記事一覧です。',
     aboutEyebrow: 'ブログについて',
-    aboutTitle: 'Corcaのプロダクトづくりを記録します',
     aboutCopy:
       'Corca Blogは会社の公式な記録の場です。プロダクトの意思決定、AIワークフロー、チーム運営から得た学びを、読者がすぐ理解できる記事として整理します。',
     aboutProductTitle: 'プロダクトノート',
@@ -228,7 +225,6 @@ const blogIndexLabels = {
     empty: '没有符合条件的文章。',
     fallback: '无需 JavaScript 也可浏览的文章列表。',
     aboutEyebrow: '关于博客',
-    aboutTitle: '记录 Corca 打造产品的过程',
     aboutCopy:
       'Corca Blog 是公司的官方记录空间，用清晰的文章整理产品决策、AI 工作流和团队运营中的经验。',
     aboutProductTitle: '产品笔记',
@@ -375,8 +371,13 @@ async function deletePost(value) {
 
   await rm(join(sourcesDir, `${slug}.html`), { force: true });
   await rm(join(postsDir, slug), { recursive: true, force: true });
+  await rm(join(blogRoot, slug), { recursive: true, force: true });
   for (const locale of ['en', 'ja', 'zh']) {
     await rm(join(translationsDir, locale, `${slug}.html`), { force: true });
+    await rm(join(repoRoot, `public/${locale}/blog/${slug}`), {
+      recursive: true,
+      force: true,
+    });
     await rm(join(repoRoot, `public/${locale}/blog/posts/${slug}`), {
       recursive: true,
       force: true,
@@ -734,13 +735,14 @@ async function localizePostRecord(baseRecord, locale) {
 
 async function renderAllStaticPosts(postRecordsByLocale) {
   const availableLocalesBySlug = groupLocalesBySlug(postRecordsByLocale);
+  await removeLegacyStaticPostPages();
   for (const locale of supportedLocales) {
     const records = postRecordsByLocale.get(locale) || [];
     const localePosts = records.map((record) => record.post);
     const postBySlug = new Map(localePosts.map((item) => [item.slug, item]));
     for (const record of records) {
       const post = record.post;
-      const outputDir = join(repoRoot, localePaths[locale], 'posts', post.slug);
+      const outputDir = join(repoRoot, localePaths[locale], post.slug);
       const html = renderStaticPostPage(
         post,
         prepareArticleHtml(record.articleHtml),
@@ -758,6 +760,18 @@ async function renderAllStaticPosts(postRecordsByLocale) {
   );
 }
 
+async function removeLegacyStaticPostPages() {
+  for (const locale of supportedLocales) {
+    const legacyPostsDir = join(repoRoot, localePaths[locale], 'posts');
+    const entries = await readdir(legacyPostsDir, { withFileTypes: true }).catch(() => []);
+    await Promise.all(
+      entries
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => rm(join(legacyPostsDir, entry.name), { recursive: true, force: true })),
+    );
+  }
+}
+
 async function renderBlogIndexPages(postRecordsByLocale) {
   for (const locale of supportedLocales) {
     const file = join(repoRoot, localePaths[locale], 'index.html');
@@ -768,6 +782,8 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 
     html = html
       .replace(/<html lang="[^"]*"/, `<html lang="${localeLabels[locale].lang}"`)
+      .replace(/\n\s*<meta name="robots" content="index,follow,max-image-preview:large">/g, '')
+      .replace(/\n\s*<link rel="canonical" href="[^"]+">/g, '')
       .replace(
         /<meta name="description" content="[^"]*">/,
         `<meta name="description" content="${escapeAttribute(labels.description)}">`,
@@ -1131,10 +1147,9 @@ function absolutizeBlogContentHtml(html) {
 }
 
 function renderIndexAbout(labels) {
-  return `<section id="about" class="about-section" aria-labelledby="aboutTitle">
+  return `<section id="about" class="about-section" aria-label="${escapeAttribute(labels.aboutEyebrow)}">
         <div>
           <p class="eyebrow">${escapeHtml(labels.aboutEyebrow)}</p>
-          <h2 id="aboutTitle">${escapeHtml(labels.aboutTitle)}</h2>
           <p>${escapeHtml(labels.aboutCopy)}</p>
         </div>
         <div class="about-grid">
@@ -1190,7 +1205,7 @@ function groupLocalesBySlug(postRecordsByLocale) {
 }
 
 function staticPostPath(post, locale) {
-  return `${localeLabels[locale].blogPath}/posts/${encodeURIComponent(post.slug)}`;
+  return `${localeLabels[locale].blogPath}/${encodeURIComponent(post.slug)}`;
 }
 
 function localizePostTags(tags, locale) {
@@ -1231,7 +1246,7 @@ function renderStaticPostPage(
 ) {
   const shell = getBlogShell(locale, post.slug, availableLocalesBySlug);
   const coverUrl = absoluteBlogAsset(post.cover);
-  const canonical = absoluteSiteUrl(staticPostPath(post, locale));
+  const pageUrl = absoluteSiteUrl(staticPostPath(post, locale));
   const publishedTime = `${post.date}T00:00:00.000Z`;
   const toc = tableOfContents(articleHtml);
   const recommendations = recommendationPosts(post, posts);
@@ -1246,8 +1261,6 @@ function renderStaticPostPage(
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${escapeHtml(post.title)} | Corca Blog</title>
     <meta name="description" content="${escapeAttribute(post.description)}">
-    <meta name="robots" content="index,follow,max-image-preview:large">
-    <link rel="canonical" href="${canonical}">
     <meta property="og:title" content="${escapeAttribute(post.title)}">
     <meta property="og:description" content="${escapeAttribute(post.description)}">
     <meta property="og:site_name" content="Corca Blog">
@@ -1256,7 +1269,7 @@ function renderStaticPostPage(
     <meta property="og:image" content="${coverUrl}">
     <meta property="og:image:secure_url" content="${coverUrl}">
     <meta property="og:image:alt" content="${escapeAttribute(imageAlt)}">
-    <meta property="og:url" content="${canonical}">
+    <meta property="og:url" content="${pageUrl}">
     <meta property="article:published_time" content="${publishedTime}">
     <meta property="article:modified_time" content="${publishedTime}">
     <meta property="article:author" content="${escapeAttribute(post.author)}">
@@ -1270,7 +1283,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
     <meta name="theme-color" content="#ffffff">
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
-    <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, canonical, articleSection, locale))}</script>
+    <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, pageUrl, articleSection, locale))}</script>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="/blog/styles.css">
@@ -1812,7 +1825,7 @@ function normalizeCover(value) {
   if (text.startsWith('/blog/assets/')) return text.slice('/blog/'.length);
   if (text.startsWith('/assets/')) return text.slice(1);
   try {
-    const url = new URL(text, 'https://www.corca.ai/blog/posts/post/');
+    const url = new URL(text, 'https://www.corca.ai/blog/post/');
     const assetIndex = url.pathname.indexOf('/assets/');
     if (assetIndex >= 0) return url.pathname.slice(assetIndex + 1);
   } catch {

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機 | Corca Blog</title>
+    <meta name="description" content="TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。">
+    <meta property="og:title" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機">
+    <meta property="og:description" content="TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。">
+    <meta property="og:site_name" content="Corca Blog">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:secure_url" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta property="og:image:alt" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機 代表画像">
+    <meta property="og:url" content="https://www.borca.ai/ja/blog/live-activity-schedule">
+    <meta property="article:published_time" content="2025-12-10T00:00:00.000Z">
+    <meta property="article:modified_time" content="2025-12-10T00:00:00.000Z">
+    <meta property="article:author" content="김성훈(iOS Product Engineer)">
+    <meta property="article:section" content="Trace">
+    <meta property="article:tag" content="Trace">
+    <meta property="article:tag" content="Product">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機">
+    <meta name="twitter:description" content="TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。">
+    <meta name="twitter:image" content="https://www.borca.ai/blog/assets/editorial-cover.jpg">
+    <meta name="twitter:image:alt" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機 代表画像">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
+    <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
+    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機","description":"TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。","image":"https://www.borca.ai/blog/assets/editorial-cover.jpg","thumbnailUrl":"https://www.borca.ai/blog/assets/editorial-cover.jpg","url":"https://www.borca.ai/ja/blog/live-activity-schedule","keywords":["Trace","Product"],"articleSection":"Trace","wordCount":4920,"datePublished":"2025-12-10","dateModified":"2025-12-10","author":{"@type":"Organization","name":"김성훈(iOS Product Engineer)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"ja-JP","timeRequired":"PT10M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.borca.ai/blog"},"mainEntityOfPage":"https://www.borca.ai/ja/blog/live-activity-schedule"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.borca.ai/blog"},{"@type":"ListItem","position":2,"name":"記事","item":"https://www.borca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機"}]}]}</script>
+    <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
+    <link rel="stylesheet" href="/blog/styles.css">
+  </head>
+  <body><a href="#main" class="sr-only rounded-lg bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]">本文へスキップ</a><header class="sticky top-0 z-50 border-b border-black/5 bg-white/95 backdrop-blur corca-main-header" data-astro-cid-nen7h5rs><div class="container-c flex h-[66px] items-center justify-between gap-4" data-astro-cid-nen7h5rs><!-- Logo --><a href="/ja" class="flex shrink-0 items-center" aria-label="Corca home" data-astro-cid-nen7h5rs><img src="/_astro/logo.CMq5nUD9_2vNMar.webp" srcset="/_astro/logo.CMq5nUD9_2vNMar.webp 1x, /_astro/logo.CMq5nUD9_UUefI.webp 2x, /_astro/logo.CMq5nUD9_ZCyRCx.webp 3x" alt="Corca" loading="eager" data-astro-cid-nen7h5rs="true" decoding="async" width="104" height="30" class="h-[20px] w-auto md:h-[32px]"></a><!-- Desktop navigation --><nav class="hidden items-center gap-11 md:flex" aria-label="メインナビゲーション" data-astro-cid-nen7h5rs><!-- Products (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/ja/products" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>製品紹介<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[170px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/ja/products/moonlight" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Moonlight</a><a href="/ja/products/trace" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>Trace</a></div></div><!-- About (label links to the category page; hover reveals the panel) --><div class="group relative nav-dd" data-astro-cid-nen7h5rs><a href="/ja/about" class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>会社紹介<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></a><div class="invisible absolute left-1/2 top-full min-w-[190px] -translate-x-1/2 rounded-xl border border-black/5 bg-white p-2 opacity-0 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)] group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 nav-dd-panel" data-astro-cid-nen7h5rs><a href="/ja/about/vision-mission" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>ビジョンとミッション</a><a href="/ja/about/how-we-work" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>私たちの働き方</a><a href="/ja/news" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>ニュース</a><a href="/ja/about/colleagues" class="block rounded-lg px-4 py-2.5 text-[15px] text-ink-soft hover:bg-black/[0.04]" data-astro-cid-nen7h5rs>コルカの人々</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>採用</a><a href="/ja/blog" aria-current="page" class="py-5 text-[17px] font-normal text-black" data-astro-cid-nen7h5rs>ブログ</a></nav><!-- Right side: language switcher (desktop) + hamburger (mobile) --><div class="flex items-center gap-2" data-astro-cid-nen7h5rs><details class="lang-switch relative block" data-astro-cid-nen7h5rs><summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-full border border-black/15 px-3 py-1.5 text-[14px] font-medium text-[#324158]" aria-label="言語を選択" data-astro-cid-nen7h5rs>JA<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" data-astro-cid-nen7h5rs></path></svg></summary><ul class="absolute right-0 top-full mt-2 min-w-[72px] overflow-hidden rounded-xl border border-black/5 bg-white py-1 shadow-[0_16px_36px_-12px_rgba(31,45,80,0.25)]" data-astro-cid-nen7h5rs><li data-astro-cid-nen7h5rs><a href="/blog/live-activity-schedule" hreflang="ko-KR" aria-label="한국어" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>KO</a></li><li data-astro-cid-nen7h5rs><a href="/en/blog/live-activity-schedule" hreflang="en-US" aria-label="English" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>EN</a></li><li data-astro-cid-nen7h5rs><a href="/ja/blog/live-activity-schedule" hreflang="ja-JP" aria-label="日本語" aria-current="true" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 font-semibold text-brand" data-astro-cid-nen7h5rs>JA</a></li><li data-astro-cid-nen7h5rs><a href="/zh/blog/live-activity-schedule" hreflang="zh-CN" aria-label="中文" class="block px-4 py-2 text-[13px] font-medium hover:bg-brand/8 text-ink-soft" data-astro-cid-nen7h5rs>ZH</a></li></ul></details><!-- Mobile hamburger (JS-enhanced, keyboard accessible) --><button type="button" id="menu-btn" class="flex cursor-pointer items-center p-2 md:hidden" aria-label="メニュー" aria-expanded="false" aria-controls="mobile-menu" data-astro-cid-nen7h5rs><svg class="menu-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg><svg class="menu-icon-close hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true" data-astro-cid-nen7h5rs><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" data-astro-cid-nen7h5rs></path></svg></button><!-- Mobile menu panel --><div id="mobile-menu" hidden class="fixed inset-x-0 top-[66px] max-h-[calc(100vh-66px)] overflow-y-auto border-t border-black/5 bg-white md:hidden" data-astro-cid-nen7h5rs><nav class="container-c flex flex-col py-2" aria-label="メニュー" data-astro-cid-nen7h5rs><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/ja/products" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>製品紹介</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/ja/products/moonlight" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Moonlight</a><a href="/ja/products/trace" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>Trace</a></div></div><div class="border-b border-black/5" data-astro-cid-nen7h5rs><a href="/ja/about" class="block py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>会社紹介</a><div class="pb-2" data-astro-cid-nen7h5rs><a href="/ja/about/vision-mission" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>ビジョンとミッション</a><a href="/ja/about/how-we-work" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>私たちの働き方</a><a href="/ja/news" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>ニュース</a><a href="/ja/about/colleagues" class="block py-2.5 pl-3 text-[15px] text-ink-soft" data-astro-cid-nen7h5rs>コルカの人々</a></div></div><a href="https://corca.team/recruit" target="_blank" rel="noopener" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>採用</a><a href="/ja/blog" aria-current="page" class="border-b border-black/5 py-4 text-[16px] font-medium" data-astro-cid-nen7h5rs>ブログ</a><div class="flex gap-2 py-4" data-astro-cid-nen7h5rs><a href="/blog/live-activity-schedule" hreflang="ko-KR" aria-label="한국어" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>KO</a><a href="/en/blog/live-activity-schedule" hreflang="en-US" aria-label="English" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>EN</a><a href="/ja/blog/live-activity-schedule" hreflang="ja-JP" aria-label="日本語" aria-current="true" class="rounded-full border px-4 py-1.5 text-[14px] border-brand font-semibold text-brand" data-astro-cid-nen7h5rs>JA</a><a href="/zh/blog/live-activity-schedule" hreflang="zh-CN" aria-label="中文" class="rounded-full border px-4 py-1.5 text-[14px] border-black/15 text-ink-soft" data-astro-cid-nen7h5rs>ZH</a></div></nav></div></div></div></header><script type="module">var e=document.getElementById(`menu-btn`),t=document.getElementById(`mobile-menu`);if(e&&t){let n=e.querySelector(`.menu-icon-open`),r=e.querySelector(`.menu-icon-close`),i=i=>{e.setAttribute(`aria-expanded`,String(i)),t.hidden=!i,n?.classList.toggle(`hidden`,i),r?.classList.toggle(`hidden`,!i),document.documentElement.style.overflow=i?`hidden`:``};e.addEventListener(`click`,()=>i(!!t.hidden)),t.addEventListener(`click`,e=>{e.target.closest(`a`)&&i(!1)}),document.addEventListener(`keydown`,n=>{n.key===`Escape`&&!t.hidden&&(i(!1),e.focus())}),window.addEventListener(`resize`,()=>{window.innerWidth>=768&&!t.hidden&&i(!1)})}var n=document.querySelector(`details.lang-switch`);n&&(document.addEventListener(`click`,e=>{n.open&&!n.contains(e.target)&&(n.open=!1)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&n.open&&(n.open=!1,n.querySelector(`summary`)?.focus())}));</script><main id="main" tabindex="-1">
+      <section class="post-view static-post-view">
+        <article id="article" class="article static-article">
+          <header class="article-header">
+            <h1>Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機</h1>
+            <p>TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。</p>
+            <div class="article-meta">
+              <span class="meta-item"><time datetime="2025-12-10">2025年12月10日</time></span>
+              <span class="meta-item">김성훈(iOS Product Engineer)</span>
+            </div>
+          </header>
+          <div class="article-content">
+<p class="eyebrow">Corca Medium アーカイブ</p>
+      <h1>Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機</h1>
+      <div class="meta"><span class="pill">2025-12-10</span><span class="pill">キム・ソンフン(iOS Product Engineer)</span></div>
+      <hr />
+      <figure><img alt="" src="/blog/assets/medium-import/live-activity-schedule-figure-01.png" width="1020" height="574" loading="lazy" decoding="async" /></figure>
+      <p>こんにちは！ TraceチームがiOS Product Engineerとして働いているキム・ソンフン。</p>
+      <p>最近、ほとんどのアプリはユーザーの注意を得るためにプッシュ通知を注ぎます。</p>
+      <p>しかし、私たちは皆知っています。通知は簡単に無視され、スクロールに埋め込まれ、必要な瞬間には私の役割を果たすことができないということです。</p>
+      <p>逆に、クパンツや配達の民族のようにロック画面で配達状態がリアルタイムで変化するLive Activity体験は、ユーザーの注意を自然に捕らえます。</p>
+      <p>アプリを開かなくても、今どこに来ているのか、どれだけ残っているのかをすぐに確認でき、このフローがユーザーエクスペリエンスをさらに滑らかにします。</p>
+      <p>実際にAppleもLive Activityを一定・運動・配信・移動・タイマーなど「持続的に変化する情報」を提供するために最適化された機能だと紹介します。</p>
+      <p>Traceディスコードコミュニティでも同様のユーザーの要求がありました。</p>
+      <ul><li>「アプリをあえて開かなくても今日何をすべきか一目で見たいです」</li><li>「ロック画面で今進行中のスケジュールが見えてほしい」</li></ul>
+      <p>そのため、TraceはこのニーズをLive Activityでどのように解放できるかを本格的に実験を始めました。</p>
+      <p>この記事では、TraceがLive Activityを活用してリアルタイムのスケジュール体験を実装する過程でどのような問題に直面し、その問題をどのように解決していったかを段階的にまとめていきたいと思います。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*ZOt8NtkQfYtPkvko.png" loading="lazy" decoding="async" /></figure>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*lzHiyI_ZXNKwhsIY.png" loading="lazy" decoding="async" /></figure>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/0*n9uJXBtgXCB8ppCN.png" loading="lazy" decoding="async" /></figure>
+      <h2 id="section-1">APN<a class="heading-anchor" href="#section-1" tabindex="-1" aria-label="APN 섹션 링크"></a></h2>
+      <p>iOSでは、すべてのプッシュはApple Push Notification service（APN）を介して配信されます。 APNが送信するプッシュタイプは、大きく3つに分けられます。</p>
+      <ul><li>一般通知(Alert Push)</li><li>ユーザーに見えるバナー/音/振動通知</li><li>Silent Push（バックグラウンドプッシュ）</li><li>画面には表示されず、しばらくアプリを起動してバックグラウンドタスクを実行する目的</li><li>ActivityKit Push（Live Activityアップデートプッシュ）</li><li>Live Activityの状態を直接更新するために使用される専用タイプ</li></ul>
+      <p>初めてLive Activityを貼り始めたときは、ActivityKit Pushがどの構造で動作するのか、そしてどのデータ構造を要求するのかが明確に把握されていない状態でした。</p>
+      <p>それで自然に、これまで多く使ってきてバックグラウンドアップデートにも馴染みのあるSilent Pushから試みることになりました。</p>
+      <blockquote><em>「アプリを静かに目覚めさせてLive Activityだけを更新すればいいのか？」</em></blockquote>
+      <blockquote><em>最も簡単に思い出せるアプローチでした。</em></blockquote>
+      <p>しかし、何度も試してみた最後に重要な事実を一つ悟りました。</p>
+      <p>Live Activityは単に「更新要求」を送信する構造ではなく、その時点で画面に表示する必要があるデータ全体（contentState）をプッシュに送信する必要があります。</p>
+      <p>つまり、サーバーは「現在どのスケジュールが進行中か、どれだけ残っているか」を直接計算して送信しなければならず、Silent Pushインフラストラクチャはこのニーズを確実に満たすことが困難でした。</p>
+      <h2 id="section-2">Live Activityの自動更新<a class="heading-anchor" href="#section-2" tabindex="-1" aria-label="Live Activityの自動更新 섹션 링크"></a></h2>
+      <p>コアアイデアは単純だった。</p>
+      <blockquote><em>「アプリを目覚めさせずに、サーバーがLive Activityの状態を計算してそのままプッシュで送ろう」</em></blockquote>
+      <p>Traceは別のサーバーインフラストラクチャの代わりにFirebaseを使用しているため、</p>
+      <p>この構造をFirebase Functions + Firestoreだけで比較的簡単に実装できました。</p>
+      <p>Live Activityを「リアルタイムのように」更新するには、必要なのは2つだけです。</p>
+      <ol><li>今どのスケジュールが進行中であるかを計算する場所</li><li>その結果をLive Activityに直接プッシュする通路</li></ol>
+      <h2 id="section-3">📌フルデータフロー<a class="heading-anchor" href="#section-3" tabindex="-1" aria-label="📌フルデータフロー 섹션 링크"></a></h2>
+      <pre>iOS App<br>   └─ (토큰 + 일정 저장)<br>        ↓<br>Firestore<br>        ↓<br>Firebase Functions<br>   └─ 현재 이벤트 계산<br>        ↓<br>APNs – ActivityKit Push<br>   └─ contentState 전송<br>        ↓<br>Live Activity<br>   └─ UI 자동 업데이트</pre>
+      <h2 id="section-4">1) iOS<a class="heading-anchor" href="#section-4" tabindex="-1" aria-label="1) iOS 섹션 링크"></a></h2>
+      <ul><li>Live Activityの作成時に自動的に発行されるliveActivityTokenを取得</li><li>時間ベースのカレンダーリストを Firestore に保存</li></ul>
+      <p>この情報だけで、サーバーは「どのデバイスに、どのスケジュールでLive Activityを更新する必要があるか」を知ることができます。</p>
+      <h2 id="section-5">2) Firebase Functions<a class="heading-anchor" href="#section-5" tabindex="-1" aria-label="2) Firebase Functions 섹션 링크"></a></h2>
+      <p>Functionsは毎分実行され、次のことを行います。</p>
+      <ol><li>Firestoreで現在有効なデバイスリストを検索する</li><li>各デバイスのイベントのうち、現在時刻基準で「今見せなければならないイベント」を選択</li><li>そのイベントをcontentStateに入れて、liveActivityTokenにActivityKit Pushを送信する</li></ol>
+      <pre>// ActivityKit Push 전송<br>  const notification = new apn.Notification();<br>  notification.topic = &quot;com.example.app.push-type.liveactivity&quot;;<br>  notification.pushType = &quot;liveactivity&quot;;<br><br>  notification.event = &quot;update&quot;;<br>  notification.contentState = {<br>    event: currentEventData,  // 지금 보여줄 이벤트<br>    timestamp: Date.now(),<br>    status: &quot;Active&quot;<br>  };<br><br>  await apnsProvider.send(notification, liveActivityToken);</pre>
+      <h2 id="section-6">3) 動作映像<a class="heading-anchor" href="#section-6" tabindex="-1" aria-label="3) 動作映像 섹션 링크"></a></h2>
+      <p>サーバーがcontentStateをActivityKit Pushに渡し、Live Activityがそれをすぐに反映するフロー全体が実際にどのように機能するかを示します。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/800/0*S5sAgb719WZgiU2p.gif" loading="lazy" decoding="async" /></figure>
+      <h2 id="section-7">Push to Start<a class="heading-anchor" href="#section-7" tabindex="-1" aria-label="Push to Start 섹션 링크"></a></h2>
+      <p>これまでのLive Activity構造には1つの前提がありました。</p>
+      <p>Live Activityは、ユーザーがアプリに直接参加してトリガーする必要があるだけです。</p>
+      <p>しかし、私たちはここでさらに一歩進みたいと思いました。</p>
+      <blockquote><em>「アプリの電源を入れなくてもLive Activityを自動的に起動することはできませんか？」</em></blockquote>
+      <p>すぐにこの部分を可能にする機能がiOS 17.2から導入されたpushToStartTokenです。 pushToStartToken を使用すると、サーバーから Live Activity をリモートで起動できます。</p>
+      <p>つまり、ユーザーがアプリを開かなくても</p>
+      <ul><li>重要なスケジュールがすぐに始まるとき</li><li>やることが始まる直前</li><li>ユーザーが一日中アプリをまったくオンにしていない場合でも</li></ul>
+      <p>ロック画面にLive Activityを自動的に表示する体験を作成できます。</p>
+      <p>ちなみに、Appleのドキュメントでは、Activityを生成しなくてもpushToStartTokenUpdatesからトークンを受け取ることができると説明しています。しかし、iOS 17.xでは、この動作はかなり不安定でした。多くの開発者が同じ問題を経験したという報告もあり、Appleも関連問題を認識していることが知られています。</p>
+      <p>このため、Traceはアプリ実行時にユーザーに見えない「ダミーActivity」をしばらく生成してトークンを確保する方式を採用しました。 （iOS 18ではこの動作が改善されたそうです。）</p>
+      <h2 id="section-8">📌フルデータフロー<a class="heading-anchor" href="#section-8" tabindex="-1" aria-label="📌フルデータフロー 섹션 링크"></a></h2>
+      <pre>iOS App<br>   └─ (pushToStartToken + 시작 시각 저장)<br>        ↓<br>Firestore<br>        ↓<br>Firebase Functions<br>   └─ 시작 시점 도달 여부 확인<br>        ↓<br>APNs – Push to Start<br>   └─ attributes + contentState 전송<br>        ↓<br>Live Activity<br>   └─ 앱을 열지 않아도 자동 생성</pre>
+      <p>Push to Startトークンを取得した後、全体の構造は非常に単純です。</p>
+      <h2 id="section-9">1) iOS<a class="heading-anchor" href="#section-9" tabindex="-1" aria-label="1) iOS 섹션 링크"></a></h2>
+      <ul><li>アプリ実行時のダミー活動を通じて<strong>pushToStartToken</strong>獲得</li><li>pushToStartToken とスケジュール開始時刻を Firestore に保存</li></ul>
+      <h2 id="section-10">2) Firebase Functions<a class="heading-anchor" href="#section-10" tabindex="-1" aria-label="2) Firebase Functions 섹션 링크"></a></h2>
+      <p>Functionsは毎分実行され、次のことを行います。</p>
+      <ul><li>「今Live Activityを起動する時期ですか？」を確認してください。</li><li>視点に達するとAPNに<strong>pushToStartToken</strong>に Push to Start リクエストを送信します。このとき、Live Activityに最初に表示されるattributesとcontentStateも一緒に渡されます。</li></ul>
+      <pre>// Push to Start - Activity 생성용 Push<br>  notification.event = &quot;start&quot;;  // &quot;update&quot;가 아닌 &quot;start&quot;<br>  notification.attributes = {    // 생성 시에만 필요<br>    startTime: Date.now()<br>  };<br>  notification.contentState = {<br>    title: &quot;러닝 30분&quot;,<br>    eventDate: 1733458200,<br>    status: &quot;active&quot;<br>  };</pre>
+      <p>つまり、更新プッシュと同様に、サーバーが画面に表示するデータをすべて計算して一度に送信する構造です。</p>
+      <h2 id="section-11">3) 動作映像<a class="heading-anchor" href="#section-11" tabindex="-1" aria-label="3) 動作映像 섹션 링크"></a></h2>
+      <p>サーバーがpushToStartTokenを使用してLive Activityをリモートで作成し、最初に表示されるattributes、contentStateを送信してロック画面に自動的に表示されるプロセスを確認できます。</p>
+      <figure><img alt="" src="https://cdn-images-1.medium.com/max/800/0*30QRthG6t0m1BB7j.gif" loading="lazy" decoding="async" /></figure>
+      <h2 id="section-12">仕上げ<a class="heading-anchor" href="#section-12" tabindex="-1" aria-label="仕上げ 섹션 링크"></a></h2>
+      <p>Live Activityを導入した後、Traceの重要な指標にも変化がありました。</p>
+      <p>特にDay0→Day1リテンションが約10%上昇し、初期経験の改善効果がはっきりしていました。</p>
+      <p>ユーザーは「アプリを開かなくてもロック画面ですぐにチェックできて楽」、「やるべきことをLive Activityですぐに完了できるのがいい」というフィードバックを与えました。</p>
+      <p>Traceは今後もAIとiOSエコシステムの機能を深く探求し、ユーザーの一日に自然に浸透する経験を作っていく予定です。</p>
+      <p>今回のLive Activity構築過程はチームにとっても非常に興味深い課題であり、個人的にも多くのインサイトを得た経験でした。この記事が似たような問題に悩んでいる人には、ちょっとした参考点や参考になれば幸いです。</p>
+      <p>ありがとうございます。</p>
+      <p><strong>参考資料</strong></p>
+      <p><a href="https://developer.apple.com/documentation/activitykit/starting-and-updating-live-activities-with-activitykit-push-notifications">Starting and updating Live Activities with ActivityKit push notifications — Apple Developer</a></p>
+      <p><a href="https://developer.apple.com/videos/play/wwdc2023/10185/">Update Live Activities with push notifications — WWDC23</a></p>
+      <p><a href="https://developer.apple.com/documentation/activitykit/activity/pushtostarttoken">pushToStartToken — Apple Developer</a></p>
+      <p><a href="https://developer.apple.com/forums/thread/805324">https://developer.apple.com/forums/thread/805324</a></p>
+          </div>
+        </article>
+        <aside class="toc static-toc" aria-label="目次">
+          <section class="toc-section" aria-label="目次">
+            <strong>目次</strong>
+            <ol>
+              <li><a href="#section-1">APN</a></li>
+              <li><a href="#section-2">Live Activityの自動更新</a></li>
+              <li><a href="#section-3">📌フルデータフロー</a></li>
+              <li><a href="#section-4">1) iOS</a></li>
+              <li><a href="#section-5">2) Firebase Functions</a></li>
+              <li><a href="#section-6">3) 動作映像</a></li>
+              <li><a href="#section-7">Push to Start</a></li>
+              <li><a href="#section-8">📌フルデータフロー</a></li>
+              <li><a href="#section-9">1) iOS</a></li>
+              <li><a href="#section-10">2) Firebase Functions</a></li>
+              <li><a href="#section-11">3) 動作映像</a></li>
+              <li><a href="#section-12">仕上げ</a></li>
+            </ol>
+          </section>
+          <section class="toc-recommendations" aria-label="おすすめ記事">
+            <strong>おすすめ記事</strong>
+            <div class="toc-recommendation-list">
+              <a class="toc-recommendation" href="/ja/blog/we-make-ai-colleague">
+                <span>私たちが作りたいAI Colleague</span>
+                <small><time datetime="2026-07-07">2026年7月7日</time> · 김선영</small>
+              </a>              <a class="toc-recommendation" href="/ja/blog/corca-newbie-trip">
+                <span>コルカ新入適応器</span>
+                <small><time datetime="2026-07-06">2026年7月6日</time> · 문정민</small>
+              </a>              <a class="toc-recommendation" href="/ja/blog/voc-agent">
+                <span>VoC対応エージェントビルダー</span>
+                <small><time datetime="2026-04-22">2026年4月22日</time> · 하동훈(Software Engineer)</small>
+              </a>
+            </div>
+          </section>
+        </aside>
+        <nav class="post-pagination" aria-label="글 이동">
+        <a class="related-card post-pagination-card post-pagination-previous" href="/ja/blog/app-store-optimization" aria-label="前の記事: アプリストアの最適化：マーケティングの新しい成長公式。アプリストアの最適化でアプリに安定した流入を確保する">
+          <span class="related-cue" aria-hidden="true">←</span>
+          <span class="related-meta">前の記事 · <strong>AX</strong> · <time datetime="2025-09-26">2025年9月26日</time></span>
+          <strong>アプリストアの最適化：マーケティングの新しい成長公式。アプリストアの最適化でアプリに安定した流入を確保する</strong>
+        </a>        <a class="related-card post-pagination-card post-pagination-next" href="/ja/blog/corca-office-move" aria-label="次の記事: 私たちの新たなスタート、コルカディレクターの物語">
+          <span class="related-cue" aria-hidden="true">→</span>
+          <span class="related-meta">次の記事 · <strong>Corca</strong> · <time datetime="2026-02-02">2026年2月2日</time></span>
+          <strong>私たちの新たなスタート、コルカディレクターの物語</strong>
+        </a>
+        </nav>
+      </section>
+    </main><footer class="bg-footer text-white/70 corca-main-footer"><div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left"><img src="/_astro/logo-white.YSg021rB_Z1XeFQO.webp" srcset="/_astro/logo-white.YSg021rB_Z1XeFQO.webp 1x, /_astro/logo-white.YSg021rB_qFSmC.webp 2x, /_astro/logo-white.YSg021rB_1zm5a0.webp 3x" alt="Corca" loading="lazy" decoding="async" width="120" height="35" class="h-[34px] w-auto opacity-90"><address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]"><p>ソウル特別市 江南区 テヘラン路77ギル 11-8, 6階 株式会社コルカ</p><p><a href="tel:+82-2-6925-6978">Tel: +82-2-6925-6978</a><span class="inline-block w-3"></span><a href="mailto:contact@corca.ai">contact@corca.ai</a></p></address><p class="text-[12px] text-[#bbbbbb]">© 2026 Corca, Inc.</p></div></footer><script type="module">var e=document.querySelectorAll(`[data-reveal]`);if(e.length>0&&`IntersectionObserver`in window){let t=new IntersectionObserver(e=>{for(let n of e)n.isIntersecting&&(n.target.classList.add(`is-visible`),t.unobserve(n.target))},{threshold:.15,rootMargin:`0px 0px -10% 0px`});for(let n of e)t.observe(n)}else for(let t of e)t.classList.add(`is-visible`);</script></body>
+</html>

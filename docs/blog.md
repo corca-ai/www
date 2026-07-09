@@ -145,7 +145,9 @@ requests. The GitHub Action still creates a pull request; the public site only
 changes after that pull request is merged and the normal Cloudflare deployment
 finishes.
 
-- Publish a new post by setting the Notion status to `배포 완료`.
+- Publish a new post by leaving `공개 URL` empty and setting the Notion status
+  to `배포 완료`. Rows that already have `공개 URL` are treated as already
+  published and are skipped while they remain `배포 완료`.
 - Edit an existing post by keeping the same `Slug`/`슬러그`, changing the Notion
   page body or metadata, then setting the status to `수정 요청`. The sync script
   treats this as an upsert and regenerates the static files for that slug.
@@ -162,6 +164,12 @@ Minimal status options:
 - `배포 완료`
 - `수정 요청`
 - `삭제 요청`
+
+Required publication marker:
+
+- `공개 URL` — URL property. Leave it empty for a new post. Fill it with the
+  live blog URL after the publish PR is merged, for example
+  `https://www.borca.ai/blog/my-slug`.
 
 No GitHub Action variables are required when the Notion status labels use those
 exact names; they are included in the script defaults. Only set these variables

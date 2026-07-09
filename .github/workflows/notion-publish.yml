@@ -45,8 +45,12 @@ jobs:
           NOTION_BLOG_DATABASE_ID: ${{ vars.NOTION_BLOG_DATABASE_ID }}
           NOTION_BLOG_DATA_SOURCE_ID: ${{ vars.NOTION_BLOG_DATA_SOURCE_ID }}
           NOTION_POST_READY_STATUS: ${{ vars.NOTION_POST_READY_STATUS }}
+          NOTION_POST_UPDATE_STATUS: ${{ vars.NOTION_POST_UPDATE_STATUS }}
+          NOTION_POST_DELETE_STATUS: ${{ vars.NOTION_POST_DELETE_STATUS }}
           NOTION_POST_PUBLISHING_STATUS: ${{ vars.NOTION_POST_PUBLISHING_STATUS }}
           NOTION_POST_PUBLISHED_STATUS: ${{ vars.NOTION_POST_PUBLISHED_STATUS }}
+          NOTION_POST_DELETING_STATUS: ${{ vars.NOTION_POST_DELETING_STATUS }}
+          NOTION_POST_DELETED_STATUS: ${{ vars.NOTION_POST_DELETED_STATUS }}
           NOTION_POST_ERROR_STATUS: ${{ vars.NOTION_POST_ERROR_STATUS }}
           NOTION_PAGE_ID: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.page_id || '' }}
           NOTION_REQUIRE_RECENT_READY: ${{ github.event_name == 'repository_dispatch' && '1' || '' }}
@@ -54,7 +58,7 @@ jobs:
           NOTION_SKIP_UPDATES: ${{ vars.NOTION_SKIP_UPDATES || '1' }}
           CORCA_SITE_URL: ${{ vars.CORCA_SITE_URL || 'https://www.borca.ai' }}
 
-      - name: Create Notion publish pull request
+      - name: Create Notion sync pull request
         id: commit_posts
         env:
           GH_TOKEN: ${{ secrets.CONTENT_CHANGE_TOKEN || github.token }}
@@ -64,16 +68,16 @@ jobs:
             echo "published=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          branch="notion-post-publish/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          branch="notion-post-sync/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git add -A public/blog public/en/blog public/ja/blog public/zh/blog
-          git commit -m "content: publish notion posts"
+          git commit -m "content: sync notion posts"
           git push --set-upstream origin "$branch"
           gh pr create \
             --base main \
             --head "$branch" \
-            --title "content: publish notion posts" \
-            --body "Created from a Notion blog publish request. Merge this PR to publish the generated static blog files through the normal main-branch deployment flow."
+            --title "content: sync notion posts" \
+            --body "Created from a Notion blog sync request. Merge this PR to publish, update, or delete the generated static blog files through the normal main-branch deployment flow."
           echo "published=true" >> "$GITHUB_OUTPUT"

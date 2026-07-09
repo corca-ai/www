@@ -55,8 +55,16 @@ try {
   <article>
     <h1>Notion HTML fixture</h1>
     <p>This fixture includes enough public article copy to prove the HTML branch can publish through the shared www blog renderer.</p>
+    <section class="frame" aria-label="HTML upload compatibility">
+      <h2>Authored callout frame</h2>
+      <p>Standalone HTML uploads may contain semantic sections with author-provided utility classes.</p>
+    </section>
     <h2>Expected behavior</h2>
     <p>The workflow should generate static pages and update the blog post index.</p>
+    <div class="intro-question">Can a highlighted question still look intentional inside the blog shell?</div>
+    <pre>first preserved code-like line
+second preserved code-like line</pre>
+    <div class="note"><strong>HTML note</strong><br>Notes should remain visually grouped after the original document stylesheet is removed.</div>
   </article>
 </body>
 </html>`,
@@ -205,6 +213,22 @@ try {
     await readFile(join(workDir, 'public/en/blog/notion-html-fixture/index.html'), 'utf8'),
     /href="\/en\/blog\/notion-html-fixture" hreflang="en-US"/,
   );
+  const htmlStaticPage = await readFile(
+    join(workDir, 'public/en/blog/notion-html-fixture/index.html'),
+    'utf8',
+  );
+  assert.match(htmlStaticPage, /class="frame"/);
+  assert.match(htmlStaticPage, /class="intro-question"/);
+  assert.match(
+    htmlStaticPage,
+    /<pre>first preserved code-like line\nsecond preserved code-like line<\/pre>/,
+  );
+  assert.match(htmlStaticPage, /class="note"/);
+  const blogStyles = await readFile(join(repoRoot, 'public/blog/styles.css'), 'utf8');
+  assert.match(blogStyles, /\.article-content \.frame/);
+  assert.match(blogStyles, /\.article-content \.intro-question/);
+  assert.match(blogStyles, /\.article-content \.note/);
+  assert.match(blogStyles, /\.article-content pre code/);
   assert.match(
     await readFile(updatesPath, 'utf8'),
     /https:\/\/www\.borca\.ai\/blog\/notion-body-fixture/,

@@ -4079,6 +4079,75 @@ body {
   background: #f3f4f6;
 }
 
+.article-content pre code {
+  display: block;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  white-space: inherit;
+}
+
+.article-content .eyebrow,
+.article-content .meta {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.article-content .eyebrow {
+  margin: 0 0 12px;
+  color: #3454d1;
+  text-transform: none;
+}
+
+.article-content .meta {
+  margin: 16px 0 28px;
+  font-weight: 500;
+}
+
+.article-content .frame,
+.article-content .note {
+  margin: 28px 0;
+  padding: 20px 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #354052;
+}
+
+.article-content .frame > :first-child,
+.article-content .note > :first-child {
+  margin-top: 0;
+}
+
+.article-content .frame > :last-child,
+.article-content .note > :last-child {
+  margin-bottom: 0;
+}
+
+.article-content .frame h2,
+.article-content .frame h3 {
+  margin-top: 0;
+}
+
+.article-content .intro-question {
+  margin: 28px 0;
+  padding: 10px 0 10px 18px;
+  border-left: 4px solid #3454d1;
+  color: #111827;
+  font-size: 20px;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.article-content .closing {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid #e5e7eb;
+}
+
 .article-content table {
   border-radius: 0;
   background: #ffffff;

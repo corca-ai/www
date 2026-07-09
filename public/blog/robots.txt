@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /blog/admin
+Disallow: /blog/admin/
 
 Sitemap: https://www.borca.ai/sitemap.xml

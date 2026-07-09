@@ -109,6 +109,7 @@ try {
             description:
               'Notion 본문 block을 읽어 Corca 블로그 정적 글로 발행하는지 확인하는 테스트입니다.',
             language: 'ko',
+            status: '수정 요청',
           }),
           page({
             id: htmlPageId,
@@ -116,6 +117,7 @@ try {
             slug: 'notion-html-fixture',
             description: 'Checks that a Notion HTML upload becomes a Corca blog post.',
             language: 'en',
+            status: '발행 요청',
             fileUrl: pathToFileURL(htmlPath).href,
           }),
         ],
@@ -136,7 +138,8 @@ try {
       NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
       NOTION_FIXTURE_UPDATES_FILE: updatesPath,
       NOTION_ALLOW_FILE_URLS: '1',
-      NOTION_POST_READY_STATUS: '배포 완료',
+      NOTION_POST_READY_STATUS: '발행 요청',
+      NOTION_POST_UPDATE_STATUS: '수정 요청',
       NOTION_SKIP_UPDATES: '0',
       CORCA_SITE_URL: 'https://www.borca.ai',
       BLOG_TRANSLATION_PROVIDER: 'fixture',
@@ -213,19 +216,83 @@ try {
     'https://www.borca.ai/blog/feed.json',
   );
 
+  await writeFile(
+    pagesPath,
+    JSON.stringify(
+      {
+        results: [
+          page({
+            id: htmlPageId,
+            title: 'Notion HTML fixture',
+            slug: 'notion-html-fixture',
+            description: 'Checks that a Notion HTML upload becomes a Corca blog post.',
+            language: 'en',
+            status: '삭제 요청',
+          }),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+
+  execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+    cwd: workDir,
+    env: {
+      ...process.env,
+      BLOG_ADMIN_ROOT: workDir,
+      NOTION_TOKEN: 'secret_fixture',
+      NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
+      NOTION_FIXTURE_PAGES_FILE: pagesPath,
+      NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+      NOTION_FIXTURE_UPDATES_FILE: updatesPath,
+      NOTION_ALLOW_FILE_URLS: '1',
+      NOTION_POST_READY_STATUS: '발행 요청',
+      NOTION_POST_UPDATE_STATUS: '수정 요청',
+      NOTION_POST_DELETE_STATUS: '삭제 요청',
+      NOTION_POST_DELETED_STATUS: '삭제 완료',
+      NOTION_SKIP_UPDATES: '0',
+      CORCA_SITE_URL: 'https://www.borca.ai',
+      BLOG_TRANSLATION_PROVIDER: 'fixture',
+    },
+    stdio: 'inherit',
+  });
+
+  const afterDeletePosts = JSON.parse(
+    await readFile(join(workDir, 'public/blog/posts/index.json'), 'utf8'),
+  );
+  assert.equal(
+    afterDeletePosts.some((post) => post.slug === 'notion-html-fixture'),
+    false,
+  );
+  await assert.rejects(
+    readFile(join(workDir, 'public/blog/notion-html-fixture/index.html'), 'utf8'),
+    /ENOENT/,
+  );
+  await assert.rejects(
+    readFile(join(workDir, 'public/en/blog/notion-html-fixture/index.html'), 'utf8'),
+    /ENOENT/,
+  );
+  assert.doesNotMatch(
+    await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
+    /notion-html-fixture/,
+  );
+  assert.match(await readFile(updatesPath, 'utf8'), /Deleted notion-html-fixture/);
+  assert.match(await readFile(updatesPath, 'utf8'), /삭제 완료/);
+
   console.log('Notion publish check passed.');
 } finally {
   await rm(fixtureRoot, { recursive: true, force: true });
 }
 
-function page({ id, title, slug, description, language, fileUrl = '' }) {
+function page({ id, title, slug, description, language, status = '배포 완료', fileUrl = '' }) {
   return {
     object: 'page',
     id,
     last_edited_time: new Date().toISOString(),
     properties: {
       제목: { id: 'title', type: 'title', title: text(title) },
-      상태: { id: 'status', type: 'status', status: { name: '배포 완료', color: 'green' } },
+      상태: { id: 'status', type: 'status', status: { name: status, color: 'green' } },
       파일: {
         id: 'file',
         type: 'files',

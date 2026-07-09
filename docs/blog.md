@@ -120,8 +120,10 @@ by a Notion automation webhook.
   `NOTION_BLOG_DATABASE_ID`. `NOTION_BLOG_DATA_SOURCE_ID` can be used when the
   newer Notion Data Source API is configured.
 - Optional GitHub Action variables:
-  `NOTION_POST_READY_STATUS`, `NOTION_POST_PUBLISHING_STATUS`,
-  `NOTION_POST_PUBLISHED_STATUS`, `NOTION_POST_ERROR_STATUS`,
+  `NOTION_POST_READY_STATUS`, `NOTION_POST_UPDATE_STATUS`,
+  `NOTION_POST_DELETE_STATUS`, `NOTION_POST_PUBLISHING_STATUS`,
+  `NOTION_POST_PUBLISHED_STATUS`, `NOTION_POST_DELETING_STATUS`,
+  `NOTION_POST_DELETED_STATUS`, `NOTION_POST_ERROR_STATUS`,
   `NOTION_SKIP_UPDATES` and `NOTION_RECENT_READY_MINUTES`.
 - Required Worker secrets for webhook-triggered publishing:
   `CORCA_NOTION_WEBHOOK_SECRET` and `GITHUB_DISPATCH_TOKEN`.
@@ -135,6 +137,49 @@ and the main-branch Cloudflare deployment completes.
 
 `NOTION_BLOG_DATABASE` is not read by this repository. Use
 `NOTION_BLOG_DATABASE_URL` or `NOTION_BLOG_DATABASE_ID` instead.
+
+### Notion Edits And Deletes
+
+Notion can be the editorial source of truth for publish, edit and delete
+requests. The GitHub Action still creates a pull request; the public site only
+changes after that pull request is merged and the normal Cloudflare deployment
+finishes.
+
+- Publish a new post by setting the Notion status to a value listed in
+  `NOTION_POST_READY_STATUS`.
+- Edit an existing post by keeping the same `Slug`/`슬러그`, changing the Notion
+  page body or metadata, then setting the status to a value listed in
+  `NOTION_POST_UPDATE_STATUS`. The sync script treats this as an upsert and
+  regenerates the static files for that slug.
+- Delete an existing post by keeping the `Slug`/`슬러그` value on the Notion row
+  and setting the status to a value listed in `NOTION_POST_DELETE_STATUS`. The
+  sync script dispatches the same delete path used by the admin UI, removing the
+  public article page, localized aliases, source files, translations, RSS, JSON
+  feed and sitemap entries.
+- Do not move the Notion row to trash before the delete pull request is created.
+  Notion database queries return normal database rows; a trashed row is harder
+  to map back to the deployed static slug.
+
+Recommended status options:
+
+- `발행 요청`
+- `수정 요청`
+- `삭제 요청`
+- `배포 완료`
+- `삭제 완료`
+- `발행 실패` or `삭제 실패`
+
+Recommended GitHub Action variables:
+
+- `NOTION_POST_READY_STATUS=발행 요청`
+- `NOTION_POST_UPDATE_STATUS=수정 요청`
+- `NOTION_POST_DELETE_STATUS=삭제 요청`
+- `NOTION_POST_PUBLISHED_STATUS=배포 완료`
+- `NOTION_POST_DELETED_STATUS=삭제 완료`
+
+When `NOTION_SKIP_UPDATES=1`, the workflow will not write status or result fields
+back to Notion. In that mode, editors should use the generated pull request as
+the source of truth until it is merged.
 
 ## Maintenance
 

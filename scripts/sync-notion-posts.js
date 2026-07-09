@@ -14,47 +14,71 @@ const processed = [];
 try {
   const pages = await queryNotionPages(config);
   const readyPages = pages
-    .filter((page) => isReadyToPublish(page, config))
-    .filter((page) => isPublishCandidateForTrigger(page, config))
+    .map((page) => ({ page, action: actionForPage(page, config) }))
+    .filter((item) => item.action)
+    .filter((item) => isPublishCandidateForTrigger(item.page, config))
     .slice(0, args.limit || config.limit);
 
   if (readyPages.length === 0) {
-    console.log('No Notion posts are ready to publish.');
+    console.log('No Notion posts are ready to sync.');
     process.exit(0);
   }
 
   await mkdir(workDir, { recursive: true });
 
-  for (const page of readyPages) {
+  for (const { page, action } of readyPages) {
     const context = pageContext(page, config);
     try {
       await updateNotionResult(page, config, {
-        status: statusFor(context.statusName, 'publishing', config),
-        message: 'Publishing from Notion started.',
+        status: statusFor(
+          context.statusName,
+          action === 'delete' ? 'deleting' : 'publishing',
+          config,
+        ),
+        message:
+          action === 'delete' ? 'Deleting from Notion started.' : 'Publishing from Notion started.',
       });
 
-      const source = await downloadPageSource(page, config);
-      const metadata = extractPostMetadata(page, config, source);
-      const slug = normalizeSlug(metadata.slug || metadata.title || source.baseName);
-      if (!slug) {
-        throw new Error('Slug could not be generated. Add Slug/슬러그 or a title.');
-      }
-      metadata.cover = await resolveCoverAsset(metadata.cover, slug);
-      metadata.language = normalizeLanguage(metadata.language || '');
-
-      if (args.dryRun) {
-        validatePublishPayload({ source, metadata, slug });
+      if (action === 'delete') {
+        const slug = deleteSlugForPage(page, config);
+        if (args.dryRun) {
+          validateDeletePayload({ slug });
+        } else {
+          runAdminPostDelete({ slug });
+        }
+        processed.push({
+          action,
+          page,
+          context,
+          slug,
+          language: '',
+          title: context.title || slug,
+        });
       } else {
-        runAdminPostChange({ source, metadata, slug });
-      }
+        const source = await downloadPageSource(page, config);
+        const metadata = extractPostMetadata(page, config, source);
+        const slug = normalizeSlug(metadata.slug || metadata.title || source.baseName);
+        if (!slug) {
+          throw new Error('Slug could not be generated. Add Slug/슬러그 or a title.');
+        }
+        metadata.cover = await resolveCoverAsset(metadata.cover, slug);
+        metadata.language = normalizeLanguage(metadata.language || '');
 
-      processed.push({
-        page,
-        context,
-        slug,
-        language: metadata.language,
-        title: metadata.title || parsed.metadata.title,
-      });
+        if (args.dryRun) {
+          validatePublishPayload({ source, metadata, slug });
+        } else {
+          runAdminPostUpsert({ source, metadata, slug });
+        }
+
+        processed.push({
+          action,
+          page,
+          context,
+          slug,
+          language: metadata.language,
+          title: metadata.title || slug,
+        });
+      }
     } catch (error) {
       await updateNotionResult(page, config, {
         status: statusFor(context.statusName, 'error', config),
@@ -67,16 +91,24 @@ try {
 
   if (processed.length > 0 && !args.dryRun) {
     for (const item of processed) {
-      await updateNotionResult(item.page, config, {
-        status: statusFor(item.context.statusName, 'published', config),
-        publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
-        message: `Published ${item.slug}.`,
-      });
+      if (item.action === 'delete') {
+        await updateNotionResult(item.page, config, {
+          status: statusFor(item.context.statusName, 'deleted', config),
+          clearPublicUrl: true,
+          message: `Deleted ${item.slug}.`,
+        });
+      } else {
+        await updateNotionResult(item.page, config, {
+          status: statusFor(item.context.statusName, 'published', config),
+          publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
+          message: `Published ${item.slug}.`,
+        });
+      }
     }
   }
 
-  const action = args.dryRun ? 'checked' : 'published';
-  console.log(`Notion post sync ${action} ${processed.length} post(s).`);
+  const syncAction = args.dryRun ? 'checked' : 'synced';
+  console.log(`Notion post sync ${syncAction} ${processed.length} post(s).`);
 } finally {
   await rm(workDir, { recursive: true, force: true });
 }
@@ -218,9 +250,15 @@ function validatePublishPayload({ source, metadata, slug }) {
   }
 }
 
-function runAdminPostChange({ source, metadata, slug }) {
+function validateDeletePayload({ slug }) {
+  if (!slug) {
+    throw new Error('Notion post delete requires Slug/슬러그.');
+  }
+}
+
+function runAdminPostUpsert({ source, metadata, slug }) {
   validatePublishPayload({ source, metadata, slug });
-  const payload = {
+  runAdminPostChange({
     action: 'upsert',
     slug,
     format: source.format,
@@ -230,8 +268,15 @@ function runAdminPostChange({ source, metadata, slug }) {
       slug,
     },
     contentBase64: Buffer.from(source.content, 'utf8').toString('base64'),
-  };
+  });
+}
 
+function runAdminPostDelete({ slug }) {
+  validateDeletePayload({ slug });
+  runAdminPostChange({ action: 'delete', slug });
+}
+
+function runAdminPostChange(payload) {
   execFileSync(process.execPath, [join(scriptDir, 'apply-admin-post-change.js')], {
     cwd: process.cwd(),
     env: {
@@ -306,12 +351,14 @@ async function updateNotionResult(page, config, result) {
       properties[name] = { select: { name: result.status } };
     }
   }
-  if (result.publicUrl && publicUrlProperty) {
+  if ((result.publicUrl || result.clearPublicUrl) && publicUrlProperty) {
     const [name, property] = publicUrlProperty;
     if (property.type === 'url') {
-      properties[name] = { url: result.publicUrl };
+      properties[name] = { url: result.clearPublicUrl ? null : result.publicUrl };
     } else if (property.type === 'rich_text') {
-      properties[name] = { rich_text: [{ text: { content: result.publicUrl } }] };
+      properties[name] = result.clearPublicUrl
+        ? { rich_text: [] }
+        : { rich_text: [{ text: { content: result.publicUrl } }] };
     }
   }
   if (result.message && messageProperty) {
@@ -346,9 +393,21 @@ async function updateNotionResult(page, config, result) {
   }
 }
 
-function isReadyToPublish(page, config) {
+function actionForPage(page, config) {
   const status = pageContext(page, config).statusName;
-  return config.readyStatuses.map(normalizeLabel).includes(normalizeLabel(status));
+  const normalized = normalizeLabel(status);
+  if (config.deleteStatuses.map(normalizeLabel).includes(normalized)) {
+    return 'delete';
+  }
+  if (config.upsertStatuses.map(normalizeLabel).includes(normalized)) {
+    return 'upsert';
+  }
+  return '';
+}
+
+function deleteSlugForPage(page, config) {
+  const properties = page.properties || {};
+  return normalizeSlug(textProperty(findProperty(properties, config.propertyNames.slug)) || '');
 }
 
 function isPublishCandidateForTrigger(page, config) {
@@ -379,10 +438,22 @@ function pageContext(page, config) {
 
 function statusFor(currentStatus, target, config) {
   const hasKorean = /[가-힣]/.test(currentStatus || '');
+  if (/삭제|delete/i.test(currentStatus || '')) {
+    const deleteDefaults = {
+      deleting: hasKorean ? '삭제 중' : 'Deleting',
+      deleted: hasKorean ? '삭제 완료' : 'Deleted',
+      publishing: hasKorean ? '삭제 중' : 'Deleting',
+      published: hasKorean ? '삭제 완료' : 'Deleted',
+      error: hasKorean ? '삭제 실패' : 'Delete failed',
+    };
+    return config.statusTargets[target] || deleteDefaults[target];
+  }
   if (/배포/.test(currentStatus || '')) {
     const deployDefaults = {
       publishing: currentStatus || '배포 완료',
       published: '배포 완료',
+      deleting: '삭제 중',
+      deleted: '삭제 완료',
       error: '배포 전',
     };
     return config.statusTargets[target] || deployDefaults[target];
@@ -390,6 +461,8 @@ function statusFor(currentStatus, target, config) {
   const defaults = {
     publishing: hasKorean ? '발행 중' : 'Publishing',
     published: hasKorean ? '발행 완료' : 'Published',
+    deleting: hasKorean ? '삭제 중' : 'Deleting',
+    deleted: hasKorean ? '삭제 완료' : 'Deleted',
     error: hasKorean ? '발행 실패' : 'Failed',
   };
   return config.statusTargets[target] || defaults[target];
@@ -1216,9 +1289,29 @@ function loadConfig() {
       '업로드 요청',
       '게시 요청',
     ]),
+    updateStatuses: envList('NOTION_POST_UPDATE_STATUS', [
+      'Update',
+      'Update requested',
+      'Republish',
+      'Republish requested',
+      '수정 요청',
+      '수정',
+      '재발행 요청',
+    ]),
+    deleteStatuses: envList('NOTION_POST_DELETE_STATUS', [
+      'Delete',
+      'Delete requested',
+      'Unpublish',
+      'Unpublish requested',
+      '삭제 요청',
+      '삭제',
+      '비공개 요청',
+    ]),
     statusTargets: {
       publishing: process.env.NOTION_POST_PUBLISHING_STATUS || '',
       published: process.env.NOTION_POST_PUBLISHED_STATUS || '',
+      deleting: process.env.NOTION_POST_DELETING_STATUS || '',
+      deleted: process.env.NOTION_POST_DELETED_STATUS || '',
       error: process.env.NOTION_POST_ERROR_STATUS || '',
     },
     propertyNames: {
@@ -1306,6 +1399,9 @@ function loadConfig() {
     requireRecentReady: process.env.NOTION_REQUIRE_RECENT_READY === '1',
     recentReadyMinutes: Number(process.env.NOTION_RECENT_READY_MINUTES || 30),
     limit: args.limit || Number(process.env.NOTION_POST_LIMIT || 50),
+    get upsertStatuses() {
+      return [...this.readyStatuses, ...this.updateStatuses];
+    },
   };
 }
 

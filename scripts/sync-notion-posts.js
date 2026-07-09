@@ -399,7 +399,13 @@ function actionForPage(page, config) {
   if (config.deleteStatuses.map(normalizeLabel).includes(normalized)) {
     return 'delete';
   }
-  if (config.upsertStatuses.map(normalizeLabel).includes(normalized)) {
+  if (config.updateStatuses.map(normalizeLabel).includes(normalized)) {
+    return 'upsert';
+  }
+  if (
+    config.readyStatuses.map(normalizeLabel).includes(normalized) &&
+    !publicUrlForPage(page, config)
+  ) {
     return 'upsert';
   }
   return '';
@@ -408,6 +414,10 @@ function actionForPage(page, config) {
 function deleteSlugForPage(page, config) {
   const properties = page.properties || {};
   return normalizeSlug(textProperty(findProperty(properties, config.propertyNames.slug)) || '');
+}
+
+function publicUrlForPage(page, config) {
+  return textProperty(findProperty(page.properties || {}, config.propertyNames.publicUrl)).trim();
 }
 
 function isPublishCandidateForTrigger(page, config) {
@@ -1399,9 +1409,6 @@ function loadConfig() {
     requireRecentReady: process.env.NOTION_REQUIRE_RECENT_READY === '1',
     recentReadyMinutes: Number(process.env.NOTION_RECENT_READY_MINUTES || 30),
     limit: args.limit || Number(process.env.NOTION_POST_LIMIT || 50),
-    get upsertStatuses() {
-      return [...this.readyStatuses, ...this.updateStatuses];
-    },
   };
 }
 

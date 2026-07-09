@@ -10,6 +10,7 @@ const fixtureRoot = await mkdtemp(join(tmpdir(), 'corca-www-notion-publish-'));
 const workDir = join(fixtureRoot, 'www');
 const bodyPageId = '11111111-2222-3333-4444-555555555555';
 const htmlPageId = '66666666-7777-8888-9999-000000000000';
+const publishedPageId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 const pagesPath = join(fixtureRoot, 'pages.json');
 const blocksPath = join(fixtureRoot, 'blocks.json');
 const updatesPath = join(fixtureRoot, 'updates.jsonl');
@@ -120,6 +121,15 @@ try {
             status: '배포 완료',
             fileUrl: pathToFileURL(htmlPath).href,
           }),
+          page({
+            id: publishedPageId,
+            title: 'Already published fixture',
+            slug: 'already-published-fixture',
+            description: 'Already published posts with a public URL should not resync.',
+            language: 'ko',
+            status: '배포 완료',
+            publicUrl: 'https://www.borca.ai/blog/already-published-fixture',
+          }),
         ],
       },
       null,
@@ -164,6 +174,10 @@ try {
   assert.equal(
     posts.some((post) => post.slug === 'notion-html-fixture'),
     true,
+  );
+  assert.equal(
+    posts.some((post) => post.slug === 'already-published-fixture'),
+    false,
   );
   assert.equal(
     enPosts.some((post) => post.slug === 'notion-html-fixture'),
@@ -285,7 +299,16 @@ try {
   await rm(fixtureRoot, { recursive: true, force: true });
 }
 
-function page({ id, title, slug, description, language, status = '배포 완료', fileUrl = '' }) {
+function page({
+  id,
+  title,
+  slug,
+  description,
+  language,
+  status = '배포 완료',
+  fileUrl = '',
+  publicUrl = '',
+}) {
   return {
     object: 'page',
     id,
@@ -309,7 +332,7 @@ function page({ id, title, slug, description, language, status = '배포 완료'
       언어: { id: 'language', type: 'select', select: { name: language } },
       작성자: { id: 'author', type: 'rich_text', rich_text: text('Corca Team') },
       썸네일: { id: 'cover', type: 'rich_text', rich_text: text('assets/editorial-cover.jpg') },
-      '공개 URL': { id: 'public-url', type: 'url', url: null },
+      '공개 URL': { id: 'public-url', type: 'url', url: publicUrl || null },
       '발행 로그': { id: 'message', type: 'rich_text', rich_text: [] },
     },
   };

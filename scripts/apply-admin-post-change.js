@@ -1105,6 +1105,8 @@ function renderBlogJsonFeed(records) {
 function renderBlogRobotsTxt() {
   return `User-agent: *
 Allow: /
+Disallow: /blog/admin
+Disallow: /blog/admin/
 
 Sitemap: ${absoluteSiteUrl('/sitemap.xml')}
 `;

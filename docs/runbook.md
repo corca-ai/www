@@ -41,10 +41,9 @@ post validation/build flow, then rebuild it with `CORCA_SITE_URL` ending in
 `/blog` and copy the generated `dist/` contents into `public/blog/` in this
 repo. See [blog](blog.md) for the exact integration contract and commands.
 
-The public blog ships as static assets, with localized-shell aliases under
-`public/en/blog/`, `public/ja/blog/` and `public/zh/blog/`. Admin edits and
-Notion publishing can also update those static files through the workflows
-described in [blog](blog.md).
+The public blog ships as static assets, including localized-shell aliases under
+`public/en/blog/`, `public/ja/blog/` and `public/zh/blog/`. See the
+[blog guide](blog.md) for the Notion publish, edit and delete workflow.
 
 Published posts do not require a runtime database. When a post changes, keep
 `public/blog/index.json`, `public/blog/posts/index.json`, the static post page,

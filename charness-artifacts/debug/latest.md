@@ -1,78 +1,77 @@
 # Debug Review
-Date: 2026-07-08
+Date: 2026-07-09
 
 ## Problem
 
-In the blog admin Markdown editor, inserting a body image does not show the image in the Markdown preview/editor preview.
+Notion HTML uploads can publish, but standalone HTML visual blocks such as callout frames, notes, highlighted questions and code-like `pre` blocks look flattened in the Corca blog shell.
 
 ## Correct Behavior
 
-Given an admin edits a Markdown post, when they insert an uploaded body image through the custom `+IMG` control or Toast UI image control, then the editor content should include image Markdown, the preview should display the selected local image before save, and the saved payload should still reference the deployable `assets/admin-posts/...` path.
+Given a trusted Notion `.html` upload contains article-local HTML patterns, when the blog renderer extracts and publishes the article body, then the meaningful body structure should remain visible in the public blog style system without requiring arbitrary document-level CSS injection.
 
 ## Observed Facts
 
-- User reported that image insertion in Markdown format does not show images in Markdown preview.
-- The admin UI has two editor surfaces: a hidden source textarea/manual preview and a Toast UI Markdown editor.
-- Previous related incident in this PR fixed blog/admin post-index loading by moving read paths to `/blog/index.json`.
+- The uploaded sample at `/Users/koleuka/Downloads/ceal-terview-moon-jungmin-newcomer-adaptation-classic.html` has document-level CSS for `.frame`, `.intro-question`, `.note`, `.closing`, `.eyebrow`, `.meta` and raw `<pre>`.
+- The live page `https://www.borca.ai/blog/corca-newbie-trip` contains those classes and `<pre>` blocks, so the body HTML was not lost.
+- `parsePostHtml()` and `parsePostSource()` intentionally extract `<article>`/`<main>`/`<body>` content; the original `<head><style>` is not carried into the public article.
 
 ## Reproduction
 
-- Source inspection showed `bodyImageInput` always called `insertOrReplaceImageMarkdown(...)`, which mutates `contentInput` and manual preview only.
-- Source inspection showed `updateMarkdownPreview()` exits early when Toast UI is active, so the manual preview updated by `insertOrReplaceImageMarkdown(...)` is hidden/reset.
-- Source inspection showed Toast UI's own `addImageBlobHook` inserted `/blog/assets/...` first and depended on a single async DOM refresh to replace that not-yet-uploaded URL with the local blob preview.
+- Inspect the uploaded HTML and live page output: the semantic classes and raw `<pre>` are present, but the uploaded stylesheet is absent.
+- Inspect `public/blog/styles.css`: generic article styles existed, but no compatibility styles for the uploaded standalone HTML classes.
+- Inspect CSS cascade: the late `.article-content code` rule could override `pre code` reset styling for generated Markdown code blocks.
 
 ## Candidate Causes
 
-- Confirmed: custom image upload path updated the hidden textarea while Toast UI was the visible Markdown editor.
-- Confirmed: Toast preview image refresh was timing-sensitive and could run before Toast UI rendered its image DOM.
-- Disconfirmed: final post generation image handling is not the immediate preview failure; `apply-admin-post-change.js` already accepts `bodyImages` and writes `assets/admin-posts/...`.
+- Confirmed: article extraction drops the uploaded document stylesheet, leaving recognized classes without matching blog styles.
+- Confirmed: code block styling had an ordering issue where inline-code styling could leak into `pre code`.
+- Disconfirmed: Notion HTML upload parsing did not remove the relevant body markup; the live/static HTML still includes it.
 
 ## Hypothesis
 
-- Claim type: attribution.
-- Candidate claim: the visible Toast UI preview misses uploaded images because custom uploads bypass Toast insertion, and Toast image DOM replacement only runs once.
-- disconfirmer: inspect `bodyImageInput` and Toast image hook control flow, then verify the fix updates Toast content and retries preview image refresh while preserving source `assets/admin-posts/...` paths.
-- Result: confirmed by source inspection and implemented control-flow change.
+- Claim: adding a constrained blog CSS compatibility layer for trusted HTML-upload body patterns will restore visible structure while avoiding arbitrary `<style>` injection.
+- Disconfirmer: run Notion HTML fixture through the publish path and assert the structure is preserved plus the public stylesheet contains the compatibility rules.
+- Result: confirmed.
 
 ## Verification
 
-- `node --check public/blog/admin/admin.js` passed.
-- `python3 /Users/koleuka/.codex/plugins/cache/charness/charness/0.62.0/scripts/validate_debug_artifact.py --repo-root .` passed.
-- `npm exec pnpm@10.22.0 -- run check` passed; only existing deprecation hints were reported.
+- `npm run notion:check` passed.
+- `npm run blog:content:check` passed.
+- `npm exec pnpm@10.22.0 -- run check` passed with existing Astro deprecation hints only.
 - `npm run build` passed.
+- `git diff --check` passed.
 
 ## Root Cause
 
-The admin editor kept two Markdown surfaces in sync, but the custom image upload path only wrote to the hidden source textarea. When Toast UI was active, the visible editor and its preview did not receive the inserted image Markdown. Toast UI image insertion also rendered a deploy path before save, so the code had to replace rendered image nodes with local blob URLs; the refresh was scheduled only once and could miss Toast's render timing.
+The publishing pipeline treated standalone HTML uploads as article body HTML, not as a complete self-contained document. That is the right public-site boundary, but the blog stylesheet did not provide equivalents for common authored HTML patterns from the uploaded document, so the visual grouping and code-block affordances were flattened.
 
 ## Invariant Proof
 
-- Invariant: inserted body images must update the currently visible Markdown editor and preview while preserving deployable source Markdown paths.
-- Producer Proof: `prepareBodyImage(...)` still produces `path: assets/admin-posts/...` and `previewSrc: blob:...`.
-- Final-Consumer Proof: custom upload now inserts into Toast UI when active; source sync still converts Toast `/blog/assets/...` or blob URLs back to `assets/...`.
-- Interface-Shape Sibling Scan: Toast UI hook and custom `+IMG` now both schedule repeated preview image refreshes.
-- Non-Claims: no authenticated production browser roundtrip was run in this session.
+- Invariant: trusted HTML upload structure stays in the article body, while public styling comes from the Corca blog stylesheet.
+- Producer Proof: the Notion fixture now includes `.frame`, `.intro-question`, `.note` and raw `<pre>` in the HTML upload path.
+- Final-Consumer Proof: the generated static page preserves those classes and `public/blog/styles.css` defines corresponding article styles.
+- Interface-Shape Sibling Scan: Markdown `pre code` styling is also reset after the late inline-code rule.
+- Non-Claims: no production deploy or visual browser screenshot was completed in this slice.
 
 ## Detection Gap
 
-- `node --check`/build | syntax only, no editor interaction coverage | add focused UI/e2e coverage for Markdown image insertion if this surface keeps changing.
-- Manual preview checks | custom textarea preview and Toast preview were treated as equivalent | fix updates the visible editor path directly.
+- `notion:check` | previously covered HTML upload publication but not styled standalone HTML patterns | fixture now includes authored callout and code-like blocks.
+- CSS cascade | no automated visual assertion | added structural/style-selector assertions as the cheapest durable guard.
 
 ## Sibling Search
 
-- Mental model: updating the source textarea is equivalent to updating the visible Markdown editor.
-- same layer: `bodyImageInput` custom upload path | decision: same bug, fix now | proof: source inspection.
-- same layer: Toast `addImageBlobHook` preview replacement | decision: same class, diagnostic-only for this slice | proof: source inspection; fixed with retry refresh.
-- abstraction up: saved payload extraction from `pendingBodyImages` | decision: intentional boundary, no change | proof: source path remains `assets/admin-posts/...`.
-- cross-file: `scripts/apply-admin-post-change.js` body image handling inspected as final consumer.
+- Mental model: preserving HTML tags is enough to preserve authored presentation.
+- same file: `.article-content pre code` cascade | decision: fix now | proof: late reset added after inline-code rule.
+- same path: `.frame`/`.note`/`.intro-question` classes | decision: fix now | proof: fixture and CSS selector assertions.
+- cross-file: `scripts/notion-publish-check.js` | decision: broaden fixture | proof: Notion check passes with HTML-upload compatibility assertions.
 
 ## Seam Risk
 
-- Interrupt ID: admin-markdown-image-preview
+- Interrupt ID: notion-html-upload-visual-compat
 - Risk Class: none
-- Seam: Toast UI editor DOM render timing
-- Disproving Observation: source-level fix and syntax checks only
-- What Local Reasoning Cannot Prove: exact production browser timing after Toast UI CDN load
+- Seam: standalone document CSS to public blog stylesheet
+- Disproving Observation: the body markup existed in live/static output; missing public styles explain the visible flattening.
+- What Local Reasoning Cannot Prove: exact post-deploy visual appearance on the production CDN before merge.
 - Generalization Pressure: none
 
 ## Interrupt Decision
@@ -84,5 +83,4 @@ The admin editor kept two Markdown surfaces in sync, but the custom image upload
 
 ## Prevention
 
-- Keep editor mutations routed through the visible editor when Toast UI is active.
-- Retry Toast preview blob substitution across short render delays instead of assuming one DOM pass is enough.
+Keep Notion HTML upload fixtures representative of authored standalone HTML blocks, and prefer constrained blog CSS compatibility over injecting arbitrary uploaded document styles.

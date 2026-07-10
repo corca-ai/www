@@ -95,6 +95,27 @@ This fixture intentionally includes enough article copy to pass the public post 
 - Second admin list item`),
   });
 
+  runAdminChange({
+    action: 'upsert',
+    slug: 'adjacent-thumbnail-fixture',
+    format: 'markdown',
+    fileName: 'adjacent-thumbnail-fixture.md',
+    metadata: {
+      title: 'Adjacent Thumbnail Fixture',
+      description: 'Adjacent post used to verify thumbnail pagination cards.',
+      date: '2026-02-02',
+      tags: '문라이트,제품',
+      author: 'Adjacent Author',
+      cover: 'assets/editorial-cover.jpg',
+      language: 'ko',
+      coverAlt: 'Adjacent cover alt',
+      section: '문라이트',
+    },
+    contentBase64: toBase64(`# Adjacent Thumbnail Fixture
+
+This adjacent fixture gives the generated static page a previous-post card so the thumbnail pagination markup can be verified. The body intentionally includes enough copy to pass the public post generator while keeping the fixture focused on adjacent post navigation.`),
+  });
+
   const source = await readFile(
     join(workDir, `public/blog/admin/post-sources/${slug}.html`),
     'utf8',
@@ -107,14 +128,16 @@ This fixture intentionally includes enough article copy to pass the public post 
 
   const index = JSON.parse(await readFile(join(workDir, 'public/blog/posts/index.json'), 'utf8'));
   const indexAlias = JSON.parse(await readFile(join(workDir, 'public/blog/index.json'), 'utf8'));
-  assert.equal(index.length, 1);
+  assert.equal(index.length, 2);
   assert.equal(index[0].slug, slug);
   assert.equal(index[0].title, 'Admin Markdown Updated');
   assert.equal(index[0].cover, metadata.cover);
+  assert.equal(index[1].slug, 'adjacent-thumbnail-fixture');
   assert.deepEqual(indexAlias, index);
 
   const staticPage = await readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8');
   assert.match(staticPage, /Admin Markdown Updated/);
+  assert.match(staticPage, /<link rel="stylesheet" href="\/blog\/styles\.css\?v=[^"]+">/);
   assert.doesNotMatch(
     staticPage,
     /<meta name="robots" content="index,follow,max-image-preview:large">/,
@@ -141,6 +164,13 @@ This fixture intentionally includes enough article copy to pass the public post 
     staticPage,
     /<img src="\/blog\/assets\/admin-posts\/admin-edit-fixture-111111111111\.png"/,
   );
+  assert.match(staticPage, /class="related-card post-pagination-card post-pagination-previous"/);
+  assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
+  assert.match(
+    staticPage,
+    /<img src="\/blog\/assets\/editorial-cover\.jpg" alt="" loading="lazy" decoding="async">/,
+  );
+  assert.match(staticPage, /<span class="related-title">Adjacent Thumbnail Fixture<\/span>/);
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
   assert.equal(
     (
@@ -193,9 +223,10 @@ This fixture intentionally includes enough article copy to pass the public post 
     const localeIndexAlias = JSON.parse(
       await readFile(join(workDir, `public/${locale}/blog/index.json`), 'utf8'),
     );
-    assert.equal(localeIndex.length, 1);
+    assert.equal(localeIndex.length, 2);
     assert.equal(localeIndex[0].slug, slug);
     assert.match(localeIndex[0].title, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
+    assert.equal(localeIndex[1].slug, 'adjacent-thumbnail-fixture');
     assert.deepEqual(localeIndexAlias, localeIndex);
     assert.match(
       await readFile(join(workDir, `public/${locale}/blog/${slug}/index.html`), 'utf8'),

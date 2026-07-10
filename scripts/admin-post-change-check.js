@@ -166,6 +166,13 @@ This adjacent fixture gives the generated static page a previous-post card so th
   );
   assert.match(staticPage, /class="related-card post-pagination-card post-pagination-previous"/);
   assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
+  assert.match(staticPage, /<details class="article-mobile-navigation">/);
+  assert.match(staticPage, /<summary>목차와 추천 글<\/summary>/);
+  const noTocStaticPage = await readFile(
+    join(workDir, 'public/blog/adjacent-thumbnail-fixture/index.html'),
+    'utf8',
+  );
+  assert.doesNotMatch(noTocStaticPage, /<section class="toc-section"/);
   assert.match(
     staticPage,
     /<img src="\/blog\/assets\/editorial-cover\.jpg" alt="" loading="lazy" decoding="async">/,

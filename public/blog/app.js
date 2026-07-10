@@ -83,6 +83,7 @@ const UI_TEXT = {
     articleLoading: "글 본문을 불러오는 중",
     toc: "목차",
     tocAria: "글 목차",
+    mobileNavigation: "목차와 추천 글",
     sectionLink: (heading) => `${heading} 섹션 링크`,
     recommendations: "추천 글",
     copied: "복사됨",
@@ -161,6 +162,7 @@ const UI_TEXT = {
     articleLoading: "Loading article body",
     toc: "Table of contents",
     tocAria: "Table of contents",
+    mobileNavigation: "Contents and recommended posts",
     sectionLink: (heading) => `Link to ${heading}`,
     recommendations: "Recommended posts",
     copied: "Copied",
@@ -239,6 +241,7 @@ const UI_TEXT = {
     articleLoading: "記事本文を読み込み中",
     toc: "目次",
     tocAria: "目次",
+    mobileNavigation: "目次とおすすめ記事",
     sectionLink: (heading) => `${heading}へのリンク`,
     recommendations: "おすすめ記事",
     copied: "コピー済み",
@@ -317,6 +320,7 @@ const UI_TEXT = {
     articleLoading: "正在加载文章正文",
     toc: "目录",
     tocAria: "目录",
+    mobileNavigation: "目录和推荐文章",
     sectionLink: (heading) => `${heading} 的链接`,
     recommendations: "推荐文章",
     copied: "已复制",
@@ -1296,6 +1300,7 @@ function renderArticle(post, html) {
         <span class="meta-item">${renderPostDate(post)}</span>
         <span class="meta-item">${escapeHtml(post.author)}</span>
       </div>
+      ${renderMobileArticleNavigation()}
     </header>
     ${renderArticleCover(post, html)}
     <div class="article-content">${html}</div>
@@ -1427,6 +1432,7 @@ function normalizeArticleAssetUrl(value, sourcePath) {
 
 function renderTableOfContents() {
   const headings = [...postArticle.querySelectorAll(".article-content h2")];
+  renderMobileTableOfContents(headings);
   tableOfContents.hidden = headings.length < 2;
 
   if (tableOfContents.hidden) {
@@ -1447,6 +1453,39 @@ function renderTableOfContents() {
     </section>
   `;
   updateActiveTocLink();
+}
+
+function renderMobileArticleNavigation() {
+  return `
+    <details class="article-mobile-navigation">
+      <summary>${escapeHtml(localeText().mobileNavigation)}</summary>
+      <div class="article-mobile-navigation-content">
+        <section class="toc-section" data-mobile-toc-section aria-label="${escapeAttribute(localeText().tocAria)}">
+          <strong>${escapeHtml(localeText().toc)}</strong>
+          <ol data-mobile-toc-list></ol>
+        </section>
+        <section class="toc-recommendations" data-mobile-recommendations aria-label="${escapeAttribute(localeText().recommendations)}">
+          <strong>${escapeHtml(localeText().recommendations)}</strong>
+          <div class="toc-recommendation-list"></div>
+        </section>
+      </div>
+    </details>
+  `;
+}
+
+function renderMobileTableOfContents(headings) {
+  const section = postArticle.querySelector("[data-mobile-toc-section]");
+  const list = postArticle.querySelector("[data-mobile-toc-list]");
+  if (!section || !list) {
+    return;
+  }
+
+  section.hidden = headings.length === 0;
+  list.innerHTML = headings.map((heading, index) => {
+    const id = heading.id || `section-${index + 1}`;
+    heading.id = id;
+    return `<li><a href="#${escapeAttribute(id)}">${escapeHtml(heading.textContent)}</a></li>`;
+  }).join("");
 }
 
 function decorateArticleHeadings() {
@@ -1503,6 +1542,7 @@ function getRecommendedPosts(post, posts = state.posts) {
 
 function renderSidebarRecommendations(posts) {
   tableOfContents.querySelector(".toc-recommendations")?.remove();
+  renderMobileRecommendations(posts);
 
   if (!posts.length) {
     tableOfContents.hidden = !tableOfContents.textContent.trim();
@@ -1514,15 +1554,30 @@ function renderSidebarRecommendations(posts) {
     <section class="toc-recommendations" aria-label="${escapeAttribute(localeText().recommendations)}">
       <strong>${escapeHtml(localeText().recommendations)}</strong>
       <div class="toc-recommendation-list">
-        ${posts.slice(0, 3).map((item) => `
-          <a class="toc-recommendation" href="${escapeAttribute(getStaticPostPath(item))}">
-            <span>${escapeHtml(item.title)}</span>
-            <small>${renderPostDate(item)} · ${escapeHtml(item.author)}</small>
-          </a>
-        `).join("")}
+        ${renderRecommendationLinks(posts)}
       </div>
     </section>
   `);
+}
+
+function renderMobileRecommendations(posts) {
+  const section = postArticle.querySelector("[data-mobile-recommendations]");
+  const list = section?.querySelector(".toc-recommendation-list");
+  if (!section || !list) {
+    return;
+  }
+
+  section.hidden = posts.length === 0;
+  list.innerHTML = renderRecommendationLinks(posts);
+}
+
+function renderRecommendationLinks(posts) {
+  return posts.slice(0, 3).map((item) => `
+    <a class="toc-recommendation" href="${escapeAttribute(getStaticPostPath(item))}">
+      <span>${escapeHtml(item.title)}</span>
+      <small>${renderPostDate(item)} · ${escapeHtml(item.author)}</small>
+    </a>
+  `).join("");
 }
 
 function renderTagRow(post) {

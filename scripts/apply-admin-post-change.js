@@ -28,6 +28,7 @@ const localeLabels = {
     imageAltSuffix: '대표 이미지',
     toc: '목차',
     recommendations: '추천 글',
+    mobileNavigation: '목차와 추천 글',
     previous: '이전 글',
     next: '다음 글',
     postsBreadcrumb: '글',
@@ -41,6 +42,7 @@ const localeLabels = {
     imageAltSuffix: 'representative image',
     toc: 'Table of contents',
     recommendations: 'Recommended posts',
+    mobileNavigation: 'Contents and recommended posts',
     previous: 'Previous post',
     next: 'Next post',
     postsBreadcrumb: 'Posts',
@@ -54,6 +56,7 @@ const localeLabels = {
     imageAltSuffix: '代表画像',
     toc: '目次',
     recommendations: 'おすすめ記事',
+    mobileNavigation: '目次とおすすめ記事',
     previous: '前の記事',
     next: '次の記事',
     postsBreadcrumb: '記事',
@@ -67,6 +70,7 @@ const localeLabels = {
     imageAltSuffix: '代表图片',
     toc: '目录',
     recommendations: '推荐文章',
+    mobileNavigation: '目录和推荐文章',
     previous: '上一篇',
     next: '下一篇',
     postsBreadcrumb: '文章',
@@ -1300,22 +1304,14 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
               <span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
               <span class="meta-item">${escapeHtml(post.author)}</span>
             </div>
+            ${renderStaticMobileNavigation(toc, recommendations, locale)}
           </header>
           <div class="article-content">
 ${articleHtml}
           </div>
         </article>
         <aside class="toc static-toc" aria-label="${escapeAttribute(localeLabels[locale].toc)}">
-          <section class="toc-section" aria-label="${escapeAttribute(localeLabels[locale].toc)}">
-            <strong>${escapeHtml(localeLabels[locale].toc)}</strong>
-            ${toc}
-          </section>
-          <section class="toc-recommendations" aria-label="${escapeAttribute(localeLabels[locale].recommendations)}">
-            <strong>${escapeHtml(localeLabels[locale].recommendations)}</strong>
-            <div class="toc-recommendation-list">
-${recommendations.map((item) => renderRecommendation(item, locale)).join('')}
-            </div>
-          </section>
+${renderStaticNavigationSections(toc, recommendations, locale)}
         </aside>
         ${pageNav}
       </section>
@@ -1435,6 +1431,34 @@ function renderRecommendation(post, locale) {
               </a>`;
 }
 
+function renderStaticMobileNavigation(toc, recommendations, locale) {
+  const labels = localeLabels[locale];
+  return `            <details class="article-mobile-navigation">
+              <summary>${escapeHtml(labels.mobileNavigation)}</summary>
+              <div class="article-mobile-navigation-content">
+${renderStaticNavigationSections(toc, recommendations, locale)}
+              </div>
+            </details>`;
+}
+
+function renderStaticNavigationSections(toc, recommendations, locale) {
+  const labels = localeLabels[locale];
+  const sections = [];
+  if (toc) {
+    sections.push(`<section class="toc-section" aria-label="${escapeAttribute(labels.toc)}">
+  <strong>${escapeHtml(labels.toc)}</strong>
+  ${toc}
+</section>`);
+  }
+  sections.push(`<section class="toc-recommendations" aria-label="${escapeAttribute(labels.recommendations)}">
+  <strong>${escapeHtml(labels.recommendations)}</strong>
+  <div class="toc-recommendation-list">
+${recommendations.map((item) => renderRecommendation(item, locale)).join('\n')}
+  </div>
+</section>`);
+  return sections.join('\n');
+}
+
 function adjacentPostNav(post, posts, postBySlug, locale) {
   const index = posts.findIndex((item) => item.slug === post.slug);
   const previous = index >= 0 ? posts[index + 1] : null;
@@ -1483,7 +1507,7 @@ function tableOfContents(articleHtml) {
       text: stripTags(match[2]),
     }))
     .filter((item) => item.id && item.text);
-  if (!items.length) return '<ol></ol>';
+  if (!items.length) return '';
   return `<ol>\n${items.map((item) => `              <li><a href="#${escapeAttribute(item.id)}">${escapeHtml(item.text)}</a></li>`).join('\n')}\n            </ol>`;
 }
 

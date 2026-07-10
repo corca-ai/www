@@ -1,86 +1,83 @@
 # Debug Review
-Date: 2026-07-09
+Date: 2026-07-10
 
 ## Problem
 
-Notion HTML uploads can publish, but standalone HTML visual blocks such as callout frames, notes, highlighted questions and code-like `pre` blocks look flattened in the Corca blog shell.
+At 350–640px wide, post-list thumbnails are cropped vertically instead of showing the full image.
 
 ## Correct Behavior
 
-Given a trusted Notion `.html` upload contains article-local HTML patterns, when the blog renderer extracts and publishes the article body, then the meaningful body structure should remain visible in the public blog style system without requiring arbitrary document-level CSS injection.
+Given a 350–640px viewport, when a reader views the post list, then each thumbnail follows its intrinsic image ratio and shows the full image without side gutters or vertical cropping.
 
 ## Observed Facts
 
-- The uploaded sample at `/Users/koleuka/Downloads/ceal-terview-moon-jungmin-newcomer-adaptation-classic.html` has document-level CSS for `.frame`, `.intro-question`, `.note`, `.closing`, `.eyebrow`, `.meta` and raw `<pre>`.
-- The live page `https://www.borca.ai/blog/corca-newbie-trip` contains those classes and `<pre>` blocks, so the body HTML was not lost.
-- `parsePostHtml()` and `parsePostSource()` intentionally extract `<article>`/`<main>`/`<body>` content; the original `<head><style>` is not carried into the public article.
+- `public/blog/app.js` supplies 1672×941 post images, approximately 16:9.
+- The base `.post-card img` rule uses a 16:9 frame with `object-fit: contain`.
+- The 640px media rule overrides that to 16:7, caps the height at 168px, and uses `object-fit: cover`.
 
 ## Reproduction
 
-- Inspect the uploaded HTML and live page output: the semantic classes and raw `<pre>` are present, but the uploaded stylesheet is absent.
-- Inspect `public/blog/styles.css`: generic article styles existed, but no compatibility styles for the uploaded standalone HTML classes.
-- Inspect CSS cascade: the late `.article-content code` rule could override `pre code` reset styling for generated Markdown code blocks.
+- View a post-list card at any width from 350px to 640px; the 16:7 frame crops a 16:9 source vertically.
 
 ## Candidate Causes
 
-- Confirmed: article extraction drops the uploaded document stylesheet, leaving recognized classes without matching blog styles.
-- Confirmed: code block styling had an ordering issue where inline-code styling could leak into `pre code`.
-- Disconfirmed: Notion HTML upload parsing did not remove the relevant body markup; the live/static HTML still includes it.
+- The mobile-only 16:7 aspect ratio is wider than the post-image source frame.
+- The mobile-only `object-fit: cover` crops the source to fill that wider frame.
+- A stale stylesheet cache could preserve an old rule after deployment.
 
 ## Hypothesis
 
-- Claim: adding a constrained blog CSS compatibility layer for trusted HTML-upload body patterns will restore visible structure while avoiding arbitrary `<style>` injection.
-- Disconfirmer: run Notion HTML fixture through the publish path and assert the structure is preserved plus the public stylesheet contains the compatibility rules.
-- Result: confirmed.
+- Initial claim: removing the mobile-only crop override is sufficient. | result: disconfirmed by the existing 1360×326 cover, which still letterboxes in a fixed 16:9 frame.
+- Refined claim: a final 640px rule with `height: auto` and `aspect-ratio: auto` lets each mobile list image use its intrinsic ratio. | disconfirmer: inspect the final cascade and the known wide cover dimensions.
 
 ## Verification
 
-- `npm run notion:check` passed.
-- `npm run blog:content:check` passed.
-- `npm exec pnpm@10.22.0 -- run check` passed with existing Astro deprecation hints only.
-- `npm run build` passed.
-- `git diff --check` passed.
+- Confirmed: the old 16:7 crop rule is gone and the final 640px media block overrides later fixed-ratio declarations with `height: auto` and `aspect-ratio: auto`.
+- Confirmed: `corca-team-page-figure-01.webp` is 1360×326, exercising the non-16:9 case that would otherwise letterbox.
+- Confirmed: every public HTML page now references the updated stylesheet cache version.
+- `npm exec pnpm@10.22.0 -- run blog:content:check` passed.
+- `npm exec pnpm@10.22.0 -- run check` and `npm exec pnpm@10.22.0 -- run build` passed.
 
 ## Root Cause
 
-The publishing pipeline treated standalone HTML uploads as article body HTML, not as a complete self-contained document. That is the right public-site boundary, but the blog stylesheet did not provide equivalents for common authored HTML patterns from the uploaded document, so the visual grouping and code-block affordances were flattened.
+The mobile card override optimized for a shorter visual frame instead of the cover asset's actual shape. Its 16:7 ratio and `cover` fit cropped normal covers; merely falling back to the shared fixed 16:9 frame left side gutters for permitted wide covers.
 
 ## Invariant Proof
 
-- Invariant: trusted HTML upload structure stays in the article body, while public styling comes from the Corca blog stylesheet.
-- Producer Proof: the Notion fixture now includes `.frame`, `.intro-question`, `.note` and raw `<pre>` in the HTML upload path.
-- Final-Consumer Proof: the generated static page preserves those classes and `public/blog/styles.css` defines corresponding article styles.
-- Interface-Shape Sibling Scan: Markdown `pre code` styling is also reset after the late inline-code rule.
-- Non-Claims: no production deploy or visual browser screenshot was completed in this slice.
+- Invariant: mobile post-list image height follows each cover's intrinsic ratio.
+- Producer Proof: deployed covers include both normal 16:9 images and a 1360×326 wide image.
+- Final-Consumer Proof: the final mobile rule applies `height: auto` and `aspect-ratio: auto` after all fixed-ratio post-card declarations.
+- Interface-Shape Sibling Scan: adjacent-post thumbnails and hero images are separate components with their own intentional frames.
+- Non-Claims: visual browser proof has not run in this host.
 
 ## Detection Gap
 
-- `notion:check` | previously covered HTML upload publication but not styled standalone HTML patterns | fixture now includes authored callout and code-like blocks.
-- CSS cascade | no automated visual assertion | added structural/style-selector assertions as the cheapest durable guard.
+- Responsive CSS | syntax and static-generation gates did not assess image geometry at the 350–640px breakpoint | the smallest durable guard is a browser visual regression scenario for a non-16:9 cover.
 
 ## Sibling Search
 
-- Mental model: preserving HTML tags is enough to preserve authored presentation.
-- same file: `.article-content pre code` cascade | decision: fix now | proof: late reset added after inline-code rule.
-- same path: `.frame`/`.note`/`.intro-question` classes | decision: fix now | proof: fixture and CSS selector assertions.
-- cross-file: `scripts/notion-publish-check.js` | decision: broaden fixture | proof: Notion check passes with HTML-upload compatibility assertions.
+- Mental model: a shorter mobile thumbnail frame is harmless when every cover is treated as interchangeable.
+- same layer: `public/blog/styles.css` post-card image rules | decision: same bug, fix now | proof: static cascade scan confirms the final mobile intrinsic-ratio override wins.
+- abstraction up: `public/blog/styles.css` hero image 16:7 crop | decision: intentional plain-text or non-rendering boundary | proof: static scan; it is a hero, not a list thumbnail.
+- specialization down: `public/blog/styles.css` adjacent-post thumbnail | decision: same class, diagnostic-only for this slice | proof: static scan; it already uses a 16:9 card frame and is outside the reported list view.
+- cross-file: `public/blog/app.js` post-list image dimensions | decision: same class, diagnostic-only for this slice | proof: static scan; the attributes reserve fallback geometry, while the loaded image's intrinsic ratio owns the final mobile display.
 
 ## Seam Risk
 
-- Interrupt ID: notion-html-upload-visual-compat
+- Interrupt ID: mobile-thumbnail-aspect-ratio
 - Risk Class: none
-- Seam: standalone document CSS to public blog stylesheet
-- Disproving Observation: the body markup existed in live/static output; missing public styles explain the visible flattening.
-- What Local Reasoning Cannot Prove: exact post-deploy visual appearance on the production CDN before merge.
+- Seam: post metadata image dimensions to responsive card CSS
+- Disproving Observation: a fixed 16:9 fallback still letterboxes the existing wide cover, so the final mobile intrinsic-ratio override is required.
+- What Local Reasoning Cannot Prove: actual rendered image framing in a browser.
 - Generalization Pressure: none
 
 ## Interrupt Decision
 
 - Resolution: resolved
-- Critique Required: no
+- Critique Required: yes
 - Next Step: impl
 - Handoff Artifact: none
 
 ## Prevention
 
-Keep Notion HTML upload fixtures representative of authored standalone HTML blocks, and prefer constrained blog CSS compatibility over injecting arbitrary uploaded document styles.
+Let mobile post-list thumbnails follow the intrinsic cover ratio. Treat any future fixed mobile crop as an explicit visual-design decision with a viewport render check. Parent-delegated problem-framing, mobile-UI and counterweight reviews confirmed the intrinsic-ratio fix and kept featured/related imagery out of scope.

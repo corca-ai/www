@@ -2337,6 +2337,7 @@ summary:focus-visible {
 
 .post-pagination-card {
   display: grid;
+  grid-template-columns: 1fr;
   min-height: 184px;
   padding: 0;
 }
@@ -2444,10 +2445,6 @@ summary:focus-visible {
 .post-pagination-previous .related-cue {
   grid-column: 1;
   text-align: left;
-}
-
-.post-pagination-card.post-pagination-previous {
-  grid-template-columns: 1fr;
 }
 
 .post-pagination-card.post-pagination-previous .related-cue {

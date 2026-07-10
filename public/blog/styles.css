@@ -2365,7 +2365,7 @@ summary:focus-visible {
   display: block;
   width: 100%;
   min-height: 184px;
-  aspect-ratio: 16 / 7;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
@@ -3066,7 +3066,7 @@ summary:focus-visible {
 
   .post-pagination-card .related-thumbnail {
     min-height: 156px;
-    aspect-ratio: 16 / 8.5;
+    aspect-ratio: 16 / 9;
   }
 
   .post-pagination-card .related-meta {

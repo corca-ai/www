@@ -2862,12 +2862,6 @@ summary:focus-visible {
     transform: scale(0.25);
   }
 
-  .post-card img {
-    aspect-ratio: 16 / 7;
-    max-height: 168px;
-    object-fit: cover;
-  }
-
   .post-card-body {
     gap: 8px;
     padding: 16px;
@@ -4403,6 +4397,11 @@ body {
 }
 
 @media (max-width: 640px) {
+  .post-card img {
+    height: auto;
+    aspect-ratio: auto;
+  }
+
   .list-pagination {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;

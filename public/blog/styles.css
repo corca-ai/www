@@ -1738,14 +1738,16 @@ summary:focus-visible {
 .post-pagination {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: 16px;
+  gap: 18px;
   width: min(100%, 920px);
   margin: 34px auto 0;
 }
 
 .post-pagination-card {
+  position: relative;
+  overflow: hidden;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--surface);
   box-shadow: var(--shadow-border);
 }
 
@@ -2333,6 +2335,93 @@ summary:focus-visible {
   transition: color 160ms ease, transform 160ms ease;
 }
 
+.post-pagination-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  aspect-ratio: 16 / 9;
+  min-height: 184px;
+  padding: 0;
+}
+
+.post-pagination-card + .post-pagination-card {
+  border-top: 0;
+}
+
+.post-pagination-card .related-cue {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  right: 14px;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.52);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 10px 28px rgba(29, 29, 31, 0.12);
+}
+
+.post-pagination-card .related-thumbnail {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.post-pagination-card .related-thumbnail img {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  object-position: center;
+  transition: transform 220ms ease;
+}
+
+.post-pagination-card .related-copy {
+  position: absolute;
+  z-index: 2;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  display: flex;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.post-pagination-card .related-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text);
+  line-height: 1.25;
+  box-shadow: 0 10px 26px rgba(29, 29, 31, 0.12);
+  white-space: normal;
+  backdrop-filter: blur(10px);
+}
+
+.post-pagination-card .related-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .related-card:hover,
 .related-card:focus-visible {
   background: var(--surface);
@@ -2346,6 +2435,11 @@ summary:focus-visible {
   transform: translateX(2px);
 }
 
+.post-pagination-card:hover .related-thumbnail img,
+.post-pagination-card:focus-visible .related-thumbnail img {
+  transform: none;
+}
+
 .related-card:active {
   transform: translateY(0);
 }
@@ -2357,6 +2451,11 @@ summary:focus-visible {
 .post-pagination-previous .related-cue {
   grid-column: 1;
   text-align: left;
+}
+
+.post-pagination-card.post-pagination-previous .related-cue {
+  right: auto;
+  left: 14px;
 }
 
 .post-pagination-card > strong {
@@ -2967,35 +3066,22 @@ summary:focus-visible {
     align-self: center;
   }
 
-  .related-card {
-    grid-template-columns: minmax(0, 1fr) 22px;
-    align-items: start;
-    gap: 4px 10px;
+  .post-pagination-card.related-card {
+    min-height: 156px;
   }
 
-  .related-meta,
-  .related-card strong {
-    grid-column: 1;
+  .post-pagination-card .related-meta {
+    max-width: calc(100% - 52px);
+    font-size: 12px;
   }
 
-  .related-cue {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
+  .post-pagination-card .related-cue {
+    top: 12px;
+    right: 12px;
   }
 
-  .post-pagination-previous {
-    grid-template-columns: 22px minmax(0, 1fr);
-  }
-
-  .post-pagination-previous .related-meta,
-  .post-pagination-previous strong {
-    grid-column: 2;
-  }
-
-  .post-pagination-previous .related-cue {
-    grid-column: 1;
-    grid-row: 1 / span 2;
+  .post-pagination-card.post-pagination-previous .related-cue {
+    left: 12px;
   }
 }
 

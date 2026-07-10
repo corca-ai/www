@@ -1246,6 +1246,7 @@ function renderStaticPostPage(
   availableLocalesBySlug,
 ) {
   const shell = getBlogShell(locale, post.slug, availableLocalesBySlug);
+  const blogStylesHref = shell.blogStylesHref || '/blog/styles.css';
   const coverUrl = absoluteBlogAsset(post.cover);
   const pageUrl = absoluteSiteUrl(staticPostPath(post, locale));
   const publishedTime = `${post.date}T00:00:00.000Z`;
@@ -1287,7 +1288,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
     <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, pageUrl, articleSection, locale))}</script>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
-    <link rel="stylesheet" href="/blog/styles.css">
+    <link rel="stylesheet" href="${escapeAttribute(blogStylesHref)}">
   </head>
   <body>${shell.beforeMain}<main id="main" tabindex="-1">
       <section class="post-view static-post-view">
@@ -1326,6 +1327,9 @@ ${recommendations.map((item) => renderRecommendation(item, locale)).join('')}
 function getBlogShell(locale, slug, availableLocalesBySlug) {
   const file = join(repoRoot, localePaths[locale], 'index.html');
   const html = readFileSyncText(file);
+  const blogStylesHref =
+    html.match(/<link rel="stylesheet" href="(\/blog\/styles\.css[^"]*)">/)?.[1] ||
+    '/blog/styles.css';
   const bodyStart = html.indexOf('<body>');
   const mainStart = html.indexOf('<main id="main"');
   const bodyEnd = html.indexOf('</body>');
@@ -1339,7 +1343,7 @@ function getBlogShell(locale, slug, availableLocalesBySlug) {
   let afterMain = html.slice(mainClose + '</main>'.length, bodyEnd);
   afterMain = afterMain.replace(/<script type="module" src="\/blog\/app\.js"><\/script>/g, '');
   beforeMain = localizeLanguageLinks(beforeMain, locale, slug, availableLocalesBySlug);
-  return { beforeMain, afterMain };
+  return { beforeMain, afterMain, blogStylesHref };
 }
 
 function readFileSyncText(file) {
@@ -1458,10 +1462,17 @@ function adjacentPostNav(post, posts, postBySlug, locale) {
 }
 
 function renderAdjacentCard(post, locale, label, cue, className) {
+  const thumbnailSrc = `/blog/${String(post.cover || defaultCover).replace(/^\/+/, '')}`;
+  const section = post.section || post.tags[0] || '코르카';
   return `        <a class="related-card post-pagination-card ${className}" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${label}: ${escapeAttribute(post.title)}">
           <span class="related-cue" aria-hidden="true">${cue}</span>
-          <span class="related-meta">${label} · <strong>${escapeHtml(post.section || post.tags[0] || '코르카')}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
-          <strong>${escapeHtml(post.title)}</strong>
+          <span class="related-thumbnail" aria-hidden="true">
+            <img src="${escapeAttribute(thumbnailSrc)}" alt="" loading="lazy" decoding="async">
+          </span>
+          <span class="related-copy">
+            <span class="related-meta">${label} · <strong>${escapeHtml(section)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
+            <span class="related-title">${escapeHtml(post.title)}</span>
+          </span>
         </a>`;
 }
 

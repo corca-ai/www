@@ -114,6 +114,9 @@ This fixture intentionally includes enough article copy to pass the public post 
   assert.deepEqual(indexAlias, index);
 
   const staticPage = await readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8');
+  assert.match(staticPage, /<body class="blog-post-mode">/);
+  assert.match(staticPage, /id="readingProgress" class="reading-progress"/);
+  assert.match(staticPage, /<link rel="stylesheet" href="\/blog\/styles\.css\?v=[^"]+">/);
   assert.match(staticPage, /Admin Markdown Updated/);
   assert.doesNotMatch(
     staticPage,
@@ -179,6 +182,11 @@ This fixture intentionally includes enough article copy to pass the public post 
     await readFile(join(workDir, 'public/blog/robots.txt'), 'utf8'),
     /Sitemap: https:\/\/www\.corca\.ai\/sitemap\.xml/,
   );
+
+  const blogStyles = await readFile(join(repoRoot, 'public/blog/styles.css'), 'utf8');
+  assert.match(blogStyles, /@supports \(animation-timeline: scroll\(\)\)/);
+  assert.match(blogStyles, /@supports \(animation-timeline: view\(\)\)/);
+  assert.match(blogStyles, /corca-scroll-reveal/);
 
   for (const locale of ['en', 'ja', 'zh']) {
     const translationSource = await readFile(

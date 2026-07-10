@@ -420,6 +420,10 @@ const readingProgress = document.querySelector("#readingProgress");
 const postDependentLinks = document.querySelectorAll("[data-requires-posts]");
 const sectionNavLinks = document.querySelectorAll(".nav a");
 const heroPrimaryAction = document.querySelector(".hero-actions .primary-button");
+const supportsCssScrollTimeline =
+  typeof CSS !== "undefined" &&
+  typeof CSS.supports === "function" &&
+  CSS.supports("animation-timeline: scroll()");
 
 const defaultDocumentMeta = {
   title: document.title,
@@ -445,6 +449,7 @@ async function init() {
     if (slug) {
       await openPost(slug, { push: false, replace: isLegacyPostQuery() });
     } else {
+      setBlogViewMode("list");
       scrollToInitialHash();
       trackPageView(defaultDocumentMeta.title, new URL(appPath("/"), window.location.origin).pathname);
     }
@@ -1615,6 +1620,7 @@ function renderArchiveMeta(post) {
 function showList() {
   state.articleRequestId += 1;
   closeReadingSettings();
+  setBlogViewMode("list");
   if (skipLink) {
     skipLink.href = "#posts";
   }
@@ -1639,6 +1645,7 @@ function showList() {
 
 function showPostView() {
   closeReadingSettings();
+  setBlogViewMode("post");
   if (skipLink) {
     skipLink.href = "#postArticle";
   }
@@ -2140,7 +2147,7 @@ function hasCustomReadingSettings() {
 
 function updateReadingProgress() {
   if (!state.currentPostSlug || postView.hidden) {
-    readingProgress.style.transform = "scaleX(0)";
+    setReadingProgressVisual(0);
     return;
   }
 
@@ -2148,9 +2155,28 @@ function updateReadingProgress() {
   const total = Math.max(1, rect.height - window.innerHeight);
   const read = Math.min(total, Math.max(0, -rect.top));
   const ratio = read / total;
-  readingProgress.style.transform = `scaleX(${ratio})`;
+  setReadingProgressVisual(ratio);
   rememberReadingProgress(ratio);
   updateActiveTocLink();
+}
+
+function setBlogViewMode(mode) {
+  if (!document.body) {
+    return;
+  }
+  document.body.classList.toggle("blog-list-mode", mode === "list");
+  document.body.classList.toggle("blog-post-mode", mode === "post");
+}
+
+function setReadingProgressVisual(ratio) {
+  if (!readingProgress) {
+    return;
+  }
+  if (supportsCssScrollTimeline && document.body.classList.contains("blog-post-mode")) {
+    readingProgress.style.transform = "";
+    return;
+  }
+  readingProgress.style.transform = `scaleX(${clampNumber(ratio, 0, 1, 0)})`;
 }
 
 function rememberReadingProgress(ratio) {

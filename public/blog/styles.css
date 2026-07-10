@@ -122,6 +122,63 @@ mark {
   transform-origin: left;
 }
 
+@keyframes corca-reading-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes corca-scroll-reveal {
+  from {
+    opacity: 0.01;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  body.blog-post-mode .reading-progress {
+    animation-name: corca-reading-progress;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: scroll();
+  }
+
+  body.blog-list-mode .reading-progress {
+    animation: none;
+    transform: scaleX(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  body.blog-post-mode .article-cover,
+  body.blog-post-mode .article-content > :where(h2, h3, figure, blockquote, pre, table),
+  body.blog-post-mode .article-content > p:has(> img:only-child),
+  body.blog-list-mode .featured-card,
+  body.blog-list-mode .post-list .post-card:nth-child(-n+6) {
+    animation-name: corca-scroll-reveal;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
+
+  body.blog-list-mode .featured-card,
+  body.blog-list-mode .post-list .post-card:nth-child(-n+6) {
+    animation-range: entry 0% cover 14%;
+  }
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -4361,6 +4418,14 @@ body {
 
   .post-card-actions {
     transform: none;
+  }
+
+  .reading-progress,
+  .article-cover,
+  .article-content > *,
+  .featured-card,
+  .post-card {
+    animation: none !important;
   }
 
   .icon-button span,

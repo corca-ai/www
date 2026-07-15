@@ -6,6 +6,8 @@ import { localeTag, ogLocale, locales, defaultLang, contact, type Lang } from '.
 import { absoluteUrl } from '../i18n/utils';
 import { SITE_ORIGIN } from '../site';
 
+const GA_MEASUREMENT_ID = 'G-SZY1B11LXS';
+
 interface Props {
   lang: Lang;
   title: string;
@@ -109,13 +111,13 @@ const graph = {
     <meta name="publisher" content={publisherName} />
 
     <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-SZY1B11LXS"></script>
-    <script is:inline>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+    <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-SZY1B11LXS');
+      gtag('config', GA_MEASUREMENT_ID);
     </script>
 
     <title>{title}</title>

@@ -107,9 +107,11 @@ shipping a new static page.
 
 Google Analytics is injected from `src/layouts/BaseLayout.astro` with the GA4
 measurement ID `G-SZY1B11LXS`. To change or remove analytics, update that snippet
-in one place and run `pnpm build`; because `BaseLayout` wraps every rendered page,
-the change applies site-wide. When changing the ID, include the old and new IDs
-in the pull request description so the analytics owner can verify the handoff.
+in one place and run `pnpm build`. Astro pages use the snippet directly, while
+`scripts/sync-blog-shell-assets.js` copies its ID into the deployable blog HTML,
+so the change applies site-wide. When changing the ID, include the old and new
+IDs in the pull request description so the analytics owner can verify the
+handoff.
 
 ## Change the canonical domain
 

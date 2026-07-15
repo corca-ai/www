@@ -538,7 +538,6 @@ function bindEvents() {
     hideListMessage();
     updateDiscoveryUrl({ replace: false });
     renderPosts();
-    postsSection.scrollIntoView({ behavior: "smooth", block: "start" });
   });
   savedOnlyButton?.addEventListener("click", () => {
     state.savedOnly = !state.savedOnly;

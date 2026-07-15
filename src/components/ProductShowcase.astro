@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets';
+import { useTranslations, localizePath } from '../i18n/utils';
+import type { Lang } from '../i18n/ui';
+
+import moonlightLogo from '../assets/images/moonlight-logo.png';
+import moonlightApp from '../assets/images/moonlight-app.jpg';
+import traceLogo from '../assets/images/trace-logo.png';
+import traceApp from '../assets/images/trace-app.png';
+
+// The alternating Moonlight/Trace showcase sections, shared by the Home page
+// and the /products category landing so the two stay identical (no duplicated
+// markup). Copy comes from the home i18n strings.
+interface Props {
+  lang: Lang;
+  /** Tighter section padding and shorter images — used on the /products landing. */
+  compact?: boolean;
+}
+const { lang, compact = false } = Astro.props;
+const h = useTranslations(lang).home;
+
+const pad = compact ? 'py-10 lg:py-16' : 'py-16 lg:py-28';
+const moonImg = compact ? 'aspect-[16/10] md:aspect-[16/9]' : 'aspect-[5/4] md:aspect-[29/20]';
+const traceImg = compact ? 'aspect-[16/10] md:aspect-[16/9]' : 'aspect-[5/4] md:aspect-[7/5]';
+const logoSize = compact ? 'h-[40px] w-auto md:h-[52px]' : 'h-[52px] w-auto md:h-[72px]';
+const bodySize = compact ? 'text-[15px] lg:text-[17px]' : 'text-[16px] lg:text-[18px]';
+
+// Localized alt text for the app screenshots (issue #14: alt must be
+// descriptive and in the page's language, not hardcoded English).
+const imgAlt = {
+  ko: { moonlight: '문라이트 앱 화면', trace: '트레이스 앱 화면' },
+  en: { moonlight: 'Moonlight app screenshot', trace: 'Trace app screenshot' },
+  ja: { moonlight: 'ムーンライトのアプリ画面', trace: 'トレースのアプリ画面' },
+  zh: { moonlight: 'Moonlight 应用界面', trace: 'Trace 应用界面' },
+}[lang];
+---
+
+<!-- ========================== Moonlight ========================== -->
+<section class="bg-white">
+  <div class:list={["container-c grid items-center gap-10 md:grid-cols-2 md:gap-16", pad]}>
+    <div class="order-first">
+      <Image
+        src={moonlightApp}
+        alt={imgAlt.moonlight}
+        widths={[560, 900]}
+        sizes="(min-width: 768px) 50vw, 92vw"
+        class:list={["w-full rounded-2xl object-cover object-center shadow-[var(--shadow-card)]", moonImg]}
+      />
+    </div>
+    <div>
+      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class={logoSize} />
+      <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
+      <p class:list={["mt-5 leading-[1.4] text-heading", bodySize]}>{h.moonlightBody}</p>
+      <a href={localizePath('/products/moonlight', lang)} class="btn-pill btn-pill-dark mt-8">{h.readMore}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Trace ============================ -->
+<section class="bg-lavender">
+  <div class:list={["container-c grid items-center gap-10 md:grid-cols-2 md:gap-16", pad]}>
+    <div class="order-first md:order-last">
+      <Image
+        src={traceApp}
+        alt={imgAlt.trace}
+        widths={[560, 900, 1200]}
+        sizes="(min-width: 768px) 50vw, 92vw"
+        class:list={["w-full rounded-2xl object-cover object-center shadow-[var(--shadow-card)]", traceImg]}
+      />
+    </div>
+    <div>
+      <Image src={traceLogo} alt="Trace" width={1116} height={540} densities={[1, 2, 3]} class={logoSize} />
+      <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
+      <p class:list={["mt-5 leading-[1.4] text-heading", bodySize]}>{h.traceBody}</p>
+      <a href={localizePath('/products/trace', lang)} class="btn-pill btn-pill-dark mt-8">{h.readMore}</a>
+    </div>
+  </div>
+</section>

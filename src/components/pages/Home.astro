@@ -1,14 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import { useTranslations, localizePath } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
 import { externalLinks, type Lang } from '../../i18n/ui';
 import { br } from '../../text';
 
 import heroIllustration from '../../assets/images/hero-illustration.png';
-import moonlightLogo from '../../assets/images/moonlight-logo.png';
-import moonlightApp from '../../assets/images/moonlight-app.jpg';
-import traceLogo from '../../assets/images/trace-logo.png';
-import traceApp from '../../assets/images/trace-app.jpg';
+import ProductShowcase from '../ProductShowcase.astro';
 import awardUnicorn from '../../assets/images/award-unicorn.png';
 import awardStartup from '../../assets/images/award-startup.png';
 import recsysArticle from '../../assets/images/recsys-article.png';
@@ -25,26 +22,18 @@ const h = t.home;
 // and in the page's language, not hardcoded English).
 const imgAlt = {
   ko: {
-    moonlight: '문라이트 앱 화면',
-    trace: '트레이스 앱 화면',
     recsys: 'ACM RecSys Challenge 2023 성과를 다룬 코르카 관련 기사',
     partners: '코르카의 파트너사와 고객사 로고',
   },
   en: {
-    moonlight: 'Moonlight app screenshot',
-    trace: 'Trace app screenshot',
     recsys: 'Corca featured in an ACM RecSys Challenge 2023 news article',
     partners: 'Logos of Corca partners and clients',
   },
   ja: {
-    moonlight: 'ムーンライトのアプリ画面',
-    trace: 'トレースのアプリ画面',
     recsys: 'ACM RecSys Challenge 2023の成果を報じたコルカ関連記事',
     partners: 'コルカのパートナー企業と顧客企業のロゴ',
   },
   zh: {
-    moonlight: 'Moonlight 应用界面',
-    trace: 'Trace 应用界面',
     recsys: '报道Corca在ACM RecSys Challenge 2023成绩的新闻文章',
     partners: 'Corca的合作伙伴与客户的标志',
   },
@@ -74,7 +63,7 @@ const heroTitleHtml = (() => {
   <div class="container-c relative flex flex-col items-start gap-8 pt-6 pb-14 text-left min-[640px]:pb-6 min-[810px]:min-h-[clamp(654px,calc(75vw_-_66px),894px)] min-[810px]:justify-start min-[810px]:py-0 min-[810px]:pt-[calc(9vw_-_40px)]">
     <div class="max-[809px]:max-w-[360px] min-[810px]:max-w-[600px]">
       <h1
-        class="text-[33px] font-normal leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
+        class="text-[40px] font-normal leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
         set:html={heroTitleHtml}
       />
       <p class="font-head mt-6 text-[18px] leading-[1.4] text-white min-[1024px]:text-[24px]" set:html={br(h.heroSubtitle)} />
@@ -90,47 +79,8 @@ const heroTitleHtml = (() => {
   </div>
 </section>
 
-<!-- ========================== Moonlight ========================== -->
-<section class="bg-white">
-  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
-    <div class="order-first">
-      <Image
-        src={moonlightApp}
-        alt={imgAlt.moonlight}
-        widths={[560, 900]}
-        sizes="(min-width: 768px) 50vw, 92vw"
-        class="aspect-[5/4] w-full rounded-2xl object-cover object-center shadow-[var(--shadow-card)] md:aspect-[29/20]"
-      />
-    </div>
-    <div>
-      <Image src={moonlightLogo} alt="Moonlight" width={200} height={55} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[72px]" />
-      <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.moonlightHeading}</h2>
-      <p class="mt-5 text-[16px] leading-[1.4] text-heading lg:text-[18px]">{h.moonlightBody}</p>
-      <a href={localizePath('/products/moonlight', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#605070] text-white hover:bg-[#808090] md:w-auto">{h.readMore}</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ Trace ============================ -->
-<section class="bg-lavender">
-  <div class="container-c grid items-center gap-10 py-16 md:grid-cols-2 md:gap-16 lg:py-28">
-    <div class="order-first md:order-last">
-      <Image
-        src={traceApp}
-        alt={imgAlt.trace}
-        widths={[560, 900, 1200]}
-        sizes="(min-width: 768px) 50vw, 92vw"
-        class="aspect-[5/4] w-full rounded-2xl object-cover object-center shadow-[var(--shadow-card)] md:aspect-[7/5]"
-      />
-    </div>
-    <div>
-      <Image src={traceLogo} alt="Trace" width={190} height={57} densities={[1, 2, 3]} class="h-[52px] w-auto md:h-[72px]" />
-      <h2 class="mt-5 text-[26px] font-normal leading-[1.2] text-heading md:text-[28px] lg:text-[32px]">{h.traceHeading}</h2>
-      <p class="mt-5 text-[16px] leading-[1.4] text-heading lg:text-[18px]">{h.traceBody}</p>
-      <a href={localizePath('/products/trace', lang)} class="btn-pill btn-pill-lg mt-8 w-full justify-center border-transparent bg-[#777cdc] text-white hover:bg-[#808090] md:w-auto">{h.readMore}</a>
-    </div>
-  </div>
-</section>
+<!-- ==================== Moonlight / Trace ======================== -->
+<ProductShowcase lang={lang} />
 
 <!-- ===================== Baby Unicorn award ===================== -->
 <section class="bg-white">

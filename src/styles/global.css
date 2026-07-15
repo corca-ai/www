@@ -12,10 +12,20 @@
   src: url("/fonts/PretendardVariable.woff2") format("woff2-variations");
 }
 
+/* Japanese sibling of Pretendard (same SIL OFL family, adds kana + kanji), so
+   Japanese pages read as the same typeface as Korean/English. Only downloaded
+   on :lang(ja) pages, where --font-ja references it. */
+@font-face {
+  font-family: "Pretendard JP Variable";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/PretendardJPVariable.woff2") format("woff2-variations");
+}
+
 /* Heading typeface — corca.ai's own uploaded webfont (subsetted from the live
-   Wix site): a heavier Hangul sans whose LATIN glyphs are a bold serif. This is
-   what makes live's headings — and the "AI" acronym in them — read the way they
-   do; using it means the serif "AI" is intrinsic to the font (no manual span). */
+   Wix site): a heavier Hangul sans whose LATIN glyphs are a bold serif. Used on
+   JA/ZH pages only; KO/EN pages set headings in Pretendard instead. */
 @font-face {
   font-family: "Corca Head";
   font-weight: 400 800;
@@ -32,7 +42,7 @@
      read as the same brand. Blue *text on white* uses the deeper --color-brand-ink
      (corca's own accent blue, ~4.6:1 on white) to stay legible. */
   --color-brand: #419eff;          /* hero / CTA background — matches corca.ai */
-  --color-brand-ink: #046cb8;      /* blue text on white (accessible accent) */
+  --color-brand-ink: #056eb9;      /* brand key color — blue text on white, logo blue */
   --color-lavender: #faeeff;       /* Trace section background */
   --color-heading: #1a2352;        /* navy section headings — matches corca.ai */
   --color-ink: #1a1a1a;            /* body text */
@@ -42,8 +52,11 @@
   --font-sans: "Pretendard Variable", Pretendard, -apple-system,
     BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
     "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  --font-ja: "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo,
-    "Yu Gothic", "Pretendard Variable", sans-serif;
+  /* Japanese unified to Pretendard JP (self-hosted webfont — same look on every
+     device, matching the KO/EN Pretendard). System JP fonts are only a fallback
+     while the webfont loads. */
+  --font-ja: "Pretendard JP Variable", "Pretendard Variable", Meiryo,
+    "Hiragino Kaku Gothic ProN", sans-serif;
   --font-zh: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
     "Noto Sans SC", "Pretendard Variable", sans-serif;
 
@@ -88,14 +101,14 @@ p {
   word-break: keep-all;
 }
 
-/* Headings (and the hero subtitles that live sets in the same face) use the
-   Corca heading webfont; Korean/JP/CJK glyphs the subset lacks fall back to the
-   locale sans stack. `.font-head` opts extra elements in (e.g. hero subtitles). */
+/* Headings on KO/EN/JA pages use the same Pretendard stack as the body (the
+   "Corca Head" webfont is retired for ko/en/ja). Only ZH keeps Corca Head;
+   `.font-head` opts extra elements in. */
 h1, h2, h3, .font-head {
-  font-family: "Corca Head", var(--font-sans);
+  font-family: var(--font-sans);
 }
 :lang(ja) h1, :lang(ja) h2, :lang(ja) h3, :lang(ja) .font-head {
-  font-family: "Corca Head", var(--font-ja);
+  font-family: var(--font-ja);
 }
 :lang(zh) h1, :lang(zh) h2, :lang(zh) h3, :lang(zh) .font-head {
   font-family: "Corca Head", var(--font-zh);
@@ -181,11 +194,14 @@ h1, h2, h3, .font-head {
 }
 /* Live corca.ai buttons have no lift/transform on hover — only a background
    shift (see the per-button hover:bg utilities). */
+/* Outlined pill in the brand key colour: border + text #056EB9 (via
+   --color-brand-ink, since .btn-pill's border is currentColor), and a solid
+   #056EB9 fill with white text on hover. */
 .btn-pill-dark {
-  color: var(--color-ink);
+  color: var(--color-brand-ink);
 }
 .btn-pill-dark:hover {
-  background: #000;
+  background: var(--color-brand-ink);
   border-color: transparent;
   color: #fff;
 }

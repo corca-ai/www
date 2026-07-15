@@ -9,7 +9,7 @@
   --line: #e6e6ea;
   --line-strong: #d7d7dd;
   --accent: #111111;
-  --blue: #0066cc;
+  --blue: #056eb9;
   --tag: #f3f3f5;
   --focus-ring: rgba(0, 102, 204, 0.2);
   --radius-sm: 8px;
@@ -50,7 +50,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.62;
   text-rendering: optimizeLegibility;
   word-break: keep-all;
@@ -88,6 +88,19 @@ img {
 .corca-main-header img,
 .corca-main-footer img {
   outline: 0;
+}
+
+/* The global `img { height: auto }` above is unlayered and so beats Tailwind's
+   layered `h-[20px]` height utility on the shared-header logo (an SVG whose
+   intrinsic size is 574×160), rendering it huge. Size the header logo here. */
+.corca-main-header a[aria-label="Corca home"] img {
+  height: 20px;
+  width: auto;
+}
+@media (min-width: 768px) {
+  .corca-main-header a[aria-label="Corca home"] img {
+    height: 30px;
+  }
 }
 
 mark {
@@ -1840,7 +1853,7 @@ summary:focus-visible {
 
 .article.leading-compact .article-content { line-height: 1.58; }
 .article.leading-wide .article-content { line-height: 1.9; }
-.article.font-serif .article-content { font-family: ui-serif, Georgia, "Noto Serif KR", serif; }
+.article.font-serif .article-content { font-family: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; }
 .article.paragraph-compact .article-content p { margin-bottom: 12px; }
 .article.paragraph-wide .article-content p { margin-bottom: 26px; }
 
@@ -2229,9 +2242,9 @@ summary:focus-visible {
 .toc-recommendation span {
   display: -webkit-box;
   overflow: hidden;
-  font-size: 13px;
-  font-weight: 760;
-  line-height: 1.45;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
@@ -3189,15 +3202,9 @@ main {
 
 .hero-topic-filters button::after {
   content: attr(data-count);
-  display: inline-grid;
-  min-width: 18px;
-  height: 18px;
-  margin-left: 6px;
-  place-items: center;
-  border-radius: 999px;
-  background: var(--tag);
+  margin-left: 5px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .hero-topic-filters button:hover,
@@ -3208,15 +3215,16 @@ main {
   outline: none;
 }
 
+/* Selected tag simply keeps the hover look (subtle border + white fill),
+   rather than standing out with a strong outline or fill. */
 .hero-topic-filters button.active {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #ffffff;
+  border-color: var(--line-strong);
+  background: #ffffff;
+  color: var(--text);
 }
 
 .hero-topic-filters button.active::after {
-  background: #ffffff;
-  color: var(--accent);
+  color: var(--muted);
 }
 
 .hero-topic-filters button:disabled {
@@ -3353,7 +3361,6 @@ main {
 }
 
 .post-card h3 {
-  min-height: calc(20px * 1.37 * 2);
   margin-top: 2px;
   font-size: 20px;
   line-height: 1.37;
@@ -3388,6 +3395,7 @@ main {
   background: transparent;
   color: var(--muted);
   font-size: 17px;
+  font-weight: 400;
   box-shadow: none;
 }
 
@@ -3702,9 +3710,14 @@ main:has(.static-post-view) {
   width: min(1520px, calc(100% - 32px));
 }
 
+/* Match the site's category middle pages (products/about): a full-bleed
+   #e1eaf7 → white gradient behind a centred navy title. margin-inline pulls
+   the section edge-to-edge; padding-inline restores the centred content width. */
 .hero {
   min-height: 0;
-  padding: 72px 0 56px;
+  margin-inline: calc(50% - 50vw);
+  padding: 64px calc(50vw - 50%) 40px;
+  background: linear-gradient(to bottom, #e1eaf7, #ffffff);
 }
 
 .hero .eyebrow,
@@ -3720,16 +3733,20 @@ main:has(.static-post-view) {
 }
 
 .hero-title-main {
-  font-size: 50px;
-  line-height: 1.08;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+  font-size: clamp(30px, 4vw, 51px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: #1a2352;
+  letter-spacing: normal;
 }
 
 .hero-title-sub {
   margin-top: 12px;
-  color: #4b4f58;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.5;
+  color: #1a2352;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .hero .lead {
@@ -3863,7 +3880,7 @@ main:has(.static-post-view) {
 }
 
 .post-card-body {
-  gap: 10px;
+  gap: 16px;
   padding: 0;
 }
 
@@ -3884,10 +3901,11 @@ main:has(.static-post-view) {
 }
 
 .post-card h3 {
-  min-height: calc(22px * 1.38 * 2);
   margin: 0;
-  font-size: 22px;
-  line-height: 1.38;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #1a2352;
 }
 
 .post-card p,
@@ -3898,7 +3916,7 @@ main:has(.static-post-view) {
 
 .post-card-meta {
   justify-content: flex-start;
-  margin-top: 2px;
+  margin-top: 0;
   color: #8a8f99;
   font-size: 14px;
   flex-wrap: nowrap;
@@ -3976,20 +3994,19 @@ main:has(.static-post-view) {
   }
 
   .hero {
-    padding: 44px 0 38px;
-    text-align: left;
+    /* Keep the full-bleed padding-inline (calc(50vw - 50%)) from the base rule;
+       only tighten the vertical padding on mobile. Stay centred like the
+       category middle pages. */
+    padding-block: 44px 36px;
+    text-align: center;
   }
 
   .hero-copy {
-    justify-items: start;
-  }
-
-  .hero-title-main {
-    font-size: 44px;
+    justify-items: center;
   }
 
   .hero-title-sub {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .post-list {
@@ -4008,8 +4025,16 @@ main:has(.static-post-view) {
 }
 
 /* Tech-blog article detail structure. */
+/* The hero's full-bleed 100vw gradient would add the scrollbar's width of
+   horizontal scroll; clip contains it at the root without creating a scroll
+   container (so the sticky header keeps working). */
+html {
+  overflow-x: clip;
+}
+
 body {
   background: #ffffff;
+  overflow-x: clip;
 }
 
 .post-view {
@@ -4030,7 +4055,7 @@ body {
   grid-template-areas:
     ". article toc"
     ". related .";
-  padding-top: 78px;
+  padding-top: 0;
 }
 
 .article-tools {
@@ -4054,7 +4079,13 @@ body {
 .article-header {
   justify-items: center;
   gap: 16px;
-  margin-bottom: 56px;
+  /* Full-bleed #e1eaf7 → white gradient behind the title, matching the blog
+     listing hero and the category middle pages. margin-inline pulls the band
+     edge-to-edge; padding-inline restores the centred column width. */
+  margin-inline: calc(50% - 50vw);
+  margin-bottom: 48px;
+  padding: 60px calc(50vw - 50%) 44px;
+  background: linear-gradient(to bottom, #e1eaf7, #ffffff);
   text-align: center;
 }
 
@@ -4064,6 +4095,7 @@ body {
 
 .article-header h1 {
   max-width: 720px;
+  color: #1a2352;
   font-size: 44px;
   font-weight: 800;
   line-height: 1.1;
@@ -4105,7 +4137,7 @@ body {
 }
 
 .article-content {
-  color: #374151;
+  color: #1a1a1a;
   font-size: calc(16px * var(--article-scale, 1));
   line-height: 1.75;
 }
@@ -4113,7 +4145,7 @@ body {
 .article-content h1,
 .article-content h2 {
   margin: 44px 0 16px;
-  color: #111827;
+  color: #1a2352;
   font-size: 24px;
   font-weight: 800;
   line-height: 32px;
@@ -4121,7 +4153,7 @@ body {
 
 .article-content h3 {
   margin: 34px 0 14px;
-  color: #111827;
+  color: #1a2352;
   font-size: 20px;
   font-weight: 800;
   line-height: 1.4;
@@ -4130,7 +4162,7 @@ body {
 .article-content h4,
 .article-content h5,
 .article-content h6 {
-  color: #111827;
+  color: #1a2352;
 }
 
 .article-content p {
@@ -4273,14 +4305,14 @@ body {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  min-height: 38px;
-  padding: 6px 0;
+  min-height: 30px;
+  padding: 4px 0;
   border-left: 0;
   border-radius: 0;
   color: #6b7280;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -4322,8 +4354,8 @@ body {
   display: grid;
   gap: 5px;
   min-height: 0;
-  padding: 7px 0 8px 14px;
-  border-left: 2px solid transparent;
+  padding: 7px 0 8px 0;
+  border-left: 0;
   color: #111827;
 }
 
@@ -4337,9 +4369,9 @@ body {
 .toc-recommendation span {
   display: -webkit-box;
   overflow: hidden;
-  font-size: 13px;
-  font-weight: 760;
-  line-height: 1.45;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
@@ -4350,7 +4382,7 @@ body {
   color: #9ca3af;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
-  font-weight: 650;
+  font-weight: 400;
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -4523,12 +4555,12 @@ body {
 
   .article-mobile-navigation .toc-section a {
     display: block;
-    min-height: 38px;
-    padding: 7px 0;
+    min-height: 30px;
+    padding: 4px 0;
     color: #4b5563;
     font-size: 14px;
-    font-weight: 700;
-    line-height: 1.45;
+    font-weight: 600;
+    line-height: 1.4;
   }
 
   .article-mobile-navigation .toc-recommendations {
@@ -4540,8 +4572,8 @@ body {
   .article-mobile-navigation .toc-recommendation {
     display: grid;
     gap: 5px;
-    padding: 7px 0 8px 12px;
-    border-left: 2px solid transparent;
+    padding: 7px 0 8px 0;
+    border-left: 0;
     color: #111827;
   }
 
@@ -4629,3 +4661,6 @@ body {
     width: 100%;
   }
 }
+
+/* Remove the hairline under the shared site header (all pages). */
+.corca-main-header { border-bottom: 0; }

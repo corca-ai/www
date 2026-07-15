@@ -159,7 +159,7 @@ const officePhotoAlt = {
     <img src={HERO} alt="" width="3840" height="2434" decoding="async" class="block w-full object-cover object-center h-[710px] md:h-[1000px] lg:h-[min(95vw,1217px)]" />
   </div>
   <div class="container-c absolute inset-x-0 top-0 z-10 pt-6 sm:pt-10 lg:pt-20">
-    <h1 class="text-[37px] font-normal leading-[1.2] text-[#1a2352] sm:text-[44px] lg:text-[65px] xl:text-[76px]" set:html={br(c.heroTitle)} />
+    <h1 class="text-[32px] font-normal leading-[1.2] text-[#1a2352] md:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.heroTitle)} />
     <p class="mt-3 max-w-[300px] text-[15px] leading-[1.4] text-[#1a2352] sm:mt-5 sm:max-w-[390px] sm:text-[16px] md:text-[18px] lg:max-w-[560px] lg:text-[24px]">{c.heroSubtitle}</p>
   </div>
 </section>
@@ -169,9 +169,9 @@ const officePhotoAlt = {
 <!-- Deep sea-blue that seamlessly continues the (now bottom-cropped) hero sea, so
      the "일하는 방식" heading tucks under the boat like live. Small top padding
      keeps it close to the illustration at every breakpoint. -->
-<section class="bg-[#046eb8] text-white">
+<section class="bg-[#056eb9] text-white">
   <div class="container-c pb-16 pt-6 lg:pb-20 lg:pt-8">
-    <h2 class="font-body text-[27px] font-normal leading-[1.2] md:text-[31px] lg:text-[44px] xl:text-[50px]">{c.methodsLabel}</h2>
+    <h2 class="font-body text-[26px] font-normal leading-[1.2] md:text-[28px] lg:text-[36px]">{c.methodsLabel}</h2>
     <div class="mt-10 flex flex-col gap-14 lg:gap-20">
       {c.methods.map((m, i) => (
         <div class:list={["grid items-center gap-8 md:grid-cols-2 md:gap-12", i % 2 === 1 && "md:[&>*:first-child]:order-last"]}>
@@ -201,7 +201,7 @@ const officePhotoAlt = {
 <!-- Benefits -->
 <section class="bg-white">
   <div class="container-c grid gap-10 py-16 md:grid-cols-[220px_1fr] md:gap-12 lg:grid-cols-[350px_1fr] lg:gap-[90px] lg:py-24">
-    <h2 class="font-body text-[27px] font-normal leading-[1.2] text-[#1a2352] md:text-[31px] lg:text-[44px] xl:text-[50px]">{c.envLabel}</h2>
+    <h2 class="font-body text-[26px] font-normal leading-[1.2] text-[#1a2352] md:text-[28px] lg:text-[36px]">{c.envLabel}</h2>
     <div class="flex flex-col gap-10">
       {c.benefits.map((b, i) => (
         <div class="flex gap-5 md:gap-7 lg:gap-[30px]">

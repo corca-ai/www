@@ -168,6 +168,8 @@ When changing blog files, keep these invariants:
   `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
+- Analytics must initialize independently of the list UI because static article
+  pages load `public/blog/app.js` without the blog-index DOM.
 - `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
   sitemap should be updated together.
 - Notion-driven post changes should be checked with `npm run notion:check` when

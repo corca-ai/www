@@ -13,8 +13,18 @@ const rootHtml = await readFile(join(distRoot, 'index.html'), 'utf8');
 const currentBaseLayoutCss = rootHtml.match(astroCssPattern)?.[0] || '';
 const measurementId =
   rootHtml.match(/googletagmanager\.com\/gtag\/js\?id=(G-[A-Z0-9-]{4,32})/i)?.[1] || '';
+const blogAppSource = await readFile(join(distRoot, 'blog/app.js'), 'utf8');
+const analyticsBootstrapIndex = blogAppSource.indexOf('\ninitAnalytics();');
+const uiBootstrapIndex = blogAppSource.indexOf('\n  init();');
 if (!currentBaseLayoutCss) {
   fail('Could not find the current BaseLayout CSS link in dist/index.html.');
+}
+if (
+  analyticsBootstrapIndex < 0 ||
+  uiBootstrapIndex < 0 ||
+  analyticsBootstrapIndex > uiBootstrapIndex
+) {
+  fail('Blog analytics must initialize before the list UI bootstrap.');
 }
 
 await assertFileExists(join(distRoot, currentBaseLayoutCss));

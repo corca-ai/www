@@ -1,33 +1,21 @@
 ---
 import type { Lang } from '../../i18n/ui';
-import { br } from '../../text';
-import heroPoster from './assets/hero-poster.webp';
-import heroVideo from './assets/hero.mp4';
-import badge from './assets/badge-producthunt.webp';
-import logoWordmark from './assets/logo-wordmark.webp';
-import appstore from './assets/appstore-badge.webp';
-import phoneChat from './assets/phone-chat.webp';
-import phoneCal from './assets/phone-calendar.webp';
-import phoneHome from './assets/phone-home.webp';
-import phoneEvents from './assets/phone-events.webp';
+import background from './assets/figma-background.png';
+import logoDesktop from './assets/figma-logo-desktop.png';
+import logoMobile from './assets/figma-logo-mobile.png';
+import awardMobile from './assets/figma-award-mobile.png';
+import productDesktop from './assets/figma-product-desktop.png';
+import productMobile from './assets/figma-product-mobile.png';
+import appStoreApple from './assets/figma-appstore-apple.svg';
+import appStoreTitle from './assets/figma-appstore-title.svg';
+import appStoreKicker from './assets/figma-appstore-kicker.svg';
 
 interface Props {
   lang: Lang;
 }
+
 const { lang } = Astro.props;
-
-const HERO_POSTER = heroPoster.src;
-// Original Wix hero background: concentric circles with a rotating clock.
-const HERO_VIDEO = heroVideo;
-const BADGE = badge.src;
-const LOGO = logoWordmark.src;
-const APPSTORE = appstore.src;
-const PHONE_CHAT = phoneChat.src; // top-right chat
-const PHONE_CAL = phoneCal.src; // center calendar widget
-const PHONE_HOME = phoneHome.src; // big right + notifications
-const PHONE_EVENTS = phoneEvents.src; // left event cards
 const APP_URL = 'https://apps.apple.com/app/id6503812022';
-
 
 const content = {
   ko: {
@@ -35,106 +23,106 @@ const content = {
     body: '트레이스는 당신의 하루를 손쉽게 관리해주는 AI 캘린더입니다. 말하거나, 입력하거나, 사진을 찍기만 하면 AI가 내용을 이해해 일정을 자동으로 정리하고 당신의 생활 리듬에 맞춰 알림과 루틴을 똑똑하게 챙겨드립니다.',
     cta: '스마트한 일정 관리가 필요하신가요? 지금 Trace를 다운로드하고 일정 관리의 편리함을 경험해 보세요.',
     appStoreAlt: 'App Store에서 다운로드',
-    badgeAlt: "Product Hunt '오늘의 제품' 4위 선정",
-    appShotAlt: '트레이스 앱 화면',
+    appShotAlt: '트레이스 앱 화면과 일정 알림 기능',
   },
   en: {
     title: 'Just tell me your schedule',
     body: 'Trace is an AI calendar that makes managing your day easy. Simply speak, type, or take a photo, and the AI will understand your content, automatically organize your schedule, and intelligently manage reminders and routines to suit your daily rhythm.',
     cta: 'Need smarter scheduling? Download Trace now and experience effortless schedule management.',
     appStoreAlt: 'Download on the App Store',
-    badgeAlt: 'Product Hunt — #4 Product of the Day',
-    appShotAlt: 'Trace app screen',
+    appShotAlt: 'Trace app screens and scheduling notifications',
   },
   ja: {
-    title: '話すだけで予定が登録される\nAIスケジューリングアプリ',
+    title: '話すだけで予定が登録される AIスケジューリングアプリ',
     body: 'トレースは、あなたの一日をスマートに管理するAIスケジューリングアプリです。話す・入力する・写真を撮るだけで、AIが内容を理解し、自動でスケジュールを整理します。あなたのライフリズムに合わせて、通知やルーチンを最適なタイミングでお届けします。',
     cta: 'スマートなスケジュール管理をお探しですか？今すぐTraceをダウンロードして、その便利さを体験してください。',
     appStoreAlt: 'App Storeでダウンロード',
-    badgeAlt: 'Product Hunt「本日のプロダクト」第4位',
-    appShotAlt: 'トレースのアプリ画面',
+    appShotAlt: 'トレースのアプリ画面とスケジュール通知機能',
   },
   zh: {
     title: '一句话，轻松搞定日程管理',
     body: 'Trace是一款帮助您轻松管理一天的AI日历。只需说话、输入或拍照，AI就能理解内容并自动整理日程，还会根据您的生活节奏智能地安排提醒与例行事项。',
     cta: '需要更智能的日程管理吗？立即下载Trace，体验日程管理的便捷。',
     appStoreAlt: '在App Store下载',
-    badgeAlt: 'Product Hunt“今日产品”第4名',
-    appShotAlt: 'Trace 应用界面',
+    appShotAlt: 'Trace 应用界面和日程提醒功能',
   },
 };
+
 const c = content[lang];
 ---
 
-<section class="relative overflow-hidden bg-[#745add] text-white">
-  <!-- Rotating-clock background video at 20% opacity over the flat #745add base
-       — exactly how live corca.ai composites it (video opacity .2, no tint
-       overlay), so the clock stays visibly detailed and the hero rests at
-       ~#5e51c0. Decorative (aria-hidden); the poster is the reduced-motion /
-       no-JS fallback. -->
-  <video
-    id="trace-hero-video"
-    class="pointer-events-none absolute inset-0 h-full w-full object-cover object-top opacity-20"
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="metadata"
-    poster={HERO_POSTER}
+<section class="relative isolate overflow-hidden bg-white text-[#403258]">
+  <img
+    src={background.src}
+    alt=""
     aria-hidden="true"
-    tabindex="-1"
-  >
-    <source src={HERO_VIDEO} type="video/mp4" />
-  </video>
+    class="pointer-events-none absolute inset-[-4%] -z-10 h-[108%] w-[108%] max-w-none object-cover blur-[25px]"
+  />
 
-  <!-- top-right chat phone (tablet+ , peeking) — bleeds above the top edge and
-       sits at the right like live corca.ai (live: ~y-120/w320 at desktop). -->
-  <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="pointer-events-none absolute right-[2%] top-[-112px] hidden w-[300px] select-none md:block lg:right-[16%] lg:top-[-185px] lg:w-[320px]" />
+  <!-- Mobile and tablet: the visual leads, followed by fluid-height copy. -->
+  <div class="mx-auto flex w-full max-w-[680px] flex-col items-center px-10 pb-[57px] pt-[73px] lg:hidden">
+    <div class="flex flex-col items-center gap-6">
+      <img src={logoMobile.src} alt="Trace" width="430" height="417" class="h-[115px] w-[119px] object-cover" />
+      <div class="flex flex-col items-center gap-5 pl-2">
+        <img src={awardMobile.src} alt="Product Hunt — #4 Product of the Day" width="666" height="200" class="h-auto w-[136px]" />
+        <img src={productMobile.src} alt={c.appShotAlt} width="1332" height="1324" class="h-auto w-full max-w-[420px] sm:w-[min(55vw,420px)]" />
+      </div>
+    </div>
 
-  <!-- Content -->
-  <div class="container-c relative z-10 flex flex-col items-center gap-6 pt-6 pb-10 text-center sm:pt-12 lg:gap-9 lg:pt-20">
-    <img src={BADGE} alt={c.badgeAlt} width="223" height="48" class="h-[45px] w-auto sm:h-[36px] lg:h-[41px] xl:h-[48px]" />
-    <img src={LOGO} alt="Trace" width="352" height="106" class="mt-2 w-[181px] max-w-full sm:w-[210px] lg:w-[302px] xl:w-[352px]" />
-    <h1 class="mt-2 text-[27px] font-normal leading-[1.2] sm:text-[36px] lg:text-[52px] xl:text-[60px]" set:html={br(c.title)} />
-    <p class="max-w-[760px] text-[15px] leading-[1.4] text-white md:text-[17px] lg:max-w-[840px] lg:text-[18px]" set:html={br(c.body)} />
-    <p class="font-head text-[15px] leading-[1.4] text-white md:text-[18px]" set:html={br(c.cta)} />
-    <a href={APP_URL} target="_blank" rel="noopener" class="mt-3 inline-block">
-      <img src={APPSTORE} alt={c.appStoreAlt} width="324" height="95" class="h-[76px] w-auto sm:h-[58px] lg:h-[92px]" />
-    </a>
+    <div class="mt-[38px] flex w-full max-w-[560px] flex-col items-start gap-7">
+      <h1 class="font-body text-[32px] font-bold leading-[1.3] tracking-[-0.03em] text-[#1f0d3f] [overflow-wrap:anywhere] sm:text-[40px]">
+        {c.title}
+      </h1>
+      <div class="flex w-full flex-col gap-[30px] text-[16px] font-medium leading-[1.55] tracking-[-0.03em] sm:text-[18px]">
+        <p>{c.body}</p>
+        <p>{c.cta}</p>
+      </div>
+      <a
+        href={APP_URL}
+        target="_blank"
+        rel="noopener"
+        aria-label={c.appStoreAlt}
+        class="relative mt-[10px] block h-[52px] w-[165px] rounded-[16px] bg-[#080808] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1f0d3f]"
+      >
+        <img src={appStoreApple.src} alt="" class="absolute left-[13.74%] top-[21.89%] h-[51.18%] w-[13.55%]" />
+        <img src={appStoreKicker.src} alt="" class="absolute left-[33.9%] top-[22.56%] h-[14.01%] w-[50.62%]" />
+        <img src={appStoreTitle.src} alt="" class="absolute left-[33.08%] top-[45.53%] h-[34.94%] w-[52.06%]" />
+      </a>
+    </div>
   </div>
 
-  <!-- Phone collage — shown from tablet up (md), like live corca.ai which keeps
-       the four-phone montage down to ~768px. Fixed pixel sizes per tier (md/lg)
-       instead of container-% so the phones don't shrink between 1024–1280 the
-       way live's fixed-size montage doesn't. -->
-  <div class="relative mx-auto hidden h-[784px] w-full max-w-[1180px] md:block lg:h-[825px] lg:max-w-[1200px]">
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute bottom-[88px] left-[1%] w-[400px] lg:bottom-[132px] lg:w-[500px]" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute bottom-[345px] left-[33%] z-20 w-[287px] lg:bottom-[393px] lg:left-[37%] lg:w-[359px]" />
-    <img src={PHONE_HOME} alt="" loading="lazy" decoding="async" class="absolute bottom-0 right-[7%] w-[493px] lg:right-[4%] lg:w-[657px]" />
-  </div>
+  <!-- Desktop: preserve the Figma two-column composition while copy grows vertically by locale. -->
+  <div class="mx-auto hidden min-h-[900px] w-[84.1%] max-w-[1211px] grid-cols-[44%_45.3%] items-center gap-[10.7%] lg:grid xl:min-h-[1213px] xl:translate-x-[30px]">
+    <div class="flex min-w-0 flex-col items-start gap-10 xl:translate-y-2">
+      <img src={logoDesktop.src} alt="Trace" width="1164" height="540" class="h-auto w-[190px] xl:w-[235px]" />
+      <div class="flex w-full flex-col items-start gap-[clamp(36px,3.7vw,53px)]">
+        <h1 class="font-body text-[40px] font-bold leading-[1.3] tracking-[-0.03em] text-[#1f0d3f] [overflow-wrap:anywhere] xl:text-[50px]">
+          {c.title}
+        </h1>
+        <div class="flex w-full max-w-[485px] flex-col gap-[30px] text-[18px] font-medium leading-[1.5] tracking-[-0.03em] xl:text-[20px]">
+          <p>{c.body}</p>
+          <p class="leading-[1.3]">{c.cta}</p>
+        </div>
+      </div>
+      <a
+        href={APP_URL}
+        target="_blank"
+        rel="noopener"
+        aria-label={c.appStoreAlt}
+        class="relative block h-[64px] w-[202px] rounded-[16px] bg-[#080808] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1f0d3f] xl:h-[79px] xl:w-[249px]"
+      >
+        <img src={appStoreApple.src} alt="" class="absolute left-[13.74%] top-[21.89%] h-[51.18%] w-[13.55%]" />
+        <img src={appStoreKicker.src} alt="" class="absolute left-[33.9%] top-[22.56%] h-[14.01%] w-[50.62%]" />
+        <img src={appStoreTitle.src} alt="" class="absolute left-[33.08%] top-[45.53%] h-[34.94%] w-[52.06%]" />
+      </a>
+    </div>
 
-  <!-- Mobile (<768): four-phone montage echoing live's mobile layout (phones
-       bleed past both edges; the section's overflow-hidden clips them). -->
-  <div class="relative mx-auto block h-[680px] w-full max-w-[420px] md:hidden">
-    <img src={PHONE_CHAT} alt="" loading="lazy" decoding="async" class="absolute left-[41%] top-[0px] z-10 w-[240px] max-w-none" />
-    <img src={PHONE_CAL} alt="" loading="lazy" decoding="async" class="absolute left-0 top-[32px] z-20 w-[180px] max-w-none" />
-    <img src={PHONE_EVENTS} alt="" loading="lazy" decoding="async" class="absolute left-[-27%] top-[165px] w-[240px] max-w-none" />
-    <img src={PHONE_HOME} alt={c.appShotAlt} loading="lazy" decoding="async" class="absolute left-[4%] top-[135px] w-[450px] max-w-none" />
+    <img
+      src={productDesktop.src}
+      alt={c.appShotAlt}
+      width="1208"
+      height="1220"
+      class="h-auto w-full xl:translate-y-[29px]"
+    />
   </div>
 </section>
-
-<script>
-  // Respect prefers-reduced-motion for the decorative background video: pause it
-  // (falling back to the static poster frame) whenever reduced motion is on, and
-  // react if the user toggles the setting.
-  const video = document.getElementById('trace-hero-video') as HTMLVideoElement | null;
-  if (video) {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const sync = () => {
-      if (reduce.matches) video.pause();
-      else video.play().catch(() => {});
-    };
-    sync();
-    reduce.addEventListener('change', sync);
-  }
-</script>

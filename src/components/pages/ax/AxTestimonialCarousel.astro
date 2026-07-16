@@ -39,7 +39,6 @@ const interpolate = (template: string, values: Record<string, string | number>) 
 <div
   class="testimonial-carousel reveal"
   role="region"
-  aria-roledescription="carousel"
   aria-label={labels.ariaLabel}
   tabindex="0"
   data-ax-carousel
@@ -63,7 +62,6 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             data-testimonial-id={item.id}
             data-active={index === 0 ? 'true' : 'false'}
             role="group"
-            aria-roledescription="slide"
             aria-label={interpolate(labels.slideAriaTemplate, {
               current: index + 1,
               total: items.length,
@@ -87,7 +85,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
                 src={item.logo}
                 width={item.logoWidth}
                 height={item.logoHeight}
-                alt={item.logoAlt}
+                alt=""
                 loading="lazy"
                 decoding="async"
               />

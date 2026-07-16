@@ -40,7 +40,6 @@ const interpolate = (template: string, values: Record<string, string | number>) 
 <div
   class="pain-carousel relative mt-16 w-full sm:mt-20"
   role="region"
-  aria-roledescription="carousel"
   aria-label={labels.region}
   tabindex="0"
   data-ax-carousel
@@ -60,7 +59,6 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             data-carousel-slide
             data-active={index === 0 ? "true" : "false"}
             role="group"
-            aria-roledescription="slide"
             aria-label={interpolate(labels.slideTemplate, {
               current: index + 1,
               total: items.length,

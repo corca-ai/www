@@ -2048,6 +2048,11 @@
     linear-gradient(180deg, rgba(0, 15, 35, 0.48) 0%, rgba(0, 20, 46, 0.18) 45%, rgba(0, 12, 30, 0.58) 100%);
 }
 
+.ax-page .method .section-heading.dark h2 strong {
+  color: var(--corca);
+  font-weight: 700;
+}
+
 .ax-page .method-step {
   min-height: 220px;
   padding: 42px 0;

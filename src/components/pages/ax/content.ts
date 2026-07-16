@@ -383,10 +383,10 @@ export const axContent: Record<Lang, AxContent> = {
     method: {
       eyebrow: '현장에서 답을 찾은 Corca AX',
       headline: [
-        { before: 'AI로 해결할 핵심 문제를 찾고' },
-        { before: '첫 업무를 함께 실행해서 바꾸고' },
-        { strong: '다음 업무까지 스스로 수행해 낼' },
-        { strong: '힘을 갖춘 조직을 만듭니다.' },
+        { before: 'AI로 해결할 ', strong: '핵심 문제를 찾고' },
+        { before: '첫 업무를 ', strong: '함께 실행해서 바꾸고' },
+        { before: '다음 업무까지 ', strong: '스스로 수행', after: '해 낼' },
+        { strong: '힘을 갖춘 조직', after: '을 만듭니다.' },
       ],
       steps: [
         {
@@ -436,7 +436,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
         {
           frequency: '매일 함께하는 에이전트',
-          name: 'Ceal',
+          name: 'Corca 에이전트',
           body: '조직 안내, 지출결의, 조사와 후속 행동처럼 반복되는 업무에 먼저 적용했습니다.',
         },
       ],

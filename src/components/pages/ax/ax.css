@@ -2441,7 +2441,8 @@
   }
 
   .ax-page .partner-network-logo {
-    display: none;
+    width: min(100px, 27.5vw);
+    left: 16px;
   }
 
   .ax-page .nav-actions {
@@ -2471,8 +2472,8 @@
 
   .ax-page .hero-copy.grid-shell {
     width: calc(100% - 32px);
-    top: 44px;
-    bottom: auto;
+    top: auto;
+    bottom: 140px;
   }
 
   .ax-page .hero-copy h1 {

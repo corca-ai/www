@@ -49,6 +49,7 @@ const content = {
 };
 
 const c = content[lang];
+const japaneseTitleLines = ['話すだけで予定が登録される', 'AIスケジューリングアプリ'];
 ---
 
 <section class="relative isolate overflow-hidden bg-white text-[#403258]">
@@ -73,9 +74,14 @@ const c = content[lang];
       <h1 class="font-body text-[32px] font-bold leading-[1.3] tracking-[-0.03em] text-[#1f0d3f] [overflow-wrap:anywhere] sm:text-[40px]">
         {c.title}
       </h1>
-      <div class="flex w-full flex-col gap-[30px] text-[16px] font-medium leading-[1.55] tracking-[-0.03em] sm:text-[18px]">
-        <p>{c.body}</p>
-        <p>{c.cta}</p>
+      <div
+        class:list={[
+          'flex min-w-0 w-full max-w-full flex-col gap-[30px] text-[16px] font-medium leading-[1.55] tracking-[-0.03em] sm:text-[18px]',
+          lang === 'ja' && '[word-break:normal] [overflow-wrap:anywhere]',
+        ]}
+      >
+        <p style={lang === 'ja' ? 'word-break: normal' : undefined}>{c.body}</p>
+        <p style={lang === 'ja' ? 'word-break: normal' : undefined}>{c.cta}</p>
       </div>
       <a
         href={APP_URL}
@@ -96,8 +102,17 @@ const c = content[lang];
     <div class="flex min-w-0 flex-col items-start gap-10">
       <img src={logoDesktop.src} alt="Trace" width="1164" height="540" class="h-auto w-[190px] xl:w-[235px]" />
       <div class="flex w-full flex-col items-start gap-[clamp(36px,3.7vw,53px)]">
-        <h1 class="font-body text-[40px] font-bold leading-[1.3] tracking-[-0.03em] text-[#1f0d3f] [overflow-wrap:anywhere] xl:text-[50px]">
-          {c.title}
+        <h1
+          class:list={[
+            'font-body font-bold leading-[1.3] tracking-[-0.03em] text-[#1f0d3f]',
+            lang === 'ja' ? 'text-[27px] xl:text-[38px]' : 'text-[40px] [overflow-wrap:anywhere] xl:text-[50px]',
+          ]}
+        >
+          {
+            lang === 'ja'
+              ? japaneseTitleLines.map((line) => <span class="block whitespace-nowrap">{line}</span>)
+              : c.title
+          }
         </h1>
         <div class="flex w-full max-w-[485px] flex-col gap-[30px] text-[18px] font-medium leading-[1.5] tracking-[-0.03em] xl:text-[20px]">
           <p>{c.body}</p>

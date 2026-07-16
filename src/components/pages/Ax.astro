@@ -2,6 +2,7 @@
 import type { Lang } from '../../i18n/ui';
 import AxCarousel from './ax/AxCarousel.astro';
 import AxConsultationForm from './ax/AxConsultationForm.astro';
+import AxTestimonialCarousel from './ax/AxTestimonialCarousel.astro';
 import { axAssetPaths } from './ax/assetPaths';
 import { axTopicIds } from './ax/contract';
 import { axContent } from './ax/content';
@@ -13,9 +14,27 @@ interface Props {
 
 const { lang } = Astro.props;
 const c = axContent[lang];
+// Switch back to true to restore the existing consultation form on the AX page.
+const showConsultationForm = false;
+const brochureHref = import.meta.env.DEV
+  ? '/ax/corca-ax-brochure/index.html'
+  : '/ax/corca-ax-brochure/';
+const contactMailto = `mailto:${c.contact.details.email}`;
+const contractMailto = `${contactMailto}?cc=${c.contact.details.ccEmail}`;
+const contactPhoneHref = 'tel:+82269256978';
 const carouselItems = c.bottleneck.cards.map((card) => ({
   ...card,
   image: axAssetPaths.carousel[card.id],
+}));
+const testimonialLogoDimensions = {
+  tyche: [576, 192],
+  kyowon: [238, 95],
+} as const;
+const testimonialItems = c.belief.testimonials.map((testimonial) => ({
+  ...testimonial,
+  logo: axAssetPaths.logos[testimonial.id],
+  logoWidth: testimonialLogoDimensions[testimonial.id][0],
+  logoHeight: testimonialLogoDimensions[testimonial.id][1],
 }));
 const topics = axTopicIds.map((id) => ({ id, label: c.contact.form.topics[id] }));
 const form = c.contact.form;
@@ -87,7 +106,20 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
       <img src={axAssetPaths.brandLogo} width="132" height="24" alt={c.brand.logoAlt} fetchpriority="high" />
     </a>
     <div class="nav-actions">
-      <a class="nav-cta" href="#ax-contact" data-ax-track-link="sticky_nav">{c.brand.consultationCta}</a>
+      <a
+        class="nav-brochure"
+        href={brochureHref}
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        hreflang="ko"
+        aria-label={c.brand.brochureAriaLabel}
+        data-ax-track-link="sticky_brochure"
+      >
+        {c.brand.brochureCta}
+      </a>
+      <a class="nav-cta" href={contactMailto} data-ax-track-link="sticky_nav">
+        {c.brand.consultationCta}<span class="sr-only"> — {c.contact.emailAriaLabel}</span>
+      </a>
     </div>
   </header>
 
@@ -121,7 +153,9 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
       </h1>
       <p class="hero-sub">{c.hero.subtitle[0]}<br class="hero-sub-break" />{' '}{c.hero.subtitle[1]}</p>
       <div class="hero-actions">
-        <a href="#ax-contact" class="primary-button" data-ax-track-link="hero">{c.hero.consultationCta}</a>
+        <a href={contactMailto} class="primary-button" data-ax-track-link="hero">
+          {c.hero.consultationCta}<span class="sr-only"> — {c.contact.emailAriaLabel}</span>
+        </a>
       </div>
     </div>
     <a href="#ax-belief" class="text-link hero-scroll-link" data-ax-track-link="hero_secondary">
@@ -136,13 +170,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         <h2>{c.belief.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
         <p>{c.belief.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
       </div>
-      <figure class="testimonial reveal">
-        <blockquote>“{c.belief.testimonial.quote.map((line, index) => <>{index > 0 && <br />}{line}</>)}”</blockquote>
-        <figcaption>
-          <img class="testimonial-logo" src={axAssetPaths.logos.tyche} width="576" height="192" alt={c.belief.testimonial.logoAlt} />
-          <span><strong>{c.belief.testimonial.company}</strong><small>{c.belief.testimonial.source}</small></span>
-        </figcaption>
-      </figure>
+      <AxTestimonialCarousel items={testimonialItems} labels={c.belief.testimonialCarousel} />
     </div>
     <div class="proof-strip reveal" aria-label={c.belief.proofAriaLabel}>
       <div><strong>{c.belief.proof.organizations.value}</strong><span>{c.belief.proof.organizations.label}</span></div>
@@ -405,12 +433,33 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         </h2>
         <p>{c.contact.fitLead}</p>
         <div class="fit-list">{c.contact.fitItems.map((item) => <span>{item}</span>)}</div>
-        <a class="contact-email" href="mailto:bae.hwidong@corca.ai" aria-label={c.contact.emailAriaLabel}>bae.hwidong@corca.ai ↗</a>
       </div>
-      <div class="form-shell reveal" data-parallax-float>
-        <div class="form-head"><span>{form.heading}</span><small>{form.summary}</small></div>
-        <AxConsultationForm lang={lang} topics={topics} copy={formCopy} />
-      </div>
+      {
+        showConsultationForm ? (
+          <div class="form-shell reveal" data-parallax-float>
+            <div class="form-head"><span>{form.heading}</span><small>{form.summary}</small></div>
+            <AxConsultationForm lang={lang} topics={topics} copy={formCopy} />
+          </div>
+        ) : (
+          <aside
+            class="form-shell contact-details reveal"
+            data-parallax-float
+            aria-labelledby="ax-contact-details-title"
+          >
+            <h3 id="ax-contact-details-title" class="contact-details__intro">
+              {c.contact.details.intro.map((line, index) => <>{index > 0 && <br />}{line}</>)}
+            </h3>
+            <address class="contact-details__address">
+              <strong>
+                <span>{c.contact.details.owner} · <a href={contractMailto}>{c.contact.details.email}</a></span>
+                <span>(cc: <a href={contractMailto}>{c.contact.details.ccEmail}</a>)</span>
+                <a class="contact-details__phone" href={contactPhoneHref}>{c.contact.details.phone}</a>
+              </strong>
+            </address>
+            <p class="contact-details__closing">{c.contact.details.closing}</p>
+          </aside>
+        )
+      }
     </div>
   </section>
 </div>

@@ -73,6 +73,9 @@ function initializeCarousel(root: HTMLElement) {
   const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
   const selectors = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-carousel-select]'));
   const playbackButton = root.querySelector<HTMLButtonElement>('[data-carousel-playback]');
+  const previousButton = root.querySelector<HTMLButtonElement>('[data-carousel-previous]');
+  const nextButton = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
+  const status = root.querySelector<HTMLElement>('[data-carousel-status]');
   if (!viewport || !trackElement || !playbackButton || slides.length === 0) return;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -121,6 +124,8 @@ function initializeCarousel(root: HTMLElement) {
       else button.removeAttribute('aria-current');
       button.querySelector('.pain-carousel__indicator')?.classList.toggle('is-active', active);
     });
+    if (previousButton) previousButton.disabled = activeIndex === 0;
+    if (nextButton) nextButton.disabled = activeIndex === slides.length - 1;
     updateTrackPosition();
     preloadNextImage();
   };
@@ -212,6 +217,7 @@ function initializeCarousel(root: HTMLElement) {
     writeProgress(0);
     if (playback === 'ended') playback = 'paused';
     renderSelection();
+    if (status) status.textContent = slides[activeIndex]?.getAttribute('aria-label') ?? '';
     renderPlayback();
     startAnimation();
   };
@@ -219,6 +225,8 @@ function initializeCarousel(root: HTMLElement) {
   selectors.forEach((button) => {
     button.addEventListener('click', () => selectSlide(Number(button.dataset.carouselSelect ?? 0)));
   });
+  previousButton?.addEventListener('click', () => selectSlide(activeIndex - 1));
+  nextButton?.addEventListener('click', () => selectSlide(activeIndex + 1));
 
   playbackButton.addEventListener('click', () => {
     if (reducedMotion.matches) return;

@@ -2,6 +2,7 @@ import type { Lang } from '../../../i18n/ui';
 import type { AxTopicId } from './contract';
 
 type Triple<T> = readonly [T, T, T];
+type Pair<T> = readonly [T, T];
 type Five<T> = readonly [T, T, T, T, T];
 type Six<T> = readonly [T, T, T, T, T, T];
 
@@ -12,6 +13,7 @@ type AxHeadlineLine = {
 };
 
 type AxPainCardId = 'context' | 'operations' | 'responsibility';
+type AxTestimonialId = 'tyche' | 'kyowon';
 type AxPackageId = 'decision_map' | 'operational_transition' | 'organization_scaling';
 
 type AxFormErrors = {
@@ -38,6 +40,8 @@ export type AxContent = {
     homeAriaLabel: string;
     logoAlt: string;
     partnerLogoAlt: string;
+    brochureCta: string;
+    brochureAriaLabel: string;
     consultationCta: string;
     organizationsAriaLabel: string;
     organizationLogosAriaLabel: string;
@@ -53,11 +57,24 @@ export type AxContent = {
     eyebrow: string;
     headline: readonly AxHeadlineLine[];
     body: readonly string[];
-    testimonial: {
+    testimonials: Pair<{
+      id: AxTestimonialId;
       quote: readonly string[];
       company: string;
       source: string;
       logoAlt: string;
+    }>;
+    testimonialCarousel: {
+      ariaLabel: string;
+      slideSelectionAriaLabel: string;
+      slideAriaTemplate: string;
+      viewSlideAriaTemplate: string;
+      previous: string;
+      next: string;
+      reducedMotion: string;
+      pause: string;
+      replay: string;
+      play: string;
     };
     proofAriaLabel: string;
     proof: {
@@ -179,6 +196,14 @@ export type AxContent = {
     fitLead: string;
     fitItems: Triple<string>;
     emailAriaLabel: string;
+    details: {
+      intro: Pair<string>;
+      owner: string;
+      email: string;
+      ccEmail: string;
+      phone: string;
+      closing: string;
+    };
     form: {
       heading: string;
       summary: string;
@@ -214,6 +239,8 @@ export const axContent: Record<Lang, AxContent> = {
       homeAriaLabel: 'Corca AX 처음으로',
       logoAlt: 'Corca AX',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
+      brochureCta: '더 알아보기 | 브로셔',
+      brochureAriaLabel: 'Corca AX 브로셔 새 창에서 열기',
       consultationCta: '상담신청하기',
       organizationsAriaLabel: 'Corca AX와 함께한 조직',
       organizationLogosAriaLabel: 'Corca AX와 함께한 10개 조직의 로고',
@@ -238,11 +265,35 @@ export const axContent: Record<Lang, AxContent> = {
         'Corca AX는 첫 번째 AX 업무를 함께 실행하고,',
         '컨설팅 이후에도 스스로 문제를 풀 힘을 조직 안에 남기는 일에 진심입니다.',
       ],
-      testimonial: {
-        quote: ['코르카의 AX 컨설팅이 없었다면,', '타이키의 AX는 3~4개월은 늦었을 겁니다.'],
-        company: '타이키 테크놀로지스',
-        source: '고객 인터뷰 · 2026년 7월',
-        logoAlt: 'TYCHE Technologies',
+      testimonials: [
+        {
+          id: 'tyche',
+          quote: ['코르카의 AX 컨설팅이 없었다면,', '타이키의 AX는 3~4개월은 늦었을 겁니다.'],
+          company: '타이키 테크놀로지스',
+          source: '고객 인터뷰 · 2026년 7월',
+          logoAlt: 'TYCHE Technologies',
+        },
+        {
+          id: 'kyowon',
+          quote: [
+            '모두가 우왕좌왕하고 있을 때 코르카를 만났습니다. 함께 과제를 선정하고 AX 챔피언 육성 컨설팅을 진행하며 참여자들의 집중도가 확 올라가고, ‘이런 분들을 챔피언으로 삼으면 되겠구나’ 하는 내부 선별 기준이 잘 잡혔습니다.',
+          ],
+          company: '교원 그룹',
+          source: '고객인터뷰-2026년 7월',
+          logoAlt: 'KYOWON 교원',
+        },
+      ],
+      testimonialCarousel: {
+        ariaLabel: 'Corca AX 고객 후기',
+        slideSelectionAriaLabel: '고객 후기 선택',
+        slideAriaTemplate: '{current} / {total} — {company}',
+        viewSlideAriaTemplate: '{company} 고객 후기 보기',
+        previous: '이전 고객 후기',
+        next: '다음 고객 후기',
+        reducedMotion: '모션 줄이기 설정으로 고객 후기 자동 재생이 꺼져 있습니다',
+        pause: '고객 후기 자동 재생 일시정지',
+        replay: '고객 후기를 처음부터 다시 재생',
+        play: '고객 후기 자동 재생 시작',
       },
       proofAriaLabel: 'Corca AX 활동 기록',
       proof: {
@@ -557,10 +608,18 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: '밝은 수면으로 올라가는 범고래',
       eyebrow: '20분 AX 진단을 위한 통화',
       question: ['해결하고 싶은', '업무가 있으신가요.'],
-      answer: ['어디부터 풀지,', 'Corca AX가 함께 좁혀가겠습니다.'],
+      answer: ['Corca AX가', '함께 해결하겠습니다.'],
       fitLead: '이런 일이라면, 20분 AX 진단이 특히 잘 맞습니다',
       fitItems: ['자주 반복되는 업무', '판단 기준이 명확한 업무', '현장 지식이 중요한 업무'],
       emailAriaLabel: '이메일로 문의하기',
+      details: {
+        intro: ['컨설팅 계약 및 비용에 관한 문의는', '아래로 연락 주시기 바랍니다.'],
+        owner: '배휘동',
+        email: 'bae.hwidong@corca.ai',
+        ccEmail: 'corca-tax@corca.ai',
+        phone: '02-6925-6978',
+        closing: '논의 내용에 맞춰 성실히 안내드리겠습니다.',
+      },
       form: {
         heading: '상담 신청',
         summary: '필수 4개 · 내용 선택',
@@ -624,6 +683,8 @@ export const axContent: Record<Lang, AxContent> = {
       homeAriaLabel: 'Back to the top of Corca AX',
       logoAlt: 'Corca AX',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
+      brochureCta: 'Learn more | Brochure',
+      brochureAriaLabel: 'Open the Corca AX brochure in a new tab',
       consultationCta: 'Book a consultation',
       organizationsAriaLabel: 'Organizations that have worked with Corca AX',
       organizationLogosAriaLabel: 'Logos of 10 organizations that have worked with Corca AX',
@@ -653,14 +714,38 @@ export const axContent: Record<Lang, AxContent> = {
         'We deliver the first AX workflow with your team,',
         'then leave your organization with the ability to solve the next problem on its own.',
       ],
-      testimonial: {
-        quote: [
-          'Without Corca’s AX consulting,',
-          'Tyche’s AX transformation would have been delayed by three to four months.',
-        ],
-        company: 'TYCHE Technologies',
-        source: 'Customer interview · July 2026',
-        logoAlt: 'TYCHE Technologies',
+      testimonials: [
+        {
+          id: 'tyche',
+          quote: [
+            'Without Corca’s AX consulting,',
+            'Tyche’s AX transformation would have been delayed by three to four months.',
+          ],
+          company: 'TYCHE Technologies',
+          source: 'Customer interview · July 2026',
+          logoAlt: 'TYCHE Technologies',
+        },
+        {
+          id: 'kyowon',
+          quote: [
+            'We met Corca when everyone was still finding their way. Together, we selected the right initiatives and ran the AX Champion development program. Participant engagement rose sharply, and we established a clear internal standard for identifying the people who should become our AX Champions.',
+          ],
+          company: 'KYOWON Group',
+          source: 'Customer interview · July 2026',
+          logoAlt: 'KYOWON Group',
+        },
+      ],
+      testimonialCarousel: {
+        ariaLabel: 'Corca AX customer testimonials',
+        slideSelectionAriaLabel: 'Choose a customer testimonial',
+        slideAriaTemplate: '{current} of {total} — {company}',
+        viewSlideAriaTemplate: 'View the {company} testimonial',
+        previous: 'Previous testimonial',
+        next: 'Next testimonial',
+        reducedMotion: 'Testimonial autoplay is off because reduced motion is enabled',
+        pause: 'Pause testimonial autoplay',
+        replay: 'Replay testimonials from the beginning',
+        play: 'Start testimonial autoplay',
       },
       proofAriaLabel: 'Corca AX track record',
       proof: {
@@ -992,7 +1077,7 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: 'An orca rising toward the bright surface',
       eyebrow: 'A 20-MINUTE AX DISCOVERY CALL',
       question: ['Is there a workflow', 'you want to improve?'],
-      answer: ['Corca AX will help you narrow down', 'where to begin.'],
+      answer: ['Corca AX will', 'solve it with you.'],
       fitLead: 'A 20-minute AX discovery call is a particularly good fit for work that is',
       fitItems: [
         'Repeated often',
@@ -1000,6 +1085,14 @@ export const axContent: Record<Lang, AxContent> = {
         'Dependent on frontline knowledge',
       ],
       emailAriaLabel: 'Contact us by email',
+      details: {
+        intro: ['For questions about consulting contracts and fees,', 'please contact us below.'],
+        owner: 'Hwidong Bae',
+        email: 'bae.hwidong@corca.ai',
+        ccEmail: 'corca-tax@corca.ai',
+        phone: '02-6925-6978',
+        closing: 'We will provide a thoughtful response tailored to your inquiry.',
+      },
       form: {
         heading: 'Book a consultation',
         summary: '4 required fields · details optional',
@@ -1064,6 +1157,8 @@ export const axContent: Record<Lang, AxContent> = {
       homeAriaLabel: 'Corca AXの先頭へ戻る',
       logoAlt: 'Corca AX',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
+      brochureCta: '詳しく見る | パンフレット',
+      brochureAriaLabel: 'Corca AXのパンフレットを新しいタブで開く',
       consultationCta: '相談を申し込む',
       organizationsAriaLabel: 'Corca AXと取り組んだ組織',
       organizationLogosAriaLabel: 'Corca AXと取り組んだ10組織のロゴ',
@@ -1087,14 +1182,38 @@ export const axContent: Record<Lang, AxContent> = {
         '最初のAX業務をお客様と共に実行し、',
         '支援後も自ら次の課題を解ける力を、組織の中に残します。',
       ],
-      testimonial: {
-        quote: [
-          'CorcaのAXコンサルティングがなければ、',
-          'TYCHEのAXは3〜4カ月遅れていたと思います。',
-        ],
-        company: 'TYCHE Technologies',
-        source: 'お客様インタビュー · 2026年7月',
-        logoAlt: 'TYCHE Technologies',
+      testimonials: [
+        {
+          id: 'tyche',
+          quote: [
+            'CorcaのAXコンサルティングがなければ、',
+            'TYCHEのAXは3〜4カ月遅れていたと思います。',
+          ],
+          company: 'TYCHE Technologies',
+          source: 'お客様インタビュー · 2026年7月',
+          logoAlt: 'TYCHE Technologies',
+        },
+        {
+          id: 'kyowon',
+          quote: [
+            '誰もが手探りだったとき、Corcaと出会いました。共に課題を選定し、AX Champion育成コンサルティングを進めるなかで、参加者の集中度が目に見えて高まりました。そして、「こういう人をAX Championにすればよい」という社内の選定基準も明確になりました。',
+          ],
+          company: 'KYOWONグループ',
+          source: 'お客様インタビュー · 2026年7月',
+          logoAlt: 'KYOWON',
+        },
+      ],
+      testimonialCarousel: {
+        ariaLabel: 'Corca AXのお客様の声',
+        slideSelectionAriaLabel: 'お客様の声を選択',
+        slideAriaTemplate: '{current} / {total} — {company}',
+        viewSlideAriaTemplate: '{company}のお客様の声を見る',
+        previous: '前のお客様の声',
+        next: '次のお客様の声',
+        reducedMotion: '動きを抑える設定により、お客様の声の自動再生はオフになっています',
+        pause: 'お客様の声の自動再生を一時停止',
+        replay: 'お客様の声を最初からもう一度再生',
+        play: 'お客様の声の自動再生を開始',
       },
       proofAriaLabel: 'Corca AXの活動実績',
       proof: {
@@ -1409,10 +1528,21 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: '明るい水面へ向かって浮上するシャチ',
       eyebrow: '20分のAX診断に向けたお打ち合わせ',
       question: ['解決したい業務は', 'ありますか？'],
-      answer: ['どこから着手するか、', 'Corca AXと一緒に絞り込みましょう。'],
+      answer: ['Corca AXが', 'ともに解決します。'],
       fitLead: '次のような業務には、20分のAX診断が特に適しています',
       fitItems: ['繰り返しの多い業務', '判断基準が明確な業務', '現場の知識が重要な業務'],
       emailAriaLabel: 'メールで問い合わせる',
+      details: {
+        intro: [
+          'コンサルティング契約および費用に関するお問い合わせは、',
+          '以下までご連絡ください。',
+        ],
+        owner: 'Hwidong Bae',
+        email: 'bae.hwidong@corca.ai',
+        ccEmail: 'corca-tax@corca.ai',
+        phone: '02-6925-6978',
+        closing: 'ご相談内容に沿って、誠実にご案内いたします。',
+      },
       form: {
         heading: '相談を申し込む',
         summary: '必須4項目 · 詳細は任意',
@@ -1476,6 +1606,8 @@ export const axContent: Record<Lang, AxContent> = {
       homeAriaLabel: '返回Corca AX页面顶部',
       logoAlt: 'Corca AX',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
+      brochureCta: '了解更多 | 宣传册',
+      brochureAriaLabel: '在新标签页中打开Corca AX宣传册',
       consultationCta: '预约咨询',
       organizationsAriaLabel: '与Corca AX合作过的组织',
       organizationLogosAriaLabel: '与Corca AX合作过的10家组织标识',
@@ -1499,11 +1631,35 @@ export const axContent: Record<Lang, AxContent> = {
         '我们与您的团队共同落地首个AX工作流程，',
         '并将自主解决下一个问题的能力留在组织内部。',
       ],
-      testimonial: {
-        quote: ['如果没有Corca的AX咨询，', 'TYCHE的AX进程可能会晚3到4个月。'],
-        company: 'TYCHE Technologies',
-        source: '客户访谈 · 2026年7月',
-        logoAlt: 'TYCHE Technologies',
+      testimonials: [
+        {
+          id: 'tyche',
+          quote: ['如果没有Corca的AX咨询，', 'TYCHE的AX进程可能会晚3到4个月。'],
+          company: 'TYCHE Technologies',
+          source: '客户访谈 · 2026年7月',
+          logoAlt: 'TYCHE Technologies',
+        },
+        {
+          id: 'kyowon',
+          quote: [
+            '在大家都还不知该从何入手时，我们遇到了Corca。我们共同选定课题，并推进AX Champion培养咨询。参与者的专注度明显提升，内部也建立起清晰的选拔标准，让我们知道“什么样的人适合成为AX Champion”。',
+          ],
+          company: 'KYOWON集团',
+          source: '客户访谈 · 2026年7月',
+          logoAlt: 'KYOWON',
+        },
+      ],
+      testimonialCarousel: {
+        ariaLabel: 'Corca AX客户评价',
+        slideSelectionAriaLabel: '选择客户评价',
+        slideAriaTemplate: '第{current}条，共{total}条 — {company}',
+        viewSlideAriaTemplate: '查看{company}的客户评价',
+        previous: '上一条客户评价',
+        next: '下一条客户评价',
+        reducedMotion: '因已启用减少动态效果设置，客户评价自动播放已关闭',
+        pause: '暂停客户评价自动播放',
+        replay: '从头重新播放客户评价',
+        play: '开始自动播放客户评价',
       },
       proofAriaLabel: 'Corca AX服务成果',
       proof: {
@@ -1800,10 +1956,18 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: '一只虎鲸向明亮的水面上浮',
       eyebrow: '20分钟AX诊断沟通',
       question: ['您是否有想要解决的', '工作流程？'],
-      answer: ['从哪里开始，', 'Corca AX与您一起梳理。'],
+      answer: ['Corca AX将', '与您一起解决。'],
       fitLead: '如果工作具备以下特点，20分钟AX诊断尤其适合',
       fitItems: ['频繁重复', '判断标准明确', '高度依赖一线知识'],
       emailAriaLabel: '通过电子邮件联系我们',
+      details: {
+        intro: ['有关咨询合同及费用的问题，', '请通过以下方式联系我们。'],
+        owner: 'Hwidong Bae',
+        email: 'bae.hwidong@corca.ai',
+        ccEmail: 'corca-tax@corca.ai',
+        phone: '02-6925-6978',
+        closing: '我们将根据沟通内容，认真为您提供说明。',
+      },
       form: {
         heading: '预约咨询',
         summary: '4项必填 · 详细说明选填',

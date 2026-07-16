@@ -52,9 +52,6 @@ interface Props {
 const { lang, topics, copy } = Astro.props;
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const errorMap = JSON.stringify(copy.errors);
-const initialConfigurationError = turnstileSiteKey
-  ? ""
-  : copy.errors.BOT_CHECK_NOT_CONFIGURED ?? copy.errors.unknown;
 ---
 
 <form
@@ -123,10 +120,10 @@ const initialConfigurationError = turnstileSiteKey
     class="form-error"
     role="alert"
     aria-label={copy.statusAriaLabel}
-    hidden={Boolean(turnstileSiteKey)}
+    hidden
     data-form-error
   >
-    <span data-form-error-message>{initialConfigurationError}</span>{" "}
+    <span data-form-error-message></span>{" "}
     <a href="mailto:bae.hwidong@corca.ai">{copy.emailFallback}</a>
   </p>
   <p class="form-success" role="status" aria-live="polite" aria-label={copy.statusAriaLabel} tabindex="-1" hidden data-form-success>{copy.success}</p>

@@ -6,8 +6,9 @@
 // domain move is a one-line change there plus the `routes` host in wrangler.jsonc.
 import { canonicalUrl } from '../src/canonical';
 import { SITE_ORIGIN } from '../src/site';
+import { type AxConsultationEnv, handleAxConsultation } from './axConsultations';
 
-interface Env {
+interface Env extends AxConsultationEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
   CORCA_NOTION_WEBHOOK_SECRET?: string;
   GITHUB_DISPATCH_TOKEN?: string;
@@ -15,6 +16,7 @@ interface Env {
 }
 
 const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
+const axConsultationPattern = /^\/api\/ax\/consultations\/?$/;
 const adminPathPattern = /^\/(?:api\/admin|blog\/admin)(?:\/|$)/;
 const githubDispatchRepository = 'corca-ai/www';
 
@@ -30,6 +32,10 @@ export default {
     const url = new URL(request.url);
     const target = canonicalUrl(request.url, SITE_ORIGIN, !isPreviewRequest(request, url));
     if (target) return Response.redirect(target, 301);
+
+    if (axConsultationPattern.test(url.pathname)) {
+      return handleAxConsultation(request, env);
+    }
 
     if (notionPublishWebhookPattern.test(url.pathname)) {
       return handleNotionPublishWebhook(request, env);

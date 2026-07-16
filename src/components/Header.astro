@@ -24,6 +24,7 @@ const menuLabel = { ko: '메뉴', en: 'Menu', ja: 'メニュー', zh: '菜单' }
 const primaryNavLabel = { ko: '주요 메뉴', en: 'Primary', ja: 'メインナビゲーション', zh: '主导航' }[lang];
 const home = localizePath('/', lang);
 const productsHref = localizePath('/products', lang);
+const axHref = localizePath('/ax', lang);
 const aboutHref = localizePath('/about', lang);
 const blogHref = '/blog';
 
@@ -63,13 +64,13 @@ const langOptions = locales.map((l) => ({
     </a>
 
     <!-- Desktop navigation -->
-    <nav class="hidden items-center gap-11 md:flex" aria-label={primaryNavLabel}>
+    <nav class="hidden items-center gap-6 md:flex lg:gap-11" aria-label={primaryNavLabel}>
       <!-- Products (label links to the category page; hover reveals the panel) -->
       <div class="group relative nav-dd">
         <a
           href={productsHref}
           aria-current={isCurrent(productsHref)}
-          class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black"
+          class="nav-dd-btn flex items-center gap-1 whitespace-nowrap py-5 text-[17px] font-normal text-black"
         >
           {t.nav.products}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -83,12 +84,14 @@ const langOptions = locales.map((l) => ({
         </div>
       </div>
 
+      <a href={axHref} aria-current={isCurrent(axHref)} class="whitespace-nowrap py-5 text-[17px] font-normal text-black">{t.nav.ax}</a>
+
       <!-- About (label links to the category page; hover reveals the panel) -->
       <div class="group relative nav-dd">
         <a
           href={aboutHref}
           aria-current={isCurrent(aboutHref)}
-          class="nav-dd-btn flex items-center gap-1 py-5 text-[17px] font-normal text-black"
+          class="nav-dd-btn flex items-center gap-1 whitespace-nowrap py-5 text-[17px] font-normal text-black"
         >
           {t.nav.about}
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -102,8 +105,8 @@ const langOptions = locales.map((l) => ({
         </div>
       </div>
 
-      <a href={externalLinks.careers} target="_blank" rel="noopener" class="py-5 text-[17px] font-normal text-black">{t.nav.careers}</a>
-      <a href={blogHref} aria-current={isBlogCurrent ? 'page' : undefined} class="py-5 text-[17px] font-normal text-black">{t.nav.blog}</a>
+      <a href={externalLinks.careers} target="_blank" rel="noopener" class="whitespace-nowrap py-5 text-[17px] font-normal text-black">{t.nav.careers}</a>
+      <a href={blogHref} aria-current={isBlogCurrent ? 'page' : undefined} class="whitespace-nowrap py-5 text-[17px] font-normal text-black">{t.nav.blog}</a>
     </nav>
 
     <!-- Right side: language switcher (desktop) + hamburger (mobile) -->
@@ -158,6 +161,7 @@ const langOptions = locales.map((l) => ({
               ))}
             </div>
           </div>
+          <a href={axHref} aria-current={isCurrent(axHref)} class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.ax}</a>
           <div class="border-b border-black/5">
             <a href={aboutHref} aria-current={isCurrent(aboutHref)} class="block py-4 text-[16px] font-medium">{t.nav.about}</a>
             <div class="pb-2">

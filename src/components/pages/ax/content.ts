@@ -607,7 +607,7 @@ export const axContent: Record<Lang, AxContent> = {
     contact: {
       imageAlt: '밝은 수면으로 올라가는 범고래',
       eyebrow: '20분 AX 진단을 위한 통화',
-      question: ['해결하고 싶은', '업무가 있으신가요.'],
+      question: ['해결하고 싶은', '업무가 있으신가요?'],
       answer: ['Corca AX가', '함께 해결하겠습니다.'],
       fitLead: '이런 일이라면, 20분 AX 진단이 특히 잘 맞습니다',
       fitItems: ['자주 반복되는 업무', '판단 기준이 명확한 업무', '현장 지식이 중요한 업무'],

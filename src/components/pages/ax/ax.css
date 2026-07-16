@@ -101,52 +101,12 @@
   z-index: 3;
 }
 
-.ax-page .local-nav {
-  position: sticky;
-  inset: auto;
-  top: 66px;
-  z-index: 40;
-  min-height: 52px;
-  padding: 0 clamp(18px, 3vw, 44px);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 32px;
-  color: #fff;
-  background: rgba(22, 22, 23, 0.88);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: none;
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-}
-
-.ax-page .local-nav::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: var(--page-progress);
-  height: 2px;
-  background: #2163da;
-}
-
-.ax-page .nav-brand {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.ax-page .nav-brand img {
-  width: 120px;
-  height: auto;
-}
-
 .ax-page .partner-network-logo {
   width: 100px;
   height: auto;
   max-width: none;
   position: fixed;
-  top: 183px;
+  top: 131px;
   left: clamp(18px, 3vw, 44px);
   z-index: 4;
   opacity: 1;
@@ -160,52 +120,6 @@
 .ax-page .partner-network-logo.is-exiting {
   opacity: 0;
   transform: translate3d(0, -80px, 0);
-}
-
-.ax-page .nav-actions {
-  display: flex;
-  align-items: center;
-  justify-self: end;
-  gap: 8px;
-}
-
-.ax-page .nav-brochure,
-.ax-page .nav-cta {
-  min-height: 32px;
-  padding: 0 15px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  color: #fff;
-  background: #2163da;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform 180ms ease, box-shadow 180ms ease;
-}
-
-.ax-page .nav-brochure {
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.ax-page .nav-brochure:hover {
-  border-color: rgba(255, 255, 255, 0.62);
-  background: rgba(255, 255, 255, 0.14);
-  transform: translateY(-1px);
-}
-
-.ax-page .nav-brochure:focus-visible,
-.ax-page .nav-cta:focus-visible {
-  outline: 2px solid #83cbff;
-  outline-offset: 3px;
-}
-
-.ax-page .nav-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(33, 99, 218, 0.42);
 }
 
 .ax-page .story-scene {
@@ -1769,7 +1683,7 @@
 }
 
 .ax-page .hero {
-  min-height: calc(100svh - 118px);
+  min-height: calc(100svh - 66px);
   padding: 0;
 }
 
@@ -1990,7 +1904,25 @@
 }
 
 .ax-page .bottleneck {
-  background: #1d1d1f;
+  background: #030b17;
+}
+
+.ax-page .bottleneck-media {
+  opacity: 0.94;
+}
+
+.ax-page .bottleneck-media img {
+  object-position: center 54%;
+}
+
+.ax-page .bottleneck-scrim {
+  background:
+    radial-gradient(90% 72% at 12% 18%, rgba(3, 10, 23, 0.62) 0%, rgba(3, 10, 23, 0.3) 48%, transparent 76%),
+    linear-gradient(180deg, rgba(4, 10, 22, 0.56) 0%, rgba(4, 10, 22, 0.3) 42%, rgba(4, 10, 22, 0.68) 100%);
+}
+
+.ax-page .bottleneck .section-heading > p:last-child {
+  color: rgba(245, 245, 247, 0.76);
 }
 
 .ax-page .section-heading {
@@ -2099,7 +2031,21 @@
 }
 
 .ax-page .method {
-  background: #000;
+  background: #00172f;
+}
+
+.ax-page .method-media {
+  opacity: 0.96;
+}
+
+.ax-page .method-media img {
+  object-position: center center;
+}
+
+.ax-page .method-scrim {
+  background:
+    linear-gradient(90deg, rgba(0, 13, 31, 0.62) 0%, rgba(0, 17, 39, 0.34) 48%, rgba(0, 12, 29, 0.52) 100%),
+    linear-gradient(180deg, rgba(0, 15, 35, 0.48) 0%, rgba(0, 20, 46, 0.18) 45%, rgba(0, 12, 30, 0.58) 100%);
 }
 
 .ax-page .method-step {
@@ -2119,7 +2065,7 @@
 }
 
 .ax-page .method-step p {
-  color: rgba(245, 245, 247, 0.56);
+  color: rgba(245, 245, 247, 0.74);
   font-size: 17px;
   line-height: 1.62;
 }
@@ -2416,20 +2362,40 @@
   line-height: 1.65;
 }
 
+.ax-page .contact-details__brochure {
+  width: fit-content;
+  min-height: 44px;
+  margin-top: 24px;
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #fff;
+  background: #2163da;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.ax-page .contact-details__brochure:hover {
+  background: #2670ee;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(33, 99, 218, 0.4);
+}
+
+.ax-page .contact-details__brochure:focus-visible {
+  outline: 2px solid #83cbff;
+  outline-offset: 4px;
+}
+
 .ax-page .form-submit {
   color: #fff;
   background: #2163da;
 }
 
 @media (max-width: 1000px) {
-  .ax-page .local-nav {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .ax-page .nav-actions {
-    justify-self: end;
-  }
-
   .ax-page .hero-copy > *,
   .ax-page .belief-copy,
   .ax-page .testimonial,
@@ -2520,47 +2486,21 @@
     column-gap: 12px;
   }
 
-  .ax-page .local-nav {
-    min-height: 52px;
-    padding-inline: 16px;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px;
-  }
-
-  .ax-page .nav-brand img {
-    width: 104px;
-  }
-
   .ax-page .partner-network-logo {
     width: min(100px, 27.5vw);
+    position: absolute;
+    top: 64px;
     left: 16px;
+    transition: none;
   }
 
-  .ax-page .nav-actions {
-    position: static;
-    justify-self: end;
-    min-width: max-content;
-  }
-
-  .ax-page .nav-cta {
-    display: inline-flex;
-    flex: none;
-    min-height: 32px;
-    padding-inline: 13px;
-    font-size: 11px;
-    white-space: nowrap;
-  }
-
-  .ax-page .nav-brochure {
-    min-height: 32px;
-    padding-inline: 12px;
-    flex: none;
-    font-size: 11px;
-    white-space: nowrap;
+  .ax-page .partner-network-logo.is-exiting {
+    opacity: 1;
+    transform: none;
   }
 
   .ax-page .hero {
-    min-height: max(calc(100svh - 118px), 720px);
+    min-height: max(calc(100svh - 66px), 720px);
     padding: 0;
   }
 
@@ -2804,35 +2744,12 @@
 }
 
 @media (max-width: 480px) {
-  .ax-page .local-nav {
-    min-height: 84px;
-    padding: 8px 12px;
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  .ax-page .nav-brand img {
-    width: 92px;
-  }
-
-  .ax-page .nav-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    justify-self: stretch;
-    gap: 6px;
-  }
-
-  .ax-page .nav-brochure {
-    width: 100%;
-  }
-
   .ax-page .partner-network-logo {
-    top: 215px;
+    top: 64px;
   }
 
   .ax-page .hero {
-    min-height: max(calc(100svh - 150px), 720px);
+    min-height: max(calc(100svh - 66px), 720px);
   }
 }
 

@@ -1,6 +1,7 @@
 const AX_IMAGE_ROOT = '/images/pages/ax';
 const AX_VISUAL_ROOT = `${AX_IMAGE_ROOT}/visuals`;
 const AX_CAROUSEL_ROOT = `${AX_VISUAL_ROOT}/carousel`;
+const AX_BACKGROUND_ROOT = `${AX_IMAGE_ROOT}/backgrounds`;
 
 const responsiveVisual = (name: string) => ({
   mobileAvif: `${AX_VISUAL_ROOT}/${name}-mobile.avif`,
@@ -14,6 +15,13 @@ const carouselVisual = (name: string) => ({
   mobileWebp: `${AX_CAROUSEL_ROOT}/${name}-mobile.webp`,
   wideAvif: `${AX_CAROUSEL_ROOT}/${name}-wide.avif`,
   wideWebp: `${AX_CAROUSEL_ROOT}/${name}-wide.webp`,
+});
+
+const backgroundVisual = (name: string) => ({
+  mobileAvif: `${AX_BACKGROUND_ROOT}/${name}-mobile.avif`,
+  mobileWebp: `${AX_BACKGROUND_ROOT}/${name}-mobile.webp`,
+  wideAvif: `${AX_BACKGROUND_ROOT}/${name}-wide.avif`,
+  wideWebp: `${AX_BACKGROUND_ROOT}/${name}-wide.webp`,
 });
 
 export const axAssetPaths = {
@@ -31,11 +39,14 @@ export const axAssetPaths = {
   scenes: {
     hero: responsiveVisual('01-hero'),
     gap: responsiveVisual('02-gap'),
-    decision: responsiveVisual('03-decision'),
     pair: responsiveVisual('04-pair'),
     layers: responsiveVisual('05-layers'),
     final: responsiveVisual('06-final'),
     championPeople: responsiveVisual('09-champion-people'),
+  },
+  backgrounds: {
+    bottleneck: backgroundVisual('07-bottleneck-space'),
+    method: backgroundVisual('08-method-ocean'),
   },
   carousel: {
     context: carouselVisual('context'),

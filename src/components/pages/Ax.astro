@@ -101,37 +101,14 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
 ---
 
 <div class="ax-page" data-ax-reveal="ready" data-scroll-motion="running">
-  <header class="local-nav">
-    <a class="nav-brand" href="#ax-top" aria-label={c.brand.homeAriaLabel} data-ax-track-link="sticky_brand">
-      <img src={axAssetPaths.brandLogo} width="132" height="24" alt={c.brand.logoAlt} fetchpriority="high" />
-    </a>
-    <div class="nav-actions">
-      <a
-        class="nav-brochure"
-        href={brochureHref}
-        target="_blank"
-        rel="nofollow noopener noreferrer"
-        hreflang="ko"
-        aria-label={c.brand.brochureAriaLabel}
-        data-ax-track-link="sticky_brochure"
-      >
-        {c.brand.brochureCta}
-      </a>
-      <a class="nav-cta" href={contactMailto} data-ax-track-link="sticky_nav">
-        {c.brand.consultationCta}<span class="sr-only"> — {c.contact.emailAriaLabel}</span>
-      </a>
-    </div>
-  </header>
-
-  <img
-    class="partner-network-logo"
-    src={axAssetPaths.partnerNetworkLogo}
-    width="100"
-    height="115"
-    alt={c.brand.partnerLogoAlt}
-  />
-
   <section id="ax-top" class="story-scene hero scene-dark" data-scene="01-hero" data-parallax-scene>
+    <img
+      class="partner-network-logo"
+      src={axAssetPaths.partnerNetworkLogo}
+      width="100"
+      height="115"
+      alt={c.brand.partnerLogoAlt}
+    />
     <div class="scene-media hero-media is-video-reset" data-hero-media aria-hidden="true">
       <picture class="hero-poster">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.hero.mobileAvif} />
@@ -226,7 +203,17 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section class="story-scene bottleneck scene-dark-soft" data-scene="04-bottleneck">
+  <section class="story-scene bottleneck scene-dark-soft" data-scene="04-bottleneck" data-parallax-scene>
+    <div class="scene-media bottleneck-media" aria-hidden="true">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.backgrounds.bottleneck.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.backgrounds.bottleneck.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.backgrounds.bottleneck.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.backgrounds.bottleneck.wideWebp} />
+        <img src={axAssetPaths.backgrounds.bottleneck.wideWebp} width="1672" height="941" alt="" loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim bottleneck-scrim"></div>
     <div class="grid-shell">
       <div class="section-heading reveal">
         <p class="eyebrow">{c.bottleneck.eyebrow}</p>
@@ -249,7 +236,17 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     />
   </section>
 
-  <section id="ax-how" class="story-scene method scene-dark" data-scene="05-method">
+  <section id="ax-how" class="story-scene method scene-dark" data-scene="05-method" data-parallax-scene>
+    <div class="scene-media method-media" aria-hidden="true">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.backgrounds.method.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.backgrounds.method.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.backgrounds.method.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.backgrounds.method.wideWebp} />
+        <img src={axAssetPaths.backgrounds.method.wideWebp} width="1672" height="941" alt="" loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim method-scrim"></div>
     <div class="grid-shell">
       <div class="section-heading dark reveal">
         <p class="eyebrow blue">{c.method.eyebrow}</p>
@@ -278,33 +275,6 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
           <h3><span>{item.frequency}</span><strong>{item.name}</strong></h3><p>{item.body}</p>
         </article>
       ))}
-    </div>
-  </section>
-
-  <section class="story-scene decision-map scene-dark-soft" data-scene="07-decision-map" data-parallax-scene>
-    <div class="scene-media">
-      <picture class="scene-media-frame">
-        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.decision.mobileAvif} />
-        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.decision.mobileWebp} />
-        <source type="image/avif" srcset={axAssetPaths.scenes.decision.wideAvif} />
-        <source type="image/webp" srcset={axAssetPaths.scenes.decision.wideWebp} />
-        <img src={axAssetPaths.scenes.decision.wideWebp} alt={c.decisionMap.imageAlt} loading="lazy" decoding="async" />
-      </picture>
-    </div>
-    <div class="decision-wash"></div>
-    <div class="grid-shell decision-layout">
-      <div class="decision-copy reveal" data-parallax-copy>
-        <p class="eyebrow blue">{c.decisionMap.eyebrow}</p>
-        <h2>{c.decisionMap.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-        <p>{c.decisionMap.body}</p>
-      </div>
-      <div class="decision-total reveal" data-parallax-float><span>{c.decisionMap.total.label}</span><strong>{c.decisionMap.total.value}<small>{c.decisionMap.total.suffix}</small></strong></div>
-      <div class="decision-stats">
-        {c.decisionMap.stats.map((stat) => (
-          <article class="decision-stat reveal" data-scroll-step><strong><span class="stat-value" data-count={stat.value}>{stat.value}</span><small>{stat.suffix}</small></strong><p>{stat.label}</p></article>
-        ))}
-      </div>
-      <p class="decision-note reveal">{c.decisionMap.note}</p>
     </div>
   </section>
 
@@ -457,6 +427,17 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
               </strong>
             </address>
             <p class="contact-details__closing">{c.contact.details.closing}</p>
+            <a
+              class="contact-details__brochure"
+              href={brochureHref}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              hreflang="ko"
+              aria-label={c.brand.brochureAriaLabel}
+              data-ax-track-link="contact_brochure"
+            >
+              {c.brand.brochureCta}
+            </a>
           </aside>
         )
       }

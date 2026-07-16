@@ -1,11 +1,14 @@
 # AX mobile partner badge design QA
 
-- Source visual truth: `/var/folders/7h/y3scb0kd5kgbsx6hy5ltzz580000gn/T/codex-clipboard-97140313-b2cc-45ca-b2db-15ea462e6ab0.png`
-- Supplemental pre-port layout reference: `/Users/tommy/Documents/XT/output/corca-ax-public-site/app/globals.css`
-- Implementation screenshot: `/tmp/ax-mobile-after-final.png`
+- Reported mobile state: `docs/design-qa/ax-mobile-partner-badge-before.jpg`
+- Corrected implementation: `docs/design-qa/ax-mobile-partner-badge-after.jpg`
 - Primary viewport: `390 × 844`
 - Additional responsive checks: `320 × 667`, `720 × 900`, and `1280 × 720`
 - State: Korean AX hero, initial page load, scroll position 0
+
+| Reported mobile state | Corrected implementation |
+| --- | --- |
+| ![AX mobile hero with the partner badge missing](docs/design-qa/ax-mobile-partner-badge-before.jpg) | ![AX mobile hero with the partner badge restored](docs/design-qa/ax-mobile-partner-badge-after.jpg) |
 
 ## Full-view comparison evidence
 

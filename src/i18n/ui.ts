@@ -53,6 +53,7 @@ export const contact = {
 
 type Nav = {
   products: string;
+  ax: string;
   about: string;
   careers: string;
   blog: string;
@@ -102,6 +103,7 @@ export const ui = {
     langLabel: '언어 선택',
     nav: {
       products: '제품 소개',
+      ax: 'AX',
       about: '회사 소개',
       careers: '채용',
       blog: '블로그',
@@ -145,6 +147,7 @@ export const ui = {
     langLabel: 'Select language',
     nav: {
       products: 'Products',
+      ax: 'AX',
       about: 'About us',
       careers: 'Careers',
       blog: 'Blog',
@@ -192,6 +195,7 @@ export const ui = {
     langLabel: '言語を選択',
     nav: {
       products: '製品紹介',
+      ax: 'AX',
       about: '会社紹介',
       careers: '採用',
       blog: 'ブログ',
@@ -236,6 +240,7 @@ export const ui = {
     langLabel: '选择语言',
     nav: {
       products: '产品介绍',
+      ax: 'AX',
       about: '公司介绍',
       careers: '招聘',
       blog: '博客',

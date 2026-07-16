@@ -25,6 +25,7 @@ export const axAssetPaths = {
       { length: 10 },
       (_, index) => `${AX_IMAGE_ROOT}/logos/high-logo0${index + 1}.png`,
     ),
+    kyowon: `${AX_IMAGE_ROOT}/logos/kyowon.png`,
     tyche: `${AX_IMAGE_ROOT}/logos/tyche.png`,
   },
   scenes: {

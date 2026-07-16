@@ -15,6 +15,7 @@
       "!node_modules",
       "!public/images",
       "!public/blog",
+      "!public/ax/corca-ax-brochure",
       "!public/en/blog",
       "!public/ja/blog",
       "!public/zh/blog",

@@ -110,6 +110,8 @@ export type AxContent = {
       pause: string;
       replay: string;
       play: string;
+      previous: string;
+      next: string;
     };
   };
   method: {
@@ -173,11 +175,13 @@ export type AxContent = {
     headline: readonly AxHeadlineLine[];
     packages: Triple<{
       id: AxPackageId;
+      phase: string;
       title: string;
       price: string;
       featured: boolean;
       items: readonly [string, string, string, string];
     }>;
+    scheduleNote: string;
     outcome: {
       question: string;
       lead: string;
@@ -378,6 +382,8 @@ export const axContent: Record<Lang, AxContent> = {
         pause: '자동 재생 일시정지',
         replay: '처음부터 다시 재생',
         play: '자동 재생 시작',
+        previous: '이전 슬라이드',
+        next: '다음 슬라이드',
       },
     },
     method: {
@@ -517,50 +523,54 @@ export const axContent: Record<Lang, AxContent> = {
       ],
     },
     program: {
-      eyebrow: 'START SMALL. PROVE IT.',
+      eyebrow: '검증하며, 세 단계로 진행합니다.',
       headline: [
         { before: '작게 진단하고.' },
         { before: '운영으로 증명하고.' },
-        { strong: '검증된 범위만 넓힙니다.' },
+        { strong: '증명된 만큼만 넓힙니다.' },
       ],
       packages: [
         {
           id: 'decision_map',
-          title: 'AX 의사결정 지도',
-          price: '2주 · 3,500만원',
+          phase: '진단',
+          title: '어디부터 풀지 결정',
+          price: '2주',
           featured: false,
           items: [
-            '우선 업무와 제외 업무',
-            '현재 결정권과 실제 지식 보유자',
-            '데이터·권한·승인 구조',
-            '6주 실행 범위와 기준선',
+            '먼저 풀 업무와 미룰 업무 결정',
+            '실제 결정권자와 현장 전문가 선정',
+            '데이터·권한·승인 구조 분석',
+            '다음 6주 실행 범위 확정',
           ],
         },
         {
           id: 'operational_transition',
-          title: '첫 업무 운영 전환',
-          price: '6주 · 1억원',
+          phase: '증명',
+          title: '첫 업무를 현장에 적용',
+          price: '6주',
           featured: true,
           items: [
-            '첫 업무 실제 운영',
-            '보안·권한·감사 기준',
-            '성과 Before·After',
-            'Champion의 두 번째 업무 적용',
+            '첫 업무를 실제 현장에 적용',
+            '처리·승인 시간이 얼마나 줄었는지 측정',
+            '보안·권한·감사 기준 연동',
+            '현업이 다음 업무에 직접 적용',
           ],
         },
         {
           id: 'organization_scaling',
-          title: '업무·부서 확장',
-          price: '2억원부터',
+          phase: '확장',
+          title: '업무·부서로 확장',
+          price: '분기 / 연 단위',
           featured: false,
           items: [
-            '복수 업무 또는 부서',
-            'Enterprise 운영 기준',
-            '표준 연결과 운영 이관',
-            '연간 확장 체계',
+            '여러 업무, 여러 부서로',
+            '전사 운영 기준 정착',
+            '시스템 연동과 운영 내재화',
+            '분기마다 넓혀가는 확장 계획',
           ],
         },
       ],
+      scheduleNote: '수행 일정은 고객사와의 협의에 따라 변경됩니다.',
       outcome: {
         question: '무엇을 AX 성과로 잡으시나요?',
         lead: '성과는 AI사용량이 아니라,',
@@ -839,6 +849,8 @@ export const axContent: Record<Lang, AxContent> = {
         pause: 'Pause autoplay',
         replay: 'Replay from the beginning',
         play: 'Start autoplay',
+        previous: 'Previous slide',
+        next: 'Next slide',
       },
     },
     method: {
@@ -986,50 +998,54 @@ export const axContent: Record<Lang, AxContent> = {
       ],
     },
     program: {
-      eyebrow: 'START SMALL. PROVE IT.',
+      eyebrow: 'WE PROCEED IN THREE STAGES, VALIDATING AS WE GO.',
       headline: [
-        { before: 'Diagnose on a small scale.' },
-        { before: 'Prove it in production.' },
-        { strong: 'Expand only what works.' },
+        { before: 'Diagnose small.' },
+        { before: 'Prove it in operation.' },
+        { strong: 'Expand only as far as proven.' },
       ],
       packages: [
         {
           id: 'decision_map',
-          title: 'AX Decision Map',
-          price: '2 weeks · KRW 35 million',
+          phase: 'Diagnose',
+          title: 'Decide where to begin',
+          price: '2 weeks',
           featured: false,
           items: [
-            'Priority and excluded workflows',
-            'Current decision owners and real knowledge holders',
-            'Data, permission, and approval structure',
-            'Six-week delivery scope and baseline',
+            'Decide what to tackle first and what to defer',
+            'Select the actual decision owners and frontline experts',
+            'Analyze data, permission, and approval structures',
+            'Confirm the scope of the next six weeks',
           ],
         },
         {
           id: 'operational_transition',
-          title: 'First Workflow to Production',
-          price: '6 weeks · KRW 100 million',
+          phase: 'Prove',
+          title: 'Apply the first workflow in the field',
+          price: '6 weeks',
           featured: true,
           items: [
-            'First workflow live in production',
-            'Security, permission, and audit standards',
-            'Before-and-after performance',
-            'Second workflow applied by your Champion',
+            'Apply the first workflow in real operations',
+            'Measure reductions in processing and approval time',
+            'Connect security, permission, and audit standards',
+            'Enable the business team to apply it to the next workflow',
           ],
         },
         {
           id: 'organization_scaling',
-          title: 'Scale Across Workflows and Teams',
-          price: 'From KRW 200 million',
+          phase: 'Scale',
+          title: 'Expand across workflows and departments',
+          price: 'Quarterly / annual',
           featured: false,
           items: [
-            'Multiple workflows or departments',
-            'Enterprise operating standards',
-            'Standard integrations and operational handover',
-            'Annual scaling system',
+            'Across multiple workflows and departments',
+            'Establish company-wide operating standards',
+            'Integrate systems and embed operations internally',
+            'Expand the scope every quarter',
           ],
         },
       ],
+      scheduleNote: 'The delivery schedule may change in consultation with the client.',
       outcome: {
         question: 'How do you define AX success?',
         lead: 'Success is not AI usage.',
@@ -1298,6 +1314,8 @@ export const axContent: Record<Lang, AxContent> = {
         pause: '自動再生を一時停止',
         replay: '最初からもう一度再生',
         play: '自動再生を開始',
+        previous: '前のスライド',
+        next: '次のスライド',
       },
     },
     method: {
@@ -1437,50 +1455,54 @@ export const axContent: Record<Lang, AxContent> = {
       ],
     },
     program: {
-      eyebrow: 'START SMALL. PROVE IT.',
+      eyebrow: '検証しながら、3つの段階で進めます。',
       headline: [
-        { before: '小さく診断し、' },
-        { before: '運用で証明し、' },
-        { strong: '検証できた範囲だけを広げます。' },
+        { before: '小さく診断し' },
+        { before: '運用で証明し' },
+        { strong: '証明できた分だけ広げます。' },
       ],
       packages: [
         {
           id: 'decision_map',
-          title: 'AX意思決定マップ',
-          price: '2週間 · 3,500万ウォン',
+          phase: '診断',
+          title: 'どこから着手するかを決める',
+          price: '2週間',
           featured: false,
           items: [
-            '優先業務と除外業務',
-            '現在の意思決定者と実際の知識保有者',
-            'データ・権限・承認構造',
-            '6週間の実行範囲とベースライン',
+            '先に取り組む業務と後回しにする業務を決める',
+            '実際の意思決定者と現場の専門家を選ぶ',
+            'データ・権限・承認構造を分析する',
+            '次の6週間の実行範囲を確定する',
           ],
         },
         {
           id: 'operational_transition',
-          title: '最初の業務を本番運用へ',
-          price: '6週間 · 1億ウォン',
+          phase: '証明',
+          title: '最初の業務を現場に適用',
+          price: '6週間',
           featured: true,
           items: [
-            '最初の業務を本番運用',
-            'セキュリティ・権限・監査基準',
-            '成果のBefore・After',
-            'Championによる2つ目の業務適用',
+            '最初の業務を実際の現場に適用する',
+            '処理・承認時間がどれだけ短縮したかを測定する',
+            'セキュリティ・権限・監査基準を連携する',
+            '現場が次の業務に直接適用する',
           ],
         },
         {
           id: 'organization_scaling',
-          title: '業務・部門への展開',
-          price: '2億ウォン〜',
+          phase: '拡張',
+          title: '業務・部門へ拡張',
+          price: '四半期 / 年間',
           featured: false,
           items: [
-            '複数の業務または部門',
-            'Enterprise運用基準',
-            '標準連携と運用移管',
-            '年間展開の仕組み',
+            '複数の業務、複数の部門へ',
+            '全社の運用基準を定着させる',
+            'システムを連携し、運用を内製化する',
+            '四半期ごとに範囲を広げる計画を立てる',
           ],
         },
       ],
+      scheduleNote: '実施日程は、お客様との協議により変更される場合があります。',
       outcome: {
         question: 'AXの成果を、何で測りますか？',
         lead: '成果はAIの利用量ではなく、',
@@ -1737,6 +1759,8 @@ export const axContent: Record<Lang, AxContent> = {
         pause: '暂停自动播放',
         replay: '从头重新播放',
         play: '开始自动播放',
+        previous: '上一张幻灯片',
+        next: '下一张幻灯片',
       },
     },
     method: {
@@ -1870,45 +1894,54 @@ export const axContent: Record<Lang, AxContent> = {
       ],
     },
     program: {
-      eyebrow: 'START SMALL. PROVE IT.',
+      eyebrow: '边验证，边分三个阶段推进。',
       headline: [
-        { before: '从小范围诊断开始。' },
-        { before: '在实际运营中验证。' },
-        { strong: '只扩展已经证实有效的部分。' },
+        { before: '从小范围诊断' },
+        { before: '在实际运营中证明' },
+        { strong: '只扩展已经证明的范围。' },
       ],
       packages: [
         {
           id: 'decision_map',
-          title: 'AX决策地图',
-          price: '2周 · 3,500万韩元',
+          phase: '诊断',
+          title: '决定从哪里开始解决',
+          price: '2周',
           featured: false,
           items: [
-            '优先工作流程与排除项',
-            '当前决策者与实际知识持有者',
-            '数据、权限与审批结构',
-            '6周执行范围与基线',
+            '确定先解决和暂缓处理的工作',
+            '选定实际决策者和一线专家',
+            '分析数据、权限与审批结构',
+            '确定接下来6周的执行范围',
           ],
         },
         {
           id: 'operational_transition',
-          title: '首个工作流程投入运营',
-          price: '6周 · 1亿韩元',
+          phase: '证明',
+          title: '将首项工作应用到现场',
+          price: '6周',
           featured: true,
           items: [
-            '首个工作流程实际运营',
-            '安全、权限与审计标准',
-            '成效前后对比',
-            '由Champion落地第二个工作流程',
+            '将首项工作应用到实际现场',
+            '衡量处理和审批时间缩短了多少',
+            '衔接安全、权限与审计标准',
+            '由业务团队直接应用到下一项工作',
           ],
         },
         {
           id: 'organization_scaling',
-          title: '扩展至更多流程与部门',
-          price: '2亿韩元起',
+          phase: '扩展',
+          title: '扩展至工作与部门',
+          price: '按季度 / 年度',
           featured: false,
-          items: ['多个工作流程或部门', '企业级运营标准', '标准化集成与运营交接', '年度扩展体系'],
+          items: [
+            '覆盖多项工作、多个部门',
+            '建立全公司统一的运营标准',
+            '实现系统集成并沉淀内部运营能力',
+            '制定按季度扩展范围的计划',
+          ],
         },
       ],
+      scheduleNote: '执行时间可能根据与客户的协商进行调整。',
       outcome: {
         question: '您如何定义AX成果？',
         lead: '成果不在于AI使用量，',

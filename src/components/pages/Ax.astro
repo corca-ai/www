@@ -232,6 +232,8 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         pause: c.bottleneck.carousel.pause,
         replay: c.bottleneck.carousel.replay,
         play: c.bottleneck.carousel.play,
+        previous: c.bottleneck.carousel.previous,
+        next: c.bottleneck.carousel.next,
       }}
     />
   </section>
@@ -364,10 +366,11 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
       <div class="package-grid">
         {c.program.packages.map((item) => (
           <article class:list={['package-card reveal', { featured: item.featured }]}>
-            <h3>{item.title}</h3><strong>{item.price}</strong><ul>{item.items.map((line) => <li>{line}</li>)}</ul>
+            <h3><strong>{item.phase}</strong><span>{item.title}</span></h3><strong>{item.price}</strong><ul>{item.items.map((line) => <li>{line}</li>)}</ul>
           </article>
         ))}
       </div>
+      <p class="package-schedule-note">{c.program.scheduleNote}</p>
       <div class="outcome-grid reveal">
         <p>{c.program.outcome.question}<br />{c.program.outcome.lead}<br /><strong>{c.program.outcome.strong}</strong></p>
         <ul>{c.program.outcome.metrics.map((metric) => <li>{metric}</li>)}</ul>

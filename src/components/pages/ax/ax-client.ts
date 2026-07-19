@@ -23,7 +23,7 @@ declare global {
   }
 }
 
-const SLIDE_DURATION = 4_200;
+const SLIDE_DURATION = 2_200;
 const TURNSTILE_SCRIPT_ID = 'ax-turnstile-api';
 let turnstilePromise: Promise<TurnstileApi> | undefined;
 
@@ -86,8 +86,6 @@ function initializeCarousel(root: HTMLElement) {
   let lastTimestamp = 0;
   let isInViewport = false;
   let isDragging = false;
-  let isHovered = false;
-  let hasFocus = false;
   const drag = { pointerId: -1, startX: 0, currentX: 0, width: 0 };
 
   const writeProgress = (value: number) => {
@@ -132,6 +130,7 @@ function initializeCarousel(root: HTMLElement) {
 
   const renderPlayback = () => {
     const reduced = reducedMotion.matches;
+    root.dataset.playback = playback;
     const label = reduced
       ? root.dataset.labelReduced
       : playback === 'playing'
@@ -143,8 +142,7 @@ function initializeCarousel(root: HTMLElement) {
     playbackButton.setAttribute('aria-label', label ?? '');
     playbackButton.title = label ?? '';
 
-    const visibleIcon =
-      reduced || playback === 'paused' ? 'play' : playback === 'ended' ? 'restart' : 'pause';
+    const visibleIcon = reduced || playback !== 'playing' ? 'play' : 'pause';
     root.querySelectorAll<SVGElement>('[data-carousel-icon]').forEach((icon) => {
       icon.style.display = icon.dataset.carouselIcon === visibleIcon ? '' : 'none';
     });
@@ -156,8 +154,6 @@ function initializeCarousel(root: HTMLElement) {
     !document.hidden &&
     !reducedMotion.matches &&
     !isDragging &&
-    !isHovered &&
-    !hasFocus &&
     slides.length > 1;
 
   const tick = (timestamp: number) => {
@@ -173,14 +169,15 @@ function initializeCarousel(root: HTMLElement) {
     const nextProgress = progress + elapsed / SLIDE_DURATION;
 
     if (nextProgress >= 1) {
-      if (activeIndex < slides.length - 1) {
-        activeIndex += 1;
-        writeProgress(0);
-        renderSelection();
-      } else {
-        writeProgress(1);
-        playback = 'ended';
-        renderPlayback();
+      activeIndex += 1;
+      const reachedEnd = activeIndex >= slides.length - 1;
+      activeIndex = clamp(activeIndex, 0, slides.length - 1);
+      writeProgress(reachedEnd ? 1 : 0);
+      if (reachedEnd) playback = 'ended';
+      renderSelection();
+      renderPlayback();
+      if (reachedEnd) {
+        lastTimestamp = 0;
         return;
       }
     } else {
@@ -196,26 +193,12 @@ function initializeCarousel(root: HTMLElement) {
     animationFrame = window.requestAnimationFrame(tick);
   };
 
-  root.addEventListener('mouseenter', () => {
-    isHovered = true;
-  });
-  root.addEventListener('mouseleave', () => {
-    isHovered = false;
-    startAnimation();
-  });
-  root.addEventListener('focusin', () => {
-    hasFocus = true;
-  });
-  root.addEventListener('focusout', (event) => {
-    if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
-    hasFocus = false;
-    startAnimation();
-  });
-
   const selectSlide = (requestedIndex: number) => {
     activeIndex = clamp(requestedIndex, 0, slides.length - 1);
-    writeProgress(0);
-    if (playback === 'ended') playback = 'paused';
+    const reachedEnd = activeIndex === slides.length - 1 && playback === 'playing';
+    writeProgress(reachedEnd ? 1 : 0);
+    if (reachedEnd) playback = 'ended';
+    else if (playback === 'ended') playback = 'paused';
     renderSelection();
     if (status) status.textContent = slides[activeIndex]?.getAttribute('aria-label') ?? '';
     renderPlayback();

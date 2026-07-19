@@ -570,7 +570,7 @@ export const axContent: Record<Lang, AxContent> = {
           ],
         },
       ],
-      scheduleNote: '수행 일정은 고객사와의 협의에 따라 변경됩니다.',
+      scheduleNote: '표기된 기간은 기준이며, 범위에 따라 조정됩니다.',
       outcome: {
         question: '무엇을 AX 성과로 잡으시나요?',
         lead: '성과는 AI사용량이 아니라,',
@@ -616,7 +616,7 @@ export const axContent: Record<Lang, AxContent> = {
     },
     contact: {
       imageAlt: '밝은 수면으로 올라가는 범고래',
-      eyebrow: '20분 AX 진단을 위한 통화',
+      eyebrow: '20분 AX 진단',
       question: ['해결하고 싶은', '업무가 있으신가요?'],
       answer: ['Corca AX가', '함께 해결하겠습니다.'],
       fitLead: '이런 일이라면, 20분 AX 진단이 특히 잘 맞습니다',

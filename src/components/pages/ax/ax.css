@@ -645,6 +645,10 @@
   padding: 140px 0 90px;
 }
 
+.ax-page .gap-scene .eyebrow {
+  font-size: 14.4px;
+}
+
 .ax-page .gap-scrim {
   background:
     radial-gradient(circle at 20% 44%, rgba(0, 13, 40, 0.88) 0%, rgba(0, 14, 42, 0.64) 40%, transparent 72%),
@@ -691,7 +695,7 @@
 .ax-page .gap-step > span {
   margin-bottom: 20px;
   color: var(--blue-light);
-  font-size: 11px;
+  font-size: 13.2px;
   font-weight: 800;
   letter-spacing: 0.16em;
 }
@@ -1156,7 +1160,7 @@
 .ax-page .champion-step > span,
 .ax-page .champion-step > small {
   color: #83cbff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.12em;
 }

@@ -473,7 +473,7 @@ export const axContent: Record<Lang, AxContent> = {
       corca: { label: 'Corca AX', strengths: ['AI 설계', '시스템 연결', '운영 전환'] },
     },
     champion: {
-      eyebrow: 'FROM FIRST TO NEXT',
+      eyebrow: '스스로 설 때까지',
       headline: [{ before: '첫 업무는 함께.' }, { strong: '다음 업무는 스스로.' }],
       body: 'Corca가 떠난 날이 끝이 아닙니다. 고객이 두 번째 업무를 직접 확장한 날이 끝입니다.',
       imageAlt: '한 테이블에서 함께 업무를 검토하는 한국인 AX 실무자 세 명',
@@ -481,14 +481,14 @@ export const axContent: Record<Lang, AxContent> = {
         {
           step: '01',
           kicker: 'Corca AX와 함께 짝작업',
-          headline: ['첫 업무를', '실제 운영에'],
+          headline: ['첫 업무를', '현장에 적용'],
           body: '판단 기준과 예외를 함께 구조화합니다.',
         },
         {
           step: '02',
-          kicker: '사내 AX챔피언 육성',
+          kicker: '사내 AX 오너 육성',
           headline: ['팀의 암묵지를', '조직의 기준으로'],
-          body: '프롬프트를 잘 쓰는 사람이 아니라 로컬 판단에 책임지는 사람입니다.',
+          body: '프롬프트를 잘 쓰는 사람이 아니라 현장 판단에 책임지는 AX오너가 됩니다.',
         },
         {
           step: '03',
@@ -912,7 +912,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
         {
           frequency: 'Every day',
-          name: 'Ceal',
+          name: 'Corca Agent',
           body: 'We first applied our agent to repeatable work such as company guidance, expense approvals, research, and follow-up actions.',
         },
       ],
@@ -1374,7 +1374,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
         {
           frequency: '毎日使うエージェント',
-          name: 'Ceal',
+          name: 'Corcaエージェント',
           body: '社内案内、経費申請、調査、フォローアップなど、繰り返し発生する業務から適用しました。',
         },
       ],
@@ -1813,7 +1813,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
         {
           frequency: '每日协作的智能体',
-          name: 'Ceal',
+          name: 'Corca智能体',
           body: '我们先将其用于企业内部指引、费用审批、调研和后续行动等重复性工作。',
         },
       ],

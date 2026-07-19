@@ -320,7 +320,7 @@ export const axContent: Record<Lang, AxContent> = {
         {
           id: 'past',
           kicker: '과거에도 똑같았습니다',
-          headline: ['컴퓨터 구매는 하루,', '일하는 방식을 바꾸는 데는 수년.'],
+          headline: ['컴퓨터 구매는 하루,', '일하는 방식을', '바꾸는 데는 수년.'],
           body: [
             '혁신적인 기술만으로는',
             '생산성을 만들지 못했습니다.',
@@ -354,7 +354,7 @@ export const axContent: Record<Lang, AxContent> = {
     },
     bottleneck: {
       eyebrow: 'AI도입은 시작일 뿐',
-      headline: [{ before: '도입 후에는' }, { strong: '기술보다 운영이 막힙니다.' }],
+      headline: [{ before: '도입 후에는' }, { strong: '기술보다 운영에서 막힙니다.' }],
       body: 'AI 솔루션과 모델을 고르는 문제는 시작에 가깝습니다. 진짜 난관은 조직 안에 있습니다.',
       cards: [
         {

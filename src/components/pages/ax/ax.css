@@ -2056,7 +2056,7 @@
 }
 
 .ax-page .method-media {
-  opacity: 0.96;
+  opacity: 1;
 }
 
 .ax-page .method-media img {
@@ -2065,8 +2065,8 @@
 
 .ax-page .method-scrim {
   background:
-    linear-gradient(90deg, rgba(0, 13, 31, 0.62) 0%, rgba(0, 17, 39, 0.34) 48%, rgba(0, 12, 29, 0.52) 100%),
-    linear-gradient(180deg, rgba(0, 15, 35, 0.48) 0%, rgba(0, 20, 46, 0.18) 45%, rgba(0, 12, 30, 0.58) 100%);
+    linear-gradient(90deg, rgba(0, 10, 28, 0.48) 0%, rgba(0, 17, 42, 0.16) 48%, rgba(0, 10, 28, 0.28) 100%),
+    linear-gradient(180deg, rgba(0, 13, 34, 0.22) 0%, rgba(0, 18, 48, 0.08) 45%, rgba(0, 8, 26, 0.4) 100%);
 }
 
 .ax-page .method .section-heading.dark h2 strong {
@@ -2081,8 +2081,13 @@
 }
 
 .ax-page .method-step > span {
-  color: #2997ff;
+  padding-top: 0;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(25px, 2.5vw, 36px);
   font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.035em;
 }
 
 .ax-page .method-step h3 {

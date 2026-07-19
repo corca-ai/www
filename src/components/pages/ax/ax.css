@@ -1086,8 +1086,8 @@
 
 /* 09 — Champion */
 .ax-page .champion {
-  min-height: 150svh;
-  padding: clamp(140px, 13vw, 200px) 0;
+  min-height: auto;
+  padding: clamp(140px, 13vw, 200px) 0 clamp(88px, 8vw, 120px);
 }
 
 .ax-page .champion-layout {
@@ -1293,8 +1293,21 @@
 
 .ax-page .package-card h3 {
   margin: 18px 0 0;
+  display: grid;
+  gap: 6px;
   font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 500;
+  line-height: 1.14;
   letter-spacing: -0.04em;
+}
+
+.ax-page .package-card h3 strong,
+.ax-page .package-card h3 span {
+  display: block;
+}
+
+.ax-page .package-card h3 strong {
+  font-weight: 800;
 }
 
 .ax-page .package-card > strong {
@@ -1346,6 +1359,14 @@
 
 .ax-page .package-card.featured li::before {
   background: #bfe5ff;
+}
+
+.ax-page .package-schedule-note {
+  grid-column: 1 / 13;
+  margin: 16px 0 0;
+  color: rgba(29, 29, 31, 0.48);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .ax-page .outcome-grid {
@@ -1952,7 +1973,7 @@
 .ax-page .pain-carousel__track {
   column-gap: var(--carousel-gap);
   transform: translate3d(calc(var(--carousel-track-x) + var(--carousel-drag-x)), 0, 0);
-  transition: transform 574ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 574ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 
@@ -1967,9 +1988,9 @@
   transform: scale(0.955);
   transform-origin: center;
   transition:
-    opacity 504ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 574ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 574ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 504ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 574ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 574ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ax-page .pain-carousel__slide img {
@@ -2796,7 +2817,7 @@
   display: flex;
   column-gap: 0;
   transform: translate3d(calc(var(--carousel-track-x) + var(--carousel-drag-x)), 0, 0);
-  transition: transform 574ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 574ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 
@@ -2814,7 +2835,7 @@
   display: flex;
   flex-direction: column;
   opacity: 0.5;
-  transition: opacity 504ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 504ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ax-page .testimonial-carousel .testimonial-carousel__slide[data-active="true"] {

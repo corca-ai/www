@@ -2052,7 +2052,7 @@
 }
 
 .ax-page .method {
-  background: #00172f;
+  background: #0b0c0f;
 }
 
 .ax-page .method-media {
@@ -2065,8 +2065,8 @@
 
 .ax-page .method-scrim {
   background:
-    linear-gradient(90deg, rgba(0, 10, 28, 0.48) 0%, rgba(0, 17, 42, 0.16) 48%, rgba(0, 10, 28, 0.28) 100%),
-    linear-gradient(180deg, rgba(0, 13, 34, 0.22) 0%, rgba(0, 18, 48, 0.08) 45%, rgba(0, 8, 26, 0.4) 100%);
+    linear-gradient(90deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.08) 52%, rgba(0, 0, 0, 0.24) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16) 0%, transparent 45%, rgba(0, 0, 0, 0.38) 100%);
 }
 
 .ax-page .method .section-heading.dark h2 strong {

@@ -46,7 +46,7 @@ export const axAssetPaths = {
   },
   backgrounds: {
     bottleneck: backgroundVisual('07-bottleneck-space'),
-    method: backgroundVisual('08-method-cobalt'),
+    method: backgroundVisual('08-method-graphite-v2'),
   },
   carousel: {
     context: carouselVisual('context'),

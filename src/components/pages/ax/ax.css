@@ -273,10 +273,10 @@
   color: #2163da;
 }
 
-@media (min-width: 721px) {
-  .ax-page :is(#ax-how, #ax-proof, .pair-work, .champion, .reuse, #ax-program, #ax-contact) .eyebrow {
-    font-size: 13.2px;
-  }
+.ax-page
+  :is(.bottleneck, #ax-how, #ax-proof, .pair-work, .champion, .reuse, #ax-program, #ax-contact)
+  .eyebrow {
+  font-size: 14.4px;
 }
 
 .ax-page .reveal {

@@ -376,7 +376,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         <ul>{c.program.outcome.metrics.map((metric) => <li>{metric}</li>)}</ul>
       </div>
       <div class="faq-block reveal">
-        <div><p class="eyebrow blue">{c.program.faqEyebrow}</p><h3>{c.program.faqTitle}</h3></div>
+        <div><h3>{c.program.faqTitle}</h3></div>
         <div class="faq-list">
           {c.program.faqs.map((item) => (
             <details><summary>{item.question}<span aria-hidden="true">＋</span></summary><p>{item.answer}</p></details>

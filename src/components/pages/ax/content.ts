@@ -330,7 +330,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
         {
           id: 'now',
-          kicker: 'NOW',
+          kicker: '지금도',
           statistic: { value: '95', suffix: '%' },
           headline: [
             'AI를 도입한 대다수 기업들은',
@@ -500,7 +500,7 @@ export const axContent: Record<Lang, AxContent> = {
     },
     reuse: {
       imageAlt: '바닷속에서 여러 겹으로 쌓이는 푸른 빛의 층',
-      eyebrow: 'REUSABLE BY DESIGN',
+      eyebrow: '해결한 자산이 쌓여갑니다',
       headline: [
         { before: '한 번 해결한 문제는,' },
         { strong: '안전하게 조직내에서' },

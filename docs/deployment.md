@@ -33,6 +33,32 @@ beta host; when the site moves to a permanent Corca domain, use the
    paths, including canonical redirects when URL behavior changed.
 3. Share the deployed commit when a product or content owner needs to verify it.
 
+## Repeatable release command
+
+For routine Codex-assisted releases, commit the intended changes on a focused
+branch and run the release helper. It pushes the branch, creates or reuses its
+pull request, waits for the required checks, enables auto-merge, and polls the
+production page until the expected text is present:
+
+```sh
+pnpm release:site -- \
+  --url https://www.borca.ai/ax \
+  --expect 'text unique to this release'
+```
+
+The command deliberately requires a clean worktree. This prevents unrelated
+local edits from being swept into a release and keeps the fast path repeatable.
+The default timeout is 15 minutes; use `--timeout <seconds>` only when GitHub or
+Cloudflare reports a longer queue. If the GitHub integration is unavailable,
+use the manual fallback below.
+
+When Codex is releasing and `gh auth status` reports an expired CLI token, do
+not repeat login attempts or wait on the CLI. Push the committed branch with
+local Git, then use the connected GitHub app to create the pull request, enable
+auto-merge, and observe its state. This connector-first fallback avoids making
+the release depend on a separate short-lived `gh` token. Production is still
+verified by polling the changed URL for text unique to the release.
+
 ## Manual deploy (fallback)
 
 `pnpm run deploy` still builds the site and runs `wrangler deploy` directly, for a

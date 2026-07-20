@@ -240,14 +240,14 @@ export type AxContent = {
 export const axContent: Record<Lang, AxContent> = {
   ko: {
     brand: {
-      homeAriaLabel: 'Corca AX 처음으로',
-      logoAlt: 'Corca AX',
+      homeAriaLabel: 'AX 컨설팅 페이지 처음으로',
+      logoAlt: 'Corca',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
       brochureCta: '더 알아보기 | 브로셔',
-      brochureAriaLabel: 'Corca AX 브로셔 새 창에서 열기',
+      brochureAriaLabel: 'Corca의 AX 컨설팅 브로셔 새 창에서 열기',
       consultationCta: '상담신청하기',
-      organizationsAriaLabel: 'Corca AX와 함께한 조직',
-      organizationLogosAriaLabel: 'Corca AX와 함께한 10개 조직의 로고',
+      organizationsAriaLabel: 'Corca와 함께한 조직',
+      organizationLogosAriaLabel: 'Corca와 함께한 10개 조직의 로고',
     },
     hero: {
       eyebrow: 'AX 가속화 컨설팅',
@@ -257,16 +257,16 @@ export const axContent: Record<Lang, AxContent> = {
         { strong: '반복되는 성과는' },
         { strong: '아무나 만들지 못합니다' },
       ],
-      subtitle: ['첫 성과가 다음 성과로 이어지는 조직.', 'Corca AX가 함께 만듭니다.'],
+      subtitle: ['첫 성과가 다음 성과로 이어지는 조직.', 'Corca가 함께 만듭니다.'],
       consultationCta: '상담신청하기',
-      exploreCta: 'Corca AX만의 컨설팅 보기',
+      exploreCta: 'Corca의 AX 컨설팅 보기',
     },
     belief: {
-      eyebrow: '스스로 성장하는 조직만들기에 진심인 Corca AX',
+      eyebrow: '스스로 성장하는 조직만들기에 진심인 Corca',
       headline: [{ before: '도구는 살 수 있습니다.' }, { strong: '강한 조직은 만들어야 합니다.' }],
       body: [
-        'Corca AX는 답만 주고 떠나지 않습니다.',
-        'Corca AX는 첫 번째 AX 업무를 함께 실행하고,',
+        'Corca는 답만 주고 떠나지 않습니다.',
+        'Corca는 첫 번째 AX 업무를 함께 실행하고,',
         '컨설팅 이후에도 스스로 문제를 풀 힘을 조직 안에 남기는 일에 진심입니다.',
       ],
       testimonials: [
@@ -288,7 +288,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
       ],
       testimonialCarousel: {
-        ariaLabel: 'Corca AX 고객 후기',
+        ariaLabel: 'Corca 고객 후기',
         slideSelectionAriaLabel: '고객 후기 선택',
         slideAriaTemplate: '{current} / {total} — {company}',
         viewSlideAriaTemplate: '{company} 고객 후기 보기',
@@ -299,19 +299,19 @@ export const axContent: Record<Lang, AxContent> = {
         replay: '고객 후기를 처음부터 다시 재생',
         play: '고객 후기 자동 재생 시작',
       },
-      proofAriaLabel: 'Corca AX 활동 기록',
+      proofAriaLabel: 'Corca 활동 기록',
       proof: {
-        organizations: { value: '20+', label: 'Corca AX와 함께한 조직' },
-        participants: { value: '1,000+', label: 'Corca AX 프로그램 참여자' },
+        organizations: { value: '20+', label: 'Corca와 함께한 조직' },
+        participants: { value: '1,000+', label: 'Corca의 AX 컨설팅 프로그램 참여자' },
         completion: {
           value: ['첫 업무부터 다음 업무를 실행할', '힘을 갖춘 조직이 되는 것까지'],
-          label: 'Corca AX가 정의한 프로젝트 완료 기준',
+          label: 'Corca가 정의한 프로젝트 완료 기준',
         },
       },
     },
     gap: {
       imageAlt: '같은 바다에서 서로 다른 속도로 이동하는 범고래 무리',
-      eyebrow: '현장의 고민을 파악한 Corca AX',
+      eyebrow: '현장의 고민을 파악한 Corca',
       headline: [
         { before: 'AI의 격차는 모델보다,' },
         { strong: '실제 업무에 올리는 속도', after: '에서 벌어집니다.' },
@@ -387,7 +387,7 @@ export const axContent: Record<Lang, AxContent> = {
       },
     },
     method: {
-      eyebrow: '현장에서 답을 찾은 Corca AX',
+      eyebrow: '현장에서 답을 찾은 Corca',
       headline: [
         { before: 'AI로 해결할 ', strong: '핵심 문제를 찾고' },
         { before: '첫 업무를 ', strong: '함께 실행해서 바꾸고' },
@@ -428,7 +428,7 @@ export const axContent: Record<Lang, AxContent> = {
         '회사의 모든 구성원이 AI를 배우는 것에서 멈추지 않았습니다.',
         '실제 업무에서 해결할 과제를 고르고, AI와 함께 만들고, 매주 실패와 성공을 나누면서 성장해왔습니다.',
       ],
-      cadenceAriaLabel: 'Corca AX의 월간·주간·일간 운영 리듬',
+      cadenceAriaLabel: 'Corca의 월간·주간·일간 운영 리듬',
       cadence: [
         {
           frequency: '매월 진행하는',
@@ -470,7 +470,7 @@ export const axContent: Record<Lang, AxContent> = {
       ],
       body: '현업은 판단 기준과 예외를 압니다. Corca는 AI가 그 지식을 실제 업무에서 쓰게 만듭니다.',
       client: { label: '고객 현업', strengths: ['암묵지', '판단 기준', '책임'] },
-      corca: { label: 'Corca AX', strengths: ['AI 설계', '시스템 연결', '운영 전환'] },
+      corca: { label: 'Corca', strengths: ['AI 설계', '시스템 연결', '운영 전환'] },
     },
     champion: {
       eyebrow: '스스로 설 때까지',
@@ -480,7 +480,7 @@ export const axContent: Record<Lang, AxContent> = {
       steps: [
         {
           step: '01',
-          kicker: 'Corca AX와 함께 짝작업',
+          kicker: 'Corca와 함께 짝작업',
           headline: ['첫 업무를', '현장에 적용'],
           body: '판단 기준과 예외를 함께 구조화합니다.',
         },
@@ -590,7 +590,7 @@ export const axContent: Record<Lang, AxContent> = {
         {
           question: 'AI 교육이나 일반 컨설팅과 무엇이 다릅니까?',
           answer:
-            '교육은 사용법을 알려줍니다. Corca AX는 풀 문제를 고르고, 첫 업무를 실제 운영에 올리며, 다음 업무를 고객이 직접 확장할 수 있게 만듭니다.',
+            '교육은 사용법을 알려줍니다. Corca는 풀 문제를 고르고, 첫 업무를 실제 운영에 올리며, 다음 업무를 고객이 직접 확장할 수 있게 만듭니다.',
         },
         {
           question: '어떤 업무부터 시작합니까?',
@@ -608,7 +608,7 @@ export const axContent: Record<Lang, AxContent> = {
             '데이터 경계, 접근 권한, 승인 단계, 예외 처리, 감사 기록, 중단과 복구 기준을 업무 설계에 함께 넣습니다.',
         },
         {
-          question: 'Corca AX가 떠난 뒤에도 운영할 수 있습니까?',
+          question: 'Corca가 떠난 뒤에도 운영할 수 있습니까?',
           answer:
             '그것이 프로젝트의 종료 조건입니다. 첫 업무만 남기는 것이 아니라 판단 기준과 스킬, 운영 방법을 함께 넘깁니다.',
         },
@@ -618,7 +618,7 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: '밝은 수면으로 올라가는 범고래',
       eyebrow: '20분 AX 진단',
       question: ['해결하고 싶은', '업무가 있으신가요?'],
-      answer: ['Corca AX가', '함께 해결하겠습니다.'],
+      answer: ['Corca가', '함께 해결하겠습니다.'],
       fitLead: '이런 일이라면, 20분 AX 진단이 특히 잘 맞습니다',
       fitItems: ['자주 반복되는 업무', '판단 기준이 명확한 업무', '현장 지식이 중요한 업무'],
       emailAriaLabel: '이메일로 문의하기',
@@ -690,14 +690,14 @@ export const axContent: Record<Lang, AxContent> = {
   },
   en: {
     brand: {
-      homeAriaLabel: 'Back to the top of Corca AX',
-      logoAlt: 'Corca AX',
+      homeAriaLabel: 'Back to the top of the AX consulting page',
+      logoAlt: 'Corca',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
       brochureCta: 'Learn more | Brochure',
-      brochureAriaLabel: 'Open the Corca AX brochure in a new tab',
+      brochureAriaLabel: "Open Corca's AX consulting brochure in a new tab",
       consultationCta: 'Book a consultation',
-      organizationsAriaLabel: 'Organizations that have worked with Corca AX',
-      organizationLogosAriaLabel: 'Logos of 10 organizations that have worked with Corca AX',
+      organizationsAriaLabel: 'Organizations that have worked with Corca',
+      organizationLogosAriaLabel: 'Logos of 10 organizations that have worked with Corca',
     },
     hero: {
       eyebrow: 'AX ACCELERATION CONSULTING',
@@ -708,19 +708,19 @@ export const axContent: Record<Lang, AxContent> = {
       ],
       subtitle: [
         'Build an organization where one win leads to the next.',
-        'Corca AX helps you get there.',
+        'Corca helps you get there.',
       ],
       consultationCta: 'Book a consultation',
-      exploreCta: 'See how Corca AX works',
+      exploreCta: "See Corca's AX consulting",
     },
     belief: {
-      eyebrow: 'CORCA AX IS COMMITTED TO BUILDING TEAMS THAT KEEP GETTING BETTER',
+      eyebrow: 'CORCA IS COMMITTED TO BUILDING TEAMS THAT KEEP GETTING BETTER',
       headline: [
         { before: 'You can buy the tools.' },
         { strong: 'A strong organization must be built.' },
       ],
       body: [
-        'Corca AX does not hand over an answer and walk away.',
+        'Corca does not hand over an answer and walk away.',
         'We deliver the first AX workflow with your team,',
         'then leave your organization with the ability to solve the next problem on its own.',
       ],
@@ -746,7 +746,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
       ],
       testimonialCarousel: {
-        ariaLabel: 'Corca AX customer testimonials',
+        ariaLabel: 'Corca customer testimonials',
         slideSelectionAriaLabel: 'Choose a customer testimonial',
         slideAriaTemplate: '{current} of {total} — {company}',
         viewSlideAriaTemplate: 'View the {company} testimonial',
@@ -757,22 +757,22 @@ export const axContent: Record<Lang, AxContent> = {
         replay: 'Replay testimonials from the beginning',
         play: 'Start testimonial autoplay',
       },
-      proofAriaLabel: 'Corca AX track record',
+      proofAriaLabel: 'Corca track record',
       proof: {
-        organizations: { value: '20+', label: 'Organizations that have worked with Corca AX' },
-        participants: { value: '1,000+', label: 'Participants in Corca AX programs' },
+        organizations: { value: '20+', label: 'Organizations that have worked with Corca' },
+        participants: { value: '1,000+', label: "Participants in Corca's AX consulting programs" },
         completion: {
           value: [
             'From delivering the first workflow',
             'to building the capability to deliver the next',
           ],
-          label: 'How Corca AX defines project completion',
+          label: 'How Corca defines project completion',
         },
       },
     },
     gap: {
       imageAlt: 'A pod of orcas moving at different speeds through the same sea',
-      eyebrow: 'CORCA AX, GROUNDED IN THE REALITIES OF THE FIELD',
+      eyebrow: 'CORCA, GROUNDED IN THE REALITIES OF THE FIELD',
       headline: [
         { before: 'The AI divide is not about the model.' },
         { strong: 'It is about how fast AI reaches real work.' },
@@ -854,7 +854,7 @@ export const axContent: Record<Lang, AxContent> = {
       },
     },
     method: {
-      eyebrow: 'CORCA AX, BUILT FROM WHAT WORKS IN THE FIELD',
+      eyebrow: 'CORCA, BUILT FROM WHAT WORKS IN THE FIELD',
       headline: [
         { before: 'Find the problems worth solving with AI.' },
         { before: 'Transform the first workflow together.' },
@@ -898,7 +898,7 @@ export const axContent: Record<Lang, AxContent> = {
         'We did not stop after teaching everyone at Corca how to use AI.',
         'We chose real work to improve, built alongside AI, and grew by sharing both failures and wins every week.',
       ],
-      cadenceAriaLabel: 'Corca AX monthly, weekly, and daily operating cadence',
+      cadenceAriaLabel: 'Corca monthly, weekly, and daily operating cadence',
       cadence: [
         {
           frequency: 'Every month',
@@ -943,7 +943,7 @@ export const axContent: Record<Lang, AxContent> = {
         strengths: ['Tacit knowledge', 'Decision criteria', 'Accountability'],
       },
       corca: {
-        label: 'Corca AX',
+        label: 'Corca',
         strengths: ['AI design', 'System integration', 'Operational transition'],
       },
     },
@@ -955,7 +955,7 @@ export const axContent: Record<Lang, AxContent> = {
       steps: [
         {
           step: '01',
-          kicker: 'Pair with Corca AX',
+          kicker: 'Pair with Corca',
           headline: ['Put the first workflow', 'into production'],
           body: 'Structure the decision criteria and exceptions together.',
         },
@@ -1065,7 +1065,7 @@ export const axContent: Record<Lang, AxContent> = {
         {
           question: 'How is this different from AI training or traditional consulting?',
           answer:
-            'Training teaches people how to use the tools. Corca AX chooses the right problem, puts the first workflow into production, and enables your team to scale the next one itself.',
+            'Training teaches people how to use the tools. Corca chooses the right problem, puts the first workflow into production, and enables your team to scale the next one itself.',
         },
         {
           question: 'Which workflow should we start with?',
@@ -1083,7 +1083,7 @@ export const axContent: Record<Lang, AxContent> = {
             'We design data boundaries, access permissions, approval stages, exception handling, audit logs, and stop-and-recovery criteria into the workflow from the start.',
         },
         {
-          question: 'Can we keep operating after Corca AX leaves?',
+          question: 'Can we keep operating after Corca leaves?',
           answer:
             'That is our definition of project completion. We hand over not only the first workflow, but also its decision criteria, skills, and operating methods.',
         },
@@ -1093,7 +1093,7 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: 'An orca rising toward the bright surface',
       eyebrow: 'A 20-MINUTE AX DISCOVERY CALL',
       question: ['Is there a workflow', 'you want to improve?'],
-      answer: ['Corca AX will', 'solve it with you.'],
+      answer: ['Corca will', 'solve it with you.'],
       fitLead: 'A 20-minute AX discovery call is a particularly good fit for work that is',
       fitItems: [
         'Repeated often',
@@ -1170,31 +1170,31 @@ export const axContent: Record<Lang, AxContent> = {
   },
   ja: {
     brand: {
-      homeAriaLabel: 'Corca AXの先頭へ戻る',
-      logoAlt: 'Corca AX',
+      homeAriaLabel: 'AXコンサルティングページの先頭へ戻る',
+      logoAlt: 'Corca',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
       brochureCta: '詳しく見る | パンフレット',
-      brochureAriaLabel: 'Corca AXのパンフレットを新しいタブで開く',
+      brochureAriaLabel: 'CorcaのAXコンサルティングパンフレットを新しいタブで開く',
       consultationCta: '相談を申し込む',
-      organizationsAriaLabel: 'Corca AXと取り組んだ組織',
-      organizationLogosAriaLabel: 'Corca AXと取り組んだ10組織のロゴ',
+      organizationsAriaLabel: 'Corcaと取り組んだ組織',
+      organizationLogosAriaLabel: 'Corcaと取り組んだ10組織のロゴ',
     },
     hero: {
       eyebrow: 'AX加速コンサルティング',
       headline: [
-        { before: 'AIの導入は、誰にでもできます。' },
-        { strong: '成果を繰り返し生み出せる組織は、' },
+        { before: 'AIは誰でも導入できます。' },
+        { strong: '成果を生み続ける組織は' },
         { strong: '簡単にはつくれません。' },
       ],
-      subtitle: ['最初の成果を、次の成果につなげる組織へ。', 'Corca AXが共につくります。'],
+      subtitle: ['最初の成果を、次の成果につなげる組織へ。', 'Corcaが共につくります。'],
       consultationCta: '相談を申し込む',
-      exploreCta: 'Corca AXのコンサルティングを見る',
+      exploreCta: 'CorcaのAXコンサルティングを見る',
     },
     belief: {
-      eyebrow: '自ら成長し続ける組織づくりに、本気で向き合うCORCA AX',
+      eyebrow: '自ら成長し続ける組織づくりに、本気で向き合うCORCA',
       headline: [{ before: 'ツールは買えます。' }, { strong: '強い組織は、つくるものです。' }],
       body: [
-        'Corca AXは、答えだけを渡して去ることはありません。',
+        'Corcaは、答えだけを渡して去ることはありません。',
         '最初のAX業務をお客様と共に実行し、',
         '支援後も自ら次の課題を解ける力を、組織の中に残します。',
       ],
@@ -1220,7 +1220,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
       ],
       testimonialCarousel: {
-        ariaLabel: 'Corca AXのお客様の声',
+        ariaLabel: 'Corcaのお客様の声',
         slideSelectionAriaLabel: 'お客様の声を選択',
         slideAriaTemplate: '{current} / {total} — {company}',
         viewSlideAriaTemplate: '{company}のお客様の声を見る',
@@ -1231,19 +1231,19 @@ export const axContent: Record<Lang, AxContent> = {
         replay: 'お客様の声を最初からもう一度再生',
         play: 'お客様の声の自動再生を開始',
       },
-      proofAriaLabel: 'Corca AXの活動実績',
+      proofAriaLabel: 'Corcaの活動実績',
       proof: {
-        organizations: { value: '20+', label: 'Corca AXと取り組んだ組織' },
-        participants: { value: '1,000+', label: 'Corca AXプログラム参加者' },
+        organizations: { value: '20+', label: 'Corcaと取り組んだ組織' },
+        participants: { value: '1,000+', label: 'CorcaのAXコンサルティングプログラム参加者' },
         completion: {
           value: ['最初の業務から、次の業務を実行できる', '組織の力を育てるところまで'],
-          label: 'Corca AXが定めるプロジェクト完了基準',
+          label: 'Corcaが定めるプロジェクト完了基準',
         },
       },
     },
     gap: {
       imageAlt: '同じ海を異なる速さで進むシャチの群れ',
-      eyebrow: '現場の悩みを知るCORCA AX',
+      eyebrow: '現場の悩みを知るCORCA',
       headline: [
         { before: 'AIの差を分けるのは、モデルではありません。' },
         { strong: '実務に乗せるまでの速さです。' },
@@ -1319,7 +1319,7 @@ export const axContent: Record<Lang, AxContent> = {
       },
     },
     method: {
-      eyebrow: '現場で答えを見つけたCORCA AX',
+      eyebrow: '現場で答えを見つけたCORCA',
       headline: [
         { before: 'AIで解くべき中核課題を見極め、' },
         { before: '最初の業務を共に変え、' },
@@ -1360,7 +1360,7 @@ export const axContent: Record<Lang, AxContent> = {
         '全社員がAIを学ぶだけでは終わりませんでした。',
         '実務の課題を選び、AIと共につくり、毎週失敗と成功を共有しながら成長してきました。',
       ],
-      cadenceAriaLabel: 'Corca AXの月次・週次・日次の運用リズム',
+      cadenceAriaLabel: 'Corcaの月次・週次・日次の運用リズム',
       cadence: [
         {
           frequency: '毎月開催',
@@ -1402,7 +1402,7 @@ export const axContent: Record<Lang, AxContent> = {
       ],
       body: '現場は判断基準と例外を知っています。Corcaは、その知識をAIが実務で使える形にします。',
       client: { label: 'お客様の現場', strengths: ['暗黙知', '判断基準', '責任'] },
-      corca: { label: 'Corca AX', strengths: ['AI設計', 'システム連携', '運用移行'] },
+      corca: { label: 'Corca', strengths: ['AI設計', 'システム連携', '運用移行'] },
     },
     champion: {
       eyebrow: 'FROM FIRST TO NEXT',
@@ -1412,7 +1412,7 @@ export const axContent: Record<Lang, AxContent> = {
       steps: [
         {
           step: '01',
-          kicker: 'Corca AXとペアワーク',
+          kicker: 'Corcaとペアワーク',
           headline: ['最初の業務を', '本番運用へ'],
           body: '判断基準と例外を共に構造化します。',
         },
@@ -1522,7 +1522,7 @@ export const axContent: Record<Lang, AxContent> = {
         {
           question: 'AI研修や一般的なコンサルティングとは何が違いますか？',
           answer:
-            '研修はツールの使い方を教えます。Corca AXは解くべき課題を選び、最初の業務を本番運用に乗せ、次の業務をお客様自身で展開できる状態をつくります。',
+            '研修はツールの使い方を教えます。Corcaは解くべき課題を選び、最初の業務を本番運用に乗せ、次の業務をお客様自身で展開できる状態をつくります。',
         },
         {
           question: 'どの業務から始めますか？',
@@ -1540,7 +1540,7 @@ export const axContent: Record<Lang, AxContent> = {
             'データ境界、アクセス権限、承認段階、例外処理、監査ログ、停止・復旧基準を業務設計に組み込みます。',
         },
         {
-          question: 'Corca AXの支援終了後も運用できますか？',
+          question: 'Corcaの支援終了後も運用できますか？',
           answer:
             'それがプロジェクトの完了条件です。最初の業務だけでなく、判断基準、スキル、運用方法も引き継ぎます。',
         },
@@ -1550,7 +1550,7 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: '明るい水面へ向かって浮上するシャチ',
       eyebrow: '20分のAX診断に向けたお打ち合わせ',
       question: ['解決したい業務は', 'ありますか？'],
-      answer: ['Corca AXが', 'ともに解決します。'],
+      answer: ['Corcaが', 'ともに解決します。'],
       fitLead: '次のような業務には、20分のAX診断が特に適しています',
       fitItems: ['繰り返しの多い業務', '判断基準が明確な業務', '現場の知識が重要な業務'],
       emailAriaLabel: 'メールで問い合わせる',
@@ -1625,14 +1625,14 @@ export const axContent: Record<Lang, AxContent> = {
   },
   zh: {
     brand: {
-      homeAriaLabel: '返回Corca AX页面顶部',
-      logoAlt: 'Corca AX',
+      homeAriaLabel: '返回AX咨询页面顶部',
+      logoAlt: 'Corca',
       partnerLogoAlt: 'OpenAI Partner Network Select Partner',
       brochureCta: '了解更多 | 宣传册',
-      brochureAriaLabel: '在新标签页中打开Corca AX宣传册',
+      brochureAriaLabel: '在新标签页中打开Corca的AX咨询宣传册',
       consultationCta: '预约咨询',
-      organizationsAriaLabel: '与Corca AX合作过的组织',
-      organizationLogosAriaLabel: '与Corca AX合作过的10家组织标识',
+      organizationsAriaLabel: '与Corca合作过的组织',
+      organizationLogosAriaLabel: '与Corca合作过的10家组织标识',
     },
     hero: {
       eyebrow: 'AX加速咨询',
@@ -1641,15 +1641,15 @@ export const axContent: Record<Lang, AxContent> = {
         { strong: '难的是持续创造' },
         { strong: '可复制的成果。' },
       ],
-      subtitle: ['让第一次成果带来下一次成果。', 'Corca AX与您共同打造这样的组织。'],
+      subtitle: ['让第一次成果带来下一次成果。', 'Corca与您共同打造这样的组织。'],
       consultationCta: '预约咨询',
-      exploreCta: '了解Corca AX咨询方法',
+      exploreCta: '了解Corca的AX咨询服务',
     },
     belief: {
-      eyebrow: 'CORCA AX致力于打造能够自主成长的组织',
+      eyebrow: 'CORCA致力于打造能够自主成长的组织',
       headline: [{ before: '工具可以买到。' }, { strong: '强大的组织，需要亲手打造。' }],
       body: [
-        'Corca AX不会给出答案后便转身离开。',
+        'Corca不会给出答案后便转身离开。',
         '我们与您的团队共同落地首个AX工作流程，',
         '并将自主解决下一个问题的能力留在组织内部。',
       ],
@@ -1672,7 +1672,7 @@ export const axContent: Record<Lang, AxContent> = {
         },
       ],
       testimonialCarousel: {
-        ariaLabel: 'Corca AX客户评价',
+        ariaLabel: 'Corca客户评价',
         slideSelectionAriaLabel: '选择客户评价',
         slideAriaTemplate: '第{current}条，共{total}条 — {company}',
         viewSlideAriaTemplate: '查看{company}的客户评价',
@@ -1683,19 +1683,19 @@ export const axContent: Record<Lang, AxContent> = {
         replay: '从头重新播放客户评价',
         play: '开始自动播放客户评价',
       },
-      proofAriaLabel: 'Corca AX服务成果',
+      proofAriaLabel: 'Corca的AX咨询服务成果',
       proof: {
-        organizations: { value: '20+', label: '与Corca AX合作过的组织' },
-        participants: { value: '1,000+', label: 'Corca AX项目参与者' },
+        organizations: { value: '20+', label: '与Corca合作过的组织' },
+        participants: { value: '1,000+', label: 'Corca的AX咨询项目参与者' },
         completion: {
           value: ['从落地首个工作流程，到具备', '自主推进下一个流程的能力'],
-          label: 'Corca AX定义的项目完成标准',
+          label: 'Corca定义的项目完成标准',
         },
       },
     },
     gap: {
       imageAlt: '一群虎鲸在同一片海域以不同速度前行',
-      eyebrow: '深入一线、理解真实难题的CORCA AX',
+      eyebrow: '深入一线、理解真实难题的CORCA',
       headline: [{ before: '拉开AI差距的不是模型，' }, { strong: '而是将AI投入实际工作的速度。' }],
       steps: [
         {
@@ -1764,7 +1764,7 @@ export const axContent: Record<Lang, AxContent> = {
       },
     },
     method: {
-      eyebrow: '从一线实践中找到答案的CORCA AX',
+      eyebrow: '从一线实践中找到答案的CORCA',
       headline: [
         { before: '找到真正值得用AI解决的问题，' },
         { before: '共同改造并落地第一个工作流程，' },
@@ -1799,7 +1799,7 @@ export const axContent: Record<Lang, AxContent> = {
         '我们没有止步于让所有员工学习AI。',
         '我们选择真实业务问题，与AI共同构建方案，并在每周分享失败与成功的过程中持续成长。',
       ],
-      cadenceAriaLabel: 'Corca AX按月、按周、每日的运营节奏',
+      cadenceAriaLabel: 'Corca按月、按周、每日的运营节奏',
       cadence: [
         {
           frequency: '每月开展',
@@ -1841,7 +1841,7 @@ export const axContent: Record<Lang, AxContent> = {
       ],
       body: '一线团队了解判断标准与例外情况。Corca让AI在真实业务中用上这些知识。',
       client: { label: '客户一线团队', strengths: ['隐性知识', '判断标准', '责任'] },
-      corca: { label: 'Corca AX', strengths: ['AI设计', '系统集成', '运营转型'] },
+      corca: { label: 'Corca', strengths: ['AI设计', '系统集成', '运营转型'] },
     },
     champion: {
       eyebrow: 'FROM FIRST TO NEXT',
@@ -1851,7 +1851,7 @@ export const axContent: Record<Lang, AxContent> = {
       steps: [
         {
           step: '01',
-          kicker: '与Corca AX结对协作',
+          kicker: '与Corca结对协作',
           headline: ['将首个工作流程', '投入实际运营'],
           body: '共同梳理判断标准与例外情况。',
         },
@@ -1961,7 +1961,7 @@ export const axContent: Record<Lang, AxContent> = {
         {
           question: '这与AI培训或一般咨询有什么不同？',
           answer:
-            '培训教的是工具用法。Corca AX会选择值得解决的问题，将首个工作流程投入实际运营，并让客户团队能够自主扩展下一个流程。',
+            '培训教的是工具用法。Corca会选择值得解决的问题，将首个工作流程投入实际运营，并让客户团队能够自主扩展下一个流程。',
         },
         {
           question: '应该从哪类工作开始？',
@@ -1979,7 +1979,7 @@ export const axContent: Record<Lang, AxContent> = {
             '我们会在工作流程设计中纳入数据边界、访问权限、审批层级、例外处理、审计记录以及停止与恢复标准。',
         },
         {
-          question: 'Corca AX离场后，我们还能继续运营吗？',
+          question: 'Corca离场后，我们还能继续运营吗？',
           answer:
             '这正是项目的完成标准。我们交接的不只是首个工作流程，还包括判断标准、技能与运营方法。',
         },
@@ -1989,7 +1989,7 @@ export const axContent: Record<Lang, AxContent> = {
       imageAlt: '一只虎鲸向明亮的水面上浮',
       eyebrow: '20分钟AX诊断沟通',
       question: ['您是否有想要解决的', '工作流程？'],
-      answer: ['Corca AX将', '与您一起解决。'],
+      answer: ['Corca将', '与您一起解决。'],
       fitLead: '如果工作具备以下特点，20分钟AX诊断尤其适合',
       fitItems: ['频繁重复', '判断标准明确', '高度依赖一线知识'],
       emailAriaLabel: '通过电子邮件联系我们',

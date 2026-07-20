@@ -823,6 +823,12 @@
   font-weight: 800;
 }
 
+html[lang^='ja'] .ax-page .hero-copy h1 {
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
 .ax-page .method-step h3 {
   margin: 0;
   color: var(--ink);
@@ -2537,6 +2543,17 @@
   .ax-page .decision-map,
   .ax-page .decision-total {
     justify-items: start;
+  }
+}
+
+@media (min-width: 721px) and (max-height: 720px) {
+  .ax-page .hero {
+    min-height: 654px;
+  }
+
+  .ax-page .hero-copy.grid-shell {
+    top: 10px;
+    bottom: auto;
   }
 }
 

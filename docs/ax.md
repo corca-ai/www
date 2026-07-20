@@ -1,14 +1,17 @@
 ---
-title: Corca AX page
+title: Corca AX consulting page
 ---
 
-# Corca AX page
+# Corca's AX consulting page
 
-Corca AX is a localized campaign page served from the shared Corca website at
-`/ax`. Korean is the default locale; English, Japanese and Simplified Chinese
-use `/en/ax`, `/ja/ax` and `/zh/ax`. The page is part of the normal Astro build,
-so it inherits the shared header, footer, canonical URLs, language switcher,
-analytics and deployment flow from `BaseLayout.astro`.
+Corca's AX consulting campaign is served from the shared Corca website at `/ax`.
+Korean is the default locale; English, Japanese and Simplified Chinese use
+`/en/ax`, `/ja/ax` and `/zh/ax`. Visible company references on these four AX
+routes use `Corca`; service references use the localized equivalent of “Corca's
+AX consulting.” Other website routes keep their own approved copy. The page is
+part of the normal Astro build, so it inherits the shared header, footer,
+canonical URLs, language switcher, analytics and deployment flow from
+`BaseLayout.astro`.
 
 ## Ownership map
 
@@ -52,6 +55,12 @@ seconds after `load` or the first interaction. Carousel images are only
 preloaded after their carousel enters the viewport. Desktop behavior and other
 routes keep their existing loading strategy.
 
+At desktop and tablet widths above 720px, viewports no taller than 720px anchor
+the hero copy 10px from the top of the hero instead of from the bottom. The hero
+keeps a 654px minimum height so the heading stays visible and the remaining CTA
+content can be reached by scrolling without shrinking the approved typography.
+The mobile layout remains independent of this height rule.
+
 ## Update copy or assets
 
 All visible AX copy is represented in `content.ts` for all four locales. Keep
@@ -82,7 +91,7 @@ submissions:
 | --- | --- | --- |
 | `TURNSTILE_SECRET_KEY` | yes | Server-side Turnstile verification secret. |
 | `RESEND_API_KEY` | yes | Resend API credential used for delivery. |
-| `RESEND_FROM` | recommended | Verified sender, for example `Corca AX <ax@corca.ai>`. |
+| `RESEND_FROM` | recommended | Verified sender, for example `Corca <ax@corca.ai>`. |
 | `AX_CONSULTATION_TO` | optional | Comma-separated recipients; defaults to the AX contact owner. |
 
 Set `PUBLIC_TURNSTILE_SITE_KEY` in the Astro build environment so the static page

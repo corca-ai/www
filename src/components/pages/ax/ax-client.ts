@@ -463,6 +463,7 @@ function initializeHeroVideo(page: HTMLElement) {
   media.dataset.heroInitialized = 'true';
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileViewport = window.matchMedia('(max-width: 720px)');
   let visible = false;
   let loaded = false;
 
@@ -479,8 +480,16 @@ function initializeHeroVideo(page: HTMLElement) {
     }
   };
 
+  const unload = () => {
+    stopAndReset();
+    if (!loaded) return;
+    source.removeAttribute('src');
+    video.load();
+    loaded = false;
+  };
+
   const play = () => {
-    if (!visible || document.hidden || reducedMotion.matches) {
+    if (!visible || document.hidden || reducedMotion.matches || mobileViewport.matches) {
       stopAndReset();
       return;
     }
@@ -518,6 +527,10 @@ function initializeHeroVideo(page: HTMLElement) {
   });
   reducedMotion.addEventListener('change', () => {
     if (reducedMotion.matches) stopAndReset();
+    else play();
+  });
+  mobileViewport.addEventListener('change', () => {
+    if (mobileViewport.matches) unload();
     else play();
   });
 }

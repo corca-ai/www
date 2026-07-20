@@ -22,6 +22,7 @@ analytics and deployment flow from `BaseLayout.astro`.
 | Image and video path registry | `src/components/pages/ax/assetPaths.ts` |
 | Images and logos | `public/images/pages/ax/` |
 | Hero video | `public/video/ax/` |
+| Mobile Pretendard subsets | `public/fonts/pretendard-mobile/` |
 | SEO metadata and route registration | `src/i18n/pageMeta.ts` and `src/staticPages.ts` |
 | Service structured data | `src/i18n/structuredData.ts` |
 | Consultation endpoint | `worker/axConsultations.ts` |
@@ -29,6 +30,12 @@ analytics and deployment flow from `BaseLayout.astro`.
 The page deliberately does not render its own global header or footer. Add or
 change shared navigation in the normal site sources; keep AX-only section links
 inside `Ax.astro`.
+
+At widths up to 720px, AX uses the self-hosted Pretendard variable dynamic
+subset instead of preloading the full variable font. Keep the subset stylesheet,
+its `unicode-range` declarations and all referenced WOFF2 slices together. The
+desktop font path remains `/fonts/PretendardVariable.woff2`; do not make the
+mobile optimization global without measuring the other routes first.
 
 ## Update copy or assets
 

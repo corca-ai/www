@@ -14,6 +14,7 @@
   --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-reveal: 820ms;
   --page-progress: 0%;
+  --font-ax: "Pretendard Variable";
   width: 100%;
   position: relative;
   isolation: isolate;
@@ -34,7 +35,7 @@
   margin: 0;
   background: #000;
   color: #fff;
-  font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-ax), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   word-break: keep-all;
@@ -53,7 +54,13 @@
 .ax-page h1,
 .ax-page h2,
 .ax-page h3 {
-  font-family: "Pretendard Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-ax), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+@media (max-width: 720px) {
+  .ax-page {
+    --font-ax: "Pretendard AX Mobile";
+  }
 }
 
 .ax-page [id] {

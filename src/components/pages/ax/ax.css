@@ -2550,6 +2550,14 @@
     height: 100%;
   }
 
+  .ax-page .hero-video {
+    display: none;
+  }
+
+  .ax-page .hero-media.is-video-playing .hero-poster {
+    opacity: 1;
+  }
+
   .ax-page .hero-copy.grid-shell {
     width: calc(100% - 32px);
     top: auto;

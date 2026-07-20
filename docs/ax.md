@@ -37,6 +37,13 @@ its `unicode-range` declarations and all referenced WOFF2 slices together. The
 desktop font path remains `/fonts/PretendardVariable.woff2`; do not make the
 mobile optimization global without measuring the other routes first.
 
+The mobile AX critical path also avoids initializing the hero video and scroll
+parallax, leaving the lightweight poster as the stable LCP element. Google
+Analytics is queued immediately but its network script is delayed until five
+seconds after `load` or the first interaction. Carousel images are only
+preloaded after their carousel enters the viewport. Desktop behavior and other
+routes keep their existing loading strategy.
+
 ## Update copy or assets
 
 All visible AX copy is represented in `content.ts` for all four locales. Keep

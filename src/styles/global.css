@@ -67,6 +67,17 @@ body {
      set their own tighter leading; multi-line paragraphs set an explicit value. */
   line-height: 1.4;
 }
+
+/* The AX campaign keeps Pretendard on mobile without downloading the 2 MB
+   all-glyph variable file. Its mobile-only stylesheet defines this family as
+   unicode-range slices, so the browser fetches only glyphs used by the page. */
+@media (max-width: 720px) {
+  body[data-page="ax"] {
+    --font-sans: "Pretendard AX Mobile", Pretendard, -apple-system,
+      BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+      "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+}
 :lang(ja) {
   font-family: var(--font-ja);
 }

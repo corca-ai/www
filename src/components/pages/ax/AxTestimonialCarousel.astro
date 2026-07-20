@@ -5,7 +5,8 @@ interface TestimonialItem {
   company: string;
   source: string;
   logoAlt: string;
-  logo: string;
+  logoWebp: string;
+  logoPng: string;
   logoWidth: number;
   logoHeight: number;
 }
@@ -80,15 +81,18 @@ const interpolate = (template: string, values: Record<string, string | number>) 
               }”
             </blockquote>
             <figcaption>
-              <img
-                class="testimonial-logo"
-                src={item.logo}
-                width={item.logoWidth}
-                height={item.logoHeight}
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
+              <picture class="testimonial-logo-frame">
+                <source type="image/webp" srcset={item.logoWebp} />
+                <img
+                  class="testimonial-logo"
+                  src={item.logoPng}
+                  width={item.logoWidth}
+                  height={item.logoHeight}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
               <span><strong>{item.company}</strong><small>{item.source}</small></span>
             </figcaption>
           </figure>

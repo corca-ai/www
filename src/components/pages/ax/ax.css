@@ -527,8 +527,13 @@
   width: auto;
   height: 30px;
   display: block;
-  flex: 0 0 auto;
   object-fit: contain;
+}
+
+.ax-page .testimonial-logo-frame {
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
 }
 
 .ax-page .proof-strip {
@@ -629,9 +634,14 @@
   width: auto;
   max-width: none;
   height: var(--logo-height);
-  flex: 0 0 auto;
   object-fit: contain;
   user-select: none;
+}
+
+.ax-page .logo-marquee__item {
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
 }
 
 @keyframes logo-marquee-loop {

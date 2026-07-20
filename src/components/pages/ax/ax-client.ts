@@ -104,10 +104,11 @@ function initializeCarousel(root: HTMLElement) {
   };
 
   const preloadNextImage = () => {
+    if (!isInViewport) return;
     const nextImage = slides[activeIndex + 1]?.querySelector<HTMLImageElement>('img');
-    if (!nextImage) return;
+    if (!nextImage?.currentSrc) return;
     const image = new Image();
-    image.src = nextImage.currentSrc || nextImage.src;
+    image.src = nextImage.currentSrc;
   };
 
   const renderSelection = () => {
@@ -281,6 +282,7 @@ function initializeCarousel(root: HTMLElement) {
   const intersectionObserver = new IntersectionObserver(
     ([entry]) => {
       isInViewport = Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.3);
+      if (isInViewport) preloadNextImage();
       startAnimation();
     },
     { threshold: [0, 0.3, 0.6] },
@@ -459,11 +461,25 @@ function initializeHeroVideo(page: HTMLElement) {
   const media = page.querySelector<HTMLElement>('[data-hero-media]');
   const video = media?.querySelector<HTMLVideoElement>('[data-hero-video]');
   const source = video?.querySelector<HTMLSourceElement>('source[data-src]');
-  if (!media || !video || !source || media.dataset.heroInitialized === 'true') return;
-  media.dataset.heroInitialized = 'true';
-
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!media || !video || !source || media.dataset.heroInitialized) return;
   const mobileViewport = window.matchMedia('(max-width: 720px)');
+
+  if (mobileViewport.matches) {
+    media.dataset.heroInitialized = 'mobile-poster';
+    media.classList.remove('is-video-playing');
+    media.classList.add('is-video-reset');
+    const initializeOnDesktop = () => {
+      if (mobileViewport.matches) return;
+      mobileViewport.removeEventListener('change', initializeOnDesktop);
+      delete media.dataset.heroInitialized;
+      initializeHeroVideo(page);
+    };
+    mobileViewport.addEventListener('change', initializeOnDesktop);
+    return;
+  }
+
+  media.dataset.heroInitialized = 'true';
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let visible = false;
   let loaded = false;
 
@@ -503,7 +519,7 @@ function initializeHeroVideo(page: HTMLElement) {
   };
 
   video.addEventListener('playing', () => {
-    if (!visible || document.hidden || reducedMotion.matches) {
+    if (!visible || document.hidden || reducedMotion.matches || mobileViewport.matches) {
       stopAndReset();
       return;
     }
@@ -536,7 +552,22 @@ function initializeHeroVideo(page: HTMLElement) {
 }
 
 function initializeScrollMotion(page: HTMLElement) {
-  if (page.dataset.scrollMotionInitialized === 'true') return;
+  if (page.dataset.scrollMotionInitialized) return;
+
+  const mobileViewport = window.matchMedia('(max-width: 720px)');
+  if (mobileViewport.matches) {
+    page.dataset.scrollMotionInitialized = 'mobile-static';
+    page.dataset.scrollMotion = 'off';
+    const initializeOnDesktop = () => {
+      if (mobileViewport.matches) return;
+      mobileViewport.removeEventListener('change', initializeOnDesktop);
+      delete page.dataset.scrollMotionInitialized;
+      initializeScrollMotion(page);
+    };
+    mobileViewport.addEventListener('change', initializeOnDesktop);
+    return;
+  }
+
   page.dataset.scrollMotionInitialized = 'true';
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -583,6 +614,12 @@ function initializeScrollMotion(page: HTMLElement) {
 
   const render = (immediate = false) => {
     frame = 0;
+    if (mobileViewport.matches) {
+      page.dataset.scrollMotion = 'off';
+      easedScroll = window.scrollY;
+      resetMotion();
+      return;
+    }
     const viewportHeight = Math.max(window.innerHeight, 1);
     const pageRange = Math.max(document.documentElement.scrollHeight - viewportHeight, 1);
     const actualScroll = window.scrollY;
@@ -719,6 +756,7 @@ function initializeScrollMotion(page: HTMLElement) {
   window.addEventListener('resize', scheduleMeasure, { passive: true });
   window.addEventListener('load', scheduleMeasure, { once: true });
   reducedMotion.addEventListener('change', scheduleMeasure);
+  mobileViewport.addEventListener('change', scheduleMeasure);
   void document.fonts?.ready.then(scheduleMeasure);
   measure();
 }

@@ -3049,6 +3049,12 @@
     transform: scale(1.04) !important;
   }
 
+  .ax-page .hero-poster img {
+    transform: none !important;
+    backface-visibility: visible;
+    will-change: auto !important;
+  }
+
   .ax-page .hero-poster {
     opacity: 1 !important;
     transition: none !important;

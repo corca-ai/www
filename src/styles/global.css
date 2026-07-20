@@ -82,13 +82,25 @@ body {
 }
 
 /* The AX campaign keeps Pretendard on mobile without downloading the 2 MB
-   all-glyph variable file. Its mobile-only stylesheet defines this family as
-   unicode-range slices, so the browser fetches only glyphs used by the page. */
+   all-glyph variable file. CommonHead defines one language-specific subset
+   inline, avoiding the old 92-slice stylesheet and its request fan-out. */
 @media (max-width: 720px) {
   body[data-page="ax"] {
     --font-sans: "Pretendard AX Mobile", Pretendard, -apple-system,
       BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
       "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+
+  html:lang(ja) body[data-page="ax"] {
+    --font-ja: "Pretendard AX Mobile", Meiryo, "Hiragino Kaku Gothic ProN",
+      sans-serif;
+  }
+
+  html:lang(zh-CN) body[data-page="ax"] {
+    --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+      "Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif;
+    --font-zh: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+      "Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif;
   }
 }
 :lang(ja) {

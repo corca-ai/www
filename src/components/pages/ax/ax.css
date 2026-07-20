@@ -61,6 +61,11 @@
   .ax-page {
     --font-ax: "Pretendard AX Mobile";
   }
+
+  .ax-page:lang(zh) {
+    --font-ax: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+      "Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif;
+  }
 }
 
 .ax-page [id] {

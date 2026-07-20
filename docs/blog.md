@@ -38,16 +38,22 @@ Assets serves the files under `public/blog/` directly after the Astro build
 places them in `dist/blog/`.
 
 During `pnpm build`, `scripts/sync-blog-shell-assets.js` copies each locale's
-rendered `src/components/Header.astro` output into every deployable blog page,
-then syncs the current BaseLayout CSS and injects the GA4 measurement ID before
-`public/blog/app.js` starts. The public source HTML intentionally remains a
-static content-generation shell with no measurement ID; the production header,
-CSS and analytics configuration are single-sourced in the Astro site and are
-applied to generated build output.
+rendered `src/components/Header.astro`, `src/components/Footer.astro` and
+`src/components/CommonHead.astro` output into every deployable blog page. It
+also syncs the current BaseLayout CSS and injects the GA4 measurement ID before
+`public/blog/app.js` starts. The shared head block owns the site favicon, PWA
+manifest and application metadata, publisher metadata and common font preload;
+page-specific blog SEO and feed metadata stays in the static blog pages. The
+public source HTML intentionally remains a static content-generation shell with
+no measurement ID; the production shell, common head, CSS and analytics
+configuration are single-sourced in the Astro site and applied to generated
+build output.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
   the corresponding main-site navigation language.
+- Main-site Blog navigation preserves the active locale, so English, Japanese
+  and Chinese pages link to `/en/blog`, `/ja/blog` and `/zh/blog` respectively.
 - `/blog/<slug>` loads the corresponding static article page.
 - `/en/blog/<slug>`, `/ja/blog/<slug>` and `/zh/blog/<slug>` provide
   localized-shell aliases for public articles.

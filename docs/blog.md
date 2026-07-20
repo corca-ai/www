@@ -37,15 +37,23 @@ Astro does not define `/blog` routes in `src/pages/`. Cloudflare Workers Static
 Assets serves the files under `public/blog/` directly after the Astro build
 places them in `dist/blog/`.
 
-During `pnpm build`, `scripts/sync-blog-shell-assets.js` reads the GA4
-measurement ID rendered by `src/layouts/BaseLayout.astro` and injects it into
-the deployable blog pages before `public/blog/app.js` starts. The public source
-HTML intentionally has no measurement ID, so the production ID remains
-single-sourced and analytics is enabled only in generated build output.
+During `pnpm build`, `scripts/sync-blog-shell-assets.js` copies each locale's
+rendered `src/components/Header.astro`, `src/components/Footer.astro` and
+`src/components/CommonHead.astro` output into every deployable blog page. It
+also syncs the current BaseLayout CSS and injects the GA4 measurement ID before
+`public/blog/app.js` starts. The shared head block owns the site favicon, PWA
+manifest and application metadata, publisher metadata and common font preload;
+page-specific blog SEO and feed metadata stays in the static blog pages. The
+public source HTML intentionally remains a static content-generation shell with
+no measurement ID; the production shell, common head, CSS and analytics
+configuration are single-sourced in the Astro site and applied to generated
+build output.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
   the corresponding main-site navigation language.
+- Main-site Blog navigation preserves the active locale, so English, Japanese
+  and Chinese pages link to `/en/blog`, `/ja/blog` and `/zh/blog` respectively.
 - `/blog/<slug>` loads the corresponding static article page.
 - `/en/blog/<slug>`, `/ja/blog/<slug>` and `/zh/blog/<slug>` provide
   localized-shell aliases for public articles.
@@ -163,9 +171,11 @@ When changing blog files, keep these invariants:
 
 - Generated blog links and asset URLs must start with `/blog/`.
 - The public blog pages should keep the main website header and footer.
-- Locale alias pages under `public/en/blog/`, `public/ja/blog/` and
-  `public/zh/blog/` should keep their language switcher links pointed at
-  `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`.
+- Header navigation changes belong in `src/components/Header.astro`; the build
+  sync applies that component to blog list, article and localized alias pages.
+- Locale alias list and 404 pages should keep their language switcher links
+  pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
+  should point at the same slug under each available locale alias.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
 - Analytics must initialize independently of the list UI because static article

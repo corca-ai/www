@@ -173,6 +173,10 @@ When changing blog files, keep these invariants:
 - The public blog pages should keep the main website header and footer.
 - Header navigation changes belong in `src/components/Header.astro`; the build
   sync applies that component to blog list, article and localized alias pages.
+- Blog-specific element resets and typography must use low-specificity
+  `:where(#main)` scoping so they neither leak into the shared header/footer nor
+  override more specific blog component styles. Document-level primitives such
+  as page background and overflow may remain global.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

@@ -27,12 +27,13 @@ const carouselItems = c.bottleneck.cards.map((card) => ({
   image: axAssetPaths.carousel[card.id],
 }));
 const testimonialLogoDimensions = {
-  tyche: [576, 192],
-  kyowon: [238, 95],
+  tyche: [180, 60],
+  kyowon: [150, 60],
 } as const;
 const testimonialItems = c.belief.testimonials.map((testimonial) => ({
   ...testimonial,
-  logo: axAssetPaths.logos[testimonial.id],
+  logoWebp: axAssetPaths.logos[testimonial.id].webp,
+  logoPng: axAssetPaths.logos[testimonial.id].png,
   logoWidth: testimonialLogoDimensions[testimonial.id][0],
   logoHeight: testimonialLogoDimensions[testimonial.id][1],
 }));
@@ -89,11 +90,11 @@ const formCopy = {
   },
 };
 const logoDimensions = [
-  [572, 187], [428, 171], [638, 171], [721, 177], [693, 124],
-  [529, 139], [619, 153], [682, 196], [761, 194], [512, 189],
+  [184, 60], [150, 60], [224, 60], [244, 60], [335, 60],
+  [228, 60], [243, 60], [209, 60], [235, 60], [163, 60],
 ] as const;
-const organizationLogos = axAssetPaths.logos.organizations.map((src, index) => ({
-  src,
+const organizationLogos = axAssetPaths.logos.organizations.map((asset, index) => ({
+  ...asset,
   width: logoDimensions[index]?.[0] ?? 600,
   height: logoDimensions[index]?.[1] ?? 180,
 }));
@@ -111,6 +112,8 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     />
     <div class="scene-media hero-media is-video-reset" data-hero-media aria-hidden="true">
       <picture class="hero-poster">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.hero.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.hero.mobileWebp} />
         <source type="image/avif" srcset={axAssetPaths.scenes.hero.wideAvif} />
         <source type="image/webp" srcset={axAssetPaths.scenes.hero.wideWebp} />
         <img src={axAssetPaths.scenes.hero.wideWebp} width="1586" height="992" alt="" fetchpriority="high" loading="eager" />
@@ -163,7 +166,10 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         {[0, 1].map((copyIndex) => (
           <div class="logo-marquee__group" data-copy={copyIndex} aria-hidden="true">
             {organizationLogos.map((logo, index) => (
-              <img class="logo-marquee__logo" src={logo.src} width={logo.width} height={logo.height} alt="" loading="lazy" decoding="async" draggable="false" data-logo-index={index + 1} />
+              <picture class="logo-marquee__item">
+                <source type="image/webp" srcset={logo.webp} />
+                <img class="logo-marquee__logo" src={logo.png} width={logo.width} height={logo.height} alt="" loading="lazy" decoding="async" draggable="false" data-logo-index={index + 1} />
+              </picture>
             ))}
           </div>
         ))}

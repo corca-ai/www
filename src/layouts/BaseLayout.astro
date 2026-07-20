@@ -105,14 +105,43 @@ const graph = {
     <meta name="generator" content={Astro.generator} />
     <CommonHead lang={lang} isAxPage={isAxPage} />
 
-    <!-- Google tag (gtag.js) -->
-    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
-    <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+    <!-- Google tag (gtag.js). AX mobile delays the network request until
+         after load so analytics cannot compete with the LCP poster. -->
+    <script is:inline define:vars={{ GA_MEASUREMENT_ID, isAxPage }}>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', GA_MEASUREMENT_ID);
+
+      const loadGoogleTag = () => {
+        if (document.querySelector('script[data-google-tag]')) return;
+        const script = document.createElement('script');
+        script.async = true;
+        script.dataset.googleTag = 'true';
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.append(script);
+      };
+
+      const deferGoogleTag = isAxPage && window.matchMedia('(max-width: 720px)').matches;
+      if (!deferGoogleTag) {
+        loadGoogleTag();
+      } else {
+        const interactionEvents = ['pointerdown', 'keydown', 'touchstart'];
+        const loadOnInteraction = () => {
+          interactionEvents.forEach((eventName) =>
+            window.removeEventListener(eventName, loadOnInteraction),
+          );
+          loadGoogleTag();
+        };
+        interactionEvents.forEach((eventName) =>
+          window.addEventListener(eventName, loadOnInteraction, { passive: true, once: true }),
+        );
+        window.addEventListener(
+          'load',
+          () => window.setTimeout(loadGoogleTag, 5000),
+          { once: true },
+        );
+      }
     </script>
 
     <title>{title}</title>

@@ -716,13 +716,14 @@ async function localizePostRecord(baseRecord, locale) {
     slug: baseRecord.post.slug,
     content: parsed.articleHtml,
   });
+  const localizedCover = normalizeCover(parsed.metadata.cover);
   const post = {
     ...baseRecord.post,
     title,
     description,
     tags: localizePostTags(tags, locale),
     author: String(parsed.metadata.author || baseRecord.post.author || defaultAuthor).trim(),
-    cover: normalizeCover(parsed.metadata.cover || baseRecord.post.cover),
+    cover: localizedCover === defaultCover ? baseRecord.post.cover : localizedCover,
     wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
     language: locale,
     coverAlt: String(parsed.metadata.coverAlt || baseRecord.post.coverAlt || '').trim(),

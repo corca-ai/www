@@ -9,6 +9,7 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const fixtureRoot = await mkdtemp(join(tmpdir(), 'corca-www-admin-post-change-'));
 const workDir = join(fixtureRoot, 'www');
 const slug = 'admin-edit-fixture';
+const fallbackThumbnail = 'assets/admin-posts/adjacent-thumbnail-fixture-222222222222.png';
 const tinyPngBase64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
 
@@ -111,7 +112,16 @@ This fixture intentionally includes enough article copy to pass the public post 
       coverAlt: 'Adjacent cover alt',
       section: '문라이트',
     },
+    bodyImages: [
+      {
+        contentBase64: tinyPngBase64,
+        fileName: 'adjacent-thumbnail-fixture-222222222222.png',
+        mime: 'image/png',
+      },
+    ],
     contentBase64: toBase64(`# Adjacent Thumbnail Fixture
+
+![Adjacent thumbnail](assets/admin-posts/adjacent-thumbnail-fixture-222222222222.png)
 
 This adjacent fixture gives the generated static page a previous-post card so the thumbnail pagination markup can be verified. The body intentionally includes enough copy to pass the public post generator while keeping the fixture focused on adjacent post navigation.`),
   });
@@ -133,6 +143,7 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.equal(index[0].title, 'Admin Markdown Updated');
   assert.equal(index[0].cover, metadata.cover);
   assert.equal(index[1].slug, 'adjacent-thumbnail-fixture');
+  assert.equal(index[1].cover, fallbackThumbnail);
   assert.deepEqual(indexAlias, index);
 
   const staticPage = await readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8');
@@ -173,9 +184,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
     'utf8',
   );
   assert.doesNotMatch(noTocStaticPage, /<section class="toc-section"/);
-  assert.match(
-    staticPage,
-    /<img src="\/blog\/assets\/editorial-cover\.jpg" alt="" loading="lazy" decoding="async">/,
+  assert.ok(
+    staticPage.includes(
+      `<img src="/blog/${fallbackThumbnail}" alt="" loading="lazy" decoding="async">`,
+    ),
   );
   assert.match(staticPage, /<span class="related-title">Adjacent Thumbnail Fixture<\/span>/);
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
@@ -217,6 +229,19 @@ This adjacent fixture gives the generated static page a previous-post card so th
     /Sitemap: https:\/\/www\.corca\.ai\/sitemap\.xml/,
   );
 
+  const explicitLocaleCoverPath = join(
+    workDir,
+    `public/blog/admin/post-translations/en/${slug}.html`,
+  );
+  const explicitLocaleCoverSource = await readFile(explicitLocaleCoverPath, 'utf8');
+  const explicitLocaleCoverOverride = explicitLocaleCoverSource.replace(
+    /("cover":\s*)"[^"]+"/,
+    `$1"${fallbackThumbnail}"`,
+  );
+  assert.notEqual(explicitLocaleCoverOverride, explicitLocaleCoverSource);
+  await writeFile(explicitLocaleCoverPath, explicitLocaleCoverOverride);
+  runAdminChange({ action: 'sync' });
+
   for (const locale of ['en', 'ja', 'zh']) {
     const translationSource = await readFile(
       join(workDir, `public/blog/admin/post-translations/${locale}/${slug}.html`),
@@ -233,11 +258,34 @@ This adjacent fixture gives the generated static page a previous-post card so th
     assert.equal(localeIndex.length, 2);
     assert.equal(localeIndex[0].slug, slug);
     assert.match(localeIndex[0].title, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
+    const expectedExplicitCover = locale === 'en' ? fallbackThumbnail : metadata.cover;
+    assert.equal(localeIndex[0].cover, expectedExplicitCover);
     assert.equal(localeIndex[1].slug, 'adjacent-thumbnail-fixture');
+    assert.equal(localeIndex[1].cover, fallbackThumbnail);
     assert.deepEqual(localeIndexAlias, localeIndex);
-    assert.match(
-      await readFile(join(workDir, `public/${locale}/blog/${slug}/index.html`), 'utf8'),
-      /Admin Markdown Updated/,
+    const localeStaticPage = await readFile(
+      join(workDir, `public/${locale}/blog/${slug}/index.html`),
+      'utf8',
+    );
+    const expectedExplicitCoverUrl = `https://www.corca.ai/blog/${expectedExplicitCover}`;
+    assert.match(localeStaticPage, /Admin Markdown Updated/);
+    assert.ok(
+      localeStaticPage.includes(`<meta property="og:image" content="${expectedExplicitCoverUrl}">`),
+    );
+    assert.ok(
+      localeStaticPage.includes(
+        `<meta name="twitter:image" content="${expectedExplicitCoverUrl}">`,
+      ),
+    );
+    assert.ok(localeStaticPage.includes(`"image":"${expectedExplicitCoverUrl}"`));
+    assert.ok(localeStaticPage.includes(`"thumbnailUrl":"${expectedExplicitCoverUrl}"`));
+    assert.ok(
+      (
+        await readFile(
+          join(workDir, `public/${locale}/blog/adjacent-thumbnail-fixture/index.html`),
+          'utf8',
+        )
+      ).includes(`/blog/${fallbackThumbnail}`),
     );
   }
 

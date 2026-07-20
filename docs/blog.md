@@ -172,6 +172,9 @@ When changing blog files, keep these invariants:
   pages load `public/blog/app.js` without the blog-index DOM.
 - `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
   sitemap should be updated together.
+- Localized post records inherit the resolved Korean cover when translation
+  metadata contains the default cover; only a non-default localized cover may
+  override it.
 - Notion-driven post changes should be checked with `npm run notion:check` when
   changing the workflow or scripts.
 - Run the normal project gates from [development](development.md) before

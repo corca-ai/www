@@ -1,6 +1,4 @@
 ---
-import { Image } from 'astro:assets';
-import logoWhite from '../assets/images/logo-white.png';
 import { useTranslations } from '../i18n/utils';
 import { contact, type Lang } from '../i18n/ui';
 
@@ -13,7 +11,14 @@ const t = useTranslations(lang);
 
 <footer class="bg-footer text-white/70">
   <div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left">
-    <Image src={logoWhite} alt="Corca" width={120} height={35} densities={[1, 2, 3]} class="h-[34px] w-auto opacity-90" />
+    <!-- Same corca-logo.svg as the header, recolored via CSS mask (an <img> can't
+         restyle an external SVG's fill; the mask paints the logo shape in #666). -->
+    <span
+      role="img"
+      aria-label="Corca"
+      class="block h-[24px] w-[86px]"
+      style="background-color:#666666; -webkit-mask:url('/corca-logo.svg') no-repeat center / contain; mask:url('/corca-logo.svg') no-repeat center / contain;"
+    ></span>
     <address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]">
       <p>{t.footer.address}</p>
       <p>

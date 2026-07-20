@@ -6,6 +6,8 @@ import { localeTag, ogLocale, locales, defaultLang, contact, type Lang } from '.
 import { absoluteUrl } from '../i18n/utils';
 import { SITE_ORIGIN } from '../site';
 
+const GA_MEASUREMENT_ID = 'G-SZY1B11LXS';
+
 interface Props {
   lang: Lang;
   title: string;
@@ -60,6 +62,7 @@ const feeds = [
   { title: 'Corca Blog RSS', type: 'application/rss+xml', href: '/rss' },
   ...extraFeeds,
 ];
+const isAxPage = basePath === '/ax';
 
 // One JSON-LD @graph per page: the site-wide Organization + WebSite (referenced
 // by @id from page nodes) plus any page-specific nodes passed in via `jsonLd`.
@@ -109,13 +112,13 @@ const graph = {
     <meta name="publisher" content={publisherName} />
 
     <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-SZY1B11LXS"></script>
-    <script is:inline>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+    <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-SZY1B11LXS');
+      gtag('config', GA_MEASUREMENT_ID);
     </script>
 
     <title>{title}</title>
@@ -151,13 +154,22 @@ const graph = {
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={imageAlt} />
 
-    <!-- Preload the primary variable font -->
+    <!-- AX mobile uses a unicode-range dynamic subset; desktop and all other
+         pages keep the existing full Pretendard preload. -->
+    {isAxPage && (
+      <link
+        rel="stylesheet"
+        href="/fonts/pretendard-mobile/pretendard-mobile.css"
+        media="(max-width: 720px)"
+      />
+    )}
     <link
       rel="preload"
       href="/fonts/PretendardVariable.woff2"
       as="font"
       type="font/woff2"
       crossorigin
+      media={isAxPage ? '(min-width: 721px)' : undefined}
     />
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(graph)} />
@@ -167,7 +179,7 @@ const graph = {
          visible). -->
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
-  <body>
+  <body data-page={isAxPage ? 'ax' : undefined}>
     <a
       href="#main"
       class="sr-only rounded-lg bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]"

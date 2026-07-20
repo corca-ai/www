@@ -31,8 +31,9 @@ const { lang, id, basePath } = Astro.props;
 // A product detail page (/products/<slug>) resolves from the product registry;
 // otherwise `id` is one of the static pages (guaranteed by getStaticPaths).
 const product = products.find((p) => `/products/${p.slug}` === basePath) ?? null;
-const meta = product ? product.meta[lang] : staticPages[id as StaticId].meta(lang);
-const Component = product ? product.Page : staticPages[id as StaticId].Component;
+const staticPage = product ? null : staticPages[id as StaticId];
+const meta = product ? product.meta[lang] : staticPage!.meta(lang);
+const Component = product ? product.Page : staticPage!.Component;
 
 // Per-page schema.org nodes (merged into BaseLayout's @graph): a Home →
 // …category… → page breadcrumb, plus SoftwareApplication for products with app data.
@@ -50,8 +51,21 @@ if (id !== 'home') {
   jsonLd.push(breadcrumbLd(site, lang, crumbs));
 }
 if (product?.app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, product.app));
+if (staticPage?.jsonLd) jsonLd.push(...staticPage.jsonLd(site, lang, meta));
+const ogImage = staticPage?.ogImage;
+const ogImageAlt = staticPage?.ogImageAlt?.(lang);
+const socialImageProps = ogImage
+  ? { ogImage, ...(ogImageAlt ? { ogImageAlt } : {}) }
+  : {};
 ---
 
-<BaseLayout lang={lang} title={meta.title} description={meta.description} basePath={basePath} jsonLd={jsonLd}>
+<BaseLayout
+  lang={lang}
+  title={meta.title}
+  description={meta.description}
+  basePath={basePath}
+  jsonLd={jsonLd}
+  {...socialImageProps}
+>
   <Component lang={lang} />
 </BaseLayout>

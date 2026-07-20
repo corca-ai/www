@@ -1,0 +1,152 @@
+---
+interface Topic {
+  id: string;
+  label: string;
+}
+
+interface FormErrors {
+  [code: string]: string | undefined;
+  validation: string;
+  network: string;
+  unknown: string;
+  BOT_CHECK_FAILED: string;
+  BOT_CHECK_NOT_CONFIGURED: string;
+  DELIVERY_NOT_CONFIGURED: string;
+  DELIVERY_FAILED: string;
+  INVALID_REQUEST?: string;
+  RATE_LIMITED?: string;
+}
+
+interface FormCopy {
+  formLabel: string;
+  requiredLabel: string;
+  nameLabel: string;
+  namePlaceholder: string;
+  emailLabel: string;
+  emailPlaceholder: string;
+  phoneLabel: string;
+  phonePlaceholder: string;
+  topicLabel: string;
+  topicPlaceholder: string;
+  messageLabel: string;
+  optionalLabel: string;
+  messagePlaceholder: string;
+  honeypotLabel: string;
+  privacyConsent: string;
+  privacyPolicyLabel: string;
+  submit: string;
+  sending: string;
+  note: string;
+  success: string;
+  emailFallback: string;
+  statusAriaLabel: string;
+  errors: FormErrors;
+}
+
+interface Props {
+  lang: "ko" | "en" | "ja" | "zh";
+  topics: Topic[];
+  copy: FormCopy;
+}
+
+const { lang, topics, copy } = Astro.props;
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const errorMap = JSON.stringify(copy.errors);
+---
+
+<form
+  class="consultation-form"
+  action="/api/ax/consultations"
+  method="post"
+  aria-label={copy.formLabel}
+  data-ax-consultation-form
+  data-locale={lang}
+  data-turnstile-site-key={turnstileSiteKey}
+  data-error-map={errorMap}
+  data-sending-label={copy.sending}
+  data-submit-label={copy.submit}
+  novalidate
+>
+  <div class="form-grid">
+    <label>
+      <span>{copy.nameLabel}<span class="sr-only"> ({copy.requiredLabel})</span></span>
+      <input name="name" autocomplete="name" required minlength="1" maxlength="80" placeholder={copy.namePlaceholder} />
+    </label>
+    <label>
+      <span>{copy.emailLabel}<span class="sr-only"> ({copy.requiredLabel})</span></span>
+      <input name="email" type="email" autocomplete="email" required maxlength="254" placeholder={copy.emailPlaceholder} />
+    </label>
+    <label>
+      <span>{copy.phoneLabel}<span class="sr-only"> ({copy.requiredLabel})</span></span>
+      <input name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="30" placeholder={copy.phonePlaceholder} />
+    </label>
+    <label>
+      <span>{copy.topicLabel}<span class="sr-only"> ({copy.requiredLabel})</span></span>
+      <select name="topic" required>
+        <option value="" selected disabled>{copy.topicPlaceholder}</option>
+        {topics.map((topic) => <option value={topic.id}>{topic.label}</option>)}
+      </select>
+    </label>
+  </div>
+
+  <label class="message-field">
+    <span>{copy.messageLabel}<em>{copy.optionalLabel}</em></span>
+    <textarea name="message" maxlength="2000" rows="4" placeholder={copy.messagePlaceholder}></textarea>
+  </label>
+
+  <label class="honeypot" aria-hidden="true">
+    <span>{copy.honeypotLabel}</span>
+    <input name="website" tabindex="-1" autocomplete="off" />
+  </label>
+
+  {
+    turnstileSiteKey && (
+      <div class="form-turnstile" data-form-turnstile aria-live="polite" />
+    )
+  }
+
+  <label class="consent">
+    <input name="privacy_consent" type="checkbox" required />
+    <span>{copy.privacyConsent}</span>
+  </label>
+  <a
+    class="privacy-policy-link"
+    href="https://www.corca.ai/blank"
+    target="_blank"
+    rel="noreferrer"
+  >{copy.privacyPolicyLabel}</a>
+
+  <p
+    class="form-error"
+    role="alert"
+    aria-label={copy.statusAriaLabel}
+    hidden
+    data-form-error
+  >
+    <span data-form-error-message></span>{" "}
+    <a href="mailto:bae.hwidong@corca.ai">{copy.emailFallback}</a>
+  </p>
+  <p class="form-success" role="status" aria-live="polite" aria-label={copy.statusAriaLabel} tabindex="-1" hidden data-form-success>{copy.success}</p>
+
+  <button class="form-submit" type="submit" disabled={!turnstileSiteKey}>
+    <span data-form-submit-label>{copy.submit}</span>
+    <span aria-hidden="true">→</span>
+  </button>
+  <p class="form-note">{copy.note}</p>
+</form>
+
+<style is:global>
+  .ax-page .form-success {
+    margin: 0;
+    padding: 11px 13px;
+    border-radius: 10px;
+    color: #dfffea;
+    background: rgba(24, 137, 70, 0.28);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .ax-page .form-turnstile {
+    min-height: 65px;
+  }
+</style>

@@ -6,10 +6,13 @@ title: Architecture
 
 The site is built with [Astro](https://astro.build) in static (SSG) mode and
 served by Cloudflare Workers Static Assets. A thin Worker (`worker/index.ts`)
-runs in front of the assets purely to canonicalize URLs. Page rendering and blog
-pages stay fully static, with no server data store. Styling is Tailwind CSS v4
+runs in front of the assets to canonicalize URLs and dispatch the small set of
+edge API endpoints, including AX consultations and Notion publishing. Page
+rendering and blog pages stay fully static, with no server data store. Styling is Tailwind CSS v4
 with a self-hosted Pretendard variable font. Google Analytics runs through the
-shared layout as a client-side `gtag.js` snippet.
+shared layout as a client-side `gtag.js` snippet. The production build copies
+that snippet's measurement ID into the static blog shell so both surfaces use
+the same GA4 property.
 
 ## Project layout
 
@@ -23,7 +26,8 @@ shared layout as a client-side `gtag.js` snippet.
 - `src/products/` — one self-contained folder per product (Moonlight, Trace, …),
   auto-discovered by the shared shell; see [products](products.md).
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
-  hreflang alternates, Google Analytics tag and a per-page JSON-LD `@graph`.
+  hreflang alternates, the canonical Google Analytics measurement ID and a
+  per-page JSON-LD `@graph`.
 - `src/content/` — news and colleague entries as schema-validated YAML collections.
 - `public/blog/` — the integrated Corca Blog static subsite, generated from the
   separate `corca-blog-pages` project with `/blog` as its base path. It carries
@@ -36,9 +40,10 @@ shared layout as a client-side `gtag.js` snippet.
   web app manifest, blog assets, and feed/static files. `public/_redirects`
   holds the per-path relocation rules (old flat URLs → the `/products` and
   `/about` structure, `/rss` → `/rss.xml`, and legacy blog post redirects).
-- `worker/index.ts` — the edge canonicalization Worker (see below). `src/site.ts`
-  is the single source for the canonical origin (`SITE_ORIGIN`), and
-  `src/canonical.ts` is the pure URL-normalization it applies.
+- `worker/index.ts` — edge canonicalization and API dispatch. AX consultation
+  validation and delivery live in `worker/axConsultations.ts`; see the
+  [AX guide](ax.md). `src/site.ts` is the single source for the canonical origin
+  (`SITE_ORIGIN`), and `src/canonical.ts` is the pure URL-normalization it applies.
 
 ## URLs and canonicalization
 

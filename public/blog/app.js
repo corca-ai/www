@@ -432,7 +432,10 @@ const defaultDocumentMeta = {
   url: new URL(appPath("/"), window.location.origin).href
 };
 
-init();
+initAnalytics();
+if (postList) {
+  init();
+}
 
 async function init() {
   try {
@@ -442,7 +445,6 @@ async function init() {
     reconcileDiscoveryPrefs();
     renderPosts();
     bindEvents();
-    initAnalytics();
 
     const slug = getPostSlugFromLocation();
 

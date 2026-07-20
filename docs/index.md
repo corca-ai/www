@@ -16,6 +16,7 @@ in front of you:
 | branch, open a pull request, or understand the handoff after merge | [Contributing](contributing.md) |
 | understand the stack, route ownership, canonical URLs, analytics, or Worker role | [Architecture](architecture.md) |
 | understand the integrated blog structure, admin APIs, Notion publishing, or static asset contract | [Blog](blog.md) |
+| update the localized Corca AX page, assets, consultation form, or Worker delivery settings | [Corca AX page](ax.md) |
 | add or update news, blog posts, colleagues, static pages, locales, domains, or analytics | [Runbook](runbook.md) |
 | write or review inclusive, accessible, evidence-based content | [Content guidelines](content-guidelines.md) |
 | add or update a product page | [Product pages](products.md) |

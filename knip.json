@@ -6,6 +6,10 @@
     "src/products/*/manifest.ts",
     "src/products/*/Page.astro"
   ],
-  "ignore": ["public/blog/**"],
+  "ignore": [
+    "public/blog/**",
+    "public/ax/corca-ax-brochure/**",
+    "public/fonts/pretendard-mobile/**"
+  ],
   "ignoreBinaries": ["awiki", "nose"]
 }

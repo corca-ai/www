@@ -15,7 +15,8 @@ top-level pages.
 - `public/blog/index.html` — the blog home page and article-list shell.
 - `public/blog/app.js` and `public/blog/styles.css` — the client-side blog
   experience: search, sorting, pagination, saved posts, recent reads, reading
-  settings, reading progress, reactions, sharing and download actions.
+  settings, reading progress, reactions, sharing, download actions and GA4
+  events.
 - `public/blog/<slug>/` — static article pages.
 - `public/blog/index.json` — the public post index consumed by the blog app.
 - `public/blog/posts/index.json` — the legacy-compatible public post index used
@@ -35,6 +36,12 @@ top-level pages.
 Astro does not define `/blog` routes in `src/pages/`. Cloudflare Workers Static
 Assets serves the files under `public/blog/` directly after the Astro build
 places them in `dist/blog/`.
+
+During `pnpm build`, `scripts/sync-blog-shell-assets.js` reads the GA4
+measurement ID rendered by `src/layouts/BaseLayout.astro` and injects it into
+the deployable blog pages before `public/blog/app.js` starts. The public source
+HTML intentionally has no measurement ID, so the production ID remains
+single-sourced and analytics is enabled only in generated build output.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
@@ -161,6 +168,8 @@ When changing blog files, keep these invariants:
   `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
+- Analytics must initialize independently of the list UI because static article
+  pages load `public/blog/app.js` without the blog-index DOM.
 - `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
   sitemap should be updated together.
 - Localized post records inherit the resolved Korean cover when translation

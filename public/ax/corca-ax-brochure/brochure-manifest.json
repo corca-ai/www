@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0",
+  "id": "corca-ax-consulting-brochure",
+  "title": "코르카 AX 가속화 컨설팅 브로셔",
+  "entry": "index.html",
+  "stylesheet": "brochure.css",
+  "page_count": 22,
+  "page_size": "A4",
+  "print_margin": "0",
+  "editable": false,
+  "generated_at": "2026-07-16T09:04:41.247Z",
+  "pages": [
+    {
+      "id": "cover",
+      "title": "코르카AX 가속화 컨설팅",
+      "type": "cover"
+    },
+    {
+      "id": "intro",
+      "title": "AI 교육과 솔루션 도입만으로는조직의 일하는 방식이바뀌지 않습니다.",
+      "type": "front"
+    },
+    {
+      "id": "toc",
+      "title": "목차",
+      "type": "toc"
+    },
+    {
+      "id": "chapter-1-cover",
+      "title": "1장 표지",
+      "type": "chapter-cover"
+    },
+    {
+      "id": "chapter-1-start",
+      "title": "AI 교육, AI 솔루션 도입, 그래서 무엇이 달라지나요?",
+      "type": "chapter-start"
+    },
+    {
+      "id": "coaching",
+      "title": "교육 다음에는, AX 협업 문제를함께 푸는 코칭이 필요합니다.",
+      "type": "content"
+    },
+    {
+      "id": "track-record",
+      "title": "트랙 레코드",
+      "type": "content"
+    },
+    {
+      "id": "chapter-2-start",
+      "title": "코르카의 AX 가속화 컨설팅은 어떻게 진행되나요?",
+      "type": "chapter-start"
+    },
+    {
+      "id": "champion",
+      "title": "1단계: AX 챔피언을 키우는AX 챔피언 후보 양성",
+      "type": "content"
+    },
+    {
+      "id": "solutions-core",
+      "title": "CAPS · CASM",
+      "type": "content"
+    },
+    {
+      "id": "solutions-products",
+      "title": "Craken · Ceal",
+      "type": "content"
+    },
+    {
+      "id": "experience",
+      "title": "3단계: 결과가 아닌 과정을,정답이 아닌 AX 경험 확산을",
+      "type": "content"
+    },
+    {
+      "id": "ax-day",
+      "title": "1. 매달 열리는 AX Day",
+      "type": "content"
+    },
+    {
+      "id": "ax-sharing",
+      "title": "2. 매주 열리는 AX 공유회",
+      "type": "content"
+    },
+    {
+      "id": "ceal",
+      "title": "3. 매일 사용되는 Ceal",
+      "type": "content"
+    },
+    {
+      "id": "motto",
+      "title": "코르카가 내부에서 확인한AX 전환의 핵심 동력",
+      "type": "content"
+    },
+    {
+      "id": "environment",
+      "title": "2단계: 문턱은 낮추고천장은 높이는안전한 AX 환경 구축",
+      "type": "content"
+    },
+    {
+      "id": "chapter-3-start",
+      "title": "컨설팅 프로세스 및 컨설팅 신청 방법",
+      "type": "chapter-start"
+    },
+    {
+      "id": "questions",
+      "title": "컨설팅 신청을 위한 사전 질문",
+      "type": "content"
+    },
+    {
+      "id": "literacy",
+      "title": "AI 리터러시 설문 예시",
+      "type": "content"
+    },
+    {
+      "id": "contact",
+      "title": "컨설팅 신청 및 계약",
+      "type": "back"
+    },
+    {
+      "id": "closing",
+      "title": "마지막 표지",
+      "type": "closing"
+    }
+  ],
+  "assets": [
+    "01.png",
+    "02-CAPS.png",
+    "02-CASM.png",
+    "02-Ceal.png",
+    "02-Craken.png",
+    "02.png",
+    "03.png",
+    "AritaBuriKR-Bold.ttf",
+    "AritaBuriKR-Light.ttf",
+    "AritaBuriKR-Medium.ttf",
+    "AritaBuriKR-SemiBold.ttf",
+    "NanumMyeongjo-Bold.ttf",
+    "NanumMyeongjo-Regular.ttf",
+    "PretendardVariable.woff2",
+    "corca_ai_usage.png",
+    "corca_logo_black.svg",
+    "corca_logo_white.svg",
+    "openAI-corca-logo-renew.png",
+    "orca-chapter-1.png",
+    "orca-chapter-5.png",
+    "orca-cover-royal-blue.png"
+  ]
+}

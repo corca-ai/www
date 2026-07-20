@@ -2,7 +2,7 @@
   {
     "slug": "we-make-ai-colleague",
     "title": "私たちが作りたいAI Colleague",
-    "description": "MoonLightは共に研究するAI Colleague",
+    "description": "Moonlightは一緒に研究するAI Colleagueです",
     "date": "2026-07-07",
     "tags": [
       "Moonlight",
@@ -10,7 +10,7 @@
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
-    "wordCount": 1788,
+    "wordCount": 1793,
     "language": "ja",
     "coverAlt": "",
     "section": "Moonlight",

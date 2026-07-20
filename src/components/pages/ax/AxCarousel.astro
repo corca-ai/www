@@ -1,0 +1,168 @@
+---
+interface CarouselImage {
+  mobileAvif: string;
+  mobileWebp: string;
+  wideAvif: string;
+  wideWebp: string;
+}
+
+interface CarouselItem {
+  id: string;
+  title: string;
+  body: string;
+  image: CarouselImage;
+}
+
+interface CarouselLabels {
+  region: string;
+  controls: string;
+  slideTemplate: string;
+  viewSlideTemplate: string;
+  pause: string;
+  play: string;
+  replay: string;
+  reducedMotion: string;
+  previous: string;
+  next: string;
+}
+
+interface Props {
+  items: CarouselItem[];
+  labels: CarouselLabels;
+}
+
+const { items, labels } = Astro.props;
+const interpolate = (template: string, values: Record<string, string | number>) =>
+  Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
+---
+
+<div
+  class="pain-carousel relative mt-16 w-full sm:mt-20"
+  role="region"
+  aria-label={labels.region}
+  tabindex="0"
+  data-ax-carousel
+  data-dragging="false"
+  data-label-pause={labels.pause}
+  data-label-play={labels.play}
+  data-label-restart={labels.replay}
+  data-label-reduced={labels.reducedMotion}
+  style="--carousel-progress: 0; --carousel-track-x: calc(50vw - (var(--carousel-card-width) / 2)); --carousel-drag-x: 0px;"
+>
+  <div class="pain-carousel__viewport w-full overflow-hidden py-2" data-carousel-viewport>
+    <div class="pain-carousel__track flex w-max gap-5 sm:gap-6" data-carousel-track>
+      {
+        items.map((item, index) => (
+          <article
+            class="pain-carousel__slide relative shrink-0 overflow-hidden rounded-[26px] bg-black shadow-[0_28px_80px_rgba(0,0,0,0.34)] ring-1 ring-white/10 sm:rounded-[32px]"
+            data-carousel-slide
+            data-active={index === 0 ? "true" : "false"}
+            role="group"
+            aria-label={interpolate(labels.slideTemplate, {
+              current: index + 1,
+              total: items.length,
+              title: item.title,
+            })}
+            aria-hidden={index === 0 ? "false" : "true"}
+          >
+            <picture class="pointer-events-none absolute inset-0 h-full w-full select-none">
+              <source media="(max-width: 720px)" type="image/avif" srcset={item.image.mobileAvif} />
+              <source media="(max-width: 720px)" type="image/webp" srcset={item.image.mobileWebp} />
+              <source type="image/avif" srcset={item.image.wideAvif} />
+              <source type="image/webp" srcset={item.image.wideWebp} />
+              <img
+                src={item.image.wideWebp}
+                alt=""
+                width="1120"
+                height="1400"
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+                class="h-full w-full object-cover"
+              />
+            </picture>
+            <div
+              class="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02)_34%,rgba(0,0,0,0.22)_58%,rgba(0,0,0,0.92)_100%)]"
+              aria-hidden="true"
+            />
+            <div class="relative z-10 flex h-full flex-col justify-end p-7 sm:p-10 lg:p-12">
+              <h3 class="max-w-[12ch] text-[clamp(34px,4vw,54px)] font-semibold leading-[1.05] tracking-[-0.045em] text-white">
+                {item.title}
+              </h3>
+              <p class="mt-5 max-w-[34em] text-[15px] leading-[1.65] text-white/70 sm:text-[17px]">
+                {item.body}
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="pain-carousel__controls mt-7 flex items-center justify-center gap-3 sm:mt-9">
+    <button
+      type="button"
+      class="testimonial-carousel__control pain-carousel__control"
+      aria-label={labels.previous}
+      title={labels.previous}
+      data-carousel-previous
+      disabled
+    >
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10.5 3.5 6 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+
+    <div
+      class="flex h-12 items-center gap-1 rounded-full bg-black/75 px-2 shadow-[0_10px_34px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+      role="group"
+      aria-label={labels.controls}
+    >
+      {
+        items.map((item, index) => (
+          <button
+            type="button"
+            class="group flex h-11 w-11 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#83cbff]"
+            aria-label={interpolate(labels.viewSlideTemplate, { title: item.title })}
+            aria-current={index === 0 ? "true" : undefined}
+            data-carousel-select={index}
+          >
+            <span class={`pain-carousel__indicator${index === 0 ? " is-active" : ""}`} aria-hidden="true">
+              <span class="pain-carousel__indicator-fill" />
+            </span>
+          </button>
+        ))
+      }
+    </div>
+
+    <button
+      type="button"
+      class="flex h-12 w-12 items-center justify-center rounded-full border-0 bg-black/75 text-white shadow-[0_10px_34px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-[transform,background-color] duration-300 hover:scale-105 hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#83cbff] active:scale-95 disabled:cursor-not-allowed disabled:opacity-45"
+      aria-label={labels.pause}
+      title={labels.pause}
+      data-carousel-playback
+    >
+      <svg data-carousel-icon="pause" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" aria-hidden="true">
+        <path d="M8 5v14M16 5v14"></path>
+      </svg>
+      <svg data-carousel-icon="play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linejoin="round" aria-hidden="true" style="display: none">
+        <path d="m7 4 13 8-13 8Z"></path>
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="testimonial-carousel__control pain-carousel__control"
+      aria-label={labels.next}
+      title={labels.next}
+      data-carousel-next
+    >
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M5.5 3.5 10 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+  </div>
+</div>

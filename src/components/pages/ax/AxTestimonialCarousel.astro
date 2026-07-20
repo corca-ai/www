@@ -1,0 +1,167 @@
+---
+interface TestimonialItem {
+  id: 'tyche' | 'kyowon';
+  quote: readonly string[];
+  company: string;
+  source: string;
+  logoAlt: string;
+  logo: string;
+  logoWidth: number;
+  logoHeight: number;
+}
+
+interface CarouselLabels {
+  ariaLabel: string;
+  slideSelectionAriaLabel: string;
+  slideAriaTemplate: string;
+  viewSlideAriaTemplate: string;
+  previous: string;
+  next: string;
+  reducedMotion: string;
+  pause: string;
+  replay: string;
+  play: string;
+}
+
+interface Props {
+  items: readonly TestimonialItem[];
+  labels: CarouselLabels;
+}
+
+const { items, labels } = Astro.props;
+const interpolate = (template: string, values: Record<string, string | number>) =>
+  Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
+---
+
+<div
+  class="testimonial-carousel reveal"
+  role="region"
+  aria-label={labels.ariaLabel}
+  tabindex="0"
+  data-ax-carousel
+  data-dragging="false"
+  data-label-pause={labels.pause}
+  data-label-play={labels.play}
+  data-label-restart={labels.replay}
+  data-label-reduced={labels.reducedMotion}
+  style="--carousel-progress: 0; --carousel-track-x: 0px; --carousel-drag-x: 0px;"
+>
+  <div class="testimonial-carousel__viewport" data-carousel-viewport>
+    <div class="testimonial-carousel__track" data-carousel-track>
+      {
+        items.map((item, index) => (
+          <figure
+            class:list={[
+              'testimonial testimonial-carousel__slide',
+              { 'testimonial--compact': item.id === 'kyowon' },
+            ]}
+            data-carousel-slide
+            data-testimonial-id={item.id}
+            data-active={index === 0 ? 'true' : 'false'}
+            role="group"
+            aria-label={interpolate(labels.slideAriaTemplate, {
+              current: index + 1,
+              total: items.length,
+              company: item.company,
+            })}
+            aria-hidden={index === 0 ? 'false' : 'true'}
+          >
+            <blockquote>
+              “{
+                item.quote.map((line, lineIndex) => (
+                  <>
+                    {lineIndex > 0 && (item.id === 'tyche' ? <br /> : ' ')}
+                    {line}
+                  </>
+                ))
+              }”
+            </blockquote>
+            <figcaption>
+              <img
+                class="testimonial-logo"
+                src={item.logo}
+                width={item.logoWidth}
+                height={item.logoHeight}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <span><strong>{item.company}</strong><small>{item.source}</small></span>
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="testimonial-carousel__controls">
+    <button
+      type="button"
+      class="testimonial-carousel__control testimonial-carousel__arrow"
+      aria-label={labels.previous}
+      title={labels.previous}
+      data-carousel-previous
+      disabled
+    >
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10.5 3.5 6 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+
+    <div
+      class="testimonial-carousel__selectors"
+      role="group"
+      aria-label={labels.slideSelectionAriaLabel}
+    >
+      {
+        items.map((item, index) => (
+          <button
+            type="button"
+            class="testimonial-carousel__selector"
+            aria-label={interpolate(labels.viewSlideAriaTemplate, { company: item.company })}
+            aria-current={index === 0 ? 'true' : undefined}
+            data-carousel-select={index}
+          >
+            <span
+              class={`pain-carousel__indicator${index === 0 ? ' is-active' : ''}`}
+              aria-hidden="true"
+            >
+              <span class="pain-carousel__indicator-fill" />
+            </span>
+          </button>
+        ))
+      }
+    </div>
+
+    <button
+      type="button"
+      class="testimonial-carousel__control testimonial-carousel__playback"
+      aria-label={labels.pause}
+      title={labels.pause}
+      data-carousel-playback
+    >
+      <svg data-carousel-icon="pause" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" aria-hidden="true">
+        <path d="M8 5v14M16 5v14"></path>
+      </svg>
+      <svg data-carousel-icon="play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linejoin="round" aria-hidden="true" style="display: none">
+        <path d="m7 4 13 8-13 8Z"></path>
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="testimonial-carousel__control testimonial-carousel__arrow"
+      aria-label={labels.next}
+      title={labels.next}
+      data-carousel-next
+    >
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M5.5 3.5 10 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+  </div>
+  <p class="sr-only" aria-live="polite" aria-atomic="true" data-carousel-status></p>
+</div>

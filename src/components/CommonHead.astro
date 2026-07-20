@@ -8,6 +8,15 @@ interface Props {
 
 const { lang, isAxPage = false } = Astro.props;
 const publisherName = { ko: '코르카', en: 'Corca', ja: 'コルカ', zh: 'Corca' }[lang];
+const axMobileFontUrl = {
+  ko: '/fonts/ax-mobile/v1/pretendard-ko.woff2',
+  en: '/fonts/ax-mobile/v1/pretendard-en.woff2',
+  ja: '/fonts/ax-mobile/v1/pretendard-ja.woff2',
+  zh: '',
+}[lang];
+const axMobileFontFace = axMobileFontUrl
+  ? `@font-face{font-family:"Pretendard AX Mobile";font-style:normal;font-display:swap;font-weight:45 920;src:url("${axMobileFontUrl}") format("woff2-variations")}`
+  : '';
 ---
 
 <!-- corca-common-head:start -->
@@ -19,15 +28,20 @@ const publisherName = { ko: '코르카', en: 'Corca', ja: 'コルカ', zh: 'Corc
 <meta name="apple-mobile-web-app-title" content="Corca" />
 <meta name="publisher" content={publisherName} />
 
-<!-- AX mobile uses a unicode-range dynamic subset; desktop and all other
-     pages keep the existing full Pretendard preload. -->
-{isAxPage && (
+<!-- AX mobile uses one page-specific font subset instead of the dynamic
+     92-slice stylesheet. Chinese keeps the native system stack because the
+     bundled Pretendard families do not cover all Simplified Chinese glyphs. -->
+{isAxPage && axMobileFontUrl && (
   <link
-    rel="stylesheet"
-    href="/fonts/pretendard-mobile/pretendard-mobile.css"
+    rel="preload"
+    href={axMobileFontUrl}
+    as="font"
+    type="font/woff2"
+    crossorigin
     media="(max-width: 720px)"
   />
 )}
+{isAxPage && axMobileFontFace && <style is:inline set:html={axMobileFontFace} />}
 <link
   rel="preload"
   href="/fonts/PretendardVariable.woff2"

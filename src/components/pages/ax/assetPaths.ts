@@ -2,6 +2,13 @@ const AX_IMAGE_ROOT = '/images/pages/ax';
 const AX_VISUAL_ROOT = `${AX_IMAGE_ROOT}/visuals`;
 const AX_CAROUSEL_ROOT = `${AX_VISUAL_ROOT}/carousel`;
 const AX_BACKGROUND_ROOT = `${AX_IMAGE_ROOT}/backgrounds`;
+const AX_LOGO_ROOT = `${AX_IMAGE_ROOT}/logos`;
+const AX_OPTIMIZED_LOGO_ROOT = `${AX_LOGO_ROOT}/v1`;
+
+const logoAsset = (name: string) => ({
+  webp: `${AX_OPTIMIZED_LOGO_ROOT}/${name}.webp`,
+  png: `${AX_LOGO_ROOT}/${name}.png`,
+});
 
 const responsiveVisual = (name: string) => ({
   mobileAvif: `${AX_VISUAL_ROOT}/${name}-mobile.avif`,
@@ -29,12 +36,9 @@ export const axAssetPaths = {
   partnerNetworkLogo: `${AX_VISUAL_ROOT}/OAI_PartnerNetwork_SelectPartner_Portrait.svg`,
   heroVideo: '/video/ax/B-0715-A_seamless_loop_video_of_a_maj.webm',
   logos: {
-    organizations: Array.from(
-      { length: 10 },
-      (_, index) => `${AX_IMAGE_ROOT}/logos/high-logo0${index + 1}.png`,
-    ),
-    kyowon: `${AX_IMAGE_ROOT}/logos/kyowon.png`,
-    tyche: `${AX_IMAGE_ROOT}/logos/tyche.png`,
+    organizations: Array.from({ length: 10 }, (_, index) => logoAsset(`high-logo0${index + 1}`)),
+    kyowon: logoAsset('kyowon'),
+    tyche: logoAsset('tyche'),
   },
   scenes: {
     hero: responsiveVisual('01-hero'),

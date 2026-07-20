@@ -20,6 +20,13 @@ type StaticPage = {
   jsonLd?: (site: URL, lang: Lang, meta: Meta) => Record<string, unknown>[];
 };
 
+const axServiceNames: Record<Lang, string> = {
+  ko: 'Corca의 기업 AX 컨설팅',
+  en: "Corca's enterprise AX consulting",
+  ja: 'Corcaの企業AXコンサルティング',
+  zh: 'Corca的企业AX咨询服务',
+};
+
 // The static (non-product) pages: id → live URL base, component and per-locale
 // SEO copy. Product detail pages come from the product registry instead, so
 // adding a product never touches this. `id` is stable even though the live URL
@@ -38,19 +45,13 @@ const staticPageDefinitions = {
     ogImage: '/og-ax.png',
     ogImageAlt: (l) =>
       ({
-        ko: 'Corca AX 기업 AI 전환 컨설팅',
-        en: 'Corca AX enterprise AI transformation consulting',
-        ja: 'Corca AX 企業AI変革コンサルティング',
-        zh: 'Corca AX 企业AI转型咨询',
+        ko: 'Corca의 기업 AI 전환 컨설팅',
+        en: "Corca's enterprise AI transformation consulting",
+        ja: 'Corcaの企業AI変革コンサルティング',
+        zh: 'Corca的企业AI转型咨询服务',
       })[l],
     jsonLd: (site, lang, meta) => [
-      axServiceLd(
-        site,
-        lang,
-        '/ax',
-        meta.title.split('|')[0]?.trim() || meta.title,
-        meta.description,
-      ),
+      axServiceLd(site, lang, '/ax', axServiceNames[lang], meta.description),
     ],
   },
   products: { basePath: '/products', Component: Products, meta: (l) => pageMeta.products[l] },

@@ -61,6 +61,11 @@
   .ax-page {
     --font-ax: "Pretendard AX Mobile";
   }
+
+  .ax-page:lang(zh) {
+    --font-ax: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+      "Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif;
+  }
 }
 
 .ax-page [id] {
@@ -527,8 +532,13 @@
   width: auto;
   height: 30px;
   display: block;
-  flex: 0 0 auto;
   object-fit: contain;
+}
+
+.ax-page .testimonial-logo-frame {
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
 }
 
 .ax-page .proof-strip {
@@ -629,9 +639,14 @@
   width: auto;
   max-width: none;
   height: var(--logo-height);
-  flex: 0 0 auto;
   object-fit: contain;
   user-select: none;
+}
+
+.ax-page .logo-marquee__item {
+  display: block;
+  flex: 0 0 auto;
+  line-height: 0;
 }
 
 @keyframes logo-marquee-loop {
@@ -806,6 +821,12 @@
   color: var(--corca);
   font-size: 12px;
   font-weight: 800;
+}
+
+html[lang^='ja'] .ax-page .hero-copy h1 {
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .ax-page .method-step h3 {
@@ -2522,6 +2543,17 @@
   .ax-page .decision-map,
   .ax-page .decision-total {
     justify-items: start;
+  }
+}
+
+@media (min-width: 721px) and (max-height: 720px) {
+  .ax-page .hero {
+    min-height: 654px;
+  }
+
+  .ax-page .hero-copy.grid-shell {
+    top: 10px;
+    bottom: auto;
   }
 }
 

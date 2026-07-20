@@ -24,6 +24,9 @@ interface CarouselLabels {
   reducedMotion: string;
   previous: string;
   next: string;
+  carouselRoleDescription: string;
+  slideRoleDescription: string;
+  slidePositionTemplate: string;
 }
 
 interface Props {
@@ -32,6 +35,7 @@ interface Props {
 }
 
 const { items, labels } = Astro.props;
+const trackId = 'ax-bottleneck-carousel-track';
 const interpolate = (template: string, values: Record<string, string | number>) =>
   Object.entries(values).reduce(
     (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
@@ -43,6 +47,8 @@ const interpolate = (template: string, values: Record<string, string | number>) 
   class="pain-carousel relative mt-16 w-full sm:mt-20"
   role="region"
   aria-label={labels.region}
+  aria-roledescription={labels.carouselRoleDescription}
+  aria-keyshortcuts="ArrowLeft ArrowRight Home End"
   tabindex="0"
   data-ax-carousel
   data-dragging="false"
@@ -53,21 +59,36 @@ const interpolate = (template: string, values: Record<string, string | number>) 
   style="--carousel-progress: 0; --carousel-track-x: calc(50vw - (var(--carousel-card-width) / 2)); --carousel-drag-x: 0px;"
 >
   <div class="pain-carousel__viewport w-full overflow-hidden py-2" data-carousel-viewport>
-    <div class="pain-carousel__track flex w-max gap-5 sm:gap-6" data-carousel-track>
+    <div id={trackId} class="pain-carousel__track flex w-max gap-5 sm:gap-6" data-carousel-track>
       {
-        items.map((item, index) => (
+        items.map((item, index) => {
+          const slideId = `ax-bottleneck-slide-${item.id}`;
+          const positionId = `${slideId}-position`;
+          const titleId = `${slideId}-title`;
+          const bodyId = `${slideId}-body`;
+          return (
           <article
+            id={slideId}
             class="pain-carousel__slide relative shrink-0 overflow-hidden rounded-[26px] bg-black shadow-[0_28px_80px_rgba(0,0,0,0.34)] ring-1 ring-white/10 sm:rounded-[32px]"
             data-carousel-slide
             data-active={index === 0 ? "true" : "false"}
             role="group"
-            aria-label={interpolate(labels.slideTemplate, {
+            aria-roledescription={labels.slideRoleDescription}
+            aria-labelledby={`${positionId} ${titleId}`}
+            aria-describedby={bodyId}
+            data-carousel-status-label={interpolate(labels.slideTemplate, {
               current: index + 1,
               total: items.length,
               title: item.title,
             })}
             aria-hidden={index === 0 ? "false" : "true"}
           >
+            <span id={positionId} class="sr-only">
+              {interpolate(labels.slidePositionTemplate, {
+                current: index + 1,
+                total: items.length,
+              })}
+            </span>
             <picture class="pointer-events-none absolute inset-0 h-full w-full select-none">
               <source media="(max-width: 720px)" type="image/avif" srcset={item.image.mobileAvif} />
               <source media="(max-width: 720px)" type="image/webp" srcset={item.image.mobileWebp} />
@@ -89,15 +110,16 @@ const interpolate = (template: string, values: Record<string, string | number>) 
               aria-hidden="true"
             />
             <div class="relative z-10 flex h-full flex-col justify-end p-7 sm:p-10 lg:p-12">
-              <h3 class="max-w-[12ch] text-[clamp(34px,4vw,54px)] font-semibold leading-[1.05] tracking-[-0.045em] text-white">
+              <h3 id={titleId} class="max-w-[12ch] text-[clamp(34px,4vw,54px)] font-semibold leading-[1.05] tracking-[-0.045em] text-white">
                 {item.title}
               </h3>
-              <p class="mt-5 max-w-[34em] text-[15px] leading-[1.65] text-white/70 sm:text-[17px]">
+              <p id={bodyId} class="mt-5 max-w-[34em] text-[15px] leading-[1.65] text-white/70 sm:text-[17px]">
                 {item.body}
               </p>
             </div>
           </article>
-        ))
+          );
+        })
       }
     </div>
   </div>
@@ -107,6 +129,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       type="button"
       class="testimonial-carousel__control pain-carousel__control"
       aria-label={labels.previous}
+      aria-controls={trackId}
       title={labels.previous}
       data-carousel-previous
       disabled
@@ -127,6 +150,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             type="button"
             class="group flex h-11 w-11 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#83cbff]"
             aria-label={interpolate(labels.viewSlideTemplate, { title: item.title })}
+            aria-controls={`ax-bottleneck-slide-${item.id}`}
             aria-current={index === 0 ? "true" : undefined}
             data-carousel-select={index}
           >
@@ -142,6 +166,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       type="button"
       class="flex h-12 w-12 items-center justify-center rounded-full border-0 bg-black/75 text-white shadow-[0_10px_34px_rgba(0,0,0,0.28)] backdrop-blur-xl transition-[transform,background-color] duration-300 hover:scale-105 hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#83cbff] active:scale-95 disabled:cursor-not-allowed disabled:opacity-45"
       aria-label={labels.pause}
+      aria-controls={trackId}
       title={labels.pause}
       data-carousel-playback
     >
@@ -157,6 +182,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       type="button"
       class="testimonial-carousel__control pain-carousel__control"
       aria-label={labels.next}
+      aria-controls={trackId}
       title={labels.next}
       data-carousel-next
     >
@@ -165,4 +191,5 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       </svg>
     </button>
   </div>
+  <p class="sr-only" aria-live="polite" aria-atomic="true" data-carousel-status></p>
 </div>

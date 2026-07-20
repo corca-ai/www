@@ -98,10 +98,17 @@ const organizationLogos = axAssetPaths.logos.organizations.map((src, index) => (
   height: logoDimensions[index]?.[1] ?? 180,
 }));
 const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
+const carouselSemantics = {
+  ko: { carousel: '캐러셀', slide: '슬라이드', position: '{current} / {total}' },
+  en: { carousel: 'carousel', slide: 'slide', position: '{current} of {total}' },
+  ja: { carousel: 'カルーセル', slide: 'スライド', position: '{current} / {total}' },
+  zh: { carousel: '轮播', slide: '幻灯片', position: '第{current}张，共{total}张' },
+} as const;
+const carouselA11y = carouselSemantics[lang];
 ---
 
 <div class="ax-page" data-ax-reveal="ready" data-scroll-motion="running">
-  <section id="ax-top" class="story-scene hero scene-dark" data-scene="01-hero" data-parallax-scene>
+  <section id="ax-top" class="story-scene hero scene-dark" aria-labelledby="ax-hero-title" data-scene="01-hero" data-parallax-scene>
     <img
       class="partner-network-logo"
       src={axAssetPaths.partnerNetworkLogo}
@@ -121,7 +128,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
     <div class="hero-copy grid-shell reveal" data-parallax-copy>
       <p class="eyebrow">{c.hero.eyebrow}</p>
-      <h1>
+      <h1 id="ax-hero-title">
         {c.hero.headline.map((line) => line.strong
           ? <strong>{line.before}{line.strong}{line.after}</strong>
           : <span>{line.before}{line.after}</span>)}
@@ -138,14 +145,22 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </a>
   </section>
 
-  <section id="ax-belief" class="story-scene belief scene-dark-soft" data-scene="02-belief">
+  <section id="ax-belief" class="story-scene belief scene-dark-soft" aria-labelledby="ax-belief-title" aria-describedby="ax-belief-description" data-scene="02-belief">
     <div class="grid-shell belief-layout">
       <div class="belief-copy reveal">
         <p class="eyebrow blue">{c.belief.eyebrow}</p>
-        <h2>{c.belief.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-        <p>{c.belief.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
+        <h2 id="ax-belief-title">{c.belief.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p id="ax-belief-description">{c.belief.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
       </div>
-      <AxTestimonialCarousel items={testimonialItems} labels={c.belief.testimonialCarousel} />
+      <AxTestimonialCarousel
+        items={testimonialItems}
+        labels={{
+          ...c.belief.testimonialCarousel,
+          carouselRoleDescription: carouselA11y.carousel,
+          slideRoleDescription: carouselA11y.slide,
+          slidePositionTemplate: carouselA11y.position,
+        }}
+      />
     </div>
     <div class="proof-strip reveal" aria-label={c.belief.proofAriaLabel}>
       <div><strong>{c.belief.proof.organizations.value}</strong><span>{c.belief.proof.organizations.label}</span></div>
@@ -171,7 +186,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section id="ax-why" class="story-scene gap-scene scene-dark" data-scene="03-gap" data-parallax-scene>
+  <section id="ax-why" class="story-scene gap-scene scene-dark" aria-labelledby="ax-why-title" data-scene="03-gap" data-parallax-scene>
     <div class="scene-media">
       <picture class="scene-media-frame">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.gap.mobileAvif} />
@@ -185,7 +200,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     <div class="sticky-story grid-shell">
       <div class="sticky-title reveal" data-parallax-copy>
         <p class="eyebrow">{c.gap.eyebrow}</p>
-        <h2>{c.gap.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <h2 id="ax-why-title">{c.gap.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
       </div>
       <div class="gap-steps">
         {c.gap.steps.map((step) => (
@@ -201,7 +216,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section class="story-scene bottleneck scene-dark-soft" data-scene="04-bottleneck" data-parallax-scene>
+  <section id="ax-bottleneck" class="story-scene bottleneck scene-dark-soft" aria-labelledby="ax-bottleneck-title" aria-describedby="ax-bottleneck-description" data-scene="04-bottleneck" data-parallax-scene>
     <div class="scene-media bottleneck-media" aria-hidden="true">
       <picture class="scene-media-frame">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.backgrounds.bottleneck.mobileAvif} />
@@ -215,8 +230,8 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     <div class="grid-shell">
       <div class="section-heading reveal">
         <p class="eyebrow">{c.bottleneck.eyebrow}</p>
-        <h2>{c.bottleneck.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-        <p>{c.bottleneck.body}</p>
+        <h2 id="ax-bottleneck-title">{c.bottleneck.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p id="ax-bottleneck-description">{c.bottleneck.body}</p>
       </div>
     </div>
     <AxCarousel
@@ -232,11 +247,14 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         play: c.bottleneck.carousel.play,
         previous: c.bottleneck.carousel.previous,
         next: c.bottleneck.carousel.next,
+        carouselRoleDescription: carouselA11y.carousel,
+        slideRoleDescription: carouselA11y.slide,
+        slidePositionTemplate: carouselA11y.position,
       }}
     />
   </section>
 
-  <section id="ax-how" class="story-scene method scene-dark" data-scene="05-method" data-parallax-scene>
+  <section id="ax-how" class="story-scene method scene-dark" aria-labelledby="ax-how-title" data-scene="05-method" data-parallax-scene>
     <div class="scene-media method-media" aria-hidden="true">
       <picture class="scene-media-frame">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.backgrounds.method.mobileAvif} />
@@ -250,7 +268,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     <div class="grid-shell">
       <div class="section-heading dark reveal">
         <p class="eyebrow blue">{c.method.eyebrow}</p>
-        <h2>{c.method.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <h2 id="ax-how-title">{c.method.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
       </div>
       <div class="method-flow">
         {c.method.steps.map((step) => (
@@ -263,11 +281,11 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section id="ax-proof" class="story-scene internal-proof scene-dark" data-scene="06-proof">
+  <section id="ax-proof" class="story-scene internal-proof scene-dark" aria-labelledby="ax-proof-title" aria-describedby="ax-proof-description" data-scene="06-proof">
     <div class="grid-shell proof-intro reveal">
       <p class="eyebrow">{c.internalProof.eyebrow}</p>
-      <h2>{c.internalProof.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-      <p>{c.internalProof.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
+      <h2 id="ax-proof-title">{c.internalProof.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+      <p id="ax-proof-description">{c.internalProof.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
     </div>
     <div class="cadence-diagram reveal" aria-label={c.internalProof.cadenceAriaLabel}>
       {c.internalProof.cadence.map((item, index) => (
@@ -278,7 +296,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section class="story-scene pair-work scene-dark" data-scene="08-pair-work" data-parallax-scene>
+  <section id="ax-pair-work" class="story-scene pair-work scene-dark" aria-labelledby="ax-pair-work-title" aria-describedby="ax-pair-work-description" data-scene="08-pair-work" data-parallax-scene>
     <div class="scene-media">
       <picture class="scene-media-frame">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.pair.mobileAvif} />
@@ -292,8 +310,8 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     <div class="grid-shell pair-layout">
       <div class="pair-copy reveal" data-parallax-copy>
         <p class="eyebrow">{c.pairWork.eyebrow}</p>
-        <h2>{c.pairWork.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-        <p>{c.pairWork.body}</p>
+        <h2 id="ax-pair-work-title">{c.pairWork.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p id="ax-pair-work-description">{c.pairWork.body}</p>
       </div>
       <div class="pair-equation reveal" data-parallax-float>
         <div><span>{c.pairWork.client.label}</span><strong>{c.pairWork.client.strengths.map((line, index) => <>{index > 0 && <br />}{line}</>)}</strong></div>
@@ -303,13 +321,13 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section class="story-scene champion scene-dark-soft" data-scene="09-champion">
+  <section id="ax-champion" class="story-scene champion scene-dark-soft" aria-labelledby="ax-champion-title" aria-describedby="ax-champion-description" data-scene="09-champion">
     <div class="grid-shell champion-layout">
       <div class="champion-lead">
         <div class="section-heading reveal">
           <p class="eyebrow">{c.champion.eyebrow}</p>
-          <h2>{c.champion.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-          <p>{c.champion.body}</p>
+          <h2 id="ax-champion-title">{c.champion.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+          <p id="ax-champion-description">{c.champion.body}</p>
         </div>
         <picture class="champion-people reveal">
           <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.championPeople.mobileAvif} />
@@ -332,7 +350,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section class="story-scene reuse scene-dark" data-scene="10-reuse" data-parallax-scene>
+  <section id="ax-reuse" class="story-scene reuse scene-dark" aria-labelledby="ax-reuse-title" aria-describedby="ax-reuse-description" data-scene="10-reuse" data-parallax-scene>
     <div class="scene-media">
       <picture class="scene-media-frame">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.layers.mobileAvif} />
@@ -346,8 +364,8 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     <div class="grid-shell reuse-layout">
       <div class="section-heading reveal" data-parallax-copy>
         <p class="eyebrow">{c.reuse.eyebrow}</p>
-        <h2>{c.reuse.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
-        <p>{c.reuse.body}</p>
+        <h2 id="ax-reuse-title">{c.reuse.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p id="ax-reuse-description">{c.reuse.body}</p>
       </div>
       <div class="layer-rail" data-parallax-float>
         {c.reuse.layers.map((layer, index) => <article class="layer-card reveal" style={`--index: ${index}`}><h3>{layer.title}</h3><p>{layer.body}</p></article>)}
@@ -355,11 +373,11 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     </div>
   </section>
 
-  <section id="ax-program" class="story-scene program scene-light" data-scene="11-program">
+  <section id="ax-program" class="story-scene program scene-light" aria-labelledby="ax-program-title" data-scene="11-program">
     <div class="grid-shell">
       <div class="section-heading dark reveal">
         <p class="eyebrow blue">{c.program.eyebrow}</p>
-        <h2>{c.program.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <h2 id="ax-program-title">{c.program.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
       </div>
       <div class="package-grid">
         {c.program.packages.map((item) => (
@@ -373,18 +391,18 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
         <p>{c.program.outcome.question}<br />{c.program.outcome.lead}<br /><strong>{c.program.outcome.strong}</strong></p>
         <ul>{c.program.outcome.metrics.map((metric) => <li>{metric}</li>)}</ul>
       </div>
-      <div class="faq-block reveal">
-        <div><h3>{c.program.faqTitle}</h3></div>
+      <section id="ax-faq" class="faq-block reveal" aria-labelledby="ax-faq-title">
+        <div><h2 id="ax-faq-title">{c.program.faqTitle}</h2></div>
         <div class="faq-list">
           {c.program.faqs.map((item) => (
             <details><summary>{item.question}<span aria-hidden="true">＋</span></summary><p>{item.answer}</p></details>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   </section>
 
-  <section id="ax-contact" class="story-scene contact scene-dark" data-scene="12-contact" data-parallax-scene>
+  <section id="ax-contact" class="story-scene contact scene-dark" aria-labelledby="ax-contact-title" data-scene="12-contact" data-parallax-scene>
     <div class="scene-media">
       <picture class="scene-media-frame">
         <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.final.mobileAvif} />
@@ -398,7 +416,7 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
     <div class="grid-shell contact-layout">
       <div class="contact-copy reveal" data-parallax-copy>
         <p class="eyebrow">{c.contact.eyebrow}</p>
-        <h2>
+        <h2 id="ax-contact-title">
           <span class="contact-heading-question">{c.contact.question.map((line, index) => <>{index > 0 && <br />}{line}</>)}</span>
           <strong class="contact-heading-answer">{c.contact.answer.map((line, index) => <>{index > 0 && <br />}{line}</>)}</strong>
         </h2>

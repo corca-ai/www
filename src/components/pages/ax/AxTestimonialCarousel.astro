@@ -21,6 +21,9 @@ interface CarouselLabels {
   pause: string;
   replay: string;
   play: string;
+  carouselRoleDescription: string;
+  slideRoleDescription: string;
+  slidePositionTemplate: string;
 }
 
 interface Props {
@@ -29,6 +32,7 @@ interface Props {
 }
 
 const { items, labels } = Astro.props;
+const trackId = 'ax-testimonial-carousel-track';
 const interpolate = (template: string, values: Record<string, string | number>) =>
   Object.entries(values).reduce(
     (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
@@ -40,6 +44,8 @@ const interpolate = (template: string, values: Record<string, string | number>) 
   class="testimonial-carousel reveal"
   role="region"
   aria-label={labels.ariaLabel}
+  aria-roledescription={labels.carouselRoleDescription}
+  aria-keyshortcuts="ArrowLeft ArrowRight Home End"
   tabindex="0"
   data-ax-carousel
   data-dragging="false"
@@ -50,10 +56,16 @@ const interpolate = (template: string, values: Record<string, string | number>) 
   style="--carousel-progress: 0; --carousel-track-x: 0px; --carousel-drag-x: 0px;"
 >
   <div class="testimonial-carousel__viewport" data-carousel-viewport>
-    <div class="testimonial-carousel__track" data-carousel-track>
+    <div id={trackId} class="testimonial-carousel__track" data-carousel-track>
       {
-        items.map((item, index) => (
+        items.map((item, index) => {
+          const slideId = `ax-testimonial-slide-${item.id}`;
+          const positionId = `${slideId}-position`;
+          const companyId = `${slideId}-company`;
+          const quoteId = `${slideId}-quote`;
+          return (
           <figure
+            id={slideId}
             class:list={[
               'testimonial testimonial-carousel__slide',
               { 'testimonial--compact': item.id === 'kyowon' },
@@ -62,14 +74,23 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             data-testimonial-id={item.id}
             data-active={index === 0 ? 'true' : 'false'}
             role="group"
-            aria-label={interpolate(labels.slideAriaTemplate, {
+            aria-roledescription={labels.slideRoleDescription}
+            aria-labelledby={`${positionId} ${companyId}`}
+            aria-describedby={quoteId}
+            data-carousel-status-label={interpolate(labels.slideAriaTemplate, {
               current: index + 1,
               total: items.length,
               company: item.company,
             })}
             aria-hidden={index === 0 ? 'false' : 'true'}
           >
-            <blockquote>
+            <span id={positionId} class="sr-only">
+              {interpolate(labels.slidePositionTemplate, {
+                current: index + 1,
+                total: items.length,
+              })}
+            </span>
+            <blockquote id={quoteId}>
               “{
                 item.quote.map((line, lineIndex) => (
                   <>
@@ -89,10 +110,11 @@ const interpolate = (template: string, values: Record<string, string | number>) 
                 loading="lazy"
                 decoding="async"
               />
-              <span><strong>{item.company}</strong><small>{item.source}</small></span>
+              <span><strong id={companyId}>{item.company}</strong><small>{item.source}</small></span>
             </figcaption>
           </figure>
-        ))
+          );
+        })
       }
     </div>
   </div>
@@ -102,6 +124,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       type="button"
       class="testimonial-carousel__control testimonial-carousel__arrow"
       aria-label={labels.previous}
+      aria-controls={trackId}
       title={labels.previous}
       data-carousel-previous
       disabled
@@ -122,6 +145,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             type="button"
             class="testimonial-carousel__selector"
             aria-label={interpolate(labels.viewSlideAriaTemplate, { company: item.company })}
+            aria-controls={`ax-testimonial-slide-${item.id}`}
             aria-current={index === 0 ? 'true' : undefined}
             data-carousel-select={index}
           >
@@ -140,6 +164,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       type="button"
       class="testimonial-carousel__control testimonial-carousel__playback"
       aria-label={labels.pause}
+      aria-controls={trackId}
       title={labels.pause}
       data-carousel-playback
     >
@@ -155,6 +180,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       type="button"
       class="testimonial-carousel__control testimonial-carousel__arrow"
       aria-label={labels.next}
+      aria-controls={trackId}
       title={labels.next}
       data-carousel-next
     >

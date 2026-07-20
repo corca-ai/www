@@ -1,14 +1,16 @@
 ---
-title: Corca AX page
+title: Corca AX route
 ---
 
-# Corca AX page
+# Corca AX route
 
-Corca AX is a localized campaign page served from the shared Corca website at
-`/ax`. Korean is the default locale; English, Japanese and Simplified Chinese
-use `/en/ax`, `/ja/ax` and `/zh/ax`. The page is part of the normal Astro build,
-so it inherits the shared header, footer, canonical URLs, language switcher,
-analytics and deployment flow from `BaseLayout.astro`.
+Corca's localized AX campaign page is served from the shared website at `/ax`.
+Korean is the default locale; English, Japanese and Simplified Chinese use
+`/en/ax`, `/ja/ax` and `/zh/ax`. The visible service provider is always named
+Corca; AX describes the consulting work rather than a separate company or
+brand. The page is part of the normal Astro build, so it inherits the shared
+header, footer, canonical URLs, language switcher, analytics and deployment
+flow from `BaseLayout.astro`.
 
 ## Ownership map
 
@@ -46,6 +48,12 @@ Analytics is queued immediately but its network script is delayed until five
 seconds after `load` or the first interaction. Carousel images are only
 preloaded after their carousel enters the viewport. Desktop behavior and other
 routes keep their existing loading strategy.
+
+Major AX sections expose stable heading IDs through `aria-labelledby`, and
+descriptive copy is connected with `aria-describedby`. Both carousels expose
+localized carousel and slide semantics, stable slide IDs, keyboard shortcuts
+and polite status updates for manual navigation. Preserve those relationships
+when changing markup; autoplay must not announce every automatic transition.
 
 ## Update copy or assets
 

@@ -201,7 +201,7 @@ function initializeCarousel(root: HTMLElement) {
     if (reachedEnd) playback = 'ended';
     else if (playback === 'ended') playback = 'paused';
     renderSelection();
-    if (status) status.textContent = slides[activeIndex]?.getAttribute('aria-label') ?? '';
+    if (status) status.textContent = slides[activeIndex]?.dataset.carouselStatusLabel ?? '';
     renderPlayback();
     startAnimation();
   };

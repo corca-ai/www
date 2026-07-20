@@ -38,10 +38,10 @@ const staticPageDefinitions = {
     ogImage: '/og-ax.png',
     ogImageAlt: (l) =>
       ({
-        ko: 'Corca AX 기업 AI 전환 컨설팅',
-        en: 'Corca AX enterprise AI transformation consulting',
-        ja: 'Corca AX 企業AI変革コンサルティング',
-        zh: 'Corca AX 企业AI转型咨询',
+        ko: 'Corca 기업 AI 전환 컨설팅',
+        en: 'Corca enterprise AI transformation consulting',
+        ja: 'Corca 企業AI変革コンサルティング',
+        zh: 'Corca 企业AI转型咨询',
       })[l],
     jsonLd: (site, lang, meta) => [
       axServiceLd(

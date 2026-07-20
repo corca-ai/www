@@ -37,11 +37,13 @@ Astro does not define `/blog` routes in `src/pages/`. Cloudflare Workers Static
 Assets serves the files under `public/blog/` directly after the Astro build
 places them in `dist/blog/`.
 
-During `pnpm build`, `scripts/sync-blog-shell-assets.js` reads the GA4
-measurement ID rendered by `src/layouts/BaseLayout.astro` and injects it into
-the deployable blog pages before `public/blog/app.js` starts. The public source
-HTML intentionally has no measurement ID, so the production ID remains
-single-sourced and analytics is enabled only in generated build output.
+During `pnpm build`, `scripts/sync-blog-shell-assets.js` copies each locale's
+rendered `src/components/Header.astro` output into every deployable blog page,
+then syncs the current BaseLayout CSS and injects the GA4 measurement ID before
+`public/blog/app.js` starts. The public source HTML intentionally remains a
+static content-generation shell with no measurement ID; the production header,
+CSS and analytics configuration are single-sourced in the Astro site and are
+applied to generated build output.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
@@ -163,9 +165,11 @@ When changing blog files, keep these invariants:
 
 - Generated blog links and asset URLs must start with `/blog/`.
 - The public blog pages should keep the main website header and footer.
-- Locale alias pages under `public/en/blog/`, `public/ja/blog/` and
-  `public/zh/blog/` should keep their language switcher links pointed at
-  `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`.
+- Header navigation changes belong in `src/components/Header.astro`; the build
+  sync applies that component to blog list, article and localized alias pages.
+- Locale alias list and 404 pages should keep their language switcher links
+  pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
+  should point at the same slug under each available locale alias.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
 - Analytics must initialize independently of the list UI because static article

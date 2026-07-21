@@ -142,28 +142,45 @@ assert(robots.includes('.+omnNNNNh.'), 'robots.txt Corca ASCII Identity is missi
 
 const llms = readDist('llms.txt');
 assert(
-  llms.startsWith('# Corca\n\n## English\n'),
-  'llms.txt needs the English company profile first',
+  llms.startsWith('# Corca\n\n> Corca is a Korean AI company'),
+  'llms.txt needs the canonical Corca introduction first',
 );
-for (const heading of ['## English', '## 한국어', '## 日本語', '## 中文']) {
+for (const heading of ['## 한국어', '## English', '## 日本語', '## 中文', '## Optional']) {
   assert(llms.includes(heading), `llms.txt is missing ${heading}`);
 }
 assert(
-  !/https?:\/\/|www\.|\]\(/i.test(llms),
-  'llms.txt must remain independent of the public hostname',
+  /- \[[^\]]+\]\(https:\/\/www\.corca\.ai\//.test(llms),
+  'llms.txt H2 sections must contain Markdown links',
 );
-for (const product of ['Moonlight', 'Trace', 'Corca AX']) {
-  assert(
-    (llms.match(new RegExp(product, 'g')) ?? []).length === 4,
-    `llms.txt must describe ${product} once in each language`,
-  );
-}
 assert(
   !llms.includes('Corca Ads'),
   'llms.txt must not advertise the discontinued Corca Ads service',
 );
-for (const characteristic of ['OpenAI', 'Baby Unicorn', 'ACM RecSys Challenge', 'AI-native']) {
-  assert(llms.includes(characteristic), `llms.txt is missing the verified ${characteristic} fact`);
+assert(!llms.includes('www.borca.ai'), 'llms.txt must not expose the retiring borca.ai hostname');
+for (const path of [
+  '/',
+  '/products',
+  '/ax',
+  '/about',
+  '/en/',
+  '/en/products',
+  '/en/ax',
+  '/en/about',
+  '/ja/',
+  '/ja/products',
+  '/ja/ax',
+  '/ja/about',
+  '/zh/',
+  '/zh/products',
+  '/zh/ax',
+  '/zh/about',
+  '/news',
+  '/blog',
+  '/en/blog',
+  '/ja/blog',
+  '/zh/blog',
+]) {
+  assert(llms.includes(`https://www.corca.ai${path}`), `llms.txt is missing ${path}`);
 }
 
 for (const filename of [
@@ -281,5 +298,5 @@ for (const [lang, path] of localePages) {
 }
 
 console.log(
-  `Agentic discovery checks passed: ${pageUrls.length} sitemap URLs, a URL-free four-language llms company profile without Corca Ads, ${localePages.length} AX locales.`,
+  `Agentic discovery checks passed: ${pageUrls.length} sitemap URLs, a linked four-language llms directory without Corca Ads, ${localePages.length} AX locales.`,
 );

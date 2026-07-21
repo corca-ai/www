@@ -19,11 +19,11 @@ no `/sitemap-index.xml` compatibility alias because that URL was never a public
 indexing contract.
 
 `/llms.txt` is one canonical UTF-8 text document rather than four localized
-copies. It is a self-contained company profile in English, Korean, Japanese and
-Chinese. Each language describes the company, current products, enterprise AX
-service, working principles and mission with equivalent verified facts. The
-document has no URLs, so it remains correct while the public hostname changes.
-Do not reintroduce discontinued products such as Corca Ads.
+copies. It starts with the required H1 and summary, then provides Markdown link
+lists under Korean, English, Japanese, Chinese and optional-resource H2 sections.
+Every discovery link uses the canonical `https://www.corca.ai` hostname. Keep
+the route list and agentic discovery check synchronized when a public page
+moves, and do not reintroduce discontinued products such as Corca Ads.
 
 ## Accessible AX interaction contract
 

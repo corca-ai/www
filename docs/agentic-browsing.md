@@ -19,10 +19,11 @@ no `/sitemap-index.xml` compatibility alias because that URL was never a public
 indexing contract.
 
 `/llms.txt` is one canonical UTF-8 text document rather than four localized
-copies. It begins with an English global description, then gives official links
-and terminology in Korean, English, Japanese and Chinese. Korean remains the
-primary site language; the language sections help agents select the appropriate
-localized source without treating machine translation as official copy.
+copies. It is a self-contained company profile in English, Korean, Japanese and
+Chinese. Each language describes the company, products, enterprise AX service,
+working principles and mission with equivalent verified facts. The document has
+no URLs, so it remains correct while the public hostname changes and does not
+turn into a stale link directory.
 
 ## Accessible AX interaction contract
 
@@ -40,7 +41,7 @@ not announce every transition, avoiding repetitive screen-reader output.
 ## Automated gate and trace-only evidence
 
 Run a production build before `pnpm check:agentic`. The gate checks the built
-sitemap, robots and llms documents, resolves their public links, and validates
+sitemap and robots links, validates the URL-free multilingual llms profile, and validates
 the four AX locale documents for landmarks, heading order, image alternatives,
 carousel roles, label references, named controls and live status regions. CI
 runs it immediately after the build so generated output is the evidence.

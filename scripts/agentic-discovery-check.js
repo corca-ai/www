@@ -142,17 +142,25 @@ assert(robots.includes('.+omnNNNNh.'), 'robots.txt Corca ASCII Identity is missi
 
 const llms = readDist('llms.txt');
 assert(
-  llms.startsWith('# Corca\n\n> Corca is a Korean AI company'),
-  'llms.txt needs the English global summary first',
+  llms.startsWith('# Corca\n\n## English\n'),
+  'llms.txt needs the English company profile first',
 );
-for (const heading of ['## 한국어', '## English', '## 日本語', '## 中文', '## Optional']) {
+for (const heading of ['## English', '## 한국어', '## 日本語', '## 中文']) {
   assert(llms.includes(heading), `llms.txt is missing ${heading}`);
 }
-const llmsUrls = [...llms.matchAll(/\]\((https:\/\/www\.borca\.ai\/[^)]*)\)/g)].map(
-  (match) => match[1],
+assert(
+  !/https?:\/\/|www\.|\]\(/i.test(llms),
+  'llms.txt must remain independent of the public hostname',
 );
-assert(llmsUrls.length === 21, `expected 21 official llms.txt links, found ${llmsUrls.length}`);
-for (const url of llmsUrls) assertPublicUrl(url, 'llms.txt');
+for (const product of ['Moonlight', 'Trace', 'Corca Ads', 'Corca AX']) {
+  assert(
+    (llms.match(new RegExp(product, 'g')) ?? []).length === 4,
+    `llms.txt must describe ${product} once in each language`,
+  );
+}
+for (const characteristic of ['OpenAI', 'Baby Unicorn', 'ACM RecSys Challenge', 'AI-native']) {
+  assert(llms.includes(characteristic), `llms.txt is missing the verified ${characteristic} fact`);
+}
 
 for (const filename of [
   'sitemap-pages.xml',
@@ -269,5 +277,5 @@ for (const [lang, path] of localePages) {
 }
 
 console.log(
-  `Agentic discovery checks passed: ${pageUrls.length} sitemap URLs, ${llmsUrls.length} llms links, ${localePages.length} AX locales.`,
+  `Agentic discovery checks passed: ${pageUrls.length} sitemap URLs, a URL-free four-language llms company profile, ${localePages.length} AX locales.`,
 );

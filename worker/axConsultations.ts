@@ -259,7 +259,7 @@ async function sendConsultationEmail(
   }).format(new Date());
   const label = topicLabels[input.topic];
   const text = [
-    'Corca의 AX 컨설팅 상담 요청',
+    'Corca AX 상담 요청',
     '',
     `이름: ${input.name}`,
     `이메일: ${input.email}`,
@@ -295,7 +295,7 @@ async function sendConsultationEmail(
         `<tr><th style="width:120px;text-align:left;vertical-align:top;padding:12px;border-top:1px solid #dce4ee">${heading}</th><td style="padding:12px;border-top:1px solid #dce4ee">${value}</td></tr>`,
     )
     .join('');
-  const html = `<div style="font-family:Arial,'Apple SD Gothic Neo',sans-serif;color:#10213d;line-height:1.65;max-width:680px;margin:0 auto;padding:32px"><p style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#056eb9;margin:0 0 12px">CORCA · AX CONSULTING</p><h1 style="font-size:28px;line-height:1.25;margin:0 0 28px">새 상담 요청이 접수되었습니다.</h1><table style="width:100%;border-collapse:collapse;font-size:15px"><tbody>${rows}</tbody></table></div>`;
+  const html = `<div style="font-family:Arial,'Apple SD Gothic Neo',sans-serif;color:#10213d;line-height:1.65;max-width:680px;margin:0 auto;padding:32px"><p style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#056eb9;margin:0 0 12px">CORCA AX</p><h1 style="font-size:28px;line-height:1.25;margin:0 0 28px">새 상담 요청이 접수되었습니다.</h1><table style="width:100%;border-collapse:collapse;font-size:15px"><tbody>${rows}</tbody></table></div>`;
 
   const configuredRecipients = String(env.AX_CONSULTATION_TO || '')
     .split(',')
@@ -308,10 +308,10 @@ async function sendConsultationEmail(
       'https://api.resend.com/emails',
       {
         body: JSON.stringify({
-          from: String(env.RESEND_FROM || '').trim() || 'Corca <ax@corca.ai>',
+          from: String(env.RESEND_FROM || '').trim() || 'Corca AX <ax@corca.ai>',
           html,
           reply_to: input.email,
-          subject: `[Corca의 AX 컨설팅 문의] ${label}`,
+          subject: `[Corca AX 상담 요청] ${label}`,
           text,
           to: recipients,
         }),

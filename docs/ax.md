@@ -1,17 +1,14 @@
 ---
-title: Corca AX consulting page
+title: Corca AX page
 ---
 
-# Corca's AX consulting page
+# Corca AX page
 
-Corca's AX consulting campaign is served from the shared Corca website at `/ax`.
-Korean is the default locale; English, Japanese and Simplified Chinese use
-`/en/ax`, `/ja/ax` and `/zh/ax`. Visible company references on these four AX
-routes use `Corca`; service references use the localized equivalent of “Corca's
-AX consulting.” Other website routes keep their own approved copy. The page is
-part of the normal Astro build, so it inherits the shared header, footer,
-canonical URLs, language switcher, analytics and deployment flow from
-`BaseLayout.astro`.
+Corca AX is a localized campaign page served from the shared Corca website at
+`/ax`. Korean is the default locale; English, Japanese and Simplified Chinese
+use `/en/ax`, `/ja/ax` and `/zh/ax`. The page is part of the normal Astro build,
+so it inherits the shared header, footer, canonical URLs, language switcher,
+analytics and deployment flow from `BaseLayout.astro`.
 
 ## Ownership map
 
@@ -91,7 +88,7 @@ submissions:
 | --- | --- | --- |
 | `TURNSTILE_SECRET_KEY` | yes | Server-side Turnstile verification secret. |
 | `RESEND_API_KEY` | yes | Resend API credential used for delivery. |
-| `RESEND_FROM` | recommended | Verified sender, for example `Corca <ax@corca.ai>`. |
+| `RESEND_FROM` | recommended | Verified sender, for example `Corca AX <ax@corca.ai>`. |
 | `AX_CONSULTATION_TO` | optional | Comma-separated recipients; defaults to the AX contact owner. |
 
 Set `PUBLIC_TURNSTILE_SITE_KEY` in the Astro build environment so the static page

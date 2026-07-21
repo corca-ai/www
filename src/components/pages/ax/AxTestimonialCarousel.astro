@@ -30,6 +30,7 @@ interface Props {
 }
 
 const { items, labels } = Astro.props;
+const carouselId = 'testimonial-carousel';
 const interpolate = (template: string, values: Record<string, string | number>) =>
   Object.entries(values).reduce(
     (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
@@ -62,13 +63,17 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             data-carousel-slide
             data-testimonial-id={item.id}
             data-active={index === 0 ? 'true' : 'false'}
-            aria-label={interpolate(labels.slideAriaTemplate, {
+            data-carousel-announcement={interpolate(labels.slideAriaTemplate, {
               current: index + 1,
               total: items.length,
               company: item.company,
             })}
+            aria-labelledby={`${carouselId}-${item.id}-position ${carouselId}-${item.id}-company`}
             aria-hidden={index === 0 ? undefined : 'true'}
           >
+            <span id={`${carouselId}-${item.id}-position`} class="sr-only">
+              {index + 1} / {items.length}
+            </span>
             <blockquote>
               “{
                 item.quote.map((line, lineIndex) => (
@@ -92,7 +97,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
                   decoding="async"
                 />
               </picture>
-              <span><strong>{item.company}</strong><small>{item.source}</small></span>
+              <span><strong id={`${carouselId}-${item.id}-company`}>{item.company}</strong><small>{item.source}</small></span>
             </figcaption>
           </figure>
         ))

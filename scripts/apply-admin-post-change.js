@@ -944,7 +944,6 @@ function renderBlogCategoriesSitemap(postRecordsByLocale) {
     { key: 'product', label: 'Product' },
     { key: 'ax', label: 'AX' },
     { key: 'corca', label: 'Corca' },
-    { key: 'tech', label: 'Tech' },
   ];
   const lastmod = newestPostDate(postRecordsByLocale);
   return renderUrlset(

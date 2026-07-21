@@ -209,10 +209,13 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(sitemap, /hreflang=/);
   assert.doesNotMatch(sitemap, /<changefreq>/);
   assert.doesNotMatch(sitemap, /<priority>/);
-  assert.match(
-    await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8'),
-    /\/blog\?topic=product/,
-  );
+  const categorySitemap = await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8');
+  assert.match(categorySitemap, /\/blog\?topic=product/);
+  assert.doesNotMatch(categorySitemap, /[?&]topic=tech/);
+  for (const localeRoot of ['blog', 'en/blog', 'ja/blog', 'zh/blog']) {
+    const blogIndex = await readFile(join(workDir, `public/${localeRoot}/index.html`), 'utf8');
+    assert.doesNotMatch(blogIndex, /data-topic-filter="tech"/);
+  }
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
   assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);
   assert.match(rss, /<atom:link href="https:\/\/www\.corca\.ai\/rss"/);

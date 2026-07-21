@@ -28,6 +28,8 @@ jobs:
         run: pnpm check:knip
       - name: Build
         run: pnpm build
+      - name: Agentic discovery + accessibility contract
+        run: pnpm check:agentic
 
   # Duplication (nose) + docs (awiki) gates. Both are public corca-ai tools;
   # installed here from their public release binaries — no token needed.

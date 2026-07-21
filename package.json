@@ -15,6 +15,7 @@
     "check:biome": "biome check",
     "check:astro": "astro check",
     "check:knip": "knip",
+    "check:agentic": "node scripts/agentic-discovery-check.js",
     "check:dup": "nose query src --mode syntax 'dup>80' --fail-on any",
     "check:docs": "awiki lint -root docs",
     "blog:content:apply": "node scripts/apply-admin-post-change.js",

@@ -21,24 +21,24 @@ export type PageMetaKey =
 export const pageMeta = {
   ax: {
     ko: {
-      title: '기업 AX 컨설팅 | AI 도입을 반복되는 성과로 바꾸는 Corca',
+      title: 'Corca AX | AI 도입을 반복되는 성과로 바꾸는 기업 AX 컨설팅',
       description:
-        'AI 과제를 고르고 첫 업무를 실제 운영에 올린 뒤, 다음 업무는 조직이 직접 확장하도록 돕는 Corca의 AX 컨설팅입니다. 2주 의사결정 지도부터 6주 운영 전환, 조직 확산까지 함께합니다.',
+        'AI 과제를 고르고 첫 업무를 실제 운영에 올린 뒤, 다음 업무는 조직이 직접 확장하도록 돕는 Corca AX 컨설팅입니다. 2주 의사결정 지도부터 6주 운영 전환, 조직 확산까지 함께합니다.',
     },
     en: {
-      title: 'Enterprise AX Consulting for Repeatable AI Results | Corca',
+      title: 'Corca AX | Enterprise AI Transformation That Delivers Repeatable Results',
       description:
-        "Corca's AX consulting helps enterprises choose the right AI opportunities, put the first workflow into production, and build the capability to expand the next one themselves—from a two-week decision map to a six-week operating transition.",
+        'Corca AX helps enterprises choose the right AI opportunities, put the first workflow into production, and build the capability to expand the next one themselves—from a two-week decision map to a six-week operating transition.',
     },
     ja: {
-      title: 'AI導入を継続的な成果に変える企業AXコンサルティング | Corca',
+      title: 'Corca AX | AI導入を継続的な成果に変える企業AXコンサルティング',
       description:
-        'CorcaのAXコンサルティングは、AIで取り組む課題を選び、最初の業務を実運用に移し、次の業務を組織自身で展開できる状態をつくります。2週間の意思決定マップから6週間の運用移行、組織展開まで伴走します。',
+        'Corca AXは、AIで取り組む課題を選び、最初の業務を実運用に移し、次の業務を組織自身で展開できる状態をつくります。2週間の意思決定マップから6週間の運用移行、組織展開まで伴走します。',
     },
     zh: {
-      title: '将AI导入转化为可持续成果的企业AX咨询 | Corca',
+      title: 'Corca AX | 将AI导入转化为可持续成果的企业AX咨询',
       description:
-        'Corca的AX咨询服务帮助企业选择合适的AI课题，将首个业务真正投入运营，并建立自主扩展下一个业务的能力——从两周决策地图、六周运营转型到组织推广，全程协作落地。',
+        'Corca AX帮助企业选择合适的AI课题，将首个业务真正投入运营，并建立自主扩展下一个业务的能力——从两周决策地图、六周运营转型到组织推广，全程协作落地。',
     },
   },
   products: {

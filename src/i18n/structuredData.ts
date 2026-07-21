@@ -72,7 +72,7 @@ const axOfferNames: Record<Lang, [string, string, string]> = {
   zh: ['AX决策地图', '首个业务上线运营', '业务与部门扩展'],
 };
 
-/** Service and offers for Corca's AX consulting page. */
+/** Service and offers for the Corca AX consulting page. */
 export function axServiceLd(
   site: URL,
   lang: Lang,

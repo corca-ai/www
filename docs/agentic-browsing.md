@@ -20,10 +20,10 @@ indexing contract.
 
 `/llms.txt` is one canonical UTF-8 text document rather than four localized
 copies. It is a self-contained company profile in English, Korean, Japanese and
-Chinese. Each language describes the company, products, enterprise AX service,
-working principles and mission with equivalent verified facts. The document has
-no URLs, so it remains correct while the public hostname changes and does not
-turn into a stale link directory.
+Chinese. Each language describes the company, current products, enterprise AX
+service, working principles and mission with equivalent verified facts. The
+document has no URLs, so it remains correct while the public hostname changes.
+Do not reintroduce discontinued products such as Corca Ads.
 
 ## Accessible AX interaction contract
 

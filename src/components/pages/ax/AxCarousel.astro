@@ -60,13 +60,12 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             class="pain-carousel__slide relative shrink-0 overflow-hidden rounded-[26px] bg-black shadow-[0_28px_80px_rgba(0,0,0,0.34)] ring-1 ring-white/10 sm:rounded-[32px]"
             data-carousel-slide
             data-active={index === 0 ? "true" : "false"}
-            role="group"
             aria-label={interpolate(labels.slideTemplate, {
               current: index + 1,
               total: items.length,
               title: item.title,
             })}
-            aria-hidden={index === 0 ? "false" : "true"}
+            aria-hidden={index === 0 ? undefined : "true"}
           >
             <picture class="pointer-events-none absolute inset-0 h-full w-full select-none">
               <source media="(max-width: 720px)" type="image/avif" srcset={item.image.mobileAvif} />

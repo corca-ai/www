@@ -62,13 +62,12 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             data-carousel-slide
             data-testimonial-id={item.id}
             data-active={index === 0 ? 'true' : 'false'}
-            role="group"
             aria-label={interpolate(labels.slideAriaTemplate, {
               current: index + 1,
               total: items.length,
               company: item.company,
             })}
-            aria-hidden={index === 0 ? 'false' : 'true'}
+            aria-hidden={index === 0 ? undefined : 'true'}
           >
             <blockquote>
               “{

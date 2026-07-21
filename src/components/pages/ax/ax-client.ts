@@ -115,7 +115,8 @@ function initializeCarousel(root: HTMLElement) {
     slides.forEach((slide, index) => {
       const active = index === activeIndex;
       slide.dataset.active = String(active);
-      slide.setAttribute('aria-hidden', String(!active));
+      if (active) slide.removeAttribute('aria-hidden');
+      else slide.setAttribute('aria-hidden', 'true');
     });
     selectors.forEach((button, index) => {
       const active = index === activeIndex;

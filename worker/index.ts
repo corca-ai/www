@@ -7,6 +7,7 @@
 import { canonicalUrl } from '../src/canonical';
 import { SITE_ORIGIN } from '../src/site';
 import { type AxConsultationEnv, handleAxConsultation } from './axConsultations';
+import { withStaticAssetCacheHeaders } from './staticAssetHeaders.js';
 
 interface Env extends AxConsultationEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
@@ -19,16 +20,6 @@ const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const axConsultationPattern = /^\/api\/ax\/consultations\/?$/;
 const adminPathPattern = /^\/(?:api\/admin|blog\/admin)(?:\/|$)/;
 const githubDispatchRepository = 'corca-ai/www';
-const immutableAssetPatterns = [
-  /^\/_astro\//,
-  /^\/fonts\/ax-mobile\/v\d+\//,
-  /^\/images\/pages\/ax\/logos\/v\d+\//,
-];
-const mutableStaticAssetPattern =
-  /\.(?:avif|css|gif|ico|jpe?g|js|json|png|svg|webmanifest|webp|woff2)$/i;
-const immutableCacheControl = 'public, max-age=31536000, immutable';
-const mutableAssetCacheControl = 'public, max-age=86400, stale-while-revalidate=604800';
-const htmlCacheControl = 'public, max-age=0, must-revalidate';
 
 // Preview hosts must not be rewritten to the production domain, or the
 // workers.dev preview and local `wrangler dev` would bounce to prod. Trailing-
@@ -60,30 +51,6 @@ export default {
     return withStaticAssetCacheHeaders(request, response);
   },
 };
-
-export function withStaticAssetCacheHeaders(request: Request, response: Response): Response {
-  if (!response.ok || !['GET', 'HEAD'].includes(request.method.toUpperCase())) return response;
-
-  const pathname = new URL(request.url).pathname;
-  const contentType = response.headers.get('Content-Type') || '';
-  const headers = new Headers(response.headers);
-
-  if (immutableAssetPatterns.some((pattern) => pattern.test(pathname))) {
-    headers.set('Cache-Control', immutableCacheControl);
-  } else if (contentType.includes('text/html')) {
-    headers.set('Cache-Control', htmlCacheControl);
-  } else if (mutableStaticAssetPattern.test(pathname)) {
-    headers.set('Cache-Control', mutableAssetCacheControl);
-  } else {
-    return response;
-  }
-
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-}
 
 function isPreviewRequest(request: Request, url: URL): boolean {
   const forwardedHost = (request.headers.get('Host') || '').split(':')[0] || '';

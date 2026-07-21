@@ -148,7 +148,8 @@
                     <p class="tile-meta">
                       <xsl:choose>
                         <xsl:when test="contains(s:loc, 'sitemap-pages.xml')">
-                          공개 페이지 · 4개 언어
+                          공개 페이지 · 4개 언어 · Last Modified:
+                          <xsl:value-of select="substring(s:lastmod, 1, 10)" />
                         </xsl:when>
                         <xsl:otherwise>
                           Last Modified: <xsl:value-of select="substring(s:lastmod, 1, 10)" />

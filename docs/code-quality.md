@@ -20,8 +20,8 @@ and the `pnpm check` script (see [development](development.md)).
   The native `nose`/`awiki` binaries are ignored as external tools.
 - **Agentic discovery check** validates the built sitemap, robots, `llms.txt`
   and localized AX accessibility contracts. It runs after the production build;
-  the exact scope and evidence rules live in
-  [agentic browsing and discovery](agentic-browsing.md).
+  see [agentic browsing and discovery](agentic-browsing.md) for the exact scope
+  and evidence rules.
 - **nose** detects code duplication across `src/**/*.ts` as a jscpd replacement;
   its gate is configured in `nose.toml`. It does not analyze `.astro` files, so
   shared logic belongs in `.ts` modules where nose can see it.

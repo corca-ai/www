@@ -7,12 +7,10 @@ const sitemapNames = ['pages', 'categories', 'tags', 'posts'];
 // owns the child XML files because admin and Notion publishing update them.
 export const GET: APIRoute = ({ site }) => {
   const base = (site ?? new URL(SITE_ORIGIN)).href;
-  const lastmod = new Date().toISOString();
   const entries = sitemapNames
     .map(
       (name) => `  <sitemap>
     <loc>${base}sitemap-${name}.xml</loc>
-    <lastmod>${lastmod}</lastmod>
   </sitemap>`,
     )
     .join('\n');

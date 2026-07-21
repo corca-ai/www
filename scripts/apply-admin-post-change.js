@@ -910,7 +910,6 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 }
 
 async function renderBlogDiscoveryFiles(postRecordsByLocale) {
-  const sitemapPages = renderBlogPagesSitemap(postRecordsByLocale);
   const sitemapCategories = renderBlogCategoriesSitemap(postRecordsByLocale);
   const sitemapTags = renderBlogTagsSitemap(postRecordsByLocale);
   const sitemapPosts = renderBlogPostsSitemap(postRecordsByLocale);
@@ -919,7 +918,6 @@ async function renderBlogDiscoveryFiles(postRecordsByLocale) {
   const feed = renderBlogJsonFeed(postRecordsByLocale.get('ko') || []);
   const robots = renderBlogRobotsTxt();
 
-  await writeFile(join(repoRoot, 'public/sitemap-pages.xml'), sitemapPages);
   await writeFile(join(repoRoot, 'public/sitemap-categories.xml'), sitemapCategories);
   await writeFile(join(repoRoot, 'public/sitemap-tags.xml'), sitemapTags);
   await writeFile(join(repoRoot, 'public/sitemap-posts.xml'), sitemapPosts);
@@ -928,15 +926,6 @@ async function renderBlogDiscoveryFiles(postRecordsByLocale) {
   await writeFile(join(blogRoot, 'feed.json'), feed);
   await writeFile(join(blogRoot, 'robots.txt'), robots);
   console.log('Rendered blog sitemap index children, RSS, JSON feed and robots.txt.');
-}
-
-function renderBlogPagesSitemap(postRecordsByLocale) {
-  return renderUrlset(
-    supportedLocales.map((locale) => ({
-      path: localeLabels[locale].blogPath,
-      lastmod: newestPostDate(postRecordsByLocale),
-    })),
-  );
 }
 
 function renderBlogCategoriesSitemap(postRecordsByLocale) {

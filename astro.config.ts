@@ -1,4 +1,3 @@
-import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { SITE_ORIGIN } from './src/site';
@@ -23,19 +22,6 @@ export default defineConfig({
       redirectToDefaultLocale: false,
     },
   },
-  integrations: [
-    sitemap({
-      i18n: {
-        defaultLocale: 'ko',
-        locales: {
-          ko: 'ko-KR',
-          en: 'en-US',
-          ja: 'ja-JP',
-          zh: 'zh-CN',
-        },
-      },
-    }),
-  ],
   vite: {
     plugins: [tailwindcss()],
   },

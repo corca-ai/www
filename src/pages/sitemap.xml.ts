@@ -24,7 +24,7 @@ export const GET: APIRoute = ({ site }) => {
     )
     .join('\n');
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl?v=20260721-blue"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${entries}
 </sitemapindex>

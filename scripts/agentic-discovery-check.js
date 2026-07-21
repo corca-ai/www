@@ -77,9 +77,32 @@ for (const entry of sitemapIndexEntries) {
     `sitemap.xml lastmod does not match the newest URL in ${entry.loc}`,
   );
 }
+for (const filename of [
+  'sitemap.xml',
+  'sitemap-pages.xml',
+  'sitemap-categories.xml',
+  'sitemap-tags.xml',
+  'sitemap-posts.xml',
+]) {
+  assert(
+    readDist(filename).includes('href="/sitemap.xsl?v=20260721-blue"'),
+    `${filename} must reference the current sitemap presentation`,
+  );
+}
 assert(
   !existsSync(join(dist, 'sitemap-index.xml')),
   'legacy sitemap-index.xml must not be emitted',
+);
+
+const sitemapPresentation = readDist('sitemap.xsl');
+assert(
+  sitemapPresentation.includes('class="latest"') &&
+    sitemapPresentation.includes('URL Last Modified'),
+  'child sitemap pages must distinguish the sitemap date from URL dates',
+);
+assert(
+  sitemapPresentation.includes('/fonts/ax-mobile/v1/pretendard-ko.woff2'),
+  'sitemap presentation must use the lightweight Pretendard subset',
 );
 
 const pageSitemap = readDist('sitemap-pages.xml');

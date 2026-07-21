@@ -152,12 +152,16 @@ assert(
   !/https?:\/\/|www\.|\]\(/i.test(llms),
   'llms.txt must remain independent of the public hostname',
 );
-for (const product of ['Moonlight', 'Trace', 'Corca Ads', 'Corca AX']) {
+for (const product of ['Moonlight', 'Trace', 'Corca AX']) {
   assert(
     (llms.match(new RegExp(product, 'g')) ?? []).length === 4,
     `llms.txt must describe ${product} once in each language`,
   );
 }
+assert(
+  !llms.includes('Corca Ads'),
+  'llms.txt must not advertise the discontinued Corca Ads service',
+);
 for (const characteristic of ['OpenAI', 'Baby Unicorn', 'ACM RecSys Challenge', 'AI-native']) {
   assert(llms.includes(characteristic), `llms.txt is missing the verified ${characteristic} fact`);
 }
@@ -277,5 +281,5 @@ for (const [lang, path] of localePages) {
 }
 
 console.log(
-  `Agentic discovery checks passed: ${pageUrls.length} sitemap URLs, a URL-free four-language llms company profile, ${localePages.length} AX locales.`,
+  `Agentic discovery checks passed: ${pageUrls.length} sitemap URLs, a URL-free four-language llms company profile without Corca Ads, ${localePages.length} AX locales.`,
 );

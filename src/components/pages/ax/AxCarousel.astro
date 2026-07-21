@@ -32,6 +32,7 @@ interface Props {
 }
 
 const { items, labels } = Astro.props;
+const carouselId = 'pain-carousel';
 const interpolate = (template: string, values: Record<string, string | number>) =>
   Object.entries(values).reduce(
     (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
@@ -60,13 +61,17 @@ const interpolate = (template: string, values: Record<string, string | number>) 
             class="pain-carousel__slide relative shrink-0 overflow-hidden rounded-[26px] bg-black shadow-[0_28px_80px_rgba(0,0,0,0.34)] ring-1 ring-white/10 sm:rounded-[32px]"
             data-carousel-slide
             data-active={index === 0 ? "true" : "false"}
-            aria-label={interpolate(labels.slideTemplate, {
+            data-carousel-announcement={interpolate(labels.slideTemplate, {
               current: index + 1,
               total: items.length,
               title: item.title,
             })}
+            aria-labelledby={`${carouselId}-${item.id}-position ${carouselId}-${item.id}-title`}
             aria-hidden={index === 0 ? undefined : "true"}
           >
+            <span id={`${carouselId}-${item.id}-position`} class="sr-only">
+              {index + 1} / {items.length}
+            </span>
             <picture class="pointer-events-none absolute inset-0 h-full w-full select-none">
               <source media="(max-width: 720px)" type="image/avif" srcset={item.image.mobileAvif} />
               <source media="(max-width: 720px)" type="image/webp" srcset={item.image.mobileWebp} />
@@ -88,7 +93,7 @@ const interpolate = (template: string, values: Record<string, string | number>) 
               aria-hidden="true"
             />
             <div class="relative z-10 flex h-full flex-col justify-end p-7 sm:p-10 lg:p-12">
-              <h3 class="max-w-[12ch] text-[clamp(34px,4vw,54px)] font-semibold leading-[1.05] tracking-[-0.045em] text-white">
+              <h3 id={`${carouselId}-${item.id}-title`} class="max-w-[12ch] text-[clamp(34px,4vw,54px)] font-semibold leading-[1.05] tracking-[-0.045em] text-white">
                 {item.title}
               </h3>
               <p class="mt-5 max-w-[34em] text-[15px] leading-[1.65] text-white/70 sm:text-[17px]">
@@ -164,4 +169,5 @@ const interpolate = (template: string, values: Record<string, string | number>) 
       </svg>
     </button>
   </div>
+  <p class="sr-only" aria-live="polite" aria-atomic="true" data-carousel-status></p>
 </div>

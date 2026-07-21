@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { defaultLang, type Lang, locales, localeTag } from '../i18n/ui';
 import { products } from '../products/registry';
 import { SITE_ORIGIN } from '../site';
+import { pageLastModified } from '../sitemapMetadata';
 import { staticPages } from '../staticPages';
 
 const escapeXml = (value: string) =>
@@ -42,6 +43,7 @@ export const GET: APIRoute = ({ site }) => {
       const loc = new URL(localizedPath(basePath, lang), origin).href;
       return `  <url>
     <loc>${escapeXml(loc)}</loc>
+    <lastmod>${pageLastModified(basePath)}</lastmod>
 ${alternates}
     <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(defaultHref)}" />
   </url>`;

@@ -1,7 +1,15 @@
+import { readFileSync } from 'node:fs';
 import type { APIRoute } from 'astro';
 import { SITE_ORIGIN } from '../site';
+import { latestLastModifiedFromXml, pagesSitemapLastModified } from '../sitemapMetadata';
 
 const sitemapNames = ['pages', 'categories', 'tags', 'posts'];
+
+const childLastModified = (name: string) => {
+  if (name === 'pages') return pagesSitemapLastModified;
+  const source = readFileSync(`public/sitemap-${name}.xml`, 'utf8');
+  return latestLastModifiedFromXml(source);
+};
 
 // Reference-style sitemap index for crawler entrypoints. The blog renderer
 // owns the child XML files because admin and Notion publishing update them.
@@ -11,6 +19,7 @@ export const GET: APIRoute = ({ site }) => {
     .map(
       (name) => `  <sitemap>
     <loc>${base}sitemap-${name}.xml</loc>
+    <lastmod>${childLastModified(name)}</lastmod>
   </sitemap>`,
     )
     .join('\n');

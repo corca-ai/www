@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { withStaticAssetCacheHeaders } from '../worker/staticAssetHeaders.js';
 
 const root = process.cwd();
 const dist = join(root, 'dist');
@@ -15,8 +16,25 @@ const assert = (condition, message) => {
 const readDist = (path) => {
   const file = join(dist, path);
   assert(existsSync(file), `missing dist/${path}; run the production build first`);
-  return readFileSync(file, 'utf8');
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(file));
+  } catch {
+    fail(`dist/${path} is not valid UTF-8`);
+  }
 };
+
+const validLastModified = (value) =>
+  /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z)?$/.test(value) &&
+  !Number.isNaN(Date.parse(value));
+
+const sitemapEntries = (xml, element) =>
+  [...xml.matchAll(new RegExp(`<${element}>\\s*([\\s\\S]*?)<\\/${element}>`, 'g'))].map((match) => {
+    const body = match[1] ?? '';
+    return {
+      loc: body.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '',
+      lastmod: body.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1] ?? '',
+    };
+  });
 
 const routeFile = (url) => {
   const pathname = new URL(url).pathname;
@@ -35,7 +53,8 @@ const assertPublicUrl = (url, source) => {
 };
 
 const sitemap = readDist('sitemap.xml');
-const childSitemaps = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+const sitemapIndexEntries = sitemapEntries(sitemap, 'sitemap');
+const childSitemaps = sitemapIndexEntries.map((entry) => entry.loc);
 const expectedSitemaps = ['pages', 'categories', 'tags', 'posts'].map(
   (name) => `https://www.borca.ai/sitemap-${name}.xml`,
 );
@@ -46,16 +65,35 @@ assert(
 for (const url of childSitemaps) {
   assert(existsSync(join(dist, new URL(url).pathname.slice(1))), `missing child sitemap: ${url}`);
 }
+for (const entry of sitemapIndexEntries) {
+  assert(validLastModified(entry.lastmod), `sitemap.xml has invalid lastmod for ${entry.loc}`);
+  const child = readDist(new URL(entry.loc).pathname.slice(1));
+  const childDates = sitemapEntries(child, 'url')
+    .map(({ lastmod }) => lastmod)
+    .sort();
+  assert(childDates.length > 0, `${entry.loc} contains no URL entries`);
+  assert(
+    entry.lastmod === childDates.at(-1),
+    `sitemap.xml lastmod does not match the newest URL in ${entry.loc}`,
+  );
+}
 assert(
   !existsSync(join(dist, 'sitemap-index.xml')),
   'legacy sitemap-index.xml must not be emitted',
 );
 
 const pageSitemap = readDist('sitemap-pages.xml');
-const pageUrls = [...pageSitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+const pageEntries = sitemapEntries(pageSitemap, 'url');
+const pageUrls = pageEntries.map((entry) => entry.loc);
 assert(pageUrls.length === 44, `expected 44 public page URLs, found ${pageUrls.length}`);
 assert(new Set(pageUrls).size === pageUrls.length, 'sitemap-pages.xml contains duplicate URLs');
 for (const url of pageUrls) assertPublicUrl(url, 'sitemap-pages.xml');
+for (const entry of pageEntries) {
+  assert(
+    validLastModified(entry.lastmod),
+    `sitemap-pages.xml has invalid lastmod for ${entry.loc}`,
+  );
+}
 assert(
   (pageSitemap.match(/hreflang="x-default"/g) ?? []).length === pageUrls.length,
   'every public page URL must include x-default',
@@ -92,6 +130,46 @@ const llmsUrls = [...llms.matchAll(/\]\((https:\/\/www\.borca\.ai\/[^)]*)\)/g)].
 );
 assert(llmsUrls.length === 21, `expected 21 official llms.txt links, found ${llmsUrls.length}`);
 for (const url of llmsUrls) assertPublicUrl(url, 'llms.txt');
+
+for (const filename of [
+  'sitemap-pages.xml',
+  'sitemap-categories.xml',
+  'sitemap-tags.xml',
+  'sitemap-posts.xml',
+]) {
+  const entries = sitemapEntries(readDist(filename), 'url');
+  assert(entries.length > 0, `${filename} contains no URL entries`);
+  for (const entry of entries) {
+    assert(entry.loc, `${filename} contains a URL without loc`);
+    assert(validLastModified(entry.lastmod), `${filename} has invalid lastmod for ${entry.loc}`);
+    assertPublicUrl(entry.loc, filename);
+  }
+}
+
+const applyStaticHeaders = (pathname, contentType) =>
+  withStaticAssetCacheHeaders(
+    new Request(`https://www.borca.ai${pathname}`),
+    new Response('fixture', { headers: { 'Content-Type': contentType } }),
+  );
+
+for (const [pathname, input, expected] of [
+  ['/llms.txt', 'text/plain', 'text/plain; charset=utf-8'],
+  ['/robots.txt', 'text/plain', 'text/plain; charset=utf-8'],
+  ['/sitemap.xml', 'application/xml', 'application/xml; charset=utf-8'],
+  ['/sitemap.xsl', 'text/xsl', 'text/xsl; charset=utf-8'],
+  ['/rss', '', 'application/rss+xml; charset=utf-8'],
+  ['/rss.xml', 'application/rss+xml', 'application/rss+xml; charset=utf-8'],
+]) {
+  const response = applyStaticHeaders(pathname, input);
+  assert(
+    response.headers.get('Content-Type') === expected,
+    `${pathname} must be served as ${expected}`,
+  );
+  assert(
+    response.headers.get('Cache-Control') === 'public, max-age=0, must-revalidate',
+    `${pathname} must revalidate instead of serving stale discovery data`,
+  );
+}
 
 const localePages = [
   ['ko-KR', 'ax/index.html'],

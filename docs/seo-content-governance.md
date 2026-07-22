@@ -104,8 +104,7 @@ For future AX content and image work:
    structured-data claims before implementation.
 2. Preserve the canonical, responsive image sources, mobile font split,
    loading priorities, cache paths and motion preferences.
-3. Run `pnpm check`, `pnpm build`, `pnpm check:agentic` and
-   `pnpm check:performance-contract`.
+3. Run `pnpm check`, `pnpm build`, `pnpm check:agentic`,
+   `pnpm check:performance-contract` and `pnpm check:seo-governance`.
 4. Complete keyboard, screen-reader, reduced-motion and responsive browser
    checks, then record the three-run production PageSpeed result.
-

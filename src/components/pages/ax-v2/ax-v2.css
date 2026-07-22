@@ -2573,20 +2573,9 @@ body:has(.ax-v2-dialog[open]) {
   }
 }
 
-/* Desktop section travel: native proximity snapping keeps long sections readable,
-   while the reveal curve supplies the requested acceleration and soft arrival. */
+/* Desktop reveal motion only. Page scrolling remains fully native so sections do
+   not pull toward the sticky header or interrupt the reader's chosen position. */
 @media (min-width: 721px) and (prefers-reduced-motion: no-preference) {
-  html:has(body[data-page='ax']) {
-    scroll-behavior: smooth;
-    scroll-snap-type: y proximity;
-    scroll-padding-top: 66px;
-  }
-
-  body[data-page='ax'] .ax-v2-page > section {
-    scroll-snap-align: start;
-    scroll-snap-stop: normal;
-  }
-
   html.js body[data-page='ax'] .ax-v2-page [data-reveal] {
     transform: translate3d(0, 36px, 0) scale(0.996);
     transition-duration: 0.95s, 1.05s;

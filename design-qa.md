@@ -107,7 +107,7 @@
 - `/private/tmp/ax-v2-qa/round6-environment-closing.png` verifies the exact approved two-line closing copy.
 - `/private/tmp/ax-v2-qa/round8-proof-gradient-and-type.png` verifies the PDF-referenced blue gradient on `조직의 체질을 바꿉니다.`, the bold second lead line, and the 80% supporting-body scale without changing the authored copy or breaks.
 - `/private/tmp/ax-v2-qa/round8-carousel-controls-and-marquee.png` verifies centered white carousel buttons and the unchanged logo-mask composition; the browser probe reports a 52.5-second marquee duration and zero horizontal overflow.
-- `/private/tmp/ax-v2-qa/round9-section-scroll-arrival.png` verifies the desktop section arrival below the 66 px sticky header after eased native scrolling, with no clipped heading or horizontal overflow.
+- `/private/tmp/ax-v2-qa/round9-section-scroll-arrival.png` records the earlier snapped-scroll iteration; the final round-11 browser probe supersedes that behavior and reports fully native vertical scrolling with no section anchoring.
 - `/private/tmp/ax-v2-qa/round10-gradient-accents.png` verifies the shared navy-to-Corca-blue-to-violet accent on the approved internal-proof line and all three circle titles, together with the enlarged gray cadence labels.
 - `/private/tmp/ax-v2-qa/round10-dark-gradient-accents.png` verifies the same accent treatment remains legible on the approved two-line slowdown emphasis against the navy section.
 - `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png` verifies that the Ceal-before diagram remains translation-safe HTML while its nine cross-connections are static, dashed, glow-free, and visually aligned with the supplied PDF crop.
@@ -156,6 +156,9 @@
 11. Round 10 requested consistent gradient emphasis across the approved phrase fragments, larger neutral cadence labels, a final punctuation correction, and a static Ceal-before connection map.
    - Fix: promoted the approved proof-title gradient to a shared accent class and applied it only to the annotated lines and card leads; increased cadence labels from 14 px to 17 px in gray; added the requested period to `필요합니다.`; and removed the residual blue rail fill, glow, animation, and transition from the dashed Ceal-before connections.
    - Post-fix evidence: browser probes report the shared gradient image, 17 px `rgb(123, 135, 151)` cadence labels, nine `animation-name: none` transparent rails with no box shadow, the corrected sentence-ending period, zero horizontal overflow, and no semantic heading changes.
+12. Round 11 found desktop section snapping visually intrusive because sections were pulled toward the sticky header during ordinary wheel scrolling.
+   - Fix: removed vertical `scroll-snap-type`, per-section snap alignment, snap-stop, scroll padding, and page-level forced smooth scrolling while retaining the restrained reveal animation inside each section.
+   - Post-fix evidence: the browser reports `scroll-snap-type: none`, section `scroll-snap-align: none`, `scroll-padding-top: auto`, an exact requested `scrollY` position without automatic correction, and zero horizontal overflow.
 
 ## Interaction and console checks
 

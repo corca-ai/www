@@ -32,6 +32,8 @@ jobs:
         run: pnpm build
       - name: Agentic discovery + accessibility contract
         run: pnpm check:agentic
+      - name: SEO performance contract
+        run: pnpm check:performance-contract
 
   # Duplication (nose) + docs (awiki) gates. Both are public corca-ai tools;
   # installed here from their public release binaries — no token needed.

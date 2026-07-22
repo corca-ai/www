@@ -19,6 +19,7 @@ in front of you:
 | update the localized Corca AX page, assets, consultation form, or Worker delivery settings | [Corca AX page](ax.md) |
 | add or update news, blog posts, colleagues, static pages, locales, domains, or analytics | [Runbook](runbook.md) |
 | write or review inclusive, accessible, evidence-based content | [Content guidelines](content-guidelines.md) |
+| preserve technical SEO, image-alt, structured-data, or performance release contracts | [SEO and performance governance](seo-content-governance.md) |
 | add or update a product page | [Product pages](products.md) |
 | change translations, localized content, or locale behavior | [Internationalization](i18n.md) |
 | inspect exact lint, formatting, duplication, docs, hook, and CI gates | [Code quality](code-quality.md) |

@@ -22,6 +22,10 @@ and the `pnpm check` script (see [development](development.md)).
   and localized AX accessibility contracts. It runs after the production build;
   see [agentic browsing and discovery](agentic-browsing.md) for the exact scope
   and evidence rules.
+- **SEO performance contract** protects the AX mobile poster, deferred video,
+  font split, reduced-motion, analytics, asset-size and cache invariants. It is
+  a static build contract rather than a substitute for the production network
+  and PageSpeed checks in [SEO and performance governance](seo-content-governance.md).
 - **nose** detects code duplication across `src/**/*.ts` as a jscpd replacement;
   its gate is configured in `nose.toml`. It does not analyze `.astro` files, so
   shared logic belongs in `.ts` modules where nose can see it.
@@ -37,7 +41,8 @@ corca-ai/tap/nose corca-ai/tap/awiki`.
 Each gate's command lives once, as a `check:*` script in `package.json`
 (`check:biome`, `check:astro`, `check:knip`, `check:dup` and `check:docs`); the
 `check` script runs the five source gates in sequence. The generated-output
-`check:agentic` gate runs after `build` in continuous integration. The git hooks
+`check:agentic` and `check:performance-contract` gates run after `build` in
+continuous integration. The git hooks
 and continuous integration both call these scripts, so a gate's command is never
 spelled out in more than one place and the two cannot drift apart — changing how
 a gate runs is a one-line edit in `package.json`.
@@ -63,13 +68,14 @@ binaries; install them before using it as the local pre-PR check.
 `.github/workflows/ci.yml` calls the same `check:*` scripts on every push and
 pull request, so CI enforces the same gate definitions as the pre-push hook. A
 `quality` job runs the pnpm-installed gates (Biome, `astro check`, knip) and
-`pnpm build`, followed by `pnpm check:agentic`; that build step is CI-only, so
-export `SITE_URL=https://www.corca.ai`, then run `pnpm build` and
-`pnpm check:agentic` locally when you want the closest preview of the `quality`
-job. The job's public `SITE_URL` environment value is shared by the build and
-discovery check, while local checks without the override fall back to
-`SITE_ORIGIN`. A `duplication-and-docs` job installs nose and awiki from their
-public release binaries and runs the duplication and docs gates.
+`pnpm build`, followed by `pnpm check:agentic` and
+`pnpm check:performance-contract`; that build step is CI-only, so export
+`SITE_URL=https://www.corca.ai`, then run all three locally when you want the
+closest preview of the `quality` job. The job's public `SITE_URL` environment
+value is shared by the build and discovery check, while local checks without
+the override fall back to `SITE_ORIGIN`. A `duplication-and-docs` job installs
+nose and awiki from their public release binaries and runs the duplication and
+docs gates.
 
 ## Protected main
 

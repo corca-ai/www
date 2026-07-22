@@ -1927,6 +1927,10 @@ body:has(.ax-v2-dialog[open]) {
   -webkit-text-fill-color: transparent;
 }
 
+.ax-v2-slowdown-mobile-break {
+  display: none;
+}
+
 .ax-v2-proof-section .ax-v2-lead strong {
   color: #34445a;
   font-weight: 760;
@@ -2615,6 +2619,14 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 @media (max-width: 720px) {
+  .ax-v2-slowdown-desktop-space {
+    display: none;
+  }
+
+  .ax-v2-slowdown-mobile-break {
+    display: block;
+  }
+
   .ax-v2-comparison,
   .ax-v2-card-grid,
   .ax-v2-ceal-diagrams {

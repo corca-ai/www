@@ -208,6 +208,9 @@
 25. Round 25 found the Section 1-2 statement approaching the first team member on MacBook-class desktop viewports.
    - Fix: introduced a 1151–1800 px portrait-safe band that reduces the statement from 40 px to a responsive 30–36 px, tightens its fixed three-line measure to 420 px, reserves 60% of the shell for the photograph, and shifts the photograph right by a bounded 18–32 px. The existing wide-desktop, protected tablet, and stacked mobile compositions remain unchanged.
    - Post-fix evidence: at 1728 × 1000 the statement resolves to 36 px with a 371 px rendered width and ends at x=635, while the first portrait begins to its right with a visible safety gutter; at 1280 × 720 it resolves to 30.08 px and ends at x=350 with substantially more open space before the portrait. Both captures preserve the authored three lines and report zero horizontal overflow; the 538 px mobile composition remains stacked with the photograph and copy fully separated.
+26. Round 26 found the highlighted slowdown phrase wrapping unpredictably on mobile instead of following the authored four-line rhythm.
+   - Fix: split only the two highlighted desktop lines into canonical phrase segments and switch their separating spaces to explicit line breaks at 720 px and below. The copy, heading level, desktop four-line layout, and gradient treatment remain unchanged.
+   - Post-fix evidence: at 538 × 998 the highlighted phrase renders exactly `적절한 과제 선정,` / `구성원 역량 향상,` / `조직 환경 구축이` / `모두 필요합니다.`; at 1280 × 720 the same content remains the existing two highlighted lines. Both viewports report zero horizontal overflow.
 
 ## Interaction and console checks
 

@@ -187,8 +187,23 @@ const brochureHref = import.meta.env.DEV
       <h2 class="ax-v2-eyebrow" data-reveal>{c.slowdown.eyebrow}</h2>
       <div class="ax-v2-heading-block ax-v2-heading-block-wide" data-reveal>
         <h3 id="ax-v2-slowdown-title">
-          {c.slowdown.heading.map((line, index) => (
-            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>{line}</span></>
+          {c.slowdown.heading.map((segments, index) => (
+            <>
+              {index > 0 && <br />}
+              <span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>
+                {segments.map((segment, segmentIndex) => (
+                  <>
+                    {segmentIndex > 0 && (
+                      <>
+                        <span class="ax-v2-slowdown-desktop-space"> </span>
+                        <br class="ax-v2-slowdown-mobile-break" />
+                      </>
+                    )}
+                    {segment}
+                  </>
+                ))}
+              </span>
+            </>
           ))}
         </h3>
         <p><AxLines values={c.slowdown.body} /></p>

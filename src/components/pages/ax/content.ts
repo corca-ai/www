@@ -1182,8 +1182,8 @@ export const axContent: Record<Lang, AxContent> = {
     hero: {
       eyebrow: 'AX加速コンサルティング',
       headline: [
-        { before: 'AIの導入は、誰にでもできます。' },
-        { strong: '成果を繰り返し生み出せる組織は、' },
+        { before: 'AIは誰でも導入できます。' },
+        { strong: '成果を生み続ける組織は' },
         { strong: '簡単にはつくれません。' },
       ],
       subtitle: ['最初の成果を、次の成果につなげる組織へ。', 'Corca AXが共につくります。'],

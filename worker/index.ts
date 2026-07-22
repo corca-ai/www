@@ -7,6 +7,7 @@
 import { canonicalUrl } from '../src/canonical';
 import { SITE_ORIGIN } from '../src/site';
 import { type AxConsultationEnv, handleAxConsultation } from './axConsultations';
+import { withStaticAssetCacheHeaders } from './staticAssetHeaders.js';
 
 interface Env extends AxConsultationEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
@@ -46,7 +47,8 @@ export default {
     // runtime route under /blog/admin or /api/admin should be browseable.
     if (adminPathPattern.test(url.pathname)) return json({ error: 'not_found' }, 404);
 
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    return withStaticAssetCacheHeaders(request, response);
   },
 };
 

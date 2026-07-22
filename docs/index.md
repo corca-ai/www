@@ -22,6 +22,7 @@ in front of you:
 | add or update a product page | [Product pages](products.md) |
 | change translations, localized content, or locale behavior | [Internationalization](i18n.md) |
 | inspect exact lint, formatting, duplication, docs, hook, and CI gates | [Code quality](code-quality.md) |
+| understand sitemap, robots, llms.txt, AX carousel semantics, or agentic discovery checks | [Agentic browsing and discovery](agentic-browsing.md) |
 | understand how a merge deploys, or deploy manually | [Deployment](deployment.md) |
 | understand how these docs are written and organized | [Meta-documentation](metadoc.md) |
 

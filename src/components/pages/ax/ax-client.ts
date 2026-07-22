@@ -115,7 +115,8 @@ function initializeCarousel(root: HTMLElement) {
     slides.forEach((slide, index) => {
       const active = index === activeIndex;
       slide.dataset.active = String(active);
-      slide.setAttribute('aria-hidden', String(!active));
+      if (active) slide.removeAttribute('aria-hidden');
+      else slide.setAttribute('aria-hidden', 'true');
     });
     selectors.forEach((button, index) => {
       const active = index === activeIndex;
@@ -201,7 +202,7 @@ function initializeCarousel(root: HTMLElement) {
     if (reachedEnd) playback = 'ended';
     else if (playback === 'ended') playback = 'paused';
     renderSelection();
-    if (status) status.textContent = slides[activeIndex]?.getAttribute('aria-label') ?? '';
+    if (status) status.textContent = slides[activeIndex]?.dataset.carouselAnnouncement ?? '';
     renderPlayback();
     startAnimation();
   };

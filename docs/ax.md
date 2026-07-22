@@ -22,7 +22,7 @@ analytics and deployment flow from `BaseLayout.astro`.
 | Image and video path registry | `src/components/pages/ax/assetPaths.ts` |
 | Images and logos | `public/images/pages/ax/` |
 | Hero video | `public/video/ax/` |
-| Mobile Pretendard subsets | `public/fonts/pretendard-mobile/` |
+| Mobile Pretendard subsets | `public/fonts/ax-mobile/v1/` |
 | SEO metadata and route registration | `src/i18n/pageMeta.ts` and `src/staticPages.ts` |
 | Service structured data | `src/i18n/structuredData.ts` |
 | Consultation endpoint | `worker/axConsultations.ts` |
@@ -31,21 +31,32 @@ The page deliberately does not render its own global header or footer. Add or
 change shared navigation in the normal site sources; keep AX-only section links
 inside `Ax.astro`.
 
-At widths up to 720px, AX uses the self-hosted Pretendard variable dynamic
-subset instead of preloading the full variable font. Keep the subset stylesheet,
-its `unicode-range` declarations and all referenced WOFF2 slices together. The
-desktop font path remains `/fonts/PretendardVariable.woff2`; do not make the
-mobile optimization global without measuring the other routes first.
+At widths up to 720px, AX uses one self-hosted, route-specific Pretendard
+variable subset instead of the full variable font or the old 92-slice dynamic
+stylesheet. Regenerate the Korean, English, and Japanese files with
+`scripts/build-ax-mobile-fonts.py` after a production build. Simplified Chinese
+stays on the native system stack because the bundled Pretendard families do not
+cover every glyph used by the Chinese AX page; a partial webfont would create
+visible mixed-glyph rendering. The desktop font path remains
+`/fonts/PretendardVariable.woff2`; do not make the mobile optimization global
+without measuring the other routes first.
 
 The mobile AX critical path also avoids initializing the hero video and scroll
-parallax, leaving the lightweight poster as the stable LCP element. The hero
-reuses the wide poster at mobile widths and positions it in the upper-right so
-the orca stays clear of the centered headline; keep that composition and its
-bottom mask in sync when replacing the hero artwork. Google
+parallax, leaving the lightweight poster as the stable LCP element. The mobile
+poster keeps the approved wide composition, resized and encoded separately for
+the mobile critical path, and positions it in the upper-right so the orca stays
+clear of the centered headline; keep that composition and its bottom mask in
+sync when replacing the hero artwork. Google
 Analytics is queued immediately but its network script is delayed until five
 seconds after `load` or the first interaction. Carousel images are only
 preloaded after their carousel enters the viewport. Desktop behavior and other
 routes keep their existing loading strategy.
+
+At desktop and tablet widths above 720px, viewports no taller than 720px anchor
+the hero copy 10px from the top of the hero instead of from the bottom. The hero
+keeps a 654px minimum height so the heading stays visible and the remaining CTA
+content can be reached by scrolling without shrinking the approved typography.
+The mobile layout remains independent of this height rule.
 
 ## Update copy or assets
 

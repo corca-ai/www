@@ -11,80 +11,166 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noindex" />
         <style>
-          :root { color-scheme: light; }
-          body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-              "Pretendard Variable", Pretendard, "Apple SD Gothic Neo",
-              Roboto, sans-serif;
-            margin: 0;
-            padding: 32px 20px 64px;
-            background: #f7f5f1;
-            color: #151515;
+          @font-face {
+            font-family: "Pretendard Sitemap";
+            font-style: normal;
+            font-display: swap;
+            font-weight: 45 920;
+            src: url("/fonts/ax-mobile/v1/pretendard-ko.woff2") format("woff2");
           }
-          .wrap { max-width: 1200px; margin: 0 auto; }
+          :root {
+            color-scheme: light;
+            --text: #292a2e;
+            --text-subtle: #505258;
+            --text-subtlest: #6b6e76;
+            --brand: #1868db;
+            --brand-hovered: #1558bc;
+            --brand-pressed: #123263;
+            --brand-subtlest: #e9f2fe;
+            --brand-subtler: #cfe1fd;
+            --brand-border: #8fb8f6;
+            --focus: #4688ec;
+            --surface: #ffffff;
+            --surface-hovered: #f0f1f2;
+            --border: #0b120e24;
+          }
+          * { box-sizing: border-box; }
+          body {
+            font-family: "Pretendard Sitemap", "Pretendard Variable", Pretendard,
+              -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+            margin: 0;
+            min-width: 20rem;
+            background: var(--brand-subtlest);
+            color: var(--text);
+          }
+          .topbar {
+            background: var(--brand);
+            color: #fff;
+          }
+          .topbar-inner {
+            align-items: center;
+            display: flex;
+            gap: 0.75rem;
+            margin: 0 auto;
+            max-width: 75rem;
+            min-height: 4rem;
+            padding: 0.75rem 1.5rem;
+          }
+          .brand {
+            font-size: 1.25rem;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+          }
+          .product {
+            border-inline-start: 1px solid rgba(255, 255, 255, 0.48);
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding-inline-start: 0.75rem;
+          }
+          .wrap {
+            margin: 0 auto;
+            max-width: 75rem;
+            padding: 2rem 1.5rem 4rem;
+          }
           h1 {
-            font-size: 24px;
-            letter-spacing: -0.36px;
-            margin: 0 0 4px;
+            font-size: clamp(1.5rem, 2vw, 2rem);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.125;
+            margin: 0;
           }
           .sub {
-            color: #7e7b71;
-            font-size: 14px;
-            margin-bottom: 24px;
+            color: var(--text-subtle);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 0.5rem 0 1.5rem;
           }
           .count {
             display: inline-block;
-            background: #b99550;
+            background: var(--brand);
             color: #fff;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            margin-left: 8px;
+            padding: 0.25rem 0.625rem;
+            border-radius: 624.9375rem;
+            font-size: 0.75rem;
+            font-weight: 650;
+            line-height: 1rem;
+            margin-inline-start: 0.5rem;
             vertical-align: middle;
           }
           .crumbs {
-            font-size: 13px;
-            color: #7e7b71;
-            margin-bottom: 16px;
+            font-size: 0.875rem;
+            margin: 0 0 1rem;
           }
-          .crumbs a { color: #967942; text-decoration: none; }
+          .crumbs a { color: var(--brand-hovered); font-weight: 600; text-decoration: none; }
           .crumbs a:hover { text-decoration: underline; }
-          .card {
-            background: #fff;
-            border: 1px solid #e7ded1;
-            border-radius: 12px;
-            overflow: hidden;
+          .page-heading {
+            align-items: end;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: space-between;
           }
-          table { width: 100%; border-collapse: collapse; font-size: 14px; }
+          .latest {
+            background: var(--surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 0.5rem;
+            flex: 0 0 auto;
+            padding: 0.75rem 1rem;
+          }
+          .latest-label {
+            color: var(--text-subtlest);
+            display: block;
+            font-size: 0.75rem;
+            line-height: 1rem;
+          }
+          .latest-value {
+            color: var(--brand-hovered);
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 650;
+            line-height: 1.25rem;
+            margin-block-start: 0.125rem;
+          }
+          .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            box-shadow: 0 1px 1px #1e1f2140, 0 0 1px #1e1f214f;
+          }
+          table { border-collapse: collapse; font-size: 0.875rem; min-width: 42rem; width: 100%; }
           th, td {
             text-align: left;
-            padding: 10px 14px;
-            border-bottom: 1px solid #f2ecdf;
+            padding: 0.75rem 1rem;
+            border-block-end: 1px solid var(--border);
             vertical-align: top;
           }
           th {
-            background: #f9f5ed;
-            color: #967942;
+            background: var(--brand-subtlest);
+            color: var(--text-subtle);
             font-weight: 600;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
+            font-size: 0.75rem;
             position: sticky;
             top: 0;
           }
-          tr:hover td { background: #fbf8f2; }
-          a { color: #967942; text-decoration: none; word-break: break-all; }
+          tbody tr:last-child td { border-block-end: 0; }
+          tr:hover td { background: var(--brand-subtlest); }
+          a { color: var(--brand-hovered); text-decoration: none; word-break: break-all; }
           a:hover { text-decoration: underline; }
+          a:focus-visible {
+            border-radius: 0.25rem;
+            outline: 0.125rem solid var(--focus);
+            outline-offset: 0.125rem;
+          }
           .index-grid {
             display: grid;
-            gap: 16px;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(16.25rem, 1fr));
           }
           .tile {
-            background: #fff;
-            border: 1px solid #e7ded1;
-            border-radius: 12px;
-            padding: 18px 20px;
+            background: var(--surface);
+            border: 1px solid var(--brand-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
             text-decoration: none;
             color: inherit;
             display: block;
@@ -92,30 +178,66 @@
           }
           .tile:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            background: var(--surface);
+            border-color: var(--brand);
+            box-shadow: 0 8px 12px #1e1f2126, 0 0 1px #1e1f214f;
             text-decoration: none;
           }
+          .tile-kicker {
+            color: var(--brand);
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 650;
+            line-height: 1rem;
+            margin-block-end: 0.75rem;
+          }
           .tile-name {
-            font-size: 18px;
+            font-size: 1rem;
             font-weight: 700;
-            letter-spacing: -0.36px;
-            color: #151515;
-            margin: 0 0 6px;
+            letter-spacing: -0.02em;
+            line-height: 1.25rem;
+            color: var(--text);
+            margin: 0 0 0.5rem;
           }
           .tile-url {
-            font-size: 12px;
-            color: #967942;
+            font-size: 0.75rem;
+            color: var(--brand-hovered);
+            line-height: 1rem;
             word-break: break-all;
-            margin: 0 0 10px;
+            margin: 0 0 1.25rem;
           }
           .tile-meta {
-            font-size: 12px;
-            color: #7e7b71;
+            border-block-start: 1px solid var(--border);
+            color: var(--text-subtlest);
+            font-size: 0.75rem;
+            line-height: 1rem;
+            margin: 0;
+            padding-block-start: 0.75rem;
+          }
+          .tile-meta strong {
+            color: var(--brand-hovered);
+            font-weight: 650;
+          }
+          @media (max-width: 40rem) {
+            .topbar-inner { min-height: 3.5rem; padding-inline: 1rem; }
+            .wrap { padding: 1.5rem 1rem 3rem; }
+            .page-heading { align-items: stretch; flex-direction: column; gap: 1rem; }
+            .latest { align-self: stretch; }
+            .index-grid { grid-template-columns: 1fr; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .tile { transition: none; }
           }
         </style>
       </head>
       <body>
-        <div class="wrap">
+        <header class="topbar">
+          <div class="topbar-inner">
+            <span class="brand">Corca</span>
+            <span class="product">Sitemap</span>
+          </div>
+        </header>
+        <main class="wrap">
           <xsl:choose>
             <xsl:when test="s:sitemapindex">
               <h1>
@@ -131,6 +253,9 @@
               <div class="index-grid">
                 <xsl:for-each select="s:sitemapindex/s:sitemap">
                   <a class="tile" href="{s:loc}">
+                    <span class="tile-kicker">
+                      <xsl:value-of select="format-number(position(), '00')" />
+                    </span>
                     <p class="tile-name">
                       <xsl:choose>
                         <xsl:when test="contains(s:loc, 'sitemap-pages.xml')">페이지모음</xsl:when>
@@ -146,7 +271,13 @@
                       <xsl:value-of select="s:loc" />
                     </p>
                     <p class="tile-meta">
-                      Last Modified: <xsl:value-of select="substring(s:lastmod, 1, 10)" />
+                      <xsl:choose>
+                        <xsl:when test="contains(s:loc, 'sitemap-pages.xml')">
+                          공개 페이지 · 4개 언어<br />
+                        </xsl:when>
+                        <xsl:otherwise />
+                      </xsl:choose>
+                      Last Modified: <strong><xsl:value-of select="substring(s:lastmod, 1, 10)" /></strong>
                     </p>
                   </a>
                 </xsl:for-each>
@@ -155,14 +286,27 @@
 
             <xsl:when test="s:urlset">
               <p class="crumbs">
-                <a href="/sitemap.xml">← Sitemap Index</a>
+                <a href="/sitemap.xml">Sitemap index로 돌아가기</a>
               </p>
-              <h1>
-                XML Sitemap
-                <span class="count">
-                  <xsl:value-of select="count(s:urlset/s:url)" /> URLs
-                </span>
-              </h1>
+              <div class="page-heading">
+                <h1>
+                  XML Sitemap
+                  <span class="count">
+                    <xsl:value-of select="count(s:urlset/s:url)" /> URLs
+                  </span>
+                </h1>
+                <div class="latest">
+                  <span class="latest-label">Last Modified</span>
+                  <strong class="latest-value">
+                    <xsl:for-each select="s:urlset/s:url">
+                      <xsl:sort select="s:lastmod" data-type="text" order="descending" />
+                      <xsl:if test="position() = 1">
+                        <xsl:value-of select="substring(s:lastmod, 1, 10)" />
+                      </xsl:if>
+                    </xsl:for-each>
+                  </strong>
+                </div>
+              </div>
               <p class="sub">
                 이 그룹에 포함된 URL 목록입니다.
               </p>
@@ -171,7 +315,7 @@
                   <thead>
                     <tr>
                       <th style="width:75%">URL</th>
-                      <th style="width:25%">Last Modified</th>
+                      <th style="width:25%">URL Last Modified</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -193,7 +337,7 @@
               </div>
             </xsl:when>
           </xsl:choose>
-        </div>
+        </main>
       </body>
     </html>
   </xsl:template>

@@ -941,7 +941,6 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 }
 
 async function renderBlogDiscoveryFiles(postRecordsByLocale) {
-  const sitemapPages = renderBlogPagesSitemap(postRecordsByLocale);
   const sitemapCategories = renderBlogCategoriesSitemap(postRecordsByLocale);
   const sitemapTags = renderBlogTagsSitemap(postRecordsByLocale);
   const sitemapPosts = renderBlogPostsSitemap(postRecordsByLocale);
@@ -950,7 +949,6 @@ async function renderBlogDiscoveryFiles(postRecordsByLocale) {
   const feed = renderBlogJsonFeed(postRecordsByLocale.get('ko') || []);
   const robots = renderBlogRobotsTxt();
 
-  await writeFile(join(repoRoot, 'public/sitemap-pages.xml'), sitemapPages);
   await writeFile(join(repoRoot, 'public/sitemap-categories.xml'), sitemapCategories);
   await writeFile(join(repoRoot, 'public/sitemap-tags.xml'), sitemapTags);
   await writeFile(join(repoRoot, 'public/sitemap-posts.xml'), sitemapPosts);
@@ -959,15 +957,6 @@ async function renderBlogDiscoveryFiles(postRecordsByLocale) {
   await writeFile(join(blogRoot, 'feed.json'), feed);
   await writeFile(join(blogRoot, 'robots.txt'), robots);
   console.log('Rendered blog sitemap index children, RSS, JSON feed and robots.txt.');
-}
-
-function renderBlogPagesSitemap(postRecordsByLocale) {
-  return renderUrlset(
-    supportedLocales.map((locale) => ({
-      path: localeLabels[locale].blogPath,
-      lastmod: newestPostDate(postRecordsByLocale),
-    })),
-  );
 }
 
 function renderBlogCategoriesSitemap(postRecordsByLocale) {
@@ -1074,7 +1063,7 @@ function renderUrlset(entries) {
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl?v=20260721-blue"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>
@@ -1091,7 +1080,7 @@ function sitemapDateTime(value) {
 function renderBlogSitemapAlias(postRecordsByLocale) {
   const lastmod = `${newestPostDate(postRecordsByLocale)}T00:00:00.000Z`;
   return `<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl?v=20260721-blue"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>${escapeHtml(absoluteSiteUrl('/sitemap-posts.xml'))}</loc>

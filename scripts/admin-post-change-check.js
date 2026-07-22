@@ -480,7 +480,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
   const sitemap = await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8');
   assert.match(sitemap, /https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture<\/loc>/);
   assert.match(sitemap, /https:\/\/www\.corca\.ai\/en\/blog\/admin-edit-fixture/);
-  assert.match(sitemap, /<\?xml-stylesheet type="text\/xsl" href="\/sitemap\.xsl"\?>/);
+  assert.match(
+    sitemap,
+    /<\?xml-stylesheet type="text\/xsl" href="\/sitemap\.xsl\?v=20260721-blue"\?>/,
+  );
   assert.match(sitemap, /<lastmod>2026-02-03T00:00:00\.000Z<\/lastmod>/);
   assert.doesNotMatch(sitemap, /hreflang=/);
   assert.doesNotMatch(sitemap, /<changefreq>/);

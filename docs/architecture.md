@@ -45,6 +45,12 @@ the same GA4 property.
   [AX guide](ax.md). `src/site.ts` is the single source for the canonical origin
   (`SITE_ORIGIN`), and `src/canonical.ts` is the pure URL-normalization it applies.
 
+The Worker also owns cache policy for static assets. Content-hashed `/_astro/*`
+files and versioned AX font/logo directories receive a one-year immutable TTL.
+Mutable images, scripts, styles, and fonts receive a one-day browser TTL with a
+seven-day stale-while-revalidate window. HTML remains revalidated on every
+visit, while API and retired admin responses remain `no-store`.
+
 ## URLs and canonicalization
 
 Canonical URLs use `https`, a `www.` host, and **no trailing slash** — the root

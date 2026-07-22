@@ -28,6 +28,11 @@
 - Round 4 package cards: `/private/tmp/ax-v2-qa/round4-packages-desktop.png`
 - Round 4 combined comparisons: `/private/tmp/ax-v2-qa/round4-environment-comparison.png`, `/private/tmp/ax-v2-qa/round4-ceal-comparison.png`, `/private/tmp/ax-v2-qa/round4-packages-comparison.png`
 - Round 5 Section 1-2 desktop composition: `/private/tmp/ax-v2-qa/round5-compound-desktop.png`
+- Round 6 Section 1-2 parallax state: `/private/tmp/ax-v2-qa/round6-compound-parallax.png`
+- Round 6 testimonial shadow: `/private/tmp/ax-v2-qa/round6-proof-shadow-bottom.png`
+- Round 6 Section 4 final tab state: `/private/tmp/ax-v2-qa/round6-tabs-final-01.png`
+- Round 6 environment closing: `/private/tmp/ax-v2-qa/round6-environment-closing.png`
+- Round 6 mobile static fallback: `/private/tmp/ax-v2-qa/round6-compound-mobile-static.png`
 
 ## Capture normalization
 
@@ -92,6 +97,10 @@
 - `/private/tmp/ax-v2-qa/desktop-1440x600.png` verifies the low-height hero rule and prevents the heading from moving behind the header.
 - `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance.
 - `/private/tmp/ax-v2-qa/round5-compound-desktop.png` verifies the approved three-line `첫 성과가 / 복리로 이어지는 조직, / Corca AX가 함께 만듭니다.` copy at a reduced 38.4 px desktop size. The rendered heading ends before the first person begins, with no overlay or horizontal overflow.
+- `/private/tmp/ax-v2-qa/round6-compound-parallax.png` verifies that the team image remains sharp and text-safe while the desktop-only image and copy transforms use distinct eased offsets. The 390 px probe reports no parallax transform, no WebM current source, and no horizontal overflow.
+- `/private/tmp/ax-v2-qa/round6-proof-shadow-bottom.png` verifies that the testimonial elevation diffuses into the section background without a clipped lower edge.
+- `/private/tmp/ax-v2-qa/round6-tabs-final-01.png` records the final stopped state after the measured `01 → 02 → 03 → 01` sequence. Browser timestamps measured approximately 2.67 seconds between states, and a further 2.76-second observation remained on 01.
+- `/private/tmp/ax-v2-qa/round6-environment-closing.png` verifies the exact approved two-line closing copy.
 - `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
 - `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
 - `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
@@ -122,6 +131,9 @@
 6. Round 5 annotation found the Section 1-2 heading too large and overlapping the leftmost person.
    - Fix: changed the approved middle line to `복리로 이어지는 조직,`, reduced the responsive display size from a 54 px maximum to a 40 px maximum, and constrained desktop copy to the left 44% of the shell.
    - Post-fix evidence: the 1280 px browser capture renders exactly three lines at 38.4 px; the text box ends before the first person and the image remains uncropped.
+7. Round 6 annotations requested layered scroll depth, tighter proof copy, diffuse testimonial elevation, a bounded tab demonstration, subtle coaching-card outlines, and an exact environment closing break.
+   - Fix: added a desktop-only eased parallax with mobile/reduced-motion reset; set the Section 2 line height to 108%; expanded the testimonial shadow runway; changed tabs to a single 2.6-second `01 → 02 → 03 → 01` cycle with user-interaction cancellation; reduced coaching-card borders to 20% opacity; and locked the requested two-line closing.
+   - Post-fix evidence: browser probes report distinct media/copy transforms on desktop, no transform or video source on mobile, zero horizontal overflow, the expected timed tab sequence and stopped final state, and no console warning or error.
 
 ## Interaction and console checks
 

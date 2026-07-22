@@ -228,6 +228,70 @@ function initializeCarousel(root: HTMLElement) {
   );
 }
 
+function initializeCompoundParallax(root: HTMLElement) {
+  const media = root.querySelector<HTMLElement>('[data-compound-media]');
+  const copy = root.querySelector<HTMLElement>('[data-compound-copy]');
+  if (!media || !copy) return;
+
+  const desktop = window.matchMedia('(min-width: 721px)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let visible = false;
+  let frame = 0;
+  let current = 0;
+  let target = 0;
+
+  const reset = () => {
+    window.cancelAnimationFrame(frame);
+    frame = 0;
+    current = 0;
+    target = 0;
+    root.dataset.parallaxActive = 'false';
+    root.style.removeProperty('--ax-v2-compound-media-y');
+    root.style.removeProperty('--ax-v2-compound-copy-y');
+  };
+
+  const canAnimate = () => visible && desktop.matches && !reducedMotion.matches && !document.hidden;
+
+  const render = () => {
+    frame = 0;
+    if (!canAnimate()) return;
+    current += (target - current) * 0.14;
+    root.style.setProperty('--ax-v2-compound-media-y', `${(current * 18).toFixed(2)}px`);
+    root.style.setProperty('--ax-v2-compound-copy-y', `${(current * -10).toFixed(2)}px`);
+    if (Math.abs(target - current) > 0.002) frame = window.requestAnimationFrame(render);
+  };
+
+  const update = () => {
+    if (!canAnimate()) {
+      reset();
+      return;
+    }
+    const rect = root.getBoundingClientRect();
+    const progress = Math.min(
+      1,
+      Math.max(0, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)),
+    );
+    const eased = progress < 0.5 ? 2 * progress * progress : 1 - (-2 * progress + 2) ** 2 / 2;
+    target = eased * 2 - 1;
+    root.dataset.parallaxActive = 'true';
+    if (!frame) frame = window.requestAnimationFrame(render);
+  };
+
+  new IntersectionObserver(
+    ([entry]) => {
+      visible = Boolean(entry?.isIntersecting);
+      update();
+    },
+    { rootMargin: '12% 0px 12% 0px', threshold: 0 },
+  ).observe(root);
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  desktop.addEventListener('change', update);
+  reducedMotion.addEventListener('change', update);
+  document.addEventListener('visibilitychange', update);
+}
+
 function initializeTabs(root: HTMLElement) {
   const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab-button]'));
   const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-tab-panel]'));
@@ -235,28 +299,19 @@ function initializeTabs(root: HTMLElement) {
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const desktopTabs = window.matchMedia('(min-width: 901px)');
-  let activeIndex = 0;
   let autoAdvanceTimer = 0;
   let isVisible = false;
-  let isPaused = false;
+  let rotationIndex = 0;
+  let hasStarted = false;
+  let hasCompleted = false;
 
   const stopAutoAdvance = () => {
-    window.clearInterval(autoAdvanceTimer);
+    window.clearTimeout(autoAdvanceTimer);
     autoAdvanceTimer = 0;
   };
 
-  const startAutoAdvance = () => {
-    stopAutoAdvance();
-    if (!isVisible || isPaused || reducedMotion.matches || !desktopTabs.matches || document.hidden)
-      return;
-    autoAdvanceTimer = window.setInterval(() => {
-      select((activeIndex + 1) % buttons.length, false, false);
-    }, 2200);
-  };
-
-  const select = (index: number, focus = false, restart = true) => {
+  const select = (index: number, focus = false) => {
     const nextIndex = Math.max(0, Math.min(buttons.length - 1, index));
-    activeIndex = nextIndex;
     buttons.forEach((button, buttonIndex) => {
       const selected = buttonIndex === nextIndex;
       button.setAttribute('aria-selected', String(selected));
@@ -264,58 +319,88 @@ function initializeTabs(root: HTMLElement) {
       panels[buttonIndex]?.setAttribute('aria-hidden', String(!selected));
     });
     if (focus) buttons[nextIndex]?.focus();
-    if (restart) startAutoAdvance();
+  };
+
+  const canAutoAdvance = () =>
+    isVisible && !hasCompleted && !reducedMotion.matches && desktopTabs.matches && !document.hidden;
+
+  const scheduleAutoAdvance = () => {
+    stopAutoAdvance();
+    if (!canAutoAdvance()) return;
+    autoAdvanceTimer = window.setTimeout(() => {
+      if (rotationIndex < buttons.length - 1) {
+        rotationIndex += 1;
+        select(rotationIndex);
+        scheduleAutoAdvance();
+        return;
+      }
+      rotationIndex = 0;
+      select(0);
+      hasCompleted = true;
+      stopAutoAdvance();
+    }, 2600);
+  };
+
+  const startOrResumeAutoAdvance = () => {
+    if (!canAutoAdvance()) {
+      stopAutoAdvance();
+      return;
+    }
+    if (!hasStarted) {
+      hasStarted = true;
+      rotationIndex = 0;
+      select(0);
+    }
+    scheduleAutoAdvance();
+  };
+
+  const cancelAutoAdvance = () => {
+    hasCompleted = true;
+    stopAutoAdvance();
   };
 
   buttons.forEach((button, index) => {
-    button.addEventListener('click', () => select(index));
+    button.addEventListener('click', () => {
+      cancelAutoAdvance();
+      select(index);
+    });
     button.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
         event.preventDefault();
+        cancelAutoAdvance();
         select((index + 1) % buttons.length, true);
       } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
         event.preventDefault();
+        cancelAutoAdvance();
         select((index - 1 + buttons.length) % buttons.length, true);
       } else if (event.key === 'Home') {
         event.preventDefault();
+        cancelAutoAdvance();
         select(0, true);
       } else if (event.key === 'End') {
         event.preventDefault();
+        cancelAutoAdvance();
         select(buttons.length - 1, true);
       }
     });
   });
 
-  root.addEventListener('pointerenter', () => {
-    isPaused = true;
-    stopAutoAdvance();
-  });
-  root.addEventListener('pointerleave', () => {
-    isPaused = false;
-    startAutoAdvance();
-  });
   root.addEventListener('focusin', () => {
-    isPaused = true;
-    stopAutoAdvance();
-  });
-  root.addEventListener('focusout', (event) => {
-    if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
-    isPaused = false;
-    startAutoAdvance();
+    cancelAutoAdvance();
   });
 
   const observer = new IntersectionObserver(
     ([entry]) => {
       isVisible = Boolean(entry?.isIntersecting);
-      startAutoAdvance();
+      startOrResumeAutoAdvance();
     },
-    { threshold: 0.45 },
+    { threshold: 0.55 },
   );
   observer.observe(root);
 
-  reducedMotion.addEventListener('change', startAutoAdvance);
-  desktopTabs.addEventListener('change', startAutoAdvance);
-  document.addEventListener('visibilitychange', startAutoAdvance);
+  reducedMotion.addEventListener('change', startOrResumeAutoAdvance);
+  desktopTabs.addEventListener('change', startOrResumeAutoAdvance);
+  document.addEventListener('visibilitychange', startOrResumeAutoAdvance);
 }
 
 function initializeAccordion(root: HTMLElement) {
@@ -544,6 +629,9 @@ function initialize() {
   if (!page || page.dataset.initialized === 'true') return;
   page.dataset.initialized = 'true';
   initializeHeroVideo(page);
+  page
+    .querySelectorAll<HTMLElement>('[data-compound-parallax]')
+    .forEach(initializeCompoundParallax);
   page.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach(initializeCarousel);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-tabs]').forEach(initializeTabs);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);

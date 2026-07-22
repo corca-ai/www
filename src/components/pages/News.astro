@@ -16,10 +16,10 @@ const isoDate = (d: string) => {
 const items = (await getCollection('news')).map((e) => e.data).sort((a, b) => asDate(b.date) - asDate(a.date));
 
 const heading = {
-  ko: { display: 'News', title: '뉴스기사로 보는 코르카의 성과', newWindow: '(새 창에서 열림)' },
-  en: { display: 'News', title: 'News & Articles', newWindow: '(opens in a new window)' },
-  ja: { display: 'News', title: 'ニュースで見るコルカの成果', newWindow: '(新しいウィンドウで開く)' },
-  zh: { display: 'News', title: '新闻报道中的Corca成果', newWindow: '(在新窗口中打开)' },
+  ko: { display: 'News', title: '뉴스기사로 보는 코르카의 성과', newWindow: '(새 창에서 열림)', imageAlt: (title: string) => `${title} 기사 대표 이미지` },
+  en: { display: 'News', title: 'News & Articles', newWindow: '(opens in a new window)', imageAlt: (title: string) => `Featured image for “${title}”` },
+  ja: { display: 'News', title: 'ニュースで見るコルカの成果', newWindow: '(新しいウィンドウで開く)', imageAlt: (title: string) => `「${title}」の記事画像` },
+  zh: { display: 'News', title: '新闻报道中的Corca成果', newWindow: '(在新窗口中打开)', imageAlt: (title: string) => `《${title}》的文章配图` },
 }[lang];
 ---
 
@@ -40,7 +40,7 @@ const heading = {
             <div class="overflow-hidden rounded-xl bg-black/5">
               <img
                 src={`${P}${n.image}.webp`}
-                alt=""
+                alt={heading.imageAlt(n.title[lang])}
                 loading="lazy"
                 class="aspect-[16/9] w-full object-cover"
               />

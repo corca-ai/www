@@ -22,18 +22,26 @@ const h = t.home;
 // and in the page's language, not hardcoded English).
 const imgAlt = {
   ko: {
+    awardUnicorn: '중소벤처기업부 아기유니콘 선정 마크',
+    awardStartup: '창업진흥원 Korea Startup 로고',
     recsys: 'ACM RecSys Challenge 2023 성과를 다룬 코르카 관련 기사',
     partners: '코르카의 파트너사와 고객사 로고',
   },
   en: {
+    awardUnicorn: 'Korean Ministry of SMEs and Startups Baby Unicorn selection mark',
+    awardStartup: 'Korea Institute of Startup and Entrepreneurship Development logo',
     recsys: 'Corca featured in an ACM RecSys Challenge 2023 news article',
     partners: 'Logos of Corca partners and clients',
   },
   ja: {
+    awardUnicorn: '韓国中小ベンチャー企業部 Baby Unicorn 選定マーク',
+    awardStartup: '韓国創業振興院 Korea Startup ロゴ',
     recsys: 'ACM RecSys Challenge 2023の成果を報じたコルカ関連記事',
     partners: 'コルカのパートナー企業と顧客企業のロゴ',
   },
   zh: {
+    awardUnicorn: '韩国中小企业和创业部 Baby Unicorn 入选标志',
+    awardStartup: '韩国创业振兴院 Korea Startup 标志',
     recsys: '报道Corca在ACM RecSys Challenge 2023成绩的新闻文章',
     partners: 'Corca的合作伙伴与客户的标志',
   },
@@ -88,8 +96,8 @@ const heroTitleHtml = (() => {
     <div class="order-first">
       <div class="mx-auto flex max-w-[500px] flex-col items-center gap-6 rounded-2xl border border-black/10 px-8 py-10 text-center">
         <p class="text-[20px] font-normal leading-[1.2] text-brand-ink lg:text-[30px]">{h.babyUnicornBadge}</p>
-        <Image src={awardUnicorn} alt="" width={420} height={135} densities={[1, 2]} class="w-full max-w-[420px]" />
-        <Image src={awardStartup} alt="" width={300} height={60} densities={[1, 2]} class="w-[64%] max-w-[300px]" />
+        <Image src={awardUnicorn} alt={imgAlt.awardUnicorn} width={420} height={135} densities={[1, 2]} class="w-full max-w-[420px]" />
+        <Image src={awardStartup} alt={imgAlt.awardStartup} width={300} height={60} densities={[1, 2]} class="w-[64%] max-w-[300px]" />
       </div>
     </div>
     <div>

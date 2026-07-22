@@ -22,11 +22,19 @@ export const languageShort: Record<Lang, string> = {
   zh: 'ZH',
 };
 
-/** BCP-47 tags used for <html lang>, hreflang and OG locale. */
+/** BCP-47 tags used for hreflang. Keep these regional alternates stable. */
 export const localeTag: Record<Lang, string> = {
   ko: 'ko-KR',
   en: 'en-US',
   ja: 'ja-JP',
+  zh: 'zh-CN',
+};
+
+/** Document/schema languages required by the public-page SEO contract. */
+export const documentLanguage: Record<Lang, string> = {
+  ko: 'ko',
+  en: 'en',
+  ja: 'ja',
   zh: 'zh-CN',
 };
 

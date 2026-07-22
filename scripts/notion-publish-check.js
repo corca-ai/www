@@ -217,6 +217,18 @@ second preserved code-like line</pre>
     join(workDir, 'public/en/blog/notion-html-fixture/index.html'),
     'utf8',
   );
+  assert.match(
+    htmlStaticPage,
+    /<link rel="canonical" href="https:\/\/www\.corca\.ai\/en\/blog\/notion-html-fixture">/,
+  );
+  assert.match(
+    htmlStaticPage,
+    /<link rel="alternate" hreflang="ko-KR" href="https:\/\/www\.corca\.ai\/blog\/notion-html-fixture">/,
+  );
+  assert.match(
+    htmlStaticPage,
+    /<link rel="alternate" hreflang="x-default" href="https:\/\/www\.corca\.ai\/blog\/notion-html-fixture">/,
+  );
   assert.match(htmlStaticPage, /class="frame"/);
   assert.match(htmlStaticPage, /class="intro-question"/);
   assert.match(

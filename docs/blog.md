@@ -185,6 +185,11 @@ When changing blog files, keep these invariants:
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.
+- Every generated article page should emit an absolute self-canonical URL,
+  hreflang links for each available locale alias and an `x-default` link to the
+  Korean article URL.
+- Tag sitemap links should use the same `q` search parameter consumed by the
+  public blog client.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
 - Analytics must initialize independently of the list UI because static article

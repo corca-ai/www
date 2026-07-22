@@ -444,7 +444,27 @@ This adjacent fixture gives the generated static page a previous-post card so th
     staticPage,
     /<meta name="robots" content="index,follow,max-image-preview:large">/,
   );
-  assert.doesNotMatch(staticPage, /<link rel="canonical"/);
+  assert.match(
+    staticPage,
+    /<link rel="canonical" href="https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture">/,
+  );
+  for (const [hreflang, path] of [
+    ['ko-KR', '/blog/admin-edit-fixture'],
+    ['en-US', '/en/blog/admin-edit-fixture'],
+    ['ja-JP', '/ja/blog/admin-edit-fixture'],
+    ['zh-CN', '/zh/blog/admin-edit-fixture'],
+  ]) {
+    assert.match(
+      staticPage,
+      new RegExp(
+        `<link rel="alternate" hreflang="${hreflang}" href="https:\\/\\/www\\.corca\\.ai${path}">`,
+      ),
+    );
+  }
+  assert.match(
+    staticPage,
+    /<link rel="alternate" hreflang="x-default" href="https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture">/,
+  );
   assert.match(staticPage, /<h4>Deeper Markdown Heading<\/h4>/);
   assert.match(staticPage, /<strong>bold<\/strong>/);
   assert.match(staticPage, /<blockquote>/);
@@ -513,6 +533,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.match(categorySitemap, /\/blog\?topic=product/);
   assert.doesNotMatch(categorySitemap, /[?&]topic=moonlight/);
   assert.doesNotMatch(categorySitemap, /[?&]topic=tech/);
+  const tagSitemap = await readFile(join(workDir, 'public/sitemap-tags.xml'), 'utf8');
+  assert.match(tagSitemap, /\/blog\?q=/);
+  assert.match(tagSitemap, /\/en\/blog\?q=/);
+  assert.doesNotMatch(tagSitemap, /[?&]search=/);
   for (const localeRoot of ['blog', 'en/blog', 'ja/blog', 'zh/blog']) {
     const blogIndex = await readFile(join(workDir, `public/${localeRoot}/index.html`), 'utf8');
     assert.match(blogIndex, /data-topic-filter="product" data-topic-value="(?:제품|Product)"/);

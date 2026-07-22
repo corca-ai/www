@@ -24,6 +24,16 @@ try {
     assert.equal(newbieMetadata.tags[0], 'AX');
     assert.equal(newbieMetadata.section, 'AX');
   }
+  for (const [sourcePath, expectedSection] of [
+    ['public/blog/admin/post-sources/voc-agent.html', '문라이트'],
+    ['public/blog/admin/post-translations/en/voc-agent.html', 'Moonlight'],
+    ['public/blog/admin/post-translations/ja/voc-agent.html', 'Moonlight'],
+    ['public/blog/admin/post-translations/zh/voc-agent.html', 'Moonlight'],
+  ]) {
+    const vocMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
+    assert.equal(vocMetadata.tags[0], '문라이트');
+    assert.equal(vocMetadata.section, expectedSection);
+  }
 
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/posts'), { recursive: true });

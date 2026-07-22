@@ -171,6 +171,8 @@
 14. Round 13 found that the wide team-photo composition could let its statement approach the people at tablet and narrow-desktop widths, and that tab-panel changes still felt abrupt.
    - Fix: introduced a 721–1150 px protected composition that keeps the complete team image bottom-centered and moves the authored three-line statement into the open area above it; extended the panel crossfade with a restrained vertical drift, scale, blur, and Apple-style deceleration curve.
    - Post-fix evidence: responsive browser probes verify separate copy/image safe areas through the intermediate breakpoint, while tab transitions interpolate opacity, transform, and blur without layout movement; reduced-motion continues to remove both effects.
+15. Round 14 requested stronger visual emphasis for the `61건` diagnosis metric.
+   - Fix: reused the established light-section navy-to-Corca-blue-to-violet point-gradient token on the metric value without changing its copy, size, or layout.
 
 ## Interaction and console checks
 

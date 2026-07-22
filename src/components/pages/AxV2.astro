@@ -263,7 +263,7 @@ const brochureHref = import.meta.env.DEV
             <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
           ))}
         </h3>
-        <div class="ax-v2-metric"><strong>{c.diagnosis.metric[0]}</strong><span>{c.diagnosis.metric[1]}</span></div>
+        <div class="ax-v2-metric"><strong class="ax-v2-point-gradient">{c.diagnosis.metric[0]}</strong><span>{c.diagnosis.metric[1]}</span></div>
         <p><AxLines values={c.diagnosis.body} /></p>
       </div>
       <div class="ax-v2-comparison" data-reveal>

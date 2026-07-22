@@ -40,6 +40,7 @@
 - Round 12 dark Hero-gradient accent: `/private/tmp/ax-v2-qa/round12-dark-hero-gradient.png`
 - Round 16 Section 1-2 native-scroll state: `/private/tmp/ax-v2-qa/round16-compound-static-scroll.png`
 - Round 17 testimonial shadow runway: `/private/tmp/ax-v2-qa/round17-testimonial-shadow-runway.png`
+- Round 24 responsive browser probes: 887 × 994 tablet, 721 × 900 boundary, 720 × 900 mobile boundary, and 390 × 844 mobile.
 
 ## Capture normalization
 
@@ -201,6 +202,9 @@
 23. Round 22 found the 900 px-and-below single-column circle layout creating oversized cards and excessive vertical whitespace near the tablet breakpoint.
    - Fix: introduced a 721–900 px triangle composition with one centered upper circle and two lower circles, capped every tablet circle at 348 px, replaced percentage padding with bounded responsive padding, and reduced the 720 px-and-below single-column maximum from 540 px to 440 px.
    - Post-fix evidence: at 887 × 994 all three circles measure approximately 347 px and form the requested centered triangle; at 721 px all three remain equal at approximately 315 px; at 390 px the single-column circles resolve to 350 px. Every checked card reports matching client and scroll heights, horizontal overflow remains zero, and the browser console contains no warning or error.
+24. Round 24 found the diagnosis comparison and coaching cards stretching to the full content width at tablet sizes, while the Ceal-before connector geometry depended on fixed mobile dimensions.
+   - Fix: split the responsive contract into a 721–900 px tablet band and a 720 px-and-below mobile band. Tablet diagnosis cards now retain capped 430/620 px widths, coaching cards retain the desktop-scale 348 px two-plus-one composition, and the Ceal diagrams remain centered within a 680 px maximum. Mobile explicitly resets those caps to a single fluid column with the existing side gutters. The Ceal-before rails now scale as one proportional 3.125:1 geometric unit so their dashed endpoints stay attached to the translated HTML labels instead of relying on raster artwork or fixed-height calculations.
+   - Post-fix evidence: at 887 × 994 the diagnosis cards measure approximately 430/620 px, all coaching cards measure approximately 348 px in a two-plus-one layout, and each Ceal figure measures approximately 679 px. At 390 × 844 the diagnosis cards, coaching cards, and Ceal figures all resolve to the 350 px content width with 20 px side gutters. The 721/720 px boundary switches cleanly from capped tablet layouts to full-width mobile layouts, and every checked viewport reports `scrollWidth === innerWidth`.
 
 ## Interaction and console checks
 

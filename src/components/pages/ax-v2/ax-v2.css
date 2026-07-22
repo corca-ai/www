@@ -2527,6 +2527,44 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 @media (min-width: 721px) and (max-width: 900px) {
+  /* Keep the desktop card scale at tablet widths instead of stretching every
+     card to the full content column. Mobile intentionally resets these caps. */
+  .ax-v2-comparison {
+    width: min(100%, 660px);
+    margin-inline: auto;
+    justify-items: center;
+  }
+
+  .ax-v2-comparison article {
+    width: 100%;
+  }
+
+  .ax-v2-comparison-legacy {
+    max-width: 430px;
+  }
+
+  .ax-v2-comparison-corca {
+    max-width: 620px;
+  }
+
+  .ax-v2-card-grid {
+    width: min(100%, 720px);
+    margin-inline: auto;
+    grid-template-columns: repeat(2, minmax(0, 348px));
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .ax-v2-feature-card {
+    width: 100%;
+    max-width: 348px;
+  }
+
+  .ax-v2-feature-card:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
   .ax-v2-circle-grid {
     width: min(100%, 720px);
     margin-inline: auto;
@@ -2545,9 +2583,32 @@ body:has(.ax-v2-dialog[open]) {
     width: calc((100% - 24px) / 2);
     grid-column: 1 / -1;
   }
+
+  .ax-v2-ceal-diagrams {
+    width: min(100%, 680px);
+    margin-inline: auto;
+  }
+
+  .ax-v2-ceal-diagrams figure {
+    width: 100%;
+  }
 }
 
 @media (max-width: 720px) {
+  .ax-v2-comparison,
+  .ax-v2-card-grid,
+  .ax-v2-ceal-diagrams {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .ax-v2-comparison article,
+  .ax-v2-feature-card,
+  .ax-v2-ceal-diagrams figure {
+    width: 100%;
+    max-width: none;
+  }
+
   .ax-v2-circle-card {
     width: min(100%, 440px);
   }
@@ -2656,33 +2717,79 @@ body:has(.ax-v2-dialog[open]) {
   }
 
   .ax-v2-ceal-node-row span {
-    min-height: 58px;
-  }
-
-  .ax-v2-chaos-rails i:nth-child(2),
-  .ax-v2-chaos-rails i:nth-child(6) {
-    width: 54.7%;
-    transform: rotate(52.5deg);
-  }
-
-  .ax-v2-chaos-rails i:nth-child(3) {
-    width: 79.4%;
-    transform: rotate(33deg);
-  }
-
-  .ax-v2-chaos-rails i:nth-child(4),
-  .ax-v2-chaos-rails i:nth-child(8) {
-    width: 54.7%;
-    transform: rotate(127.5deg);
-  }
-
-  .ax-v2-chaos-rails i:nth-child(7) {
-    width: 79.4%;
-    transform: rotate(147deg);
+    min-height: clamp(50px, 10vw, 58px);
+    padding-inline: 6px;
+    font-size: clamp(9.5px, 2.4vw, 12px);
+    word-break: keep-all;
   }
 
   .ax-v2-ceal-closing {
     padding: 18px;
+  }
+}
+
+/* The disconnected Ceal map scales as one geometric unit. Keeping the rail
+   aspect ratio proportional makes every dashed endpoint stay attached to the
+   three translated HTML labels at any responsive width. */
+.ax-v2-chaos-rails {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 3.125 / 1;
+}
+
+.ax-v2-chaos-rails i:nth-child(2),
+.ax-v2-chaos-rails i:nth-child(6) {
+  width: 46.2%;
+  transform: rotate(43.8deg);
+}
+
+.ax-v2-chaos-rails i:nth-child(3) {
+  width: 74%;
+  transform: rotate(25.6deg);
+}
+
+.ax-v2-chaos-rails i:nth-child(4),
+.ax-v2-chaos-rails i:nth-child(8) {
+  width: 46.2%;
+  transform: rotate(136.2deg);
+}
+
+.ax-v2-chaos-rails i:nth-child(7) {
+  width: 74%;
+  transform: rotate(154.4deg);
+}
+
+@media (max-width: 480px) {
+  .ax-v2-ceal-diagrams figure {
+    padding: 16px;
+  }
+
+  .ax-v2-ceal-diagrams figcaption {
+    gap: 10px;
+  }
+
+  .ax-v2-ceal-diagrams figcaption span {
+    padding: 7px 12px;
+    font-size: 10px;
+  }
+
+  .ax-v2-ceal-node-row {
+    gap: 6px;
+  }
+
+  .ax-v2-ceal-node-row span {
+    min-height: 50px;
+    padding: 7px 4px;
+  }
+
+  .ax-v2-ceal-gateway {
+    width: 82%;
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+
+  .ax-v2-ceal-notes {
+    font-size: 11px;
   }
 }
 

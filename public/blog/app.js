@@ -389,6 +389,7 @@ const savedReads = document.querySelector("#savedReads");
 const postView = document.querySelector("#postView");
 const postArticle = document.querySelector("#postArticle");
 const tableOfContents = document.querySelector("#tableOfContents");
+const recommendationsPanel = document.querySelector("#recommendationsPanel");
 const relatedPosts = document.querySelector("#relatedPosts");
 const postsSection = document.querySelector("#posts");
 const resultCount = document.querySelector("#resultCount");
@@ -1263,6 +1264,8 @@ function renderArticleLoading(post) {
   updateCurrentPostSaveButton();
   tableOfContents.hidden = true;
   tableOfContents.innerHTML = "";
+  recommendationsPanel.hidden = true;
+  recommendationsPanel.innerHTML = "";
   relatedPosts.hidden = true;
   relatedPosts.innerHTML = "";
   postArticle.innerHTML = `
@@ -1540,16 +1543,16 @@ function getRecommendedPosts(post, posts = state.posts) {
 }
 
 function renderSidebarRecommendations(posts) {
-  tableOfContents.querySelector(".toc-recommendations")?.remove();
+  recommendationsPanel.innerHTML = "";
   renderMobileRecommendations(posts);
 
   if (!posts.length) {
-    tableOfContents.hidden = !tableOfContents.textContent.trim();
+    recommendationsPanel.hidden = true;
     return;
   }
 
-  tableOfContents.hidden = false;
-  tableOfContents.insertAdjacentHTML("beforeend", `
+  recommendationsPanel.hidden = false;
+  recommendationsPanel.insertAdjacentHTML("beforeend", `
     <section class="toc-recommendations" aria-label="${escapeAttribute(localeText().recommendations)}">
       <strong>${escapeHtml(localeText().recommendations)}</strong>
       <div class="toc-recommendation-list">

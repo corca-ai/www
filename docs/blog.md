@@ -177,6 +177,9 @@ When changing blog files, keep these invariants:
   `:where(#main)` scoping so they neither leak into the shared header/footer nor
   override more specific blog component styles. Document-level primitives such
   as page background and overflow may remain global.
+- Desktop article pages keep the table of contents to the left of the article
+  and recommended posts to the right. Mobile article pages combine both into
+  the existing collapsible navigation inside the article header.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

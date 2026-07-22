@@ -14,6 +14,17 @@ const tinyPngBase64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
 
 try {
+  for (const sourcePath of [
+    'public/blog/admin/post-sources/corca-newbie-trip.html',
+    'public/blog/admin/post-translations/en/corca-newbie-trip.html',
+    'public/blog/admin/post-translations/ja/corca-newbie-trip.html',
+    'public/blog/admin/post-translations/zh/corca-newbie-trip.html',
+  ]) {
+    const newbieMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
+    assert.equal(newbieMetadata.tags[0], 'AX');
+    assert.equal(newbieMetadata.section, 'AX');
+  }
+
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/posts'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/assets'), { recursive: true });
@@ -179,11 +190,17 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
   assert.match(staticPage, /<details class="article-mobile-navigation">/);
   assert.match(staticPage, /<summary>목차와 추천 글<\/summary>/);
+  assert.match(
+    staticPage,
+    /<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<section class="toc-section"[\s\S]*?<\/aside>[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<section class="toc-recommendations"/,
+  );
   const noTocStaticPage = await readFile(
     join(workDir, 'public/blog/adjacent-thumbnail-fixture/index.html'),
     'utf8',
   );
   assert.doesNotMatch(noTocStaticPage, /<section class="toc-section"/);
+  assert.doesNotMatch(noTocStaticPage, /table-of-contents-panel/);
+  assert.match(noTocStaticPage, /class="toc static-toc recommendations-panel"/);
   assert.ok(
     staticPage.includes(
       `<img src="/blog/${fallbackThumbnail}" alt="" loading="lazy" decoding="async">`,
@@ -215,6 +232,8 @@ This adjacent fixture gives the generated static page a previous-post card so th
   for (const localeRoot of ['blog', 'en/blog', 'ja/blog', 'zh/blog']) {
     const blogIndex = await readFile(join(workDir, `public/${localeRoot}/index.html`), 'utf8');
     assert.doesNotMatch(blogIndex, /data-topic-filter="tech"/);
+    assert.match(blogIndex, /id="tableOfContents" class="toc table-of-contents-panel"/);
+    assert.match(blogIndex, /id="recommendationsPanel" class="toc recommendations-panel"/);
   }
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
   assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);

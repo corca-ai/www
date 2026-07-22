@@ -863,6 +863,10 @@ async function renderBlogIndexPages(postRecordsByLocale) {
         `$1${escapeAttribute(localeLabels[locale].toc)}$2`,
       )
       .replace(
+        /(<aside id="recommendationsPanel"[^>]*aria-label=")[^"]*("[^>]*>)/,
+        `$1${escapeAttribute(localeLabels[locale].recommendations)}$2`,
+      )
+      .replace(
         /(<section class="toolbar"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.searchAndFilter)}$2`,
       )
@@ -1310,8 +1314,9 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
 ${articleHtml}
           </div>
         </article>
-        <aside class="toc static-toc" aria-label="${escapeAttribute(localeLabels[locale].toc)}">
-${renderStaticNavigationSections(toc, recommendations, locale)}
+${renderStaticTableOfContents(toc, locale)}
+        <aside class="toc static-toc recommendations-panel" aria-label="${escapeAttribute(localeLabels[locale].recommendations)}">
+${renderStaticRecommendations(recommendations, locale)}
         </aside>
         ${pageNav}
       </section>
@@ -1442,21 +1447,38 @@ ${renderStaticNavigationSections(toc, recommendations, locale)}
 }
 
 function renderStaticNavigationSections(toc, recommendations, locale) {
-  const labels = localeLabels[locale];
   const sections = [];
   if (toc) {
-    sections.push(`<section class="toc-section" aria-label="${escapeAttribute(labels.toc)}">
+    sections.push(renderStaticTocSection(toc, locale));
+  }
+  sections.push(renderStaticRecommendations(recommendations, locale));
+  return sections.join('\n');
+}
+
+function renderStaticTableOfContents(toc, locale) {
+  if (!toc) return '';
+  const labels = localeLabels[locale];
+  return `        <aside class="toc static-toc table-of-contents-panel" aria-label="${escapeAttribute(labels.toc)}">
+${renderStaticTocSection(toc, locale)}
+        </aside>`;
+}
+
+function renderStaticTocSection(toc, locale) {
+  const labels = localeLabels[locale];
+  return `<section class="toc-section" aria-label="${escapeAttribute(labels.toc)}">
   <strong>${escapeHtml(labels.toc)}</strong>
   ${toc}
-</section>`);
-  }
-  sections.push(`<section class="toc-recommendations" aria-label="${escapeAttribute(labels.recommendations)}">
+</section>`;
+}
+
+function renderStaticRecommendations(recommendations, locale) {
+  const labels = localeLabels[locale];
+  return `<section class="toc-recommendations" aria-label="${escapeAttribute(labels.recommendations)}">
   <strong>${escapeHtml(labels.recommendations)}</strong>
   <div class="toc-recommendation-list">
 ${recommendations.map((item) => renderRecommendation(item, locale)).join('\n')}
   </div>
-</section>`);
-  return sections.join('\n');
+</section>`;
 }
 
 function adjacentPostNav(post, posts, postBySlug, locale) {

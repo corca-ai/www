@@ -39,6 +39,7 @@
 - Round 10 static Ceal rails: `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png`
 - Round 12 dark Hero-gradient accent: `/private/tmp/ax-v2-qa/round12-dark-hero-gradient.png`
 - Round 16 Section 1-2 native-scroll state: `/private/tmp/ax-v2-qa/round16-compound-static-scroll.png`
+- Round 17 testimonial shadow runway: `/private/tmp/ax-v2-qa/round17-testimonial-shadow-runway.png`
 
 ## Capture normalization
 
@@ -182,6 +183,9 @@
 17. Round 16 found the Section 1-2 parallax visually abrupt because its image appeared to jump upward toward the sticky header during ordinary scrolling.
    - Fix: removed the section's scroll listener, animation frame loop, parallax data hooks, runtime CSS variables, and scroll-linked `translateY` transforms while preserving its responsive photograph crop and copy placement.
    - Post-fix evidence: four browser scroll samples move the section top linearly with `scrollY`; the section has no parallax data attributes or inline motion variables, the image transform remains static, horizontal overflow is zero, and the browser console contains no warning or error.
+18. Round 17 found the testimonial card's diffuse upper shadow visually clipped by the carousel viewport.
+   - Fix: increased the track's internal top shadow runway from 20 px to 88 px and reduced the equivalent outer margin from 72 px to 4 px, preserving the card's exact vertical position while allowing the shadow to fade before the overflow boundary.
+   - Post-fix evidence: the browser reports an 88 px card-to-track-top runway, unchanged zero horizontal overflow, and the focused capture shows the upper shadow diffusing continuously into the section background.
 
 ## Interaction and console checks
 

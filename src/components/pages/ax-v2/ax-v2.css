@@ -346,10 +346,13 @@
   gap: 24px;
   overflow-x: auto;
   padding: 8px max(0px, calc((100% - min(684px, 68vw)) / 2)) 24px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
   scroll-padding-inline: max(0px, calc((100% - min(684px, 68vw)) / 2));
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  touch-action: pan-x pan-y;
 }
 
 .ax-v2-testimonial-track::-webkit-scrollbar {
@@ -369,6 +372,7 @@
   background: #fff;
   box-shadow: 0 24px 70px rgba(20, 52, 93, 0.08);
   scroll-snap-align: center;
+  scroll-snap-stop: always;
 }
 
 .ax-v2-testimonial-card blockquote {
@@ -407,6 +411,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .ax-v2-carousel-status {
@@ -761,6 +767,7 @@
   margin: 28px 0 0;
   color: var(--ax-v2-muted);
   font-size: 13px;
+  text-align: center;
 }
 
 /* Cards and environment table */

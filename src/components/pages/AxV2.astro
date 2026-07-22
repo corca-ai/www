@@ -375,7 +375,9 @@ const brochureHref = import.meta.env.DEV
           <div class="ax-v2-ceal-node-row">{c.ceal.systems.map((system) => <span>{system}</span>)}</div>
           <ul class="ax-v2-ceal-notes">{c.ceal.beforeNotes.map((note) => <li>{note}</li>)}</ul>
         </figure>
-        <div class="ax-v2-ceal-transition" aria-hidden="true"><span>Ceal 도입</span><strong>→</strong></div>
+        <div class="ax-v2-ceal-transition" aria-hidden="true">
+          <span>Ceal 도입</span><strong class="ax-v2-comparison-arrow">➜</strong>
+        </div>
         <figure class="ax-v2-ceal-after">
           <figcaption><strong>{c.ceal.after}</strong><span>{c.ceal.afterBadge}</span></figcaption>
           <div class="ax-v2-ceal-node-row">{c.ceal.agents.map((agent) => <span>{agent}</span>)}</div>

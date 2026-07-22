@@ -2347,12 +2347,6 @@ body:has(.ax-v2-dialog[open]) {
   font-weight: 760;
 }
 
-.ax-v2-ceal-transition strong {
-  font-size: 54px;
-  font-weight: 540;
-  line-height: 1;
-}
-
 .ax-v2-ceal-closing {
   margin-top: 28px;
   padding: 20px 28px;
@@ -2443,10 +2437,6 @@ body:has(.ax-v2-dialog[open]) {
 
   .ax-v2-ceal-transition {
     min-height: 76px;
-  }
-
-  .ax-v2-ceal-transition strong {
-    transform: rotate(90deg);
   }
 
   .ax-v2-ceal-closing {

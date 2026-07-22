@@ -27,6 +27,11 @@ try {
         await readFile(join(repoRoot, sourceRoot, file), 'utf8'),
       );
       assert.equal(sourceMetadata.tags.length, 1, `${sourceRoot}/${file} must have one category`);
+      assert.equal(
+        ['AX', '제품', 'Product', '코르카', 'Corca'].includes(sourceMetadata.tags[0]),
+        true,
+        `${sourceRoot}/${file} must use Product, AX, or Corca`,
+      );
     }
   }
   for (const sourcePath of [
@@ -39,14 +44,14 @@ try {
     assert.deepEqual(newbieMetadata.tags, ['AX']);
     assert.equal(newbieMetadata.section, 'AX');
   }
-  for (const [sourcePath, expectedSection] of [
-    ['public/blog/admin/post-sources/voc-agent.html', '문라이트'],
-    ['public/blog/admin/post-translations/en/voc-agent.html', 'Moonlight'],
-    ['public/blog/admin/post-translations/ja/voc-agent.html', 'Moonlight'],
-    ['public/blog/admin/post-translations/zh/voc-agent.html', 'Moonlight'],
+  for (const [sourcePath, expectedTag, expectedSection] of [
+    ['public/blog/admin/post-sources/voc-agent.html', '제품', '제품'],
+    ['public/blog/admin/post-translations/en/voc-agent.html', 'Product', 'Product'],
+    ['public/blog/admin/post-translations/ja/voc-agent.html', 'Product', 'Product'],
+    ['public/blog/admin/post-translations/zh/voc-agent.html', 'Product', 'Product'],
   ]) {
     const vocMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
-    assert.deepEqual(vocMetadata.tags, ['문라이트']);
+    assert.deepEqual(vocMetadata.tags, [expectedTag]);
     assert.equal(vocMetadata.section, expectedSection);
   }
   for (const [sourcePath, expectedSection] of [
@@ -62,6 +67,39 @@ try {
     const corcaMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
     assert.deepEqual(corcaMetadata.tags, ['코르카']);
     assert.equal(corcaMetadata.section, expectedSection);
+  }
+  for (const [localeRoot, productCategory, corcaCategory] of [
+    ['blog', '제품', '코르카'],
+    ['en/blog', 'Product', 'Corca'],
+    ['ja/blog', 'Product', 'Corca'],
+    ['zh/blog', 'Product', 'Corca'],
+  ]) {
+    const posts = JSON.parse(
+      await readFile(join(repoRoot, `public/${localeRoot}/index.json`), 'utf8'),
+    );
+    assert.equal(
+      posts.every(
+        (post) =>
+          post.tags.length === 1 &&
+          post.section === post.tags[0] &&
+          [productCategory, 'AX', corcaCategory].includes(post.tags[0]),
+      ),
+      true,
+    );
+    for (const productSlug of [
+      'we-make-ai-colleague',
+      'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image',
+      'ceal-operations-team',
+      'voc-agent',
+      'live-activity-schedule',
+      'app-store-optimization',
+    ]) {
+      assert.deepEqual(posts.find((post) => post.slug === productSlug)?.tags, [productCategory]);
+    }
+    assert.deepEqual(posts.find((post) => post.slug === 'corca-team-page')?.tags, [corcaCategory]);
+    assert.deepEqual(posts.find((post) => post.slug === 'corca-buddy-program')?.tags, [
+      corcaCategory,
+    ]);
   }
 
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
@@ -82,6 +120,44 @@ try {
   }
 
   await writeFile(join(workDir, 'public/blog/posts/index.json'), '[]\n');
+
+  for (const familyTag of [
+    'Moonlight',
+    '문라이트',
+    'Trace',
+    '트레이스',
+    'Ceal',
+    '씰',
+    'Margin',
+    '마진',
+    'Kraken',
+    '크라켄',
+  ]) {
+    runAdminChange({
+      action: 'upsert',
+      slug,
+      format: 'markdown',
+      fileName: 'product-family-fixture.md',
+      metadata: {
+        title: `${familyTag} Product Family Fixture`,
+        description: `${familyTag} must normalize to the single Product category.`,
+        date: '2026-02-03',
+        tags: familyTag,
+        author: 'Fixture Author',
+        cover: 'assets/editorial-cover.jpg',
+        language: 'ko',
+        section: familyTag,
+      },
+      contentBase64: toBase64(`# ${familyTag} Product Family Fixture
+
+This fixture verifies that the product-family category is normalized consistently.`),
+    });
+    const familyMetadata = embeddedMetadata(
+      await readFile(join(workDir, `public/blog/admin/post-sources/${slug}.html`), 'utf8'),
+    );
+    assert.deepEqual(familyMetadata.tags, ['제품']);
+    assert.equal(familyMetadata.section, '제품');
+  }
 
   runAdminChange({
     action: 'upsert',
@@ -183,8 +259,8 @@ This adjacent fixture gives the generated static page a previous-post card so th
   const metadata = embeddedMetadata(source);
   assert.equal(metadata.title, 'Admin Markdown Updated');
   assert.equal(metadata.sourceFormat, 'markdown');
-  assert.deepEqual(metadata.tags, ['문라이트']);
-  assert.equal(metadata.section, '문라이트');
+  assert.deepEqual(metadata.tags, ['제품']);
+  assert.equal(metadata.section, '제품');
   assert.match(metadata.sourceMarkdown, /^# Admin Markdown Updated/);
   assert.match(metadata.cover, /^assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png$/);
 
@@ -272,16 +348,13 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(sitemap, /<changefreq>/);
   assert.doesNotMatch(sitemap, /<priority>/);
   const categorySitemap = await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8');
-  assert.match(categorySitemap, /\/blog\?topic=moonlight/);
-  assert.doesNotMatch(categorySitemap, /[?&]topic=product/);
+  assert.match(categorySitemap, /\/blog\?topic=product/);
+  assert.doesNotMatch(categorySitemap, /[?&]topic=moonlight/);
   assert.doesNotMatch(categorySitemap, /[?&]topic=tech/);
   for (const localeRoot of ['blog', 'en/blog', 'ja/blog', 'zh/blog']) {
     const blogIndex = await readFile(join(workDir, `public/${localeRoot}/index.html`), 'utf8');
-    assert.match(
-      blogIndex,
-      /data-topic-filter="moonlight" data-topic-value="(?:문라이트|Moonlight)"/,
-    );
-    assert.doesNotMatch(blogIndex, /data-topic-filter="product"/);
+    assert.match(blogIndex, /data-topic-filter="product" data-topic-value="(?:제품|Product)"/);
+    assert.doesNotMatch(blogIndex, /data-topic-filter="moonlight"/);
     assert.doesNotMatch(blogIndex, /data-topic-filter="tech"/);
     assert.match(blogIndex, /id="tableOfContents" class="toc table-of-contents-panel"/);
     assert.match(blogIndex, /id="recommendationsPanel" class="toc recommendations-panel"/);

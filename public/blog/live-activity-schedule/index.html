@@ -17,8 +17,8 @@
     <meta property="article:published_time" content="2025-12-10T00:00:00.000Z">
     <meta property="article:modified_time" content="2025-12-10T00:00:00.000Z">
     <meta property="article:author" content="김성훈(iOS Product Engineer)">
-    <meta property="article:section" content="트레이스">
-    <meta property="article:tag" content="트레이스">
+    <meta property="article:section" content="제품">
+    <meta property="article:tag" content="제품">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기">
     <meta name="twitter:description" content="Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.">
@@ -27,7 +27,7 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
-    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기","description":"Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.","image":"https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","thumbnailUrl":"https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","url":"https://www.borca.ai/blog/live-activity-schedule","keywords":["트레이스"],"articleSection":"트레이스","wordCount":5149,"datePublished":"2025-12-10","dateModified":"2025-12-10","author":{"@type":"Organization","name":"김성훈(iOS Product Engineer)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"ko-KR","timeRequired":"PT11M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.borca.ai/blog"},"mainEntityOfPage":"https://www.borca.ai/blog/live-activity-schedule"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.borca.ai/blog"},{"@type":"ListItem","position":2,"name":"글","item":"https://www.borca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기"}]}]}</script>
+    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기","description":"Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.","image":"https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","thumbnailUrl":"https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","url":"https://www.borca.ai/blog/live-activity-schedule","keywords":["제품"],"articleSection":"제품","wordCount":5149,"datePublished":"2025-12-10","dateModified":"2025-12-10","author":{"@type":"Organization","name":"김성훈(iOS Product Engineer)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"ko-KR","timeRequired":"PT11M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.borca.ai/blog"},"mainEntityOfPage":"https://www.borca.ai/blog/live-activity-schedule"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.borca.ai/blog"},{"@type":"ListItem","position":2,"name":"글","item":"https://www.borca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기"}]}]}</script>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="/blog/styles.css?v=21c8f94d2d2f">
@@ -65,17 +65,17 @@
 <section class="toc-recommendations" aria-label="추천 글">
   <strong>추천 글</strong>
   <div class="toc-recommendation-list">
-              <a class="toc-recommendation" href="/blog/app-store-optimization">
-                <span>앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기</span>
-                <small><time datetime="2025-09-26">2025년 9월 26일</time> · 유현명(Product Engineer)</small>
-              </a>
               <a class="toc-recommendation" href="/blog/we-make-ai-colleague">
                 <span>우리가 만들고 싶은 AI Colleague</span>
                 <small><time datetime="2026-07-07">2026년 7월 7일</time> · 김선영(HR Manager)</small>
               </a>
-              <a class="toc-recommendation" href="/blog/corca-newbie-trip">
-                <span>코르카 신입 적응기</span>
-                <small><time datetime="2026-07-06">2026년 7월 6일</time> · 문정민(AX Consultant)</small>
+              <a class="toc-recommendation" href="/blog/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image">
+                <span>확인하지 않은 것을 사실처럼 말하지 않기</span>
+                <small><time datetime="2026-06-25">2026년 6월 25일</time> · 김예린</small>
+              </a>
+              <a class="toc-recommendation" href="/blog/ceal-operations-team">
+                <span>오퍼레이션팀의 새로운 동료, Ceal</span>
+                <small><time datetime="2026-05-13">2026년 5월 13일</time> · 김선영(HR Manager)</small>
               </a>
   </div>
 </section>
@@ -190,17 +190,17 @@
 <section class="toc-recommendations" aria-label="추천 글">
   <strong>추천 글</strong>
   <div class="toc-recommendation-list">
-              <a class="toc-recommendation" href="/blog/app-store-optimization">
-                <span>앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기</span>
-                <small><time datetime="2025-09-26">2025년 9월 26일</time> · 유현명(Product Engineer)</small>
-              </a>
               <a class="toc-recommendation" href="/blog/we-make-ai-colleague">
                 <span>우리가 만들고 싶은 AI Colleague</span>
                 <small><time datetime="2026-07-07">2026년 7월 7일</time> · 김선영(HR Manager)</small>
               </a>
-              <a class="toc-recommendation" href="/blog/corca-newbie-trip">
-                <span>코르카 신입 적응기</span>
-                <small><time datetime="2026-07-06">2026년 7월 6일</time> · 문정민(AX Consultant)</small>
+              <a class="toc-recommendation" href="/blog/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image">
+                <span>확인하지 않은 것을 사실처럼 말하지 않기</span>
+                <small><time datetime="2026-06-25">2026년 6월 25일</time> · 김예린</small>
+              </a>
+              <a class="toc-recommendation" href="/blog/ceal-operations-team">
+                <span>오퍼레이션팀의 새로운 동료, Ceal</span>
+                <small><time datetime="2026-05-13">2026년 5월 13일</time> · 김선영(HR Manager)</small>
               </a>
   </div>
 </section>
@@ -212,7 +212,7 @@
             <img src="/blog/assets/medium-import/app-store-optimization-figure-01.webp" alt="" loading="lazy" decoding="async">
           </span>
           <span class="related-copy">
-            <span class="related-meta">이전 글 · <strong>트레이스</strong> · <time datetime="2025-09-26">2025년 9월 26일</time></span>
+            <span class="related-meta">이전 글 · <strong>제품</strong> · <time datetime="2025-09-26">2025년 9월 26일</time></span>
             <span class="related-title">앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기</span>
           </span>
         </a>        <a class="related-card post-pagination-card post-pagination-next" href="/blog/corca-office-move" aria-label="다음 글: 우리의 새로운 시작, 코르카 이사 이야기">

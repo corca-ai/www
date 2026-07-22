@@ -966,13 +966,17 @@ function renderTopicFilterButtons(records) {
 }
 
 function getPostTopics(records) {
-  return [
+  const topics = [
     ...new Set(
       records
         .map(({ post }) => String(post.tags?.[0] || post.section || '').trim())
         .filter(Boolean),
     ),
   ];
+  const order = ['product', 'ax', 'corca'];
+  return topics.sort(
+    (first, second) => order.indexOf(topicKey(first)) - order.indexOf(topicKey(second)),
+  );
 }
 
 function topicKey(value) {
@@ -1716,12 +1720,37 @@ function normalizePostTags(value, context = {}) {
 
 function pickTopic(tags, haystack) {
   const rules = [
+    [
+      '제품',
+      [
+        'product',
+        'products',
+        '제품',
+        'moonlight',
+        '문라이트',
+        'trace',
+        '트레이스',
+        'kraken',
+        '크라켄',
+        'ceal',
+        '씰',
+        'margin',
+        '마진',
+        '논문',
+        'research',
+        'paper',
+        '일정',
+        '캘린더',
+        'calendar',
+        'schedule',
+        'locality',
+        'ads',
+        '광고',
+        '리테일',
+        'retail',
+      ],
+    ],
     ['AX', ['ax', 'engineering', '엔지니어링', '개발', '워크플로', 'agent', '에이전트']],
-    ['문라이트', ['moonlight', '문라이트', '논문', 'research', 'paper']],
-    ['트레이스', ['trace', '트레이스', '일정', '캘린더', 'calendar', 'schedule']],
-    ['크라켄', ['kraken', '크라켄']],
-    ['씰', ['ceal', '씰', 'ceal-terview', 'locality']],
-    ['마진', ['margin', '마진', 'ads', '광고', '리테일', 'retail']],
     ['코르카', ['corca', '코르카', '회사', '팀', '문화', '세미나', '채용', 'company', 'culture']],
   ];
   for (const tag of tags) {

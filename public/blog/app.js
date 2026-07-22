@@ -354,17 +354,8 @@ const POSTS_PER_PAGE = 9;
 const PUBLIC_POST_TOPICS = [
   "AX",
   "Product",
-  "Moonlight",
-  "Trace",
-  "Kraken",
-  "Ceal",
-  "Margin",
   "Corca",
-  "문라이트",
-  "트레이스",
-  "크라켄",
-  "씰",
-  "마진",
+  "제품",
   "코르카"
 ];
 const DEFAULT_POST_TOPIC = "Corca";

@@ -5,8 +5,7 @@
     "description": "月光是一起研究的AI同事",
     "date": "2026-07-07",
     "tags": [
-      "Moonlight",
-      "Product"
+      "Moonlight"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
@@ -70,8 +69,7 @@
     "description": "我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。",
     "date": "2026-04-22",
     "tags": [
-      "Moonlight",
-      "Product"
+      "Moonlight"
     ],
     "author": "하동훈(Software Engineer)",
     "cover": "assets/medium-import/voc-agent-figure-01.png",
@@ -119,8 +117,7 @@
     "description": "我们概述了 Trace 团队如何使用 iOS Live Activity 和 ActivityKit Push 和 Push to Start 实现实时调度体验。",
     "date": "2025-12-10",
     "tags": [
-      "Trace",
-      "Product"
+      "Trace"
     ],
     "author": "김성훈(iOS Product Engineer)",
     "cover": "assets/medium-import/live-activity-schedule-figure-01.png",
@@ -136,8 +133,7 @@
     "description": "我们介绍如何通过应用商店优化（ASO）减少对付费广告的依赖，并通过改进关键字和商店页面来创造稳定的流量。",
     "date": "2025-09-26",
     "tags": [
-      "AX",
-      "Product"
+      "AX"
     ],
     "author": "유현명(Product Engineer)",
     "cover": "assets/medium-import/app-store-optimization-figure-01.webp",

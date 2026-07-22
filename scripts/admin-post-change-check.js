@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,6 +14,21 @@ const tinyPngBase64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
 
 try {
+  for (const sourceRoot of [
+    'public/blog/admin/post-sources',
+    'public/blog/admin/post-translations/en',
+    'public/blog/admin/post-translations/ja',
+    'public/blog/admin/post-translations/zh',
+  ]) {
+    for (const file of (await readdir(join(repoRoot, sourceRoot))).filter((name) =>
+      name.endsWith('.html'),
+    )) {
+      const sourceMetadata = embeddedMetadata(
+        await readFile(join(repoRoot, sourceRoot, file), 'utf8'),
+      );
+      assert.equal(sourceMetadata.tags.length, 1, `${sourceRoot}/${file} must have one category`);
+    }
+  }
   for (const sourcePath of [
     'public/blog/admin/post-sources/corca-newbie-trip.html',
     'public/blog/admin/post-translations/en/corca-newbie-trip.html',
@@ -21,7 +36,7 @@ try {
     'public/blog/admin/post-translations/zh/corca-newbie-trip.html',
   ]) {
     const newbieMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
-    assert.equal(newbieMetadata.tags[0], 'AX');
+    assert.deepEqual(newbieMetadata.tags, ['AX']);
     assert.equal(newbieMetadata.section, 'AX');
   }
   for (const [sourcePath, expectedSection] of [
@@ -31,8 +46,22 @@ try {
     ['public/blog/admin/post-translations/zh/voc-agent.html', 'Moonlight'],
   ]) {
     const vocMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
-    assert.equal(vocMetadata.tags[0], '문라이트');
+    assert.deepEqual(vocMetadata.tags, ['문라이트']);
     assert.equal(vocMetadata.section, expectedSection);
+  }
+  for (const [sourcePath, expectedSection] of [
+    ['public/blog/admin/post-sources/corca-team-page.html', '코르카'],
+    ['public/blog/admin/post-sources/corca-buddy-program.html', '코르카'],
+    ['public/blog/admin/post-translations/en/corca-team-page.html', 'Corca'],
+    ['public/blog/admin/post-translations/en/corca-buddy-program.html', 'Corca'],
+    ['public/blog/admin/post-translations/ja/corca-team-page.html', 'Corca'],
+    ['public/blog/admin/post-translations/ja/corca-buddy-program.html', 'Corca'],
+    ['public/blog/admin/post-translations/zh/corca-team-page.html', 'Corca'],
+    ['public/blog/admin/post-translations/zh/corca-buddy-program.html', 'Corca'],
+  ]) {
+    const corcaMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
+    assert.deepEqual(corcaMetadata.tags, ['코르카']);
+    assert.equal(corcaMetadata.section, expectedSection);
   }
 
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
@@ -154,6 +183,8 @@ This adjacent fixture gives the generated static page a previous-post card so th
   const metadata = embeddedMetadata(source);
   assert.equal(metadata.title, 'Admin Markdown Updated');
   assert.equal(metadata.sourceFormat, 'markdown');
+  assert.deepEqual(metadata.tags, ['문라이트']);
+  assert.equal(metadata.section, '문라이트');
   assert.match(metadata.sourceMarkdown, /^# Admin Markdown Updated/);
   assert.match(metadata.cover, /^assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png$/);
 
@@ -165,6 +196,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.equal(index[0].cover, metadata.cover);
   assert.equal(index[1].slug, 'adjacent-thumbnail-fixture');
   assert.equal(index[1].cover, fallbackThumbnail);
+  assert.equal(
+    index.every((post) => post.tags.length === 1 && post.section === post.tags[0]),
+    true,
+  );
   assert.deepEqual(indexAlias, index);
 
   const staticPage = await readFile(join(workDir, `public/blog/${slug}/index.html`), 'utf8');
@@ -237,10 +272,16 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(sitemap, /<changefreq>/);
   assert.doesNotMatch(sitemap, /<priority>/);
   const categorySitemap = await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8');
-  assert.match(categorySitemap, /\/blog\?topic=product/);
+  assert.match(categorySitemap, /\/blog\?topic=moonlight/);
+  assert.doesNotMatch(categorySitemap, /[?&]topic=product/);
   assert.doesNotMatch(categorySitemap, /[?&]topic=tech/);
   for (const localeRoot of ['blog', 'en/blog', 'ja/blog', 'zh/blog']) {
     const blogIndex = await readFile(join(workDir, `public/${localeRoot}/index.html`), 'utf8');
+    assert.match(
+      blogIndex,
+      /data-topic-filter="moonlight" data-topic-value="(?:문라이트|Moonlight)"/,
+    );
+    assert.doesNotMatch(blogIndex, /data-topic-filter="product"/);
     assert.doesNotMatch(blogIndex, /data-topic-filter="tech"/);
     assert.match(blogIndex, /id="tableOfContents" class="toc table-of-contents-panel"/);
     assert.match(blogIndex, /id="recommendationsPanel" class="toc recommendations-panel"/);
@@ -294,6 +335,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
     assert.equal(localeIndex[0].cover, expectedExplicitCover);
     assert.equal(localeIndex[1].slug, 'adjacent-thumbnail-fixture');
     assert.equal(localeIndex[1].cover, fallbackThumbnail);
+    assert.equal(
+      localeIndex.every((post) => post.tags.length === 1 && post.section === post.tags[0]),
+      true,
+    );
     assert.deepEqual(localeIndexAlias, localeIndex);
     const localeStaticPage = await readFile(
       join(workDir, `public/${locale}/blog/${slug}/index.html`),

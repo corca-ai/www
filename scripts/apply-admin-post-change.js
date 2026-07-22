@@ -299,7 +299,7 @@ async function upsertPost(value) {
       uploadedCover || normalizeCover(metadata.cover || parsed?.metadata.cover || defaultCover),
     language: normalizeLanguage(metadata.language || parsed?.metadata.language || 'ko'),
     coverAlt: String(metadata.coverAlt || parsed?.metadata.coverAlt || '').trim(),
-    section: String(metadata.section || parsed?.metadata.section || tags[0] || '').trim(),
+    section: tags[0],
     wordCount: estimateWordCount(articleHtml),
   };
 
@@ -660,7 +660,7 @@ async function readBasePostRecords() {
       wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
       language: normalizeLanguage(parsed.metadata.language || 'ko'),
       coverAlt: String(parsed.metadata.coverAlt || '').trim(),
-      section: String(parsed.metadata.section || tags[0] || '').trim(),
+      section: tags[0],
       searchText: stripTags(parsed.articleHtml),
     };
 
@@ -727,10 +727,7 @@ async function localizePostRecord(baseRecord, locale) {
     wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
     language: locale,
     coverAlt: String(parsed.metadata.coverAlt || baseRecord.post.coverAlt || '').trim(),
-    section: localizePostTopic(
-      String(parsed.metadata.section || tags[0] || baseRecord.post.section || '').trim(),
-      locale,
-    ),
+    section: localizePostTopic(tags[0], locale),
     searchText: stripTags(parsed.articleHtml),
   };
   validatePost(post);
@@ -818,6 +815,10 @@ async function renderBlogIndexPages(postRecordsByLocale) {
       .replace(
         /(<div id="heroTopicFilters"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.topicFilter)}$2`,
+      )
+      .replace(
+        /(<div id="heroTopicFilters"[^>]*>)[\s\S]*?(<\/div>)/,
+        `$1\n${renderTopicFilterButtons(records)}\n          $2`,
       )
       .replace(
         /(<section id="featuredPost"[^>]*aria-label=")[^"]*("[^>]*>)/,
@@ -944,19 +945,60 @@ function renderBlogPagesSitemap(postRecordsByLocale) {
 }
 
 function renderBlogCategoriesSitemap(postRecordsByLocale) {
-  const categories = [
-    { key: 'product', label: 'Product' },
-    { key: 'ax', label: 'AX' },
-    { key: 'corca', label: 'Corca' },
-  ];
   const lastmod = newestPostDate(postRecordsByLocale);
   return renderUrlset(
     supportedLocales.flatMap((locale) =>
-      categories.map((category) => ({
-        path: `${localeLabels[locale].blogPath}?topic=${category.key}`,
+      getPostTopics(postRecordsByLocale.get(locale) || []).map((topic) => ({
+        path: `${localeLabels[locale].blogPath}?topic=${topicKey(topic)}`,
         lastmod,
       })),
     ),
+  );
+}
+
+function renderTopicFilterButtons(records) {
+  return getPostTopics(records)
+    .map(
+      (topic) =>
+        `            <button type="button" data-topic-filter="${escapeAttribute(topicKey(topic))}" data-topic-value="${escapeAttribute(topic)}" aria-pressed="false">${escapeHtml(topic)}</button>`,
+    )
+    .join('\n');
+}
+
+function getPostTopics(records) {
+  return [
+    ...new Set(
+      records
+        .map(({ post }) => String(post.tags?.[0] || post.section || '').trim())
+        .filter(Boolean),
+    ),
+  ];
+}
+
+function topicKey(value) {
+  const keyMap = {
+    ax: 'ax',
+    moonlight: 'moonlight',
+    문라이트: 'moonlight',
+    trace: 'trace',
+    트레이스: 'trace',
+    kraken: 'kraken',
+    크라켄: 'kraken',
+    ceal: 'ceal',
+    씰: 'ceal',
+    margin: 'margin',
+    마진: 'margin',
+    corca: 'corca',
+    코르카: 'corca',
+    product: 'product',
+    제품: 'product',
+  };
+  return (
+    keyMap[
+      String(value || '')
+        .trim()
+        .toLowerCase()
+    ] || normalizeSlug(value)
   );
 }
 
@@ -1669,21 +1711,7 @@ function normalizePostTags(value, context = {}) {
       .filter(Boolean)
       .join(' '),
   );
-  const visible = pickTopic(tags, haystack);
-  const normalized = [visible || '코르카'];
-  if (
-    tags.some((tag) => matchesAlias(tag, ['제품', 'product', 'products'])) ||
-    matchesAlias(haystack, ['제품', 'product', 'products'])
-  ) {
-    normalized.push('제품');
-  }
-  if (
-    ['문라이트', '트레이스', '크라켄', '씰', '마진'].includes(normalized[0]) &&
-    !normalized.includes('제품')
-  ) {
-    normalized.push('제품');
-  }
-  return [...new Set(normalized)];
+  return [pickTopic(tags, haystack) || '코르카'];
 }
 
 function pickTopic(tags, haystack) {
@@ -1902,6 +1930,10 @@ function findFirstArticleImage(html) {
 }
 
 function validatePost(post) {
+  if (post.tags.length !== 1)
+    fail(`Post metadata must have exactly one public category: ${post.slug}`);
+  if (post.section !== post.tags[0])
+    fail(`Post metadata section must match its public category: ${post.slug}`);
   if (post.description.length > 180)
     fail(`Post metadata description must be 180 characters or fewer: ${post.slug}`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date))

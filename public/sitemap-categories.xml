@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.borca.ai/blog?topic=product</loc>
+    <loc>https://www.borca.ai/blog?topic=moonlight</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
@@ -14,7 +14,11 @@
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/en/blog?topic=product</loc>
+    <loc>https://www.borca.ai/blog?topic=trace</loc>
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.borca.ai/en/blog?topic=moonlight</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
@@ -26,7 +30,11 @@
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/ja/blog?topic=product</loc>
+    <loc>https://www.borca.ai/en/blog?topic=trace</loc>
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.borca.ai/ja/blog?topic=moonlight</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
@@ -38,7 +46,11 @@
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/zh/blog?topic=product</loc>
+    <loc>https://www.borca.ai/ja/blog?topic=trace</loc>
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.borca.ai/zh/blog?topic=moonlight</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
@@ -47,6 +59,10 @@
   </url>
   <url>
     <loc>https://www.borca.ai/zh/blog?topic=corca</loc>
+    <lastmod>2026-07-07T00:00:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.borca.ai/zh/blog?topic=trace</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
 </urlset>

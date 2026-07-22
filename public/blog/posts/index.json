@@ -5,8 +5,7 @@
     "description": "Moonlight는 함께 연구하는 AI Colleague입니다",
     "date": "2026-07-07",
     "tags": [
-      "문라이트",
-      "제품"
+      "문라이트"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
@@ -70,8 +69,7 @@
     "description": "문라이트 팀이 VoC 응대 과정을 에이전트로 구조화하고, 근거 탐색과 답변 초안 작성 비용을 줄인 과정을 소개합니다.",
     "date": "2026-04-22",
     "tags": [
-      "문라이트",
-      "제품"
+      "문라이트"
     ],
     "author": "하동훈(Software Engineer)",
     "cover": "assets/medium-import/voc-agent-figure-01.png",
@@ -119,8 +117,7 @@
     "description": "Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.",
     "date": "2025-12-10",
     "tags": [
-      "트레이스",
-      "제품"
+      "트레이스"
     ],
     "author": "김성훈(iOS Product Engineer)",
     "cover": "assets/medium-import/live-activity-schedule-figure-01.png",
@@ -136,8 +133,7 @@
     "description": "앱 스토어 최적화(ASO)를 통해 유료 광고 의존도를 낮추고, 키워드와 스토어 페이지 개선으로 안정적인 유입을 만드는 방법을 소개합니다.",
     "date": "2025-09-26",
     "tags": [
-      "트레이스",
-      "제품"
+      "트레이스"
     ],
     "author": "유현명(Product Engineer)",
     "cover": "assets/medium-import/app-store-optimization-figure-01.webp",
@@ -169,8 +165,7 @@
     "description": "코르카의 팀 페이지 코르카를 보다 자세히 알 수 있는, 새로워진 (corca.team)에 대해 소개해드리겠습니다! 코르카 채용 페이지 코르카의 팀 페이지는 corca.team 링크로 방문하실 수 있습니다! 우리가 살아가는 세상을 AI 기술로 변화시키는 팀, Corca corca.team 코르카의 팀",
     "date": "2023-04-28",
     "tags": [
-      "코르카",
-      "제품"
+      "코르카"
     ],
     "author": "류가형 (Product Manager)",
     "cover": "assets/medium-import/corca-team-page-figure-01.webp",
@@ -186,8 +181,7 @@
     "description": "이번 글에서는 코르카 온보딩 문화의 하나인 ‘버디 프로그램’에 대해 소개하려고 합니다! 코르카에는 입사 첫날부터 온보딩을 도와주는 오르카봇이 있습니다. (오르카봇에 대해 궁금하시다면 아래 링크를 참고하세요!) Hello 코르카, Hello 오르카봇 코르카 온보딩봇, 오르카봇을 소개합니다",
     "date": "2023-02-17",
     "tags": [
-      "코르카",
-      "제품"
+      "코르카"
     ],
     "author": "류가형 (Product Manager)",
     "cover": "assets/medium-import/corca-buddy-program-figure-01.webp",

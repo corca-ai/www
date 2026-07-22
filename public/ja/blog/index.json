@@ -5,8 +5,7 @@
     "description": "Moonlightは一緒に研究するAI Colleagueです",
     "date": "2026-07-07",
     "tags": [
-      "Moonlight",
-      "Product"
+      "Moonlight"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
@@ -70,8 +69,7 @@
     "description": "ムーンライトチームがVoC応対プロセスをエージェントとして構造化し、基礎探索と回答草案作成コストを削減したプロセスを紹介します。",
     "date": "2026-04-22",
     "tags": [
-      "Moonlight",
-      "Product"
+      "Moonlight"
     ],
     "author": "하동훈(Software Engineer)",
     "cover": "assets/medium-import/voc-agent-figure-01.png",
@@ -119,8 +117,7 @@
     "description": "TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。",
     "date": "2025-12-10",
     "tags": [
-      "Trace",
-      "Product"
+      "Trace"
     ],
     "author": "김성훈(iOS Product Engineer)",
     "cover": "assets/medium-import/live-activity-schedule-figure-01.png",
@@ -136,8 +133,7 @@
     "description": "アプリストアの最適化（ASO）を使用して有料広告の依存度を下げ、キーワードとストアページを改善して安定した流入を作成する方法を紹介します。",
     "date": "2025-09-26",
     "tags": [
-      "AX",
-      "Product"
+      "AX"
     ],
     "author": "유현명(Product Engineer)",
     "cover": "assets/medium-import/app-store-optimization-figure-01.webp",
@@ -169,8 +165,7 @@
     "description": "コルカのチームページ コルカをより詳しく知ることができる、新しくなった（corca.team）についてご紹介します！コルカ採用ページ コルカのチームページは、corca.teamリンクでご覧いただけます！私たちが生きる世界をAI技術に変えるチーム、Corca corca.team コルカのチーム",
     "date": "2023-04-28",
     "tags": [
-      "Corca",
-      "Product"
+      "Corca"
     ],
     "author": "류가형 (Product Manager)",
     "cover": "assets/medium-import/corca-team-page-figure-01.webp",
@@ -186,8 +181,7 @@
     "description": "今回の記事では、コルカオンボーディング文化の一つである「バディプログラム」について紹介しよう！コルカには入社初日からオンボーディングを支援するオルカボットがあります。 （オルカボットについて気になる方は下記のリンクをご覧ください！）",
     "date": "2023-02-17",
     "tags": [
-      "Corca",
-      "Product"
+      "Corca"
     ],
     "author": "류가형 (Product Manager)",
     "cover": "assets/medium-import/corca-buddy-program-figure-01.webp",

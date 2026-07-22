@@ -97,7 +97,7 @@ by a Notion automation webhook.
   `notion-post-publish` GitHub event.
 - Required GitHub Action secret: `NOTION_TOKEN`.
 - Required GitHub Action variable: `CORCA_SITE_URL`, for example
-  `https://www.borca.ai`.
+  `https://www.corca.ai`.
 - Required Notion database variable: `NOTION_BLOG_DATABASE_URL` or
   `NOTION_BLOG_DATABASE_ID`. `NOTION_BLOG_DATA_SOURCE_ID` can be used when the
   newer Notion Data Source API is configured.
@@ -151,7 +151,7 @@ Required publication marker:
 
 - `공개 URL` — URL property. Leave it empty for a new post. Fill it with the
   live blog URL after the publish PR is merged, for example
-  `https://www.borca.ai/blog/my-slug`.
+  `https://www.corca.ai/blog/my-slug`.
 
 No GitHub Action variables are required when the Notion status labels use those
 exact names; they are included in the script defaults. Only set these variables

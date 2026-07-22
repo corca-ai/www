@@ -185,6 +185,27 @@ try {
     assert.deepEqual(posts.find((post) => post.slug === 'corca-buddy-program')?.tags, [
       corcaCategory,
     ]);
+    for (const post of posts) {
+      const staticPost = await readFile(
+        join(repoRoot, `public/${localeRoot}/${post.slug}/index.html`),
+        'utf8',
+      );
+      assert.equal(staticPost.includes('https://www.borca.ai'), false);
+      assert.equal(staticPost.includes('https://www.corca.ai'), true);
+    }
+  }
+  for (const outputPath of [
+    'public/blog/feed.json',
+    'public/blog/robots.txt',
+    'public/blog/rss.xml',
+    'public/blog/sitemap.xml',
+    'public/sitemap-categories.xml',
+    'public/sitemap-posts.xml',
+    'public/sitemap-tags.xml',
+  ]) {
+    const generatedOutput = await readFile(join(repoRoot, outputPath), 'utf8');
+    assert.equal(generatedOutput.includes('https://www.borca.ai'), false);
+    assert.equal(generatedOutput.includes('https://www.corca.ai'), true);
   }
   const blogAppSource = await readFile(join(repoRoot, 'public/blog/app.js'), 'utf8');
   assert.match(

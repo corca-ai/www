@@ -136,7 +136,7 @@ second preserved code-like line</pre>
             description: 'Already published posts with a public URL should not resync.',
             language: 'ko',
             status: '배포 완료',
-            publicUrl: 'https://www.borca.ai/blog/already-published-fixture',
+            publicUrl: 'https://www.corca.ai/blog/already-published-fixture',
           }),
         ],
       },
@@ -159,7 +159,7 @@ second preserved code-like line</pre>
       NOTION_POST_READY_STATUS: '배포 완료',
       NOTION_POST_UPDATE_STATUS: '수정 요청',
       NOTION_SKIP_UPDATES: '0',
-      CORCA_SITE_URL: 'https://www.borca.ai',
+      CORCA_SITE_URL: 'https://www.corca.ai',
       BLOG_TRANSLATION_PROVIDER: 'fixture',
     },
     stdio: 'inherit',
@@ -231,27 +231,27 @@ second preserved code-like line</pre>
   assert.match(blogStyles, /\.article-content pre code/);
   assert.match(
     await readFile(updatesPath, 'utf8'),
-    /https:\/\/www\.borca\.ai\/blog\/notion-body-fixture/,
+    /https:\/\/www\.corca\.ai\/blog\/notion-body-fixture/,
   );
   assert.match(
     await readFile(updatesPath, 'utf8'),
-    /https:\/\/www\.borca\.ai\/en\/blog\/notion-html-fixture/,
+    /https:\/\/www\.corca\.ai\/en\/blog\/notion-html-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
-    /https:\/\/www\.borca\.ai\/en\/blog\/notion-html-fixture/,
+    /https:\/\/www\.corca\.ai\/en\/blog\/notion-html-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
-    /https:\/\/www\.borca\.ai\/blog\/notion-body-fixture/,
+    /https:\/\/www\.corca\.ai\/blog\/notion-body-fixture/,
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8'),
-    /<atom:link href="https:\/\/www\.borca\.ai\/rss"/,
+    /<atom:link href="https:\/\/www\.corca\.ai\/rss"/,
   );
   assert.equal(
     JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8')).feed_url,
-    'https://www.borca.ai/blog/feed.json',
+    'https://www.corca.ai/blog/feed.json',
   );
 
   await writeFile(
@@ -290,7 +290,7 @@ second preserved code-like line</pre>
       NOTION_POST_DELETE_STATUS: '삭제 요청',
       NOTION_POST_DELETED_STATUS: '삭제 완료',
       NOTION_SKIP_UPDATES: '0',
-      CORCA_SITE_URL: 'https://www.borca.ai',
+      CORCA_SITE_URL: 'https://www.corca.ai',
       BLOG_TRANSLATION_PROVIDER: 'fixture',
     },
     stdio: 'inherit',

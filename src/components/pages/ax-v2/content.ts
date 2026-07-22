@@ -11,7 +11,7 @@ export const axV2Content = {
     cta: '상담 신청하기',
   },
   compound: {
-    lines: ['첫 성과가', '복리 이득으로 이어지는 조직,', 'Corca AX가 함께 만듭니다.'],
+    lines: ['첫 성과가', '복리로 이어지는 조직,', 'Corca AX가 함께 만듭니다.'],
   },
   transformation: {
     eyebrow: 'Corca AX가 하는 일',

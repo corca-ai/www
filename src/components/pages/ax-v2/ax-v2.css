@@ -1725,9 +1725,23 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 .ax-v2-compound h2 {
-  max-width: 560px;
-  font-size: clamp(34px, 4vw, 54px);
+  max-width: 470px;
+  font-size: clamp(30px, 3vw, 40px);
   font-weight: 680;
+}
+
+@media (min-width: 721px) {
+  .ax-v2-compound-media {
+    background: #f7fbff;
+  }
+
+  .ax-v2-compound-copy {
+    padding-right: 56%;
+  }
+
+  .ax-v2-compound h2 {
+    width: max-content;
+  }
 }
 
 .ax-v2-proof-section > .ax-v2-shell > .ax-v2-eyebrow,

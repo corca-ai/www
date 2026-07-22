@@ -27,6 +27,7 @@
 - Round 4 Ceal mobile diagram: `/private/tmp/ax-v2-qa/round4-ceal-mobile.png`
 - Round 4 package cards: `/private/tmp/ax-v2-qa/round4-packages-desktop.png`
 - Round 4 combined comparisons: `/private/tmp/ax-v2-qa/round4-environment-comparison.png`, `/private/tmp/ax-v2-qa/round4-ceal-comparison.png`, `/private/tmp/ax-v2-qa/round4-packages-comparison.png`
+- Round 5 Section 1-2 desktop composition: `/private/tmp/ax-v2-qa/round5-compound-desktop.png`
 
 ## Capture normalization
 
@@ -70,14 +71,14 @@
 ### Image quality and asset fidelity
 
 - The existing dolphin hero media and approved OpenAI Select Partner badge are reused rather than approximated.
-- Section 1-2 uses the approved photorealistic team image with bright sunlight, East Asian and non-Asian colleagues in casual business clothing, and an accessible dark-navy text overlay. The 1796 × 876 source is served as a 38 KB AVIF, 55 KB WebP, and 90 KB JPEG fallback with intrinsic dimensions and lazy loading.
+- Section 1-2 uses the approved photorealistic team image with bright sunlight and East Asian and non-Asian colleagues in casual business clothing. Its bright left-side negative space carries the navy heading without a gradient overlay. The 1796 × 876 source is served as a 38 KB AVIF, 55 KB WebP, and 90 KB JPEG fallback with intrinsic dimensions and lazy loading.
 - The OpenAI–Corca lockup uses the supplied source asset, converted to a 600 px lossless WebP with PNG fallback and intrinsic dimensions.
 - No source logo or photographic asset was replaced by an inline SVG, emoji, placeholder, or CSS drawing. The Ceal flow rails are an explicitly requested live information diagram rather than a replacement for a supplied raster asset.
 
 ### Copy and content
 
-- The Korean copy, headings, numbers, quotes, CTA labels, and authored line breaks come from the locked Notion content data.
-- No copywriting or sentence compression was introduced.
+- The Korean copy, headings, numbers, quotes, CTA labels, and authored line breaks come from the locked Notion content data or explicit follow-up browser annotations.
+- No unapproved copywriting or sentence compression was introduced.
 
 ## Full-view comparison evidence
 
@@ -89,7 +90,8 @@
 - `/private/tmp/ax-v2-qa/compare-source-diagnosis.jpg` verifies the Section 5 heading, `61건` metric, explanatory copy, and mobile-first reading order against PDF page 5.
 - `/private/tmp/ax-v2-qa/mobile-390-top-2.png` verifies the mobile hero crop, line breaks, CTA, badge, and text/media non-overlap.
 - `/private/tmp/ax-v2-qa/desktop-1440x600.png` verifies the low-height hero rule and prevents the heading from moving behind the header.
-- `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance while adding the approved navy readability overlay.
+- `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance.
+- `/private/tmp/ax-v2-qa/round5-compound-desktop.png` verifies the approved three-line `첫 성과가 / 복리로 이어지는 조직, / Corca AX가 함께 만듭니다.` copy at a reduced 38.4 px desktop size. The rendered heading ends before the first person begins, with no overlay or horizontal overflow.
 - `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
 - `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
 - `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
@@ -117,6 +119,9 @@
 5. Round 4 annotations found P2 fidelity gaps in the environment-table flow arrows, Ceal connector geometry, Ceal panel density, and package-card elevation.
    - Fix: increased the requested table labels by approximately 15%, replaced text arrows with faded blue-purple flow connectors, rebuilt both Ceal connector systems as translation-safe HTML/CSS rails, removed fixed Ceal panel heights, and replaced package outlines with layered shadows.
    - Post-fix evidence: the three round-4 comparison sheets match PDF pages 7–9; the 390 × 844 mobile check reports no horizontal overflow and keeps both Ceal diagrams fully readable without rasterized text.
+6. Round 5 annotation found the Section 1-2 heading too large and overlapping the leftmost person.
+   - Fix: changed the approved middle line to `복리로 이어지는 조직,`, reduced the responsive display size from a 54 px maximum to a 40 px maximum, and constrained desktop copy to the left 44% of the shell.
+   - Post-fix evidence: the 1280 px browser capture renders exactly three lines at 38.4 px; the text box ends before the first person and the image remains uncropped.
 
 ## Interaction and console checks
 

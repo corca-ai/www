@@ -8,7 +8,7 @@ interface Props {
 
 const { id, compact = false } = Astro.props;
 const c = axV2Content.contact;
-const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '').trim();
+const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '/privacy').trim();
 const turnstileSiteKey = String(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '').trim();
 const deliveryEnabled =
   import.meta.env.PUBLIC_AX_CONSULTATION_ENABLED === 'true' &&

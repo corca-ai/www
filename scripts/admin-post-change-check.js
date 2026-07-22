@@ -63,6 +63,18 @@ try {
     assert.deepEqual(newbieMetadata.tags, ['AX']);
     assert.equal(newbieMetadata.section, 'AX');
   }
+  for (const sourcePath of [
+    'public/blog/admin/post-sources/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
+    'public/blog/admin/post-translations/en/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
+    'public/blog/admin/post-translations/ja/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
+    'public/blog/admin/post-translations/zh/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
+  ]) {
+    const axPostSource = await readFile(join(repoRoot, sourcePath), 'utf8');
+    const axPostMetadata = embeddedMetadata(axPostSource);
+    assert.deepEqual(axPostMetadata.tags, ['AX']);
+    assert.equal(axPostMetadata.section, 'AX');
+    assert.doesNotMatch(axPostSource, /ceal-terview · 2026-06-25/i);
+  }
   for (const [sourcePath, expectedTag, expectedSection] of [
     ['public/blog/admin/post-sources/voc-agent.html', '문라이트', '제품'],
     ['public/blog/admin/post-translations/en/voc-agent.html', 'Moonlight', 'Product'],
@@ -94,7 +106,6 @@ try {
       '코르카',
       {
         'we-make-ai-colleague': '문라이트',
-        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': '씰',
         'ceal-operations-team': '씰',
         'voc-agent': '문라이트',
         'live-activity-schedule': '트레이스',
@@ -107,7 +118,6 @@ try {
       'Corca',
       {
         'we-make-ai-colleague': 'Moonlight',
-        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': 'Ceal',
         'ceal-operations-team': 'Ceal',
         'voc-agent': 'Moonlight',
         'live-activity-schedule': 'Trace',
@@ -120,7 +130,6 @@ try {
       'Corca',
       {
         'we-make-ai-colleague': 'Moonlight',
-        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': 'Ceal',
         'ceal-operations-team': 'Ceal',
         'voc-agent': 'Moonlight',
         'live-activity-schedule': 'Trace',
@@ -133,7 +142,6 @@ try {
       'Corca',
       {
         'we-make-ai-colleague': 'Moonlight',
-        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': 'Ceal',
         'ceal-operations-team': 'Ceal',
         'voc-agent': 'Moonlight',
         'live-activity-schedule': 'Trace',
@@ -158,6 +166,21 @@ try {
       assert.deepEqual(post?.tags, [displayTopic]);
       assert.equal(post?.section, productCategory);
     }
+    const axPost = posts.find(
+      (post) => post.slug === 'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image',
+    );
+    assert.deepEqual(axPost?.tags, ['AX']);
+    assert.equal(axPost?.section, 'AX');
+    assert.doesNotMatch(
+      await readFile(
+        join(
+          repoRoot,
+          `public/${localeRoot}/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image/index.html`,
+        ),
+        'utf8',
+      ),
+      /ceal-terview · 2026-06-25/i,
+    );
     assert.deepEqual(posts.find((post) => post.slug === 'corca-team-page')?.tags, [corcaCategory]);
     assert.deepEqual(posts.find((post) => post.slug === 'corca-buddy-program')?.tags, [
       corcaCategory,
@@ -172,6 +195,13 @@ try {
     blogAppSource,
     /return Boolean\(value\) && normalizeSearchText\(getPrimaryPostTopic\(post\)\) === normalizeSearchText\(value\);/,
   );
+  assert.match(blogAppSource, /bindHashlessTocNavigation\(\);/);
+  assert.match(blogAppSource, /closest\("\.toc-section a\[href\^='#'\]"\)/);
+  assert.match(
+    blogAppSource,
+    /history\.replaceState\(history\.state, "", `\$\{window\.location\.pathname\}\$\{window\.location\.search\}`\);/,
+  );
+  assert.match(blogAppSource, /target\.scrollIntoView\(\{ block: "start" \}\);/);
 
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/posts'), { recursive: true });

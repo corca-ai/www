@@ -179,7 +179,9 @@ When changing blog files, keep these invariants:
   as page background and overflow may remain global.
 - Desktop article pages keep the table of contents to the left of the article
   and recommended posts to the right. Mobile article pages combine both into
-  the existing collapsible navigation inside the article header.
+  the existing collapsible navigation inside the article header. Table of
+  contents clicks scroll to the selected heading without leaving a section
+  hash in the browser URL.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

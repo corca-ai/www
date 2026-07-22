@@ -426,8 +426,31 @@ const defaultDocumentMeta = {
 };
 
 initAnalytics();
+bindHashlessTocNavigation();
 if (postList) {
   init();
+}
+
+function bindHashlessTocNavigation() {
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    const link = event.target.closest(".toc-section a[href^='#']");
+    if (!link) {
+      return;
+    }
+    const hash = new URL(link.href, window.location.href).hash;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!target) {
+      return;
+    }
+    event.preventDefault();
+    if (window.location.hash) {
+      history.replaceState(history.state, "", `${window.location.pathname}${window.location.search}`);
+    }
+    target.scrollIntoView({ block: "start" });
+  });
 }
 
 async function init() {

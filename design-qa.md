@@ -186,6 +186,9 @@
 18. Round 17 found the testimonial card's diffuse upper shadow visually clipped by the carousel viewport.
    - Fix: increased the track's internal top shadow runway from 20 px to 88 px and reduced the equivalent outer margin from 72 px to 4 px, preserving the card's exact vertical position while allowing the shadow to fade before the overflow boundary.
    - Post-fix evidence: the browser reports an 88 px card-to-track-top runway, unchanged zero horizontal overflow, and the focused capture shows the upper shadow diffusing continuously into the section background.
+19. Round 18 found the tablet contact form appearing after the direct email, phone, and brochure links instead of immediately after the section introduction.
+   - Fix: separated the direct-contact block into its own grid area and set the 900 px-and-below sequence to `copy → form → direct`, while retaining the desktop `copy/direct + form` two-column composition.
+   - Post-fix evidence: the responsive grid contract defines the requested tablet reading order; the desktop browser probe retains the existing two-column areas with zero horizontal overflow, and the Astro/build checks pass.
 
 ## Interaction and console checks
 

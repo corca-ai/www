@@ -1069,7 +1069,15 @@
 .ax-v2-contact-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
-  gap: clamp(48px, 7vw, 96px);
+  grid-template-areas:
+    'copy form'
+    'direct form';
+  column-gap: clamp(48px, 7vw, 96px);
+  row-gap: 0;
+}
+
+.ax-v2-contact-copy {
+  grid-area: copy;
 }
 
 .ax-v2-contact-copy h2,
@@ -1096,6 +1104,7 @@
 }
 
 .ax-v2-direct-contact {
+  grid-area: direct;
   margin-top: 54px;
   display: grid;
   gap: 14px;
@@ -1123,6 +1132,7 @@
 }
 
 .ax-v2-inline-form {
+  grid-area: form;
   padding: clamp(28px, 4vw, 48px);
   border-radius: 32px;
 }
@@ -1398,10 +1408,22 @@ body:has(.ax-v2-dialog[open]) {
 
   .ax-v2-comparison,
   .ax-v2-ceal-diagrams,
-  .ax-v2-contact-grid,
   .ax-v2-dialog-panel,
   .ax-v2-partner-grid {
     grid-template-columns: 1fr;
+  }
+
+  .ax-v2-contact-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'copy'
+      'form'
+      'direct';
+    gap: 48px;
+  }
+
+  .ax-v2-direct-contact {
+    margin-top: 0;
   }
 
   .ax-v2-comparison-arrow {

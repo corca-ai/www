@@ -459,15 +459,15 @@ const brochureHref = import.meta.env.DEV
           ))}
         </h2>
         <p><AxLines values={c.contact.body} /></p>
-        <div class="ax-v2-direct-contact">
-          <p>{c.contact.directLead}</p>
-          <a href={`mailto:${c.contact.email}`}>{c.contact.emailLabel}<strong>{c.contact.email}</strong></a>
-          <a href="tel:+82269256978">{c.contact.phoneLabel}<strong>{c.contact.phone}</strong></a>
-          <p>{c.contact.brochureLead}</p>
-          <a href={brochureHref} target="_blank" rel="nofollow noopener noreferrer" hreflang="ko">
-            {c.contact.brochureLabel}<span aria-hidden="true"> ↗</span>
-          </a>
-        </div>
+      </div>
+      <div class="ax-v2-direct-contact" data-reveal>
+        <p>{c.contact.directLead}</p>
+        <a href={`mailto:${c.contact.email}`}>{c.contact.emailLabel}<strong>{c.contact.email}</strong></a>
+        <a href="tel:+82269256978">{c.contact.phoneLabel}<strong>{c.contact.phone}</strong></a>
+        <p>{c.contact.brochureLead}</p>
+        <a href={brochureHref} target="_blank" rel="nofollow noopener noreferrer" hreflang="ko">
+          {c.contact.brochureLabel}<span aria-hidden="true"> ↗</span>
+        </a>
       </div>
       <div class="ax-v2-inline-form" data-reveal>
         <AxLeadForm id="inline" />

@@ -12,6 +12,18 @@ const slug = 'admin-edit-fixture';
 const fallbackThumbnail = 'assets/admin-posts/adjacent-thumbnail-fixture-222222222222.png';
 const tinyPngBase64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
+const productDisplayTopics = [
+  '문라이트',
+  'Moonlight',
+  '트레이스',
+  'Trace',
+  '씰',
+  'Ceal',
+  '마진',
+  'Margin',
+  '크라켄',
+  'Kraken',
+];
 
 try {
   for (const sourceRoot of [
@@ -28,10 +40,17 @@ try {
       );
       assert.equal(sourceMetadata.tags.length, 1, `${sourceRoot}/${file} must have one category`);
       assert.equal(
-        ['AX', '제품', 'Product', '코르카', 'Corca'].includes(sourceMetadata.tags[0]),
+        [...productDisplayTopics, 'AX', '코르카', 'Corca'].includes(sourceMetadata.tags[0]),
         true,
-        `${sourceRoot}/${file} must use Product, AX, or Corca`,
+        `${sourceRoot}/${file} must use a supported display topic`,
       );
+      if (sourceMetadata.section) {
+        assert.equal(
+          categoryForDisplayTopic(sourceMetadata.tags[0]),
+          normalizeCategory(sourceMetadata.section),
+          `${sourceRoot}/${file} display topic must belong to its section`,
+        );
+      }
     }
   }
   for (const sourcePath of [
@@ -45,10 +64,10 @@ try {
     assert.equal(newbieMetadata.section, 'AX');
   }
   for (const [sourcePath, expectedTag, expectedSection] of [
-    ['public/blog/admin/post-sources/voc-agent.html', '제품', '제품'],
-    ['public/blog/admin/post-translations/en/voc-agent.html', 'Product', 'Product'],
-    ['public/blog/admin/post-translations/ja/voc-agent.html', 'Product', 'Product'],
-    ['public/blog/admin/post-translations/zh/voc-agent.html', 'Product', 'Product'],
+    ['public/blog/admin/post-sources/voc-agent.html', '문라이트', '제품'],
+    ['public/blog/admin/post-translations/en/voc-agent.html', 'Moonlight', 'Product'],
+    ['public/blog/admin/post-translations/ja/voc-agent.html', 'Moonlight', 'Product'],
+    ['public/blog/admin/post-translations/zh/voc-agent.html', 'Moonlight', 'Product'],
   ]) {
     const vocMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
     assert.deepEqual(vocMetadata.tags, [expectedTag]);
@@ -68,11 +87,59 @@ try {
     assert.deepEqual(corcaMetadata.tags, ['코르카']);
     assert.equal(corcaMetadata.section, expectedSection);
   }
-  for (const [localeRoot, productCategory, corcaCategory] of [
-    ['blog', '제품', '코르카'],
-    ['en/blog', 'Product', 'Corca'],
-    ['ja/blog', 'Product', 'Corca'],
-    ['zh/blog', 'Product', 'Corca'],
+  for (const [localeRoot, productCategory, corcaCategory, expectedProductTopics] of [
+    [
+      'blog',
+      '제품',
+      '코르카',
+      {
+        'we-make-ai-colleague': '문라이트',
+        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': '씰',
+        'ceal-operations-team': '씰',
+        'voc-agent': '문라이트',
+        'live-activity-schedule': '트레이스',
+        'app-store-optimization': '트레이스',
+      },
+    ],
+    [
+      'en/blog',
+      'Product',
+      'Corca',
+      {
+        'we-make-ai-colleague': 'Moonlight',
+        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': 'Ceal',
+        'ceal-operations-team': 'Ceal',
+        'voc-agent': 'Moonlight',
+        'live-activity-schedule': 'Trace',
+        'app-store-optimization': 'Trace',
+      },
+    ],
+    [
+      'ja/blog',
+      'Product',
+      'Corca',
+      {
+        'we-make-ai-colleague': 'Moonlight',
+        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': 'Ceal',
+        'ceal-operations-team': 'Ceal',
+        'voc-agent': 'Moonlight',
+        'live-activity-schedule': 'Trace',
+        'app-store-optimization': 'Trace',
+      },
+    ],
+    [
+      'zh/blog',
+      'Product',
+      'Corca',
+      {
+        'we-make-ai-colleague': 'Moonlight',
+        'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image': 'Ceal',
+        'ceal-operations-team': 'Ceal',
+        'voc-agent': 'Moonlight',
+        'live-activity-schedule': 'Trace',
+        'app-store-optimization': 'Trace',
+      },
+    ],
   ]) {
     const posts = JSON.parse(
       await readFile(join(repoRoot, `public/${localeRoot}/index.json`), 'utf8'),
@@ -81,26 +148,30 @@ try {
       posts.every(
         (post) =>
           post.tags.length === 1 &&
-          post.section === post.tags[0] &&
-          [productCategory, 'AX', corcaCategory].includes(post.tags[0]),
+          [productCategory, 'AX', corcaCategory].includes(post.section) &&
+          categoryForDisplayTopic(post.tags[0]) === normalizeCategory(post.section),
       ),
       true,
     );
-    for (const productSlug of [
-      'we-make-ai-colleague',
-      'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image',
-      'ceal-operations-team',
-      'voc-agent',
-      'live-activity-schedule',
-      'app-store-optimization',
-    ]) {
-      assert.deepEqual(posts.find((post) => post.slug === productSlug)?.tags, [productCategory]);
+    for (const [productSlug, displayTopic] of Object.entries(expectedProductTopics)) {
+      const post = posts.find((item) => item.slug === productSlug);
+      assert.deepEqual(post?.tags, [displayTopic]);
+      assert.equal(post?.section, productCategory);
     }
     assert.deepEqual(posts.find((post) => post.slug === 'corca-team-page')?.tags, [corcaCategory]);
     assert.deepEqual(posts.find((post) => post.slug === 'corca-buddy-program')?.tags, [
       corcaCategory,
     ]);
   }
+  const blogAppSource = await readFile(join(repoRoot, 'public/blog/app.js'), 'utf8');
+  assert.match(
+    blogAppSource,
+    /return Boolean\(value\) && normalizeSearchText\(getPostSection\(post\)\) === normalizeSearchText\(value\);/,
+  );
+  assert.doesNotMatch(
+    blogAppSource,
+    /return Boolean\(value\) && normalizeSearchText\(getPrimaryPostTopic\(post\)\) === normalizeSearchText\(value\);/,
+  );
 
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/posts'), { recursive: true });
@@ -121,17 +192,50 @@ try {
 
   await writeFile(join(workDir, 'public/blog/posts/index.json'), '[]\n');
 
-  for (const familyTag of [
-    'Moonlight',
-    '문라이트',
-    'Trace',
-    '트레이스',
-    'Ceal',
-    '씰',
-    'Margin',
-    '마진',
-    'Kraken',
-    '크라켄',
+  assert.throws(
+    () =>
+      runAdminChange(
+        {
+          action: 'upsert',
+          slug,
+          format: 'markdown',
+          fileName: 'product-without-family.md',
+          metadata: {
+            title: 'Product Without Family',
+            description: 'A Product post must provide the family shown on its card.',
+            date: '2026-02-03',
+            tags: 'Product',
+            author: 'Fixture Author',
+            cover: 'assets/editorial-cover.jpg',
+            language: 'ko',
+            section: 'Product',
+          },
+          contentBase64: toBase64(`# Product Without Family
+
+This fixture verifies that a generic Product label cannot replace the product family.`),
+        },
+        { stdio: 'pipe' },
+      ),
+    (error) => {
+      assert.match(
+        String(error.stderr || ''),
+        /Product posts must use Moonlight, Trace, Ceal, Margin, or Kraken as the display topic/,
+      );
+      return true;
+    },
+  );
+
+  for (const [familyTag, expectedDisplayTopic] of [
+    ['Moonlight', '문라이트'],
+    ['문라이트', '문라이트'],
+    ['Trace', '트레이스'],
+    ['트레이스', '트레이스'],
+    ['Ceal', '씰'],
+    ['씰', '씰'],
+    ['Margin', '마진'],
+    ['마진', '마진'],
+    ['Kraken', '크라켄'],
+    ['크라켄', '크라켄'],
   ]) {
     runAdminChange({
       action: 'upsert',
@@ -155,7 +259,7 @@ This fixture verifies that the product-family category is normalized consistentl
     const familyMetadata = embeddedMetadata(
       await readFile(join(workDir, `public/blog/admin/post-sources/${slug}.html`), 'utf8'),
     );
-    assert.deepEqual(familyMetadata.tags, ['제품']);
+    assert.deepEqual(familyMetadata.tags, [expectedDisplayTopic]);
     assert.equal(familyMetadata.section, '제품');
   }
 
@@ -259,7 +363,7 @@ This adjacent fixture gives the generated static page a previous-post card so th
   const metadata = embeddedMetadata(source);
   assert.equal(metadata.title, 'Admin Markdown Updated');
   assert.equal(metadata.sourceFormat, 'markdown');
-  assert.deepEqual(metadata.tags, ['제품']);
+  assert.deepEqual(metadata.tags, ['문라이트']);
   assert.equal(metadata.section, '제품');
   assert.match(metadata.sourceMarkdown, /^# Admin Markdown Updated/);
   assert.match(metadata.cover, /^assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png$/);
@@ -273,7 +377,11 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.equal(index[1].slug, 'adjacent-thumbnail-fixture');
   assert.equal(index[1].cover, fallbackThumbnail);
   assert.equal(
-    index.every((post) => post.tags.length === 1 && post.section === post.tags[0]),
+    index.every(
+      (post) =>
+        post.tags.length === 1 &&
+        categoryForDisplayTopic(post.tags[0]) === normalizeCategory(post.section),
+    ),
     true,
   );
   assert.deepEqual(indexAlias, index);
@@ -358,17 +466,23 @@ This adjacent fixture gives the generated static page a previous-post card so th
     assert.doesNotMatch(blogIndex, /data-topic-filter="tech"/);
     assert.match(blogIndex, /id="tableOfContents" class="toc table-of-contents-panel"/);
     assert.match(blogIndex, /id="recommendationsPanel" class="toc recommendations-panel"/);
+    assert.match(blogIndex, /<noscript>[\s\S]*?<strong>(?:문라이트|Moonlight)<\/strong>/);
   }
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
   assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);
   assert.match(rss, /<atom:link href="https:\/\/www\.corca\.ai\/rss"/);
   assert.match(rss, /<link>https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture<\/link>/);
   assert.match(rss, /<dc:creator><!\[CDATA\[Markdown Author\]\]><\/dc:creator>/);
+  assert.match(rss, /<category><!\[CDATA\[제품 · 문라이트\]\]><\/category>/);
   const feed = JSON.parse(await readFile(join(workDir, 'public/blog/feed.json'), 'utf8'));
   assert.equal(feed.home_page_url, 'https://www.corca.ai/blog');
   assert.equal(
     feed.items.some((item) => item.url === 'https://www.corca.ai/blog/admin-edit-fixture'),
     true,
+  );
+  assert.deepEqual(
+    feed.items.find((item) => item.url === 'https://www.corca.ai/blog/admin-edit-fixture')?.tags,
+    ['제품', '문라이트'],
   );
   assert.match(
     await readFile(join(workDir, 'public/blog/robots.txt'), 'utf8'),
@@ -409,9 +523,15 @@ This adjacent fixture gives the generated static page a previous-post card so th
     assert.equal(localeIndex[1].slug, 'adjacent-thumbnail-fixture');
     assert.equal(localeIndex[1].cover, fallbackThumbnail);
     assert.equal(
-      localeIndex.every((post) => post.tags.length === 1 && post.section === post.tags[0]),
+      localeIndex.every(
+        (post) =>
+          post.tags.length === 1 &&
+          categoryForDisplayTopic(post.tags[0]) === normalizeCategory(post.section),
+      ),
       true,
     );
+    assert.deepEqual(localeIndex[0].tags, ['Moonlight']);
+    assert.equal(localeIndex[0].section, 'Product');
     assert.deepEqual(localeIndexAlias, localeIndex);
     const localeStaticPage = await readFile(
       join(workDir, `public/${locale}/blog/${slug}/index.html`),
@@ -504,7 +624,7 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
   await rm(fixtureRoot, { recursive: true, force: true });
 }
 
-function runAdminChange(payload) {
+function runAdminChange(payload, options = {}) {
   execFileSync(process.execPath, [join(repoRoot, 'scripts/apply-admin-post-change.js')], {
     cwd: repoRoot,
     env: {
@@ -513,7 +633,7 @@ function runAdminChange(payload) {
       ADMIN_POST_CHANGE: JSON.stringify(payload),
       BLOG_TRANSLATION_PROVIDER: 'fixture',
     },
-    stdio: 'inherit',
+    stdio: options.stdio || 'inherit',
   });
 }
 
@@ -521,6 +641,26 @@ function embeddedMetadata(source) {
   const match = String(source || '').match(/^\s*<!--\s*corca-post\s*([\s\S]*?)-->/i);
   assert.ok(match, 'post source should include embedded metadata');
   return JSON.parse(match[1]);
+}
+
+function normalizeCategory(value) {
+  const topic = String(value || '')
+    .trim()
+    .toLowerCase();
+  if (topic === '제품' || topic === 'product') return 'product';
+  if (topic === 'ax') return 'ax';
+  if (topic === '코르카' || topic === 'corca') return 'corca';
+  return topic;
+}
+
+function categoryForDisplayTopic(value) {
+  const topic = String(value || '')
+    .trim()
+    .toLowerCase();
+  if (productDisplayTopics.some((productTopic) => productTopic.toLowerCase() === topic)) {
+    return 'product';
+  }
+  return normalizeCategory(topic);
 }
 
 function toBase64(value) {

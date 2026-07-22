@@ -5,7 +5,7 @@
     "description": "Moonlight는 함께 연구하는 AI Colleague입니다",
     "date": "2026-07-07",
     "tags": [
-      "제품"
+      "문라이트"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
@@ -37,7 +37,7 @@
     "description": "AX 공유회와 Ceal 사용 경험을 바탕으로, AI가 확인하지 않은 내용을 사실처럼 말하지 않게 만드는 작업 원칙과 CLI 운영 규칙을 정리합니다.",
     "date": "2026-06-25",
     "tags": [
-      "제품"
+      "씰"
     ],
     "author": "김예린",
     "cover": "assets/post-images/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image-cover.png",
@@ -53,7 +53,7 @@
     "description": "오퍼레이션팀이 Ceal을 활용해 법인카드, 설문, 생일·입사기념일 공지 같은 반복 운영 업무를 자동화한 사례를 소개합니다.",
     "date": "2026-05-13",
     "tags": [
-      "제품"
+      "씰"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/medium-import/ceal-operations-team-figure-01.png",
@@ -69,7 +69,7 @@
     "description": "문라이트 팀이 VoC 응대 과정을 에이전트로 구조화하고, 근거 탐색과 답변 초안 작성 비용을 줄인 과정을 소개합니다.",
     "date": "2026-04-22",
     "tags": [
-      "제품"
+      "문라이트"
     ],
     "author": "하동훈(Software Engineer)",
     "cover": "assets/medium-import/voc-agent-figure-01.png",
@@ -117,7 +117,7 @@
     "description": "Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.",
     "date": "2025-12-10",
     "tags": [
-      "제품"
+      "트레이스"
     ],
     "author": "김성훈(iOS Product Engineer)",
     "cover": "assets/medium-import/live-activity-schedule-figure-01.png",
@@ -133,7 +133,7 @@
     "description": "앱 스토어 최적화(ASO)를 통해 유료 광고 의존도를 낮추고, 키워드와 스토어 페이지 개선으로 안정적인 유입을 만드는 방법을 소개합니다.",
     "date": "2025-09-26",
     "tags": [
-      "제품"
+      "트레이스"
     ],
     "author": "유현명(Product Engineer)",
     "cover": "assets/medium-import/app-store-optimization-figure-01.webp",

@@ -5,7 +5,7 @@
     "description": "Moonlight is an AI Colleague that researches together",
     "date": "2026-07-07",
     "tags": [
-      "Product"
+      "Moonlight"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
@@ -37,7 +37,7 @@
     "description": "Based on the AX sharing session and experience using Ceal, we summarize the working principles and CLI operating rules that prevent AI from saying unconfirmed information as fact.",
     "date": "2026-06-25",
     "tags": [
-      "Product"
+      "Ceal"
     ],
     "author": "김예린",
     "cover": "assets/post-images/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image-cover.png",
@@ -53,7 +53,7 @@
     "description": "We introduce an example of how the operations team used Ceal to automate repetitive operational tasks such as corporate cards, surveys, and birthday/employment anniversary notices.",
     "date": "2026-05-13",
     "tags": [
-      "Product"
+      "Ceal"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/medium-import/ceal-operations-team-figure-01.png",
@@ -69,7 +69,7 @@
     "description": "We introduce how the Moonlight team structured the VoC response process into an agent, reducing the cost of searching for evidence and drafting responses.",
     "date": "2026-04-22",
     "tags": [
-      "Product"
+      "Moonlight"
     ],
     "author": "하동훈(Software Engineer)",
     "cover": "assets/medium-import/voc-agent-figure-01.png",
@@ -117,7 +117,7 @@
     "description": "We outline how the Trace team implemented a real-time scheduling experience using iOS Live Activity and ActivityKit Push and Push to Start.",
     "date": "2025-12-10",
     "tags": [
-      "Product"
+      "Trace"
     ],
     "author": "김성훈(iOS Product Engineer)",
     "cover": "assets/medium-import/live-activity-schedule-figure-01.png",
@@ -133,7 +133,7 @@
     "description": "We introduce how to reduce dependence on paid advertising through App Store Optimization (ASO) and create stable inflow by improving keywords and store pages.",
     "date": "2025-09-26",
     "tags": [
-      "Product"
+      "Trace"
     ],
     "author": "유현명(Product Engineer)",
     "cover": "assets/medium-import/app-store-optimization-figure-01.webp",

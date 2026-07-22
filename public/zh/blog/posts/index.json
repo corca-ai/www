@@ -5,7 +5,7 @@
     "description": "月光是一起研究的AI同事",
     "date": "2026-07-07",
     "tags": [
-      "Product"
+      "Moonlight"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/notion-posts/we-make-ai-colleague-cover.png",
@@ -37,7 +37,7 @@
     "description": "基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。",
     "date": "2026-06-25",
     "tags": [
-      "Product"
+      "Ceal"
     ],
     "author": "김예린",
     "cover": "assets/post-images/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image-cover.png",
@@ -53,7 +53,7 @@
     "description": "我们介绍了一个示例，说明运营团队如何使用 Ceal 自动执行重复性运营任务，例如公司名片、调查和生日/工作周年通知。",
     "date": "2026-05-13",
     "tags": [
-      "Product"
+      "Ceal"
     ],
     "author": "김선영(HR Manager)",
     "cover": "assets/medium-import/ceal-operations-team-figure-01.png",
@@ -69,7 +69,7 @@
     "description": "我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。",
     "date": "2026-04-22",
     "tags": [
-      "Product"
+      "Moonlight"
     ],
     "author": "하동훈(Software Engineer)",
     "cover": "assets/medium-import/voc-agent-figure-01.png",
@@ -117,7 +117,7 @@
     "description": "我们概述了 Trace 团队如何使用 iOS Live Activity 和 ActivityKit Push 和 Push to Start 实现实时调度体验。",
     "date": "2025-12-10",
     "tags": [
-      "Product"
+      "Trace"
     ],
     "author": "김성훈(iOS Product Engineer)",
     "cover": "assets/medium-import/live-activity-schedule-figure-01.png",
@@ -133,7 +133,7 @@
     "description": "我们介绍如何通过应用商店优化（ASO）减少对付费广告的依赖，并通过改进关键字和商店页面来创造稳定的流量。",
     "date": "2025-09-26",
     "tags": [
-      "Product"
+      "Trace"
     ],
     "author": "유현명(Product Engineer)",
     "cover": "assets/medium-import/app-store-optimization-figure-01.webp",

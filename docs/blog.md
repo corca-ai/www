@@ -189,10 +189,12 @@ When changing blog files, keep these invariants:
   pages load `public/blog/app.js` without the blog-index DOM.
 - `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
   sitemap should be updated together.
-- Every post has exactly one public category. The category shown on its list
-  card is also the only category used by the topic filters. The only public
-  categories are Product, AX and Corca; product-family labels such as
-  Moonlight, Trace, Ceal, Margin and Kraken normalize to Product.
+- Every post has exactly one public category in `section`: Product, AX or
+  Corca. Topic filters use that category only. The single value in `tags`
+  controls the label shown on list cards; Product posts keep their product
+  family label, such as Moonlight, Trace, Ceal, Margin or Kraken, while their
+  `section` remains Product. Product posts must provide one of those family
+  labels rather than using Product itself as the card label.
 - Localized post records inherit the resolved Korean cover when translation
   metadata contains the default cover; only a non-default localized cover may
   override it.

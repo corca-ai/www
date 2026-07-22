@@ -279,12 +279,25 @@ async function upsertPost(value) {
   const description = trimDescription(
     metadata.description || parsed?.metadata.description || summarizeMarkdown(content) || title,
   );
-  const tags = normalizePostTags(metadata.tags || parsed?.metadata.tags || '코르카', {
+  const taxonomyContext = {
     title,
     description,
     slug,
     content: articleHtml,
-  });
+  };
+  const tags = normalizePostTags(
+    metadata.tags ||
+      parsed?.metadata.tags ||
+      metadata.section ||
+      parsed?.metadata.section ||
+      '코르카',
+    taxonomyContext,
+  );
+  const section = normalizePostSection(
+    metadata.section || parsed?.metadata.section,
+    tags,
+    taxonomyContext,
+  );
   const uploadedCover = await writeCoverImage(value, slug);
   await writeBodyImages(value, slug);
   await deleteBodyImages(value, slug);
@@ -299,7 +312,7 @@ async function upsertPost(value) {
       uploadedCover || normalizeCover(metadata.cover || parsed?.metadata.cover || defaultCover),
     language: normalizeLanguage(metadata.language || parsed?.metadata.language || 'ko'),
     coverAlt: String(metadata.coverAlt || parsed?.metadata.coverAlt || '').trim(),
-    section: tags[0],
+    section,
     wordCount: estimateWordCount(articleHtml),
   };
 
@@ -308,6 +321,7 @@ async function upsertPost(value) {
     post.sourceMarkdown = content.trim();
   }
 
+  validatePost({ slug, ...post });
   await mkdir(sourcesDir, { recursive: true });
   await writeFile(join(sourcesDir, `${slug}.html`), renderPostSource(post, articleHtml));
   await writePostTranslations(post, articleHtml, slug);
@@ -642,12 +656,16 @@ async function readBasePostRecords() {
     const parsed = parsePostSource(source, filename);
     const title = requiredString(parsed.metadata.title, 'title');
     const description = trimDescription(requiredString(parsed.metadata.description, 'description'));
-    const tags = normalizePostTags(parsed.metadata.tags || '코르카', {
+    const taxonomyContext = {
       title,
       description,
       slug,
       content: parsed.articleHtml,
-    });
+    };
+    const tags = normalizePostTags(
+      parsed.metadata.tags || parsed.metadata.section || '코르카',
+      taxonomyContext,
+    );
     const cover = resolvePostCover(parsed.metadata.cover, parsed.articleHtml);
     const post = {
       slug,
@@ -660,7 +678,7 @@ async function readBasePostRecords() {
       wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
       language: normalizeLanguage(parsed.metadata.language || 'ko'),
       coverAlt: String(parsed.metadata.coverAlt || '').trim(),
-      section: tags[0],
+      section: normalizePostSection(parsed.metadata.section, tags, taxonomyContext),
       searchText: stripTags(parsed.articleHtml),
     };
 
@@ -710,12 +728,13 @@ async function localizePostRecord(baseRecord, locale) {
   const description = trimDescription(
     requiredString(parsed.metadata.description || baseRecord.post.description, 'description'),
   );
-  const tags = normalizePostTags(parsed.metadata.tags || baseRecord.post.tags, {
+  const taxonomyContext = {
     title,
     description,
     slug: baseRecord.post.slug,
     content: parsed.articleHtml,
-  });
+  };
+  const tags = normalizePostTags(parsed.metadata.tags || baseRecord.post.tags, taxonomyContext);
   const localizedCover = normalizeCover(parsed.metadata.cover);
   const post = {
     ...baseRecord.post,
@@ -727,7 +746,14 @@ async function localizePostRecord(baseRecord, locale) {
     wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
     language: locale,
     coverAlt: String(parsed.metadata.coverAlt || baseRecord.post.coverAlt || '').trim(),
-    section: localizePostTopic(tags[0], locale),
+    section: localizePostTopic(
+      normalizePostSection(
+        parsed.metadata.section || baseRecord.post.section,
+        tags,
+        taxonomyContext,
+      ),
+      locale,
+    ),
     searchText: stripTags(parsed.articleHtml),
   };
   validatePost(post);
@@ -967,11 +993,7 @@ function renderTopicFilterButtons(records) {
 
 function getPostTopics(records) {
   const topics = [
-    ...new Set(
-      records
-        .map(({ post }) => String(post.tags?.[0] || post.section || '').trim())
-        .filter(Boolean),
-    ),
+    ...new Set(records.map(({ post }) => String(post.section || '').trim()).filter(Boolean)),
   ];
   const order = ['product', 'ax', 'corca'];
   return topics.sort(
@@ -1118,7 +1140,7 @@ ${items}
 }
 
 function getRssCategory(post) {
-  return [post.section || post.tags?.[0] || 'Corca', ...(post.tags || []).slice(1, 2)]
+  return [...new Set([post.section || post.tags?.[0] || 'Corca', ...(post.tags || [])])]
     .filter(Boolean)
     .join(' · ');
 }
@@ -1138,7 +1160,7 @@ function renderBlogJsonFeed(records) {
       summary: post.description,
       date_published: `${post.date}T00:00:00.000Z`,
       authors: [{ name: post.author || defaultAuthor }],
-      tags: post.tags || [],
+      tags: [...new Set([post.section, ...(post.tags || [])].filter(Boolean))],
     };
   });
   return `${JSON.stringify(
@@ -1233,7 +1255,7 @@ function renderIndexNoscript(records, locale, labels) {
                 <div class="post-card-body">
                   <h3>${escapeHtml(post.title)}</h3>
                   <p>${escapeHtml(post.description)}</p>
-                  <div class="meta"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time> | ${escapeHtml(post.author)}</div>
+                  <div class="meta"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time> | ${escapeHtml(post.author)} | <strong>${escapeHtml(post.tags[0] || post.section)}</strong></div>
                 </div>
               </a>
             </article>`,
@@ -1555,14 +1577,14 @@ function adjacentPostNav(post, posts, postBySlug, locale) {
 
 function renderAdjacentCard(post, locale, label, cue, className) {
   const thumbnailSrc = `/blog/${String(post.cover || defaultCover).replace(/^\/+/, '')}`;
-  const section = post.section || post.tags[0] || '코르카';
+  const displayTopic = post.tags[0] || post.section || '코르카';
   return `        <a class="related-card post-pagination-card ${className}" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${label}: ${escapeAttribute(post.title)}">
           <span class="related-cue" aria-hidden="true">${cue}</span>
           <span class="related-thumbnail" aria-hidden="true">
             <img src="${escapeAttribute(thumbnailSrc)}" alt="" loading="lazy" decoding="async">
           </span>
           <span class="related-copy">
-            <span class="related-meta">${label} · <strong>${escapeHtml(section)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
+            <span class="related-meta">${label} · <strong>${escapeHtml(displayTopic)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
             <span class="related-title">${escapeHtml(post.title)}</span>
           </span>
         </a>`;
@@ -1670,20 +1692,26 @@ function inferDocumentMetadata(html) {
 }
 
 function renderPostSource(metadata, articleHtml) {
+  const taxonomyContext = {
+    title: metadata.title,
+    description: metadata.description,
+  };
+  const normalizedTags = normalizePostTags(metadata.tags, taxonomyContext);
+  const language = normalizeLanguage(metadata.language || 'ko');
   const post = {
     title: String(metadata.title || '').trim(),
     description: String(metadata.description || '').trim(),
     date: String(metadata.date || '').trim(),
-    tags: normalizePostTags(metadata.tags, {
-      title: metadata.title,
-      description: metadata.description,
-    }),
+    tags: localizePostTags(normalizedTags, language),
     author: String(metadata.author || defaultAuthor).trim(),
     cover: normalizeCover(metadata.cover),
-    language: normalizeLanguage(metadata.language || 'ko'),
+    language,
   };
   if (metadata.coverAlt) post.coverAlt = String(metadata.coverAlt).trim();
-  if (metadata.section) post.section = String(metadata.section).trim();
+  post.section = localizePostTopic(
+    normalizePostSection(metadata.section, normalizedTags, taxonomyContext),
+    language,
+  );
   if (metadata.wordCount) post.wordCount = Number(metadata.wordCount);
   if (metadata.sourceFormat === 'markdown' && metadata.sourceMarkdown) {
     post.sourceFormat = 'markdown';
@@ -1715,10 +1743,45 @@ function normalizePostTags(value, context = {}) {
       .filter(Boolean)
       .join(' '),
   );
-  return [pickTopic(tags, haystack) || '코르카'];
+  return [pickDisplayTopic(tags, haystack) || '코르카'];
 }
 
-function pickTopic(tags, haystack) {
+function normalizePostSection(value, tags, context = {}) {
+  const rawSection = normalizeRawTags(value);
+  const haystack = normalizeSearchText(
+    [...rawSection, ...tags, context.title, context.description, context.slug, context.content]
+      .filter(Boolean)
+      .join(' '),
+  );
+  return pickCategory([...rawSection, ...tags], haystack);
+}
+
+function pickDisplayTopic(tags, haystack) {
+  const rules = [
+    ['문라이트', ['moonlight', '문라이트']],
+    ['트레이스', ['trace', '트레이스']],
+    ['씰', ['ceal', '씰']],
+    ['마진', ['margin', '마진']],
+    ['크라켄', ['kraken', '크라켄']],
+    ['제품', ['product', 'products', '제품']],
+    ['AX', ['ax']],
+    ['코르카', ['corca', '코르카', '회사', '팀', '문화', '세미나', '채용', 'company', 'culture']],
+  ];
+  for (const tag of tags) {
+    const rule = rules.find(([topic, aliases]) => topic === tag || matchesAlias(tag, aliases));
+    if (rule) return rule[0];
+  }
+  const scored = rules
+    .map(([topic, aliases]) => ({
+      topic,
+      score: aliases.filter((alias) => matchesAlias(haystack, [alias])).length,
+    }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+  return scored[0]?.topic || '코르카';
+}
+
+function pickCategory(tags, haystack) {
   const rules = [
     [
       '제품',
@@ -1960,9 +2023,16 @@ function findFirstArticleImage(html) {
 
 function validatePost(post) {
   if (post.tags.length !== 1)
-    fail(`Post metadata must have exactly one public category: ${post.slug}`);
-  if (post.section !== post.tags[0])
-    fail(`Post metadata section must match its public category: ${post.slug}`);
+    fail(`Post metadata must have exactly one display topic: ${post.slug}`);
+  const sectionKey = categoryKey(post.section);
+  if (!['product', 'ax', 'corca'].includes(sectionKey))
+    fail(`Post metadata must use Product, AX, or Corca as its category: ${post.slug}`);
+  if (sectionKey !== categoryKey(post.tags[0]))
+    fail(`Post display topic must belong to its public category: ${post.slug}`);
+  if (sectionKey === 'product' && topicKey(post.tags[0]) === 'product')
+    fail(
+      `Product posts must use Moonlight, Trace, Ceal, Margin, or Kraken as the display topic: ${post.slug}`,
+    );
   if (post.description.length > 180)
     fail(`Post metadata description must be 180 characters or fewer: ${post.slug}`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date))
@@ -1976,6 +2046,14 @@ function validatePost(post) {
     '.html',
   );
   assertSafeRelativePath(post.cover, 'cover image', 'assets/');
+}
+
+function categoryKey(value) {
+  const key = topicKey(value);
+  if (['product', 'moonlight', 'trace', 'ceal', 'margin', 'kraken'].includes(key)) {
+    return 'product';
+  }
+  return key;
 }
 
 function assertSafeRelativePath(relativePath, label, prefix, extension) {

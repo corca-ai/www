@@ -353,9 +353,17 @@ const REACTION_OPTIONS = [
 const POSTS_PER_PAGE = 9;
 const PUBLIC_POST_TOPICS = [
   "AX",
-  "Product",
+  "Moonlight",
+  "Trace",
+  "Ceal",
+  "Margin",
+  "Kraken",
   "Corca",
-  "제품",
+  "문라이트",
+  "트레이스",
+  "씰",
+  "마진",
+  "크라켄",
   "코르카"
 ];
 const DEFAULT_POST_TOPIC = "Corca";
@@ -1130,7 +1138,7 @@ function getListPosts(posts) {
 
 function matchesHeroTopic(post, topic) {
   const value = getHeroTopicButton(topic)?.dataset.topicValue;
-  return Boolean(value) && normalizeSearchText(getPrimaryPostTopic(post)) === normalizeSearchText(value);
+  return Boolean(value) && normalizeSearchText(getPostSection(post)) === normalizeSearchText(value);
 }
 
 function normalizeHeroTopic(value) {

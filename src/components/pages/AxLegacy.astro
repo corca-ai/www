@@ -1,0 +1,457 @@
+---
+import type { Lang } from '../../i18n/ui';
+import AxCarousel from './ax/AxCarousel.astro';
+import AxConsultationForm from './ax/AxConsultationForm.astro';
+import AxTestimonialCarousel from './ax/AxTestimonialCarousel.astro';
+import { axAssetPaths } from './ax/assetPaths';
+import { axTopicIds } from './ax/contract';
+import { axContent } from './ax/content';
+import './ax/ax.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = axContent[lang];
+// Switch back to true to restore the existing consultation form on the AX page.
+const showConsultationForm = false;
+const brochureHref = import.meta.env.DEV
+  ? '/ax/corca-ax-brochure/index.html'
+  : '/ax/corca-ax-brochure/';
+const contactMailto = `mailto:${c.contact.details.email}`;
+const contractMailto = `${contactMailto}?cc=${c.contact.details.ccEmail}`;
+const contactPhoneHref = 'tel:+82269256978';
+const carouselItems = c.bottleneck.cards.map((card) => ({
+  ...card,
+  image: axAssetPaths.carousel[card.id],
+}));
+const testimonialLogoDimensions = {
+  tyche: [180, 60],
+  kyowon: [150, 60],
+} as const;
+const testimonialItems = c.belief.testimonials.map((testimonial) => ({
+  ...testimonial,
+  logoWebp: axAssetPaths.logos[testimonial.id].webp,
+  logoPng: axAssetPaths.logos[testimonial.id].png,
+  logoWidth: testimonialLogoDimensions[testimonial.id][0],
+  logoHeight: testimonialLogoDimensions[testimonial.id][1],
+}));
+const topics = axTopicIds.map((id) => ({ id, label: c.contact.form.topics[id] }));
+const form = c.contact.form;
+const formCopy = {
+  formLabel: form.heading,
+  requiredLabel: form.requiredLabel,
+  nameLabel: form.fields.name.label,
+  namePlaceholder: form.fields.name.placeholder,
+  emailLabel: form.fields.email.label,
+  emailPlaceholder: form.fields.email.placeholder,
+  phoneLabel: form.fields.phone.label,
+  phonePlaceholder: form.fields.phone.placeholder,
+  topicLabel: form.fields.topic.label,
+  topicPlaceholder: form.fields.topic.placeholder,
+  messageLabel: form.fields.message.label,
+  optionalLabel: form.optionalLabel,
+  messagePlaceholder: form.fields.message.placeholder,
+  honeypotLabel: form.fields.website.label,
+  privacyConsent: form.consent,
+  privacyPolicyLabel: form.privacyPolicyLabel,
+  submit: form.submit,
+  sending: form.sending,
+  note: form.note,
+  success: `${form.success.title} ${form.success.body}`,
+  emailFallback: form.errors.emailLink,
+  statusAriaLabel: form.statusAriaLabel,
+  errors: {
+    validation: form.errors.checkFields,
+    network: form.errors.generic,
+    unknown: form.errors.generic,
+    METHOD_NOT_ALLOWED: form.errors.invalidRequest,
+    UNSUPPORTED_MEDIA_TYPE: form.errors.invalidRequest,
+    PAYLOAD_TOO_LARGE: form.errors.invalidRequest,
+    INVALID_JSON: form.errors.invalidRequest,
+    VALIDATION_ERROR: form.errors.checkFields,
+    FORM_EXPIRED: form.errors.formExpired,
+    FORM_SUBMITTED_TOO_QUICKLY: form.errors.tooQuick,
+    BOT_CHECK_FAILED: form.errors.botCheckRequired,
+    BOT_CHECK_NOT_CONFIGURED: form.errors.botCheckUnavailable,
+    BOT_CHECK_UNAVAILABLE: form.errors.botCheckUnavailable,
+    DELIVERY_NOT_CONFIGURED: form.errors.deliveryUnavailable,
+    DELIVERY_FAILED: form.errors.deliveryFailed,
+    INVALID_NAME: form.errors.name,
+    INVALID_EMAIL: form.errors.email,
+    INVALID_PHONE: form.errors.phone,
+    INVALID_TOPIC: form.errors.topic,
+    MESSAGE_TOO_LONG: form.errors.message,
+    PRIVACY_CONSENT_REQUIRED: form.errors.consent,
+    INVALID_LOCALE: form.errors.invalidRequest,
+    INVALID_STARTED_AT: form.errors.formExpired,
+    INVALID_UTM: form.errors.invalidRequest,
+  },
+};
+const logoDimensions = [
+  [184, 60], [150, 60], [224, 60], [244, 60], [335, 60],
+  [228, 60], [243, 60], [209, 60], [235, 60], [163, 60],
+] as const;
+const organizationLogos = axAssetPaths.logos.organizations.map((asset, index) => ({
+  ...asset,
+  width: logoDimensions[index]?.[0] ?? 600,
+  height: logoDimensions[index]?.[1] ?? 180,
+}));
+const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
+---
+
+<div class="ax-page" data-ax-reveal="ready" data-scroll-motion="running">
+  <section id="ax-top" class="story-scene hero scene-dark" data-scene="01-hero" data-parallax-scene>
+    <img
+      class="partner-network-logo"
+      src={axAssetPaths.partnerNetworkLogo}
+      width="100"
+      height="115"
+      alt={c.brand.partnerLogoAlt}
+    />
+    <div class="scene-media hero-media is-video-reset" data-hero-media aria-hidden="true">
+      <picture class="hero-poster">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.hero.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.hero.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.scenes.hero.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.scenes.hero.wideWebp} />
+        <img src={axAssetPaths.scenes.hero.wideWebp} width="1586" height="992" alt="" fetchpriority="high" loading="eager" />
+      </picture>
+      <video class="hero-video" data-hero-video muted loop playsinline preload="none" disablepictureinpicture tabindex="-1">
+        <source data-src={axAssetPaths.heroVideo} type="video/webm" />
+      </video>
+    </div>
+    <div class="hero-copy grid-shell reveal" data-parallax-copy>
+      <p class="eyebrow">{c.hero.eyebrow}</p>
+      <h1>
+        {c.hero.headline.map((line) => line.strong
+          ? <strong>{line.before}{line.strong}{line.after}</strong>
+          : <span>{line.before}{line.after}</span>)}
+      </h1>
+      <p class="hero-sub">{c.hero.subtitle[0]}<br class="hero-sub-break" />{' '}{c.hero.subtitle[1]}</p>
+      <div class="hero-actions">
+        <a href={contactMailto} class="primary-button" data-ax-track-link="hero">
+          {c.hero.consultationCta}<span class="sr-only"> — {c.contact.emailAriaLabel}</span>
+        </a>
+      </div>
+    </div>
+    <a href="#ax-belief" class="text-link hero-scroll-link" data-ax-track-link="hero_secondary">
+      {c.hero.exploreCta} <span aria-hidden="true">↓</span>
+    </a>
+  </section>
+
+  <section id="ax-belief" class="story-scene belief scene-dark-soft" data-scene="02-belief">
+    <div class="grid-shell belief-layout">
+      <div class="belief-copy reveal">
+        <p class="eyebrow blue">{c.belief.eyebrow}</p>
+        <h2>{c.belief.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p>{c.belief.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
+      </div>
+      <AxTestimonialCarousel items={testimonialItems} labels={c.belief.testimonialCarousel} />
+    </div>
+    <div class="proof-strip reveal" aria-label={c.belief.proofAriaLabel}>
+      <div><strong>{c.belief.proof.organizations.value}</strong><span>{c.belief.proof.organizations.label}</span></div>
+      <div><strong>{c.belief.proof.participants.value}</strong><span>{c.belief.proof.participants.label}</span></div>
+      <div>
+        <strong class="proof-outcome">{c.belief.proof.completion.value.map((line) => <span class="proof-outcome-line">{line}</span>)}</strong>
+        <span>{c.belief.proof.completion.label}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="logo-marquee" aria-label={c.brand.organizationsAriaLabel}>
+    <div class="logo-marquee__viewport" role="img" aria-label={c.brand.organizationLogosAriaLabel}>
+      <div class="logo-marquee__track">
+        {[0, 1].map((copyIndex) => (
+          <div class="logo-marquee__group" data-copy={copyIndex} aria-hidden="true">
+            {organizationLogos.map((logo, index) => (
+              <picture class="logo-marquee__item">
+                <source type="image/webp" srcset={logo.webp} />
+                <img class="logo-marquee__logo" src={logo.png} width={logo.width} height={logo.height} alt="" loading="lazy" decoding="async" draggable="false" data-logo-index={index + 1} />
+              </picture>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="ax-why" class="story-scene gap-scene scene-dark" data-scene="03-gap" data-parallax-scene>
+    <div class="scene-media">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.gap.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.gap.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.scenes.gap.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.scenes.gap.wideWebp} />
+        <img src={axAssetPaths.scenes.gap.wideWebp} alt={c.gap.imageAlt} loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim gap-scrim"></div>
+    <div class="sticky-story grid-shell">
+      <div class="sticky-title reveal" data-parallax-copy>
+        <p class="eyebrow">{c.gap.eyebrow}</p>
+        <h2>{c.gap.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+      </div>
+      <div class="gap-steps">
+        {c.gap.steps.map((step) => (
+          <article class:list={['gap-step reveal', { 'key-stat': step.statistic }]} data-scroll-step>
+            <span>{step.kicker}</span>
+            {step.statistic && <strong>{step.statistic.value}<small>{step.statistic.suffix}</small></strong>}
+            <h3>{step.headline.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h3>
+            <p>{step.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
+            {step.sourceLink && <a href="https://nanda.media.mit.edu/ai_report_2025.pdf" target="_blank" rel="noreferrer">{step.sourceLink}</a>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="story-scene bottleneck scene-dark-soft" data-scene="04-bottleneck" data-parallax-scene>
+    <div class="scene-media bottleneck-media" aria-hidden="true">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.backgrounds.bottleneck.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.backgrounds.bottleneck.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.backgrounds.bottleneck.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.backgrounds.bottleneck.wideWebp} />
+        <img src={axAssetPaths.backgrounds.bottleneck.wideWebp} width="1672" height="941" alt="" loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim bottleneck-scrim"></div>
+    <div class="grid-shell">
+      <div class="section-heading reveal">
+        <p class="eyebrow">{c.bottleneck.eyebrow}</p>
+        <h2>{c.bottleneck.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p>{c.bottleneck.body}</p>
+      </div>
+    </div>
+    <AxCarousel
+      items={carouselItems}
+      labels={{
+        region: c.bottleneck.carousel.ariaLabel,
+        controls: c.bottleneck.carousel.slideSelectionAriaLabel,
+        slideTemplate: c.bottleneck.carousel.slideAriaTemplate,
+        viewSlideTemplate: c.bottleneck.carousel.viewSlideAriaTemplate,
+        reducedMotion: c.bottleneck.carousel.reducedMotion,
+        pause: c.bottleneck.carousel.pause,
+        replay: c.bottleneck.carousel.replay,
+        play: c.bottleneck.carousel.play,
+        previous: c.bottleneck.carousel.previous,
+        next: c.bottleneck.carousel.next,
+      }}
+    />
+  </section>
+
+  <section id="ax-how" class="story-scene method scene-dark" data-scene="05-method" data-parallax-scene>
+    <div class="scene-media method-media" aria-hidden="true">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.backgrounds.method.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.backgrounds.method.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.backgrounds.method.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.backgrounds.method.wideWebp} />
+        <img src={axAssetPaths.backgrounds.method.wideWebp} width="1672" height="941" alt="" loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim method-scrim"></div>
+    <div class="grid-shell">
+      <div class="section-heading dark reveal">
+        <p class="eyebrow blue">{c.method.eyebrow}</p>
+        <h2>{c.method.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+      </div>
+      <div class="method-flow">
+        {c.method.steps.map((step) => (
+          <article class="method-step reveal">
+            <span>{step.step}</span>
+            <div><h3>{step.title}</h3><p>{step.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="ax-proof" class="story-scene internal-proof scene-dark" data-scene="06-proof">
+    <div class="grid-shell proof-intro reveal">
+      <p class="eyebrow">{c.internalProof.eyebrow}</p>
+      <h2>{c.internalProof.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+      <p>{c.internalProof.body.map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
+    </div>
+    <div class="cadence-diagram reveal" aria-label={c.internalProof.cadenceAriaLabel}>
+      {c.internalProof.cadence.map((item, index) => (
+        <article class:list={['cadence-circle', cadenceClasses[index]]}>
+          <h3><span>{item.frequency}</span><strong>{item.name}</strong></h3><p>{item.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="story-scene pair-work scene-dark" data-scene="08-pair-work" data-parallax-scene>
+    <div class="scene-media">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.pair.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.pair.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.scenes.pair.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.scenes.pair.wideWebp} />
+        <img src={axAssetPaths.scenes.pair.wideWebp} alt={c.pairWork.imageAlt} loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim pair-scrim"></div>
+    <div class="grid-shell pair-layout">
+      <div class="pair-copy reveal" data-parallax-copy>
+        <p class="eyebrow">{c.pairWork.eyebrow}</p>
+        <h2>{c.pairWork.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p>{c.pairWork.body}</p>
+      </div>
+      <div class="pair-equation reveal" data-parallax-float>
+        <div><span>{c.pairWork.client.label}</span><strong>{c.pairWork.client.strengths.map((line, index) => <>{index > 0 && <br />}{line}</>)}</strong></div>
+        <i>×</i>
+        <div><span>{c.pairWork.corca.label}</span><strong>{c.pairWork.corca.strengths.map((line, index) => <>{index > 0 && <br />}{line}</>)}</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-scene champion scene-dark-soft" data-scene="09-champion">
+    <div class="grid-shell champion-layout">
+      <div class="champion-lead">
+        <div class="section-heading reveal">
+          <p class="eyebrow">{c.champion.eyebrow}</p>
+          <h2>{c.champion.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+          <p>{c.champion.body}</p>
+        </div>
+        <picture class="champion-people reveal">
+          <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.championPeople.mobileAvif} />
+          <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.championPeople.mobileWebp} />
+          <source type="image/avif" srcset={axAssetPaths.scenes.championPeople.wideAvif} />
+          <source type="image/webp" srcset={axAssetPaths.scenes.championPeople.wideWebp} />
+          <img src={axAssetPaths.scenes.championPeople.wideWebp} width="1600" height="1100" alt={c.champion.imageAlt} loading="lazy" decoding="async" />
+        </picture>
+      </div>
+      <div class="champion-track">
+        {c.champion.steps.map((step, index) => (
+          <>
+            {index > 0 && <div class="track-line"><i></i></div>}
+            <article class:list={['champion-step reveal', { featured: index === 1 }]} data-scroll-step>
+              <span>{step.step}</span><small>{step.kicker}</small><h3>{step.headline.map((line, lineIndex) => <>{lineIndex > 0 && <br />}{line}</>)}</h3><p>{step.body}</p>
+            </article>
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="story-scene reuse scene-dark" data-scene="10-reuse" data-parallax-scene>
+    <div class="scene-media">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.layers.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.layers.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.scenes.layers.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.scenes.layers.wideWebp} />
+        <img src={axAssetPaths.scenes.layers.wideWebp} alt={c.reuse.imageAlt} loading="lazy" decoding="async" />
+      </picture>
+    </div>
+    <div class="media-scrim reuse-scrim"></div>
+    <div class="grid-shell reuse-layout">
+      <div class="section-heading reveal" data-parallax-copy>
+        <p class="eyebrow">{c.reuse.eyebrow}</p>
+        <h2>{c.reuse.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+        <p>{c.reuse.body}</p>
+      </div>
+      <div class="layer-rail" data-parallax-float>
+        {c.reuse.layers.map((layer, index) => <article class="layer-card reveal" style={`--index: ${index}`}><h3>{layer.title}</h3><p>{layer.body}</p></article>)}
+      </div>
+    </div>
+  </section>
+
+  <section id="ax-program" class="story-scene program scene-light" data-scene="11-program">
+    <div class="grid-shell">
+      <div class="section-heading dark reveal">
+        <p class="eyebrow blue">{c.program.eyebrow}</p>
+        <h2>{c.program.headline.map((line, index) => <>{index > 0 && <br />}{line.before}{line.strong && <strong>{line.strong}</strong>}{line.after}</>)}</h2>
+      </div>
+      <div class="package-grid">
+        {c.program.packages.map((item) => (
+          <article class:list={['package-card reveal', { featured: item.featured }]}>
+            <h3><strong>{item.phase}</strong><span>{item.title}</span></h3><strong>{item.price}</strong><ul>{item.items.map((line) => <li>{line}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+      <p class="package-schedule-note">{c.program.scheduleNote}</p>
+      <div class="outcome-grid reveal">
+        <p>{c.program.outcome.question}<br />{c.program.outcome.lead}<br /><strong>{c.program.outcome.strong}</strong></p>
+        <ul>{c.program.outcome.metrics.map((metric) => <li>{metric}</li>)}</ul>
+      </div>
+      <div class="faq-block reveal">
+        <div><h3>{c.program.faqTitle}</h3></div>
+        <div class="faq-list">
+          {c.program.faqs.map((item) => (
+            <details><summary>{item.question}<span aria-hidden="true">＋</span></summary><p>{item.answer}</p></details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ax-contact" class="story-scene contact scene-dark" data-scene="12-contact" data-parallax-scene>
+    <div class="scene-media">
+      <picture class="scene-media-frame">
+        <source media="(max-width: 720px)" type="image/avif" srcset={axAssetPaths.scenes.final.mobileAvif} />
+        <source media="(max-width: 720px)" type="image/webp" srcset={axAssetPaths.scenes.final.mobileWebp} />
+        <source type="image/avif" srcset={axAssetPaths.scenes.final.wideAvif} />
+        <source type="image/webp" srcset={axAssetPaths.scenes.final.wideWebp} />
+        <img src={axAssetPaths.scenes.final.wideWebp} alt={c.contact.imageAlt} loading="lazy" decoding="async" style="object-position: center 35%" />
+      </picture>
+    </div>
+    <div class="media-scrim contact-scrim"></div>
+    <div class="grid-shell contact-layout">
+      <div class="contact-copy reveal" data-parallax-copy>
+        <p class="eyebrow">{c.contact.eyebrow}</p>
+        <h2>
+          <span class="contact-heading-question">{c.contact.question.map((line, index) => <>{index > 0 && <br />}{line}</>)}</span>
+          <strong class="contact-heading-answer">{c.contact.answer.map((line, index) => <>{index > 0 && <br />}{line}</>)}</strong>
+        </h2>
+        <p>{c.contact.fitLead}</p>
+        <div class="fit-list">{c.contact.fitItems.map((item) => <span>{item}</span>)}</div>
+      </div>
+      {
+        showConsultationForm ? (
+          <div class="form-shell reveal" data-parallax-float>
+            <div class="form-head"><span>{form.heading}</span><small>{form.summary}</small></div>
+            <AxConsultationForm lang={lang} topics={topics} copy={formCopy} />
+          </div>
+        ) : (
+          <aside
+            class="form-shell contact-details reveal"
+            data-parallax-float
+            aria-labelledby="ax-contact-details-title"
+          >
+            <h3 id="ax-contact-details-title" class="contact-details__intro">
+              {c.contact.details.intro.map((line, index) => <>{index > 0 && <br />}{line}</>)}
+            </h3>
+            <address class="contact-details__address">
+              <strong>
+                <span>{c.contact.details.owner} · <a href={contractMailto}>{c.contact.details.email}</a></span>
+                <span>(cc: <a href={contractMailto}>{c.contact.details.ccEmail}</a>)</span>
+                <a class="contact-details__phone" href={contactPhoneHref}>{c.contact.details.phone}</a>
+              </strong>
+            </address>
+            <p class="contact-details__closing">{c.contact.details.closing}</p>
+            <a
+              class="contact-details__brochure"
+              href={brochureHref}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              hreflang="ko"
+              aria-label={c.brand.brochureAriaLabel}
+              data-ax-track-link="contact_brochure"
+            >
+              {c.brand.brochureCta}
+            </a>
+          </aside>
+        )
+      }
+    </div>
+  </section>
+</div>
+
+<script>
+  import './ax/ax-client';
+</script>

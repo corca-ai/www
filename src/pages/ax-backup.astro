@@ -1,0 +1,20 @@
+---
+import AxBackup from '../components/pages/AxBackup.astro';
+import { pageMeta } from '../i18n/pageMeta';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const meta = pageMeta.ax.ko;
+---
+
+<BaseLayout
+  lang="ko"
+  title={`${meta.title} — 백업`}
+  description={meta.description}
+  basePath="/ax"
+  localized={false}
+  noindex
+  ogImage="/og-ax.png"
+  ogImageAlt="Corca AX 기업 AI 전환 컨설팅"
+>
+  <AxBackup />
+</BaseLayout>

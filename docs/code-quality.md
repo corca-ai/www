@@ -64,10 +64,12 @@ binaries; install them before using it as the local pre-PR check.
 pull request, so CI enforces the same gate definitions as the pre-push hook. A
 `quality` job runs the pnpm-installed gates (Biome, `astro check`, knip) and
 `pnpm build`, followed by `pnpm check:agentic`; that build step is CI-only, so
-run `pnpm build` and `pnpm check:agentic` locally when you want the closest
-preview of the `quality` job. A `duplication-and-docs` job installs nose and
-awiki from their public release binaries and runs the duplication and docs
-gates.
+export `SITE_URL=https://www.corca.ai`, then run `pnpm build` and
+`pnpm check:agentic` locally when you want the closest preview of the `quality`
+job. The job's public `SITE_URL` environment value is shared by the build and
+discovery check, while local checks without the override fall back to
+`SITE_ORIGIN`. A `duplication-and-docs` job installs nose and awiki from their
+public release binaries and runs the duplication and docs gates.
 
 ## Protected main
 

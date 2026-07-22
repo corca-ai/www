@@ -1,9 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { SITE_ORIGIN } from '../src/site.ts';
 import { withStaticAssetCacheHeaders } from '../worker/staticAssetHeaders.js';
 
 const root = process.cwd();
 const dist = join(root, 'dist');
+const canonicalOrigin = new URL(process.env.SITE_URL || SITE_ORIGIN).origin;
 
 const fail = (message) => {
   throw new Error(`[agentic-discovery] ${message}`);
@@ -45,10 +47,7 @@ const routeFile = (url) => {
 
 const assertPublicUrl = (url, source) => {
   const parsed = new URL(url);
-  assert(
-    parsed.origin === 'https://www.borca.ai',
-    `${source} contains a non-canonical URL: ${url}`,
-  );
+  assert(parsed.origin === canonicalOrigin, `${source} contains a non-canonical URL: ${url}`);
   assert(existsSync(join(dist, routeFile(url))), `${source} URL has no built page: ${url}`);
 };
 
@@ -56,7 +55,7 @@ const sitemap = readDist('sitemap.xml');
 const sitemapIndexEntries = sitemapEntries(sitemap, 'sitemap');
 const childSitemaps = sitemapIndexEntries.map((entry) => entry.loc);
 const expectedSitemaps = ['pages', 'categories', 'tags', 'posts'].map(
-  (name) => `https://www.borca.ai/sitemap-${name}.xml`,
+  (name) => `${canonicalOrigin}/sitemap-${name}.xml`,
 );
 assert(
   JSON.stringify(childSitemaps) === JSON.stringify(expectedSitemaps),
@@ -134,10 +133,7 @@ assert(
   'robots.txt must block only administration routes',
 );
 assert(!robots.includes('Disallow: /privacy'), 'privacy pages must remain crawlable');
-assert(
-  robots.includes('Sitemap: https://www.borca.ai/sitemap.xml'),
-  'robots.txt sitemap is missing',
-);
+assert(robots.includes(`Sitemap: ${canonicalOrigin}/sitemap.xml`), 'robots.txt sitemap is missing');
 assert(robots.includes('.+omnNNNNh.'), 'robots.txt Corca ASCII Identity is missing');
 
 const llms = readDist('llms.txt');
@@ -149,7 +145,9 @@ for (const heading of ['## 한국어', '## English', '## 日本語', '## 中文'
   assert(llms.includes(heading), `llms.txt is missing ${heading}`);
 }
 assert(
-  /- \[[^\]]+\]\(https:\/\/www\.corca\.ai\//.test(llms),
+  llms
+    .split('\n')
+    .some((line) => /^- \[[^\]]+\]\(/.test(line) && line.includes(`](${canonicalOrigin}/`)),
   'llms.txt H2 sections must contain Markdown links',
 );
 assert(
@@ -180,7 +178,7 @@ for (const path of [
   '/ja/blog',
   '/zh/blog',
 ]) {
-  assert(llms.includes(`https://www.corca.ai${path}`), `llms.txt is missing ${path}`);
+  assert(llms.includes(`${canonicalOrigin}${path}`), `llms.txt is missing ${path}`);
 }
 
 for (const filename of [
@@ -200,7 +198,7 @@ for (const filename of [
 
 const applyStaticHeaders = (pathname, contentType) =>
   withStaticAssetCacheHeaders(
-    new Request(`https://www.borca.ai${pathname}`),
+    new Request(`${canonicalOrigin}${pathname}`),
     new Response('fixture', { headers: { 'Content-Type': contentType } }),
   );
 

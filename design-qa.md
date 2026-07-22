@@ -22,6 +22,11 @@
 - Section 1-2 desktop viewport: `/private/tmp/ax-v2-qa/compound-desktop-viewport.png`
 - Section 1-2 mobile viewport: `/private/tmp/ax-v2-qa/compound-mobile-viewport.png`
 - Section 1-2 source/implementation comparison: `/private/tmp/ax-v2-qa/compound-comparison.png`
+- Round 4 environment table: `/private/tmp/ax-v2-qa/round4-environment-desktop.png`
+- Round 4 Ceal desktop diagram: `/private/tmp/ax-v2-qa/round4-ceal-desktop.png`
+- Round 4 Ceal mobile diagram: `/private/tmp/ax-v2-qa/round4-ceal-mobile.png`
+- Round 4 package cards: `/private/tmp/ax-v2-qa/round4-packages-desktop.png`
+- Round 4 combined comparisons: `/private/tmp/ax-v2-qa/round4-environment-comparison.png`, `/private/tmp/ax-v2-qa/round4-ceal-comparison.png`, `/private/tmp/ax-v2-qa/round4-packages-comparison.png`
 
 ## Capture normalization
 
@@ -86,6 +91,9 @@
 - `/private/tmp/ax-v2-qa/desktop-1440x600.png` verifies the low-height hero rule and prevents the heading from moving behind the header.
 - `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance while adding the approved navy readability overlay.
 - `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
+- `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
+- `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
+- `/private/tmp/ax-v2-qa/round4-packages-comparison.png` verifies that package outlines were replaced by restrained elevation shadows while preserving the three-card hierarchy from PDF page 9.
 
 ## Findings
 
@@ -106,6 +114,9 @@
 4. Browser annotation review requested Korean word preservation, a current-AX gradient accent, responsive Hero H3 line breaks, removal of the Section 1-2 CTA, and a premium team photograph.
    - Fix: applied `word-break: keep-all`, breakpoint-specific final H3 break behavior, shared gradient token, removed only the Section 1-2 button, and added an optimized responsive `<picture>` background.
    - Post-fix evidence: desktop/tablet/mobile captures show no horizontal overflow; DOM probes report `wordBreak: keep-all`, no Section 1-2 button, mobile poster `01-hero-mobile.avif`, and empty mobile video `currentSrc`.
+5. Round 4 annotations found P2 fidelity gaps in the environment-table flow arrows, Ceal connector geometry, Ceal panel density, and package-card elevation.
+   - Fix: increased the requested table labels by approximately 15%, replaced text arrows with faded blue-purple flow connectors, rebuilt both Ceal connector systems as translation-safe HTML/CSS rails, removed fixed Ceal panel heights, and replaced package outlines with layered shadows.
+   - Post-fix evidence: the three round-4 comparison sheets match PDF pages 7–9; the 390 × 844 mobile check reports no horizontal overflow and keeps both Ceal diagrams fully readable without rasterized text.
 
 ## Interaction and console checks
 

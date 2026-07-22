@@ -102,6 +102,8 @@
 - `/private/tmp/ax-v2-qa/round6-proof-shadow-bottom.png` verifies that the testimonial elevation diffuses into the section background without a clipped lower edge.
 - `/private/tmp/ax-v2-qa/round6-tabs-final-01.png` records the final stopped state after the measured `01 → 02 → 03 → 01` sequence. Browser timestamps measured approximately 2.67 seconds between states, and a further 2.76-second observation remained on 01.
 - `/private/tmp/ax-v2-qa/round6-environment-closing.png` verifies the exact approved two-line closing copy.
+- `/private/tmp/ax-v2-qa/round8-proof-gradient-and-type.png` verifies the PDF-referenced blue gradient on `조직의 체질을 바꿉니다.`, the bold second lead line, and the 80% supporting-body scale without changing the authored copy or breaks.
+- `/private/tmp/ax-v2-qa/round8-carousel-controls-and-marquee.png` verifies centered white carousel buttons and the unchanged logo-mask composition; the browser probe reports a 52.5-second marquee duration and zero horizontal overflow.
 - `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
 - `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
 - `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
@@ -138,6 +140,9 @@
 8. Round 7 annotation requested a 2 px outline on the active desktop tab panel using the same blue as the selected tab button.
    - Fix: applied the shared `#70b8ff` active color as a stable 2 px panel border across tab states.
    - Post-fix evidence: the selected `02 AX 챔피언 양성 코칭` panel reports a 2 px solid `rgb(112, 184, 255)` border, zero horizontal overflow, and no console warning or error.
+9. Round 8 annotations requested the PDF's emphasized blue title treatment, stronger lead hierarchy, smaller supporting copy, centered white testimonial controls, and a 20% slower logo marquee.
+   - Fix: applied a navy-to-Corca-blue gradient only to the authored second heading line, bolded only the second lead line, scaled the following paragraph to 80%, centered the existing controls with white surfaces, and changed the marquee cycle from 42 seconds to 52.5 seconds.
+   - Post-fix evidence: the rendered heading and type hierarchy match the supplied crop, both controls compute to white 48 px circles in a centered footer, the marquee computes to 52.5 seconds, horizontal overflow remains zero, and browser logs contain no warning or error.
 
 ## Interaction and console checks
 

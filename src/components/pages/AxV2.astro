@@ -82,8 +82,14 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.transformation.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
-        <h3 id="ax-v2-transformation-title"><AxLines values={c.transformation.heading} /></h3>
-        <p class="ax-v2-lead ax-v2-spaced-lines"><AxLines values={c.transformation.lead} /></p>
+        <h3 id="ax-v2-transformation-title">
+          <span>{c.transformation.heading[0]}</span><br />
+          <span class="ax-v2-transformation-emphasis">{c.transformation.heading[1]}</span>
+        </h3>
+        <p class="ax-v2-lead ax-v2-spaced-lines">
+          <span>{c.transformation.lead[0]}</span><br />
+          <strong>{c.transformation.lead[1]}</strong>
+        </p>
         <p><AxLines values={c.transformation.body} /></p>
       </div>
 

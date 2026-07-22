@@ -161,10 +161,22 @@
 .ax-v2-partner-badge {
   width: 100px;
   height: auto;
-  position: absolute;
-  top: 65px;
+  max-width: none;
+  position: fixed;
+  top: 131px;
   left: clamp(18px, 3vw, 44px);
-  z-index: 3;
+  z-index: 4;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 360ms ease-out;
+  pointer-events: none;
+}
+
+.ax-v2-partner-badge.is-exiting {
+  opacity: 0;
+  transform: translate3d(0, -80px, 0);
 }
 
 .ax-v2-hero-media,
@@ -1421,8 +1433,15 @@ body:has(.ax-v2-dialog[open]) {
 
   .ax-v2-partner-badge {
     width: min(100px, 27.5vw);
+    position: absolute;
     top: 64px;
     left: 16px;
+    transition: none;
+  }
+
+  .ax-v2-partner-badge.is-exiting {
+    opacity: 1;
+    transform: none;
   }
 
   .ax-v2-hero {

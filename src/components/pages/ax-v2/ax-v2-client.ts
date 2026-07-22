@@ -156,6 +156,57 @@ function initializeHeroVideo(page: HTMLElement) {
   new AxV2HeroMediaController(media, video, source).mount();
 }
 
+function initializePartnerBadge(page: HTMLElement) {
+  const badge = page.querySelector<HTMLElement>('.ax-v2-partner-badge');
+  const hero = page.querySelector<HTMLElement>('#ax-top');
+  if (!badge || !hero) return;
+
+  const mobile = window.matchMedia('(max-width: 720px)');
+  let frame = 0;
+  let badgeTop = 0;
+  let badgeHeight = 0;
+  let exiting = false;
+
+  const measure = () => {
+    badgeTop = Number.parseFloat(window.getComputedStyle(badge).top) || 0;
+    badgeHeight = badge.getBoundingClientRect().height;
+  };
+
+  const render = () => {
+    frame = 0;
+    if (mobile.matches) {
+      exiting = false;
+      badge.classList.remove('is-exiting');
+      badge.removeAttribute('aria-hidden');
+      return;
+    }
+
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    const exitLine = badgeTop + badgeHeight + 80;
+    const shouldExit = exiting ? heroBottom <= exitLine + 12 : heroBottom <= exitLine;
+    if (shouldExit === exiting) return;
+    exiting = shouldExit;
+    badge.classList.toggle('is-exiting', shouldExit);
+    badge.setAttribute('aria-hidden', String(shouldExit));
+  };
+
+  const update = () => {
+    if (frame) return;
+    frame = window.requestAnimationFrame(render);
+  };
+
+  const refresh = () => {
+    measure();
+    update();
+  };
+
+  measure();
+  render();
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', refresh, { passive: true });
+  mobile.addEventListener('change', refresh);
+}
+
 function initializeCarousel(root: HTMLElement) {
   const trackElement = root.querySelector<HTMLElement>('[data-testimonial-track]');
   const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-testimonial-slide]'));
@@ -629,6 +680,7 @@ function initialize() {
   if (!page || page.dataset.initialized === 'true') return;
   page.dataset.initialized = 'true';
   initializeHeroVideo(page);
+  initializePartnerBadge(page);
   page
     .querySelectorAll<HTMLElement>('[data-compound-parallax]')
     .forEach(initializeCompoundParallax);

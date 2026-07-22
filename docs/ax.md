@@ -10,6 +10,10 @@ use `/en/ax`, `/ja/ax` and `/zh/ax`. The page is part of the normal Astro build,
 so it inherits the shared header, footer, canonical URLs, language switcher,
 analytics and deployment flow from `BaseLayout.astro`.
 
+Any content or visual redesign must also satisfy the shared
+[SEO and performance governance](seo-content-governance.md), including the AX
+mobile critical-path and production measurement gates.
+
 ## Ownership map
 
 | Concern | Source |

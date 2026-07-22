@@ -24,8 +24,8 @@ declare global {
 const TURNSTILE_SCRIPT_ID = 'ax-v2-turnstile-api';
 let turnstilePromise: Promise<TurnstileApi> | undefined;
 
-function track(event: string, parameters: Record<string, unknown> = {}) {
-  window.dataLayer = window.dataLayer ?? [];
+function emitAnalytics(event: string, parameters: Record<string, unknown> = {}) {
+  if (!Array.isArray(window.dataLayer)) window.dataLayer = [];
   window.dataLayer.push({ event, ...parameters });
 }
 
@@ -33,27 +33,119 @@ function loadTurnstile(): Promise<TurnstileApi> {
   if (window.turnstile) return Promise.resolve(window.turnstile);
   if (turnstilePromise) return turnstilePromise;
 
-  turnstilePromise = new Promise((resolve, reject) => {
-    const existing = document.getElementById(TURNSTILE_SCRIPT_ID) as HTMLScriptElement | null;
-    const script = existing ?? document.createElement('script');
-    const handleLoad = () => {
-      if (window.turnstile) resolve(window.turnstile);
+  turnstilePromise = new Promise<TurnstileApi>((resolve, reject) => {
+    const settle = () => {
+      const api = window.turnstile;
+      if (api) resolve(api);
       else reject(new Error('Turnstile API did not initialize'));
     };
-    const handleError = () => reject(new Error('Turnstile API failed to load'));
-    script.addEventListener('load', handleLoad, { once: true });
-    script.addEventListener('error', handleError, { once: true });
-
-    if (!existing) {
-      script.id = TURNSTILE_SCRIPT_ID;
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      script.async = true;
-      script.defer = true;
-      document.head.append(script);
+    const fail = () => reject(new Error('Turnstile API failed to load'));
+    const installed = document.querySelector<HTMLScriptElement>(`#${TURNSTILE_SCRIPT_ID}`);
+    if (installed) {
+      installed.onload = settle;
+      installed.onerror = fail;
+      return;
     }
+
+    const script = Object.assign(document.createElement('script'), {
+      id: TURNSTILE_SCRIPT_ID,
+      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
+      async: true,
+      defer: true,
+      onload: settle,
+      onerror: fail,
+    });
+    document.head.appendChild(script);
   });
 
   return turnstilePromise;
+}
+
+class AxV2HeroMediaController {
+  private visible = false;
+  private sourceConnected = false;
+  private readonly mobile = window.matchMedia('(max-width: 720px)');
+  private readonly reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  constructor(
+    private readonly media: HTMLElement,
+    private readonly video: HTMLVideoElement,
+    private readonly source: HTMLSourceElement,
+  ) {}
+
+  mount() {
+    this.media.dataset.heroInitialized = this.posterMode();
+    this.showPoster();
+
+    new IntersectionObserver(([entry]) => {
+      this.visible = Boolean(
+        entry?.isIntersecting && entry.intersectionRect.width && entry.intersectionRect.height,
+      );
+      this.reconcile();
+    }).observe(this.media);
+
+    document.addEventListener('visibilitychange', this.reconcile);
+    this.mobile.addEventListener('change', this.handlePreferenceChange);
+    this.reduced.addEventListener('change', this.handlePreferenceChange);
+    this.video.addEventListener('playing', this.handlePlaying);
+    this.video.addEventListener('error', this.showPoster);
+  }
+
+  private posterMode() {
+    if (this.mobile.matches) return 'mobile-poster';
+    if (this.reduced.matches) return 'reduced-poster';
+    return 'true';
+  }
+
+  private canPlay() {
+    return this.visible && !document.hidden && !this.mobile.matches && !this.reduced.matches;
+  }
+
+  private showPoster = () => {
+    this.media.classList.remove('is-video-playing');
+    this.media.classList.add('is-video-reset');
+    this.video.pause();
+  };
+
+  private disconnectSource() {
+    this.showPoster();
+    if (!this.sourceConnected) return;
+    this.source.removeAttribute('src');
+    this.video.load();
+    this.sourceConnected = false;
+  }
+
+  private connectSource() {
+    if (this.sourceConnected) return;
+    this.source.src = this.source.dataset.src ?? '';
+    this.video.load();
+    this.sourceConnected = true;
+  }
+
+  private reconcile = () => {
+    if (!this.canPlay()) {
+      if (this.mobile.matches || this.reduced.matches) this.disconnectSource();
+      else this.showPoster();
+      return;
+    }
+    this.connectSource();
+    this.media.classList.remove('is-video-reset');
+    void this.video.play().catch(this.showPoster);
+  };
+
+  private handlePreferenceChange = () => {
+    this.media.dataset.heroInitialized = this.posterMode();
+    this.reconcile();
+  };
+
+  private handlePlaying = () => {
+    if (!this.canPlay()) {
+      this.showPoster();
+      return;
+    }
+    this.media.classList.remove('is-video-reset');
+    this.media.classList.add('is-video-playing');
+  };
 }
 
 function initializeHeroVideo(page: HTMLElement) {
@@ -61,88 +153,7 @@ function initializeHeroVideo(page: HTMLElement) {
   const video = media?.querySelector<HTMLVideoElement>('[data-hero-video]');
   const source = video?.querySelector<HTMLSourceElement>('source[data-src]');
   if (!media || !video || !source || media.dataset.heroInitialized) return;
-
-  const mobileViewport = window.matchMedia('(max-width: 720px)');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  if (mobileViewport.matches || reducedMotion.matches) {
-    media.dataset.heroInitialized = mobileViewport.matches ? 'mobile-poster' : 'reduced-poster';
-    media.classList.remove('is-video-playing');
-    media.classList.add('is-video-reset');
-    const initializeWhenEligible = () => {
-      if (mobileViewport.matches || reducedMotion.matches) return;
-      mobileViewport.removeEventListener('change', initializeWhenEligible);
-      reducedMotion.removeEventListener('change', initializeWhenEligible);
-      delete media.dataset.heroInitialized;
-      initializeHeroVideo(page);
-    };
-    mobileViewport.addEventListener('change', initializeWhenEligible);
-    reducedMotion.addEventListener('change', initializeWhenEligible);
-    return;
-  }
-
-  media.dataset.heroInitialized = 'true';
-  let visible = false;
-  let loaded = false;
-
-  const stop = () => {
-    media.classList.remove('is-video-playing');
-    media.classList.add('is-video-reset');
-    video.pause();
-  };
-
-  const unload = () => {
-    stop();
-    source.removeAttribute('src');
-    video.load();
-    loaded = false;
-  };
-
-  const play = () => {
-    if (!visible || document.hidden || mobileViewport.matches || reducedMotion.matches) {
-      stop();
-      return;
-    }
-    if (!loaded) {
-      source.src = source.dataset.src ?? '';
-      video.load();
-      loaded = true;
-    }
-    media.classList.remove('is-video-reset');
-    void video.play().catch(stop);
-  };
-
-  video.addEventListener('playing', () => {
-    if (!visible || document.hidden || mobileViewport.matches || reducedMotion.matches) {
-      stop();
-      return;
-    }
-    media.classList.remove('is-video-reset');
-    media.classList.add('is-video-playing');
-  });
-  video.addEventListener('error', stop);
-
-  const observer = new IntersectionObserver(([entry]) => {
-    visible = Boolean(
-      entry?.isIntersecting && entry.intersectionRect.width && entry.intersectionRect.height,
-    );
-    if (visible) play();
-    else stop();
-  });
-  observer.observe(media);
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stop();
-    else play();
-  });
-  reducedMotion.addEventListener('change', () => {
-    if (reducedMotion.matches) unload();
-    else play();
-  });
-  mobileViewport.addEventListener('change', () => {
-    if (mobileViewport.matches) unload();
-    else play();
-  });
+  new AxV2HeroMediaController(media, video, source).mount();
 }
 
 function initializeCarousel(root: HTMLElement) {
@@ -324,7 +335,7 @@ function initializeLeadForm(form: HTMLFormElement) {
   const markStarted = () => {
     if (started) return;
     started = true;
-    track('form_start', { form_id: form.id, form_name: form.name, locale: 'ko' });
+    emitAnalytics('form_start', { form_id: form.id, form_name: form.name, locale: 'ko' });
   };
   form.addEventListener('input', markStarted, { once: true });
 
@@ -439,8 +450,8 @@ function initializeLeadForm(form: HTMLFormElement) {
         return;
       }
 
-      track('form_submit', { form_id: form.id, form_name: form.name, locale: 'ko' });
-      track('ax_lead_submit_success', { form_id: form.id, locale: 'ko' });
+      emitAnalytics('form_submit', { form_id: form.id, form_name: form.name, locale: 'ko' });
+      emitAnalytics('ax_lead_submit_success', { form_id: form.id, locale: 'ko' });
       form.reset();
       startedAt.value = String(Date.now());
       status.textContent = '상담 요청이 접수되었습니다.';

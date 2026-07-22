@@ -177,7 +177,10 @@ function initializeCarousel(root: HTMLElement) {
     if (!slide) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     trackElement.scrollTo({
-      left: slide.offsetLeft - trackElement.offsetLeft,
+      left:
+        slide.offsetLeft -
+        trackElement.offsetLeft -
+        Math.max(0, (trackElement.clientWidth - slide.offsetWidth) / 2),
       behavior: reducedMotion ? 'auto' : 'smooth',
     });
     update(index);

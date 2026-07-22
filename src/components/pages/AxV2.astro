@@ -156,7 +156,7 @@ const brochureHref = import.meta.env.DEV
             <span>{card.cadence}</span>
             <h4>{card.title}</h4>
             <strong>{card.lead}</strong>
-            <p>{card.body}</p>
+            <p><AxLines values={card.body} /></p>
           </article>
         ))}
       </div>
@@ -253,7 +253,7 @@ const brochureHref = import.meta.env.DEV
             return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;
           })}</ul>
         </article>
-        <span class="ax-v2-comparison-arrow" aria-hidden="true">→</span>
+        <span class="ax-v2-comparison-arrow" aria-hidden="true">➜</span>
         <article class="ax-v2-comparison-corca">
           <h4><AxLines values={c.diagnosis.corca.title} /></h4>
           <p><AxLines values={c.diagnosis.corca.body} /></p>

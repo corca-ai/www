@@ -3,6 +3,7 @@
 **Source visual truth**
 
 - `/Users/tommy/Desktop/[260721] corca-ax-sales-deck-OpenAI 브리핑 버전-가격삭제.pdf`
+- Generated Section 1-2 photography source: `/Users/tommy/.codex/generated_images/019f6982-a854-7d81-ac4f-359149c616e3/exec-d697b7b0-546f-4c64-b150-4a6b4b9056f3.png`
 - Rendered source contact sheet: `/private/tmp/ax-deck-review/contact-sheet.jpg`
 - Focused source renders: `/private/tmp/ax-deck-review/page-01.jpg`, `/private/tmp/ax-deck-review/page-05.jpg`
 
@@ -15,6 +16,12 @@
 - Mobile diagnosis: `/private/tmp/ax-v2-qa/mobile-390-diagnosis.png`
 - Combined hero comparison: `/private/tmp/ax-v2-qa/compare-source-hero.jpg`
 - Combined diagnosis comparison: `/private/tmp/ax-v2-qa/compare-source-diagnosis.jpg`
+- Updated desktop hero: `/private/tmp/ax-v2-qa/hero-desktop-after.png`
+- Updated tablet hero: `/private/tmp/ax-v2-qa/hero-tablet-viewport.png`
+- Updated mobile hero: `/private/tmp/ax-v2-qa/hero-mobile-viewport.png`
+- Section 1-2 desktop viewport: `/private/tmp/ax-v2-qa/compound-desktop-viewport.png`
+- Section 1-2 mobile viewport: `/private/tmp/ax-v2-qa/compound-mobile-viewport.png`
+- Section 1-2 source/implementation comparison: `/private/tmp/ax-v2-qa/compound-comparison.png`
 
 ## Capture normalization
 
@@ -40,6 +47,7 @@
 
 - Pretendard hierarchy matches the approved AX system and uses the mobile Korean subset at 720 px and below.
 - The Notion H1/H2/H3 semantics and authored line breaks are preserved. Display type is intentionally larger and heavier than the presentation deck because the approved direction calls for an Apple-style full-screen web hierarchy.
+- Korean copy uses `word-break: keep-all` across the AX v2 page. The Hero H3 keeps the authored four lines through 720 px and combines the final two lines at 721 px and above for the approved three-line tablet/desktop composition.
 - No clipping, truncation, orphan punctuation, or horizontal overflow was found at the tested breakpoints.
 
 ### Spacing and layout rhythm
@@ -51,11 +59,13 @@
 ### Colors and visual tokens
 
 - The page retains Corca blue, light-blue washes, navy evidence sections, white surfaces, and subdued neutral borders.
+- The approved white-to-sky-blue-to-Corca-blue gradient is applied to the second Hero H2 line and the second final CTA H2 line, matching the current `/ax` visual accent.
 - Text/background combinations remain readable, and interactive states do not rely on color alone.
 
 ### Image quality and asset fidelity
 
 - The existing dolphin hero media and approved OpenAI Select Partner badge are reused rather than approximated.
+- Section 1-2 uses the approved photorealistic team image with bright sunlight, East Asian and non-Asian colleagues in casual business clothing, and an accessible dark-navy text overlay. The 1796 × 876 source is served as a 38 KB AVIF, 55 KB WebP, and 90 KB JPEG fallback with intrinsic dimensions and lazy loading.
 - The OpenAI–Corca lockup uses the supplied source asset, converted to a 600 px lossless WebP with PNG fallback and intrinsic dimensions.
 - No source logo or photographic asset was replaced by an inline SVG, emoji, placeholder, or CSS drawing. The Ceal flow rails are an explicitly requested live information diagram rather than a replacement for a supplied raster asset.
 
@@ -74,6 +84,8 @@
 - `/private/tmp/ax-v2-qa/compare-source-diagnosis.jpg` verifies the Section 5 heading, `61건` metric, explanatory copy, and mobile-first reading order against PDF page 5.
 - `/private/tmp/ax-v2-qa/mobile-390-top-2.png` verifies the mobile hero crop, line breaks, CTA, badge, and text/media non-overlap.
 - `/private/tmp/ax-v2-qa/desktop-1440x600.png` verifies the low-height hero rule and prevents the heading from moving behind the header.
+- `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance while adding the approved navy readability overlay.
+- `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
 
 ## Findings
 
@@ -91,6 +103,9 @@
 3. A duplicate functional H2 was found in the hidden dialog during the heading-map review.
    - Fix: retained `aria-labelledby` while changing the dialog title to styled non-heading text so the document outline contains only the authored Notion headings.
    - Post-fix evidence: Astro check/build pass and the modal retains its accessible name.
+4. Browser annotation review requested Korean word preservation, a current-AX gradient accent, responsive Hero H3 line breaks, removal of the Section 1-2 CTA, and a premium team photograph.
+   - Fix: applied `word-break: keep-all`, breakpoint-specific final H3 break behavior, shared gradient token, removed only the Section 1-2 button, and added an optimized responsive `<picture>` background.
+   - Post-fix evidence: desktop/tablet/mobile captures show no horizontal overflow; DOM probes report `wordBreak: keep-all`, no Section 1-2 button, mobile poster `01-hero-mobile.avif`, and empty mobile video `currentSrc`.
 
 ## Interaction and console checks
 

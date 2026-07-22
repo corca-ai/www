@@ -39,16 +39,38 @@ const brochureHref = import.meta.env.DEV
     </div>
     <div class="ax-v2-hero-copy ax-v2-shell" data-reveal>
       <h1 id="ax-v2-hero-title">{c.hero.h1}</h1>
-      <h2><AxLines values={c.hero.h2} /></h2>
-      <h3><AxLines values={c.hero.h3} /></h3>
+      <h2>
+        {c.hero.h2.map((line, index) => (
+          <>{index > 0 && <br />}<span class:list={{ 'ax-v2-gradient-text': index === 1 }}>{line}</span></>
+        ))}
+      </h2>
+      <h3>
+        {c.hero.h3.map((line, index) => (
+          <>
+            {index > 0 && <><br class={index === 3 ? 'ax-v2-hero-h3-break--tablet-hidden' : undefined} />{' '}</>}
+            {line}
+          </>
+        ))}
+      </h3>
       <button class="ax-v2-primary-button" type="button" data-dialog-open>{c.hero.cta}</button>
     </div>
   </section>
 
   <section class="ax-v2-compound ax-v2-dark-section" aria-labelledby="ax-v2-compound-title">
-    <div class="ax-v2-shell ax-v2-center" data-reveal>
+    <picture class="ax-v2-compound-media">
+      <source type="image/avif" srcset={axV2Assets.compoundTeam.avif} />
+      <source type="image/webp" srcset={axV2Assets.compoundTeam.webp} />
+      <img
+        src={axV2Assets.compoundTeam.jpg}
+        width={axV2Assets.compoundTeam.width}
+        height={axV2Assets.compoundTeam.height}
+        alt="밝은 햇살 아래 함께 서 있는 다양한 배경의 협업팀"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+    <div class="ax-v2-shell ax-v2-compound-copy" data-reveal>
       <h2 id="ax-v2-compound-title"><AxLines values={c.compound.lines} /></h2>
-      <button class="ax-v2-primary-button" type="button" data-dialog-open>{c.compound.cta}</button>
     </div>
   </section>
 
@@ -371,7 +393,11 @@ const brochureHref = import.meta.env.DEV
   <section class="ax-v2-section ax-v2-contact-section" id="ax-contact" aria-labelledby="ax-v2-contact-title">
     <div class="ax-v2-shell ax-v2-contact-grid">
       <div class="ax-v2-contact-copy" data-reveal>
-        <h2 id="ax-v2-contact-title"><AxLines values={c.contact.heading} /></h2>
+        <h2 id="ax-v2-contact-title">
+          {c.contact.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-gradient-text': index === 1 }}>{line}</span></>
+          ))}
+        </h2>
         <p><AxLines values={c.contact.body} /></p>
         <div class="ax-v2-direct-contact">
           <p>{c.contact.directLead}</p>

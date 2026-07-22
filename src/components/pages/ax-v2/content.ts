@@ -12,7 +12,6 @@ export const axV2Content = {
   },
   compound: {
     lines: ['첫 성과가 복리 이득으로 이어지는 조직,', 'Corca AX가 함께 만듭니다.'],
-    cta: '상담 신청하기',
   },
   transformation: {
     eyebrow: 'Corca AX가 하는 일',
@@ -327,6 +326,13 @@ export const axV2Assets = {
     wideAvif: '/images/pages/ax/visuals/01-hero-wide.avif',
     wideWebp: '/images/pages/ax/visuals/01-hero-wide.webp',
     video: '/video/ax/B-0715-A_seamless_loop_video_of_a_maj.webm',
+  },
+  compoundTeam: {
+    avif: '/images/pages/ax-v2/v2/compound-team-1796.avif',
+    webp: '/images/pages/ax-v2/v2/compound-team-1796.webp',
+    jpg: '/images/pages/ax-v2/v2/compound-team-1796.jpg',
+    width: 1796,
+    height: 876,
   },
   partnerNetwork: '/images/pages/ax/visuals/OAI_PartnerNetwork_SelectPartner_Portrait.svg',
   testimonials: {

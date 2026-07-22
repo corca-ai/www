@@ -21,6 +21,20 @@ title: Corca AX Korean content lock v2
 - Technical SEO와 성능 계약은
   [SEO and performance governance](seo-content-governance.md)를 따른다.
 
+## 2026-07-22 브라우저 검수 승인 사항
+
+아래 항목은 Notion 원문을 바꾸지 않으면서 표시 방식에 적용하는 후속 승인이다.
+
+- 한국어 본문 전체에 `word-break: keep-all`을 적용한다.
+- Hero H3는 모바일 720px 이하에서 원문의 4줄을 유지한다. 721px 이상에서는
+  마지막 두 줄을 합쳐 3줄로 표시한다.
+- 현행 `/ax`의 흰색-하늘색-파란색 그라데이션 포인트 컬러를 Hero H2의
+  두 번째 줄과 마지막 CTA H2의 두 번째 줄에 적용한다.
+- Section 1-2의 `상담 신청하기` 버튼은 표시하지 않는다.
+- Section 1-2는 밝은 햇살 아래 다양한 배경의 구성원이 캐주얼 복장으로
+  어깨동무한 실사 이미지를 배경으로 사용한다. 이미지에는 문구·로고·워터마크를
+  넣지 않고 AVIF/WebP와 JPEG fallback을 제공한다.
+
 ## Section 1-1. Hero
 
 ### H1
@@ -45,6 +59,14 @@ Corca의 8주 AX 프로그램을
 경험해 보세요.
 ```
 
+태블릿·데스크톱 표시 줄바꿈:
+
+```text
+실제 업무 과제를 해결하고,
+내부 챔피언과 확산 체계를 남기는
+Corca의 8주 AX 프로그램을 경험해 보세요.
+```
+
 CTA: `상담 신청하기`
 
 Hero의 기존 동영상·모바일 포스터·Pretendard·텍스트 위치·낮은 화면 높이
@@ -57,7 +79,7 @@ Hero의 기존 동영상·모바일 포스터·Pretendard·텍스트 위치·낮
 Corca AX가 함께 만듭니다.
 ```
 
-CTA: `상담 신청하기`
+Notion 원문의 CTA `상담 신청하기`는 2026-07-22 후속 승인으로 제거한다.
 
 ## Section 2. Corca AX가 하는 일
 

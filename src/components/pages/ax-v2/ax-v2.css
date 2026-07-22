@@ -10,6 +10,8 @@
   color: var(--ax-v2-ink);
   background: #fff;
   overflow: clip;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 .ax-v2-page *,
@@ -139,6 +141,14 @@
   text-decoration: underline;
 }
 
+.ax-v2-gradient-text {
+  color: #f5f5f7;
+  background: linear-gradient(90deg, #f5f5f7 0%, #b8e2ff 42%, #2997ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* Hero: preserve the approved AX media loading and composition contract. */
 .ax-v2-hero {
   min-height: calc(100svh - 66px);
@@ -254,18 +264,58 @@
 }
 
 .ax-v2-compound {
+  min-height: clamp(560px, 48vw, 720px);
   padding: clamp(96px, 9vw, 144px) 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: #00183f;
+}
+
+.ax-v2-compound::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 14, 43, 0.9) 0%, rgba(0, 18, 52, 0.72) 38%, rgba(0, 17, 48, 0.14) 76%),
+    linear-gradient(180deg, rgba(0, 10, 30, 0.06) 36%, rgba(0, 10, 30, 0.52) 100%);
+}
+
+.ax-v2-compound-media,
+.ax-v2-compound-media img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+}
+
+.ax-v2-compound-media img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.ax-v2-compound-copy {
+  position: relative;
+  z-index: 1;
+  text-align: left;
 }
 
 .ax-v2-compound h2 {
+  max-width: 650px;
   margin: 0;
   font-size: clamp(42px, 5vw, 68px);
   line-height: 1.12;
   letter-spacing: -0.05em;
 }
 
-.ax-v2-compound .ax-v2-primary-button {
-  margin-top: 40px;
+@media (min-width: 721px) {
+  .ax-v2-hero-h3-break--tablet-hidden {
+    display: none;
+  }
 }
 
 /* Customer proof */
@@ -1422,6 +1472,25 @@ body:has(.ax-v2-dialog[open]) {
 
   .ax-v2-compound h2 {
     font-size: 38px;
+  }
+
+  .ax-v2-compound {
+    min-height: 620px;
+  }
+
+  .ax-v2-compound::after {
+    background:
+      linear-gradient(180deg, rgba(0, 12, 36, 0.08) 12%, rgba(0, 12, 36, 0.42) 48%, rgba(0, 10, 30, 0.9) 100%),
+      linear-gradient(90deg, rgba(0, 13, 40, 0.54), rgba(0, 13, 40, 0.08));
+  }
+
+  .ax-v2-compound-media img {
+    object-position: 67% center;
+  }
+
+  .ax-v2-compound-copy {
+    align-self: flex-end;
+    padding-bottom: 24px;
   }
 
   .ax-v2-testimonial-card {

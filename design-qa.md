@@ -189,6 +189,9 @@
 19. Round 18 found the tablet contact form appearing after the direct email, phone, and brochure links instead of immediately after the section introduction.
    - Fix: separated the direct-contact block into its own grid area and set the 900 px-and-below sequence to `copy → form → direct`, while retaining the desktop `copy/direct + form` two-column composition.
    - Post-fix evidence: the responsive grid contract defines the requested tablet reading order; the desktop browser probe retains the existing two-column areas with zero horizontal overflow, and the Astro/build checks pass.
+20. Round 19 found the fixed OpenAI Select Partner badge colliding with the Hero title around the 880 px tablet breakpoint, especially in low-height viewports.
+   - Fix: added a 900 px-and-below intermediate badge rule that moves it from 131 px to 66 px below the viewport top and reduces its width from 100 px to 90 px; the existing 720 px-and-below in-Hero mobile placement still overrides it.
+   - Post-fix evidence: the focused 880 × 396 browser capture shows the badge ending before the second title line begins, with zero horizontal overflow and no change to the desktop or mobile breakpoint contracts.
 
 ## Interaction and console checks
 

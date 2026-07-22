@@ -1326,6 +1326,11 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 @media (max-width: 900px) {
+  .ax-v2-partner-badge {
+    width: 90px;
+    top: 66px;
+  }
+
   .ax-v2-circle-grid,
   .ax-v2-card-grid,
   .ax-v2-package-grid {

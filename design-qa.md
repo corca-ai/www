@@ -192,6 +192,9 @@
 20. Round 19 found the fixed OpenAI Select Partner badge colliding with the Hero title around the 880 px tablet breakpoint, especially in low-height viewports.
    - Fix: added a 900 px-and-below intermediate badge rule that moves it from 131 px to 66 px below the viewport top and reduces its width from 100 px to 90 px; the existing 720 px-and-below in-Hero mobile placement still overrides it.
    - Post-fix evidence: the focused 880 × 396 browser capture shows the badge ending before the second title line begins, with zero horizontal overflow and no change to the desktop or mobile breakpoint contracts.
+21. Round 20 requested a 20% larger consultation dialog title without changing the surrounding two-column form composition.
+   - Fix: increased only the dialog title's rendered size from 16 px to 19.2 px with a selector that cleanly separates it from the adjacent 16 px explanatory copy, while preserving the authored two-line copy and all form dimensions.
+   - Post-fix evidence: the 923 × 998 focused modal capture reports the requested 19.2 px title, the original two-line break, no overlap with the form column, a fully contained 723 px panel, and zero horizontal overflow.
 
 ## Interaction and console checks
 

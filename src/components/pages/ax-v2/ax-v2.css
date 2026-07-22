@@ -1305,6 +1305,10 @@
   font-size: 16px;
 }
 
+.ax-v2-dialog-heading > .ax-v2-dialog-title {
+  font-size: 19.2px;
+}
+
 @keyframes ax-v2-dialog-in {
   from { opacity: 0; transform: translateY(24px) scale(0.98); }
   to { opacity: 1; transform: none; }

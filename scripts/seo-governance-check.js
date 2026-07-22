@@ -70,6 +70,10 @@ const entries = sitemapFiles.flatMap((filename) =>
 
 assert(entries.length > 0, 'no public URLs found in the sitemap set');
 assert(new Set(entries.map(({ url }) => url)).size === entries.length, 'duplicate public URL');
+assert(
+  !entries.some(({ url }) => new URL(url).pathname === '/ax-backup'),
+  'AX backup must stay out of public sitemaps',
+);
 
 for (const { url, kind } of entries) {
   const path = routeFile(url);
@@ -159,5 +163,23 @@ for (const [language, path] of [
   assert(service?.inLanguage === language, `${path} Service language is wrong`);
   assert(!('offers' in service), `${path} still contains hidden AX pricing`);
 }
+
+const axBackup = readDist('ax-backup/index.html');
+const backupRobots = metaContent(axBackup, 'name', 'robots')
+  .toLowerCase()
+  .split(',')
+  .map((token) => token.trim());
+assert(
+  backupRobots.includes('noindex') && backupRobots.includes('nofollow'),
+  'AX backup must be noindex, nofollow',
+);
+assert(
+  /<html\b[^>]*\blang=["']ko["']/i.test(axBackup),
+  'AX backup must retain the Korean document language',
+);
+assert(
+  /<link\b[^>]*rel=["']canonical["'][^>]*href=["']https:\/\/www\.borca\.ai\/ax["']/i.test(axBackup),
+  'AX backup must canonicalize to the live AX route',
+);
 
 console.log(`SEO governance checks passed for ${entries.length} public URLs.`);

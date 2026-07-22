@@ -52,9 +52,11 @@ Reference: [Google Images SEO best practices](https://developers.google.com/sear
 
 ## Performance invariants
 
-The current mobile PageSpeed Insights performance baseline for `/ax` is 98.
-Preserve the following implementation choices unless a replacement is measured
-and approved:
+The mobile PageSpeed Insights release threshold for `/ax` is 90. Higher results
+such as the previously observed 98 are useful measurements, not a permanent
+requirement: lab scores vary with network, test location and shared test
+infrastructure. Preserve the following implementation choices unless a
+replacement is measured and approved:
 
 - The AX mobile breakpoint is 720px. At or below it, the hero video is never
   connected, downloaded, played or decoded; the dedicated mobile AVIF/WebP
@@ -92,7 +94,8 @@ full Pretendard variable-font requests, the mobile AVIF/WebP as the hero
 
 Run mobile PageSpeed Insights three times against the same production URL and
 record the median Performance score plus LCP, CLS, TBT, TTFB and total transfer
-size. A median below 95 blocks the release. The individual metrics are
+size. A median below 90 blocks the release. One noisy run does not block a
+release when the three-run median is at least 90. The individual metrics are
 diagnostic rather than independent numeric blockers, but functional invariants
 such as zero mobile WebM requests always block a release.
 

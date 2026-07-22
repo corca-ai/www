@@ -21,6 +21,7 @@ const readDist = (path) => {
 };
 
 const axHtml = readDist('ax/index.html');
+const axBackupHtml = readDist('ax-backup/index.html');
 const axClient = read('src/components/pages/ax/ax-client.ts');
 const axCss = read('src/components/pages/ax/ax.css');
 const baseLayout = read('src/layouts/BaseLayout.astro');
@@ -37,6 +38,11 @@ assert(
 assert(
   /<img\b[^>]*fetchpriority="high"[^>]*loading="eager"/.test(axHtml),
   'AX hero LCP image must remain eager and high priority',
+);
+assert(
+  /<meta\b[^>]*name="robots"[^>]*content="noindex, nofollow"/.test(axBackupHtml) &&
+    /<source\b[^>]*media="\(max-width: 720px\)"[^>]*type="image\/avif"/.test(axBackupHtml),
+  'AX backup must remain noindex and preserve the mobile-poster critical path',
 );
 
 const mobileVideoGuard = axClient.indexOf('if (mobileViewport.matches)');

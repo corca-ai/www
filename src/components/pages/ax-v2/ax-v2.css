@@ -1806,6 +1806,26 @@ body:has(.ax-v2-dialog[open]) {
   }
 }
 
+/* Keep the authored statement clear of the first team member on laptop-sized
+   desktop viewports. A modest type reduction preserves the three fixed lines,
+   while the photograph shifts just enough to retain a visible portrait-safe
+   gutter without changing the wide-desktop or tablet compositions. */
+@media (min-width: 1151px) and (max-width: 1800px) {
+  .ax-v2-compound-media {
+    transform: translateX(clamp(18px, 2vw, 32px)) scale(1.04);
+  }
+
+  .ax-v2-compound-copy {
+    padding-right: 60%;
+  }
+
+  .ax-v2-compound h2 {
+    max-width: 420px;
+    font-size: clamp(30px, 2.35vw, 36px);
+    line-height: 1.08;
+  }
+}
+
 /* Preserve separate text and portrait safe areas when the photograph becomes
    too narrow for the wide desktop composition. The full image sits at the
    bottom while the authored three-line statement occupies the open sky above

@@ -37,6 +37,7 @@
 - Round 10 gradient accents: `/private/tmp/ax-v2-qa/round10-gradient-accents.png`
 - Round 10 dark-section gradient accents: `/private/tmp/ax-v2-qa/round10-dark-gradient-accents.png`
 - Round 10 static Ceal rails: `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png`
+- Round 12 dark Hero-gradient accent: `/private/tmp/ax-v2-qa/round12-dark-hero-gradient.png`
 
 ## Capture normalization
 
@@ -111,6 +112,7 @@
 - `/private/tmp/ax-v2-qa/round10-gradient-accents.png` verifies the shared navy-to-Corca-blue-to-violet accent on the approved internal-proof line and all three circle titles, together with the enlarged gray cadence labels.
 - `/private/tmp/ax-v2-qa/round10-dark-gradient-accents.png` verifies the same accent treatment remains legible on the approved two-line slowdown emphasis against the navy section.
 - `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png` verifies that the Ceal-before diagram remains translation-safe HTML while its nine cross-connections are static, dashed, glow-free, and visually aligned with the supplied PDF crop.
+- `/private/tmp/ax-v2-qa/round12-dark-hero-gradient.png` verifies that the slowdown emphasis uses the Hero's white-to-sky-blue-to-blue gradient for clear contrast on the navy background without changing the corresponding light-section accent token.
 - `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
 - `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
 - `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
@@ -159,6 +161,9 @@
 12. Round 11 found desktop section snapping visually intrusive because sections were pulled toward the sticky header during ordinary wheel scrolling.
    - Fix: removed vertical `scroll-snap-type`, per-section snap alignment, snap-stop, scroll padding, and page-level forced smooth scrolling while retaining the restrained reveal animation inside each section.
    - Post-fix evidence: the browser reports `scroll-snap-type: none`, section `scroll-snap-align: none`, `scroll-padding-top: auto`, an exact requested `scrollY` position without automatic correction, and zero horizontal overflow.
+13. Round 12 found the light-section navy accent too dark against the slowdown section's navy surface.
+   - Fix: scoped the existing Hero white-to-sky-blue-to-blue text gradient to the annotated slowdown emphasis while preserving the navy-to-blue-to-violet accent everywhere else.
+   - Post-fix evidence: computed styles report `#f5f5f7 → #b8e2ff → #2997ff`, the rendered two-line emphasis remains fully legible, and horizontal overflow remains zero.
 
 ## Interaction and console checks
 

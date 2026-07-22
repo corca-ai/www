@@ -47,10 +47,9 @@
           <p class="eyebrow">Corca Tech</p>
           <h1><span class="hero-title-main">Corca Blog</span><span class="hero-title-sub">让每个人都能享受技术发展的成果，并为人类文明进步作出贡献。</span></h1>
           <div id="heroTopicFilters" class="hero-topic-filters" aria-label="按主题筛选文章">
-            <button type="button" data-topic-filter="product" aria-pressed="false">Product</button>
-            <button type="button" data-topic-filter="ax" aria-pressed="false">AX</button>
-            <button type="button" data-topic-filter="corca" aria-pressed="false">Corca</button>
-            <button type="button" data-topic-filter="tech" aria-pressed="false">Tech</button>
+            <button type="button" data-topic-filter="product" data-topic-value="Product" aria-pressed="false">Product</button>
+            <button type="button" data-topic-filter="ax" data-topic-value="AX" aria-pressed="false">AX</button>
+            <button type="button" data-topic-filter="corca" data-topic-value="Corca" aria-pressed="false">Corca</button>
           </div>
           <p class="lead">分享 Corca 的技术、AI 产品、工程团队和文化故事。</p>
         </div>
@@ -89,8 +88,9 @@
           </div>
         </div>
         <p id="postViewMessage" class="list-message" role="status" hidden></p>
-        <aside id="tableOfContents" class="toc" aria-label="目录" hidden></aside>
+        <aside id="tableOfContents" class="toc table-of-contents-panel" aria-label="目录" hidden></aside>
         <article id="postArticle" class="article"></article>
+        <aside id="recommendationsPanel" class="toc recommendations-panel" aria-label="推荐文章" hidden></aside>
         <section id="relatedPosts" class="related-posts" aria-label="관련 글" hidden></section>
       </section>
 
@@ -158,7 +158,7 @@
                 <div class="post-card-body">
                   <h3>我们想要创造的AI同事</h3>
                   <p>月光是一起研究的AI同事</p>
-                  <div class="meta"><time datetime="2026-07-07">2026年7月7日</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-07-07">2026年7月7日</time> | 김선영(HR Manager) | <strong>Moonlight</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -167,7 +167,7 @@
                 <div class="post-card-body">
                   <h3>Corca的新适应期</h3>
                   <p>记录Corca新员工适应公司的第一份工作，以及在这个过程中学到的东西。</p>
-                  <div class="meta"><time datetime="2026-07-06">2026年7月6日</time> | 문정민(AX Consultant)</div>
+                  <div class="meta"><time datetime="2026-07-06">2026年7月6日</time> | 문정민(AX Consultant) | <strong>AX</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -176,7 +176,7 @@
                 <div class="post-card-body">
                   <h3>不要说一些你尚未证实的事实的话</h3>
                   <p>基于AX分享会和Ceal的使用经验，我们总结了防止AI将未经证实的信息说成事实的工作原理和CLI操作规则。</p>
-                  <div class="meta"><time datetime="2026-06-25">2026年6月25日</time> | 김예린</div>
+                  <div class="meta"><time datetime="2026-06-25">2026年6月25日</time> | 김예린 | <strong>AX</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -185,7 +185,7 @@
                 <div class="post-card-body">
                   <h3>运营团队的新同事 Ceal</h3>
                   <p>我们介绍了一个示例，说明运营团队如何使用 Ceal 自动执行重复性运营任务，例如公司名片、调查和生日/工作周年通知。</p>
-                  <div class="meta"><time datetime="2026-05-13">2026年5月13日</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-05-13">2026年5月13日</time> | 김선영(HR Manager) | <strong>Ceal</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -194,7 +194,7 @@
                 <div class="post-card-body">
                   <h3>VOC 响应代理构建器</h3>
                   <p>我们介绍了 Moonlight 团队如何将 VoC 响应流程构建为代理，从而降低寻找证据和起草响应的成本。</p>
-                  <div class="meta"><time datetime="2026-04-22">2026年4月22日</time> | 하동훈(Software Engineer)</div>
+                  <div class="meta"><time datetime="2026-04-22">2026年4月22日</time> | 하동훈(Software Engineer) | <strong>Moonlight</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -203,7 +203,7 @@
                 <div class="post-card-body">
                   <h3>科卡斧日</h3>
                   <p>我们介绍 AX Day，认真对待 AX（AI 转型）的 Corca 团队每天沉浸在 AX 中 6 个小时，进行实验和协作。</p>
-                  <div class="meta"><time datetime="2026-03-18">2026年3月18日</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-03-18">2026年3月18日</time> | 김선영(HR Manager) | <strong>AX</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -212,7 +212,7 @@
                 <div class="post-card-body">
                   <h3>我们新的开始，科卡感人故事</h3>
                   <p>我们介绍 Corca 如何通过搬到独立办公室来重新设计我们的工作和相处方式。</p>
-                  <div class="meta"><time datetime="2026-02-02">2026年2月2日</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-02-02">2026年2月2日</time> | 김선영(HR Manager) | <strong>Corca</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -221,7 +221,7 @@
                 <div class="post-card-body">
                   <h3>Live Activity，深入了解：实时调度功能开发者</h3>
                   <p>我们概述了 Trace 团队如何使用 iOS Live Activity 和 ActivityKit Push 和 Push to Start 实现实时调度体验。</p>
-                  <div class="meta"><time datetime="2025-12-10">2025年12月10日</time> | 김성훈(iOS Product Engineer)</div>
+                  <div class="meta"><time datetime="2025-12-10">2025年12月10日</time> | 김성훈(iOS Product Engineer) | <strong>Trace</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -230,7 +230,7 @@
                 <div class="post-card-body">
                   <h3>应用商店优化：营销的新增长公式。通过应用商店优化确保您的应用稳定流入</h3>
                   <p>我们介绍如何通过应用商店优化（ASO）减少对付费广告的依赖，并通过改进关键字和商店页面来创造稳定的流量。</p>
-                  <div class="meta"><time datetime="2025-09-26">2025年9月26日</time> | 유현명(Product Engineer)</div>
+                  <div class="meta"><time datetime="2025-09-26">2025年9月26日</time> | 유현명(Product Engineer) | <strong>Trace</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -239,7 +239,7 @@
                 <div class="post-card-body">
                   <h3>2024 釜山 Corca Walk</h3>
                   <p>Corca出发前往釜山！ Corca团队于8月26日至8月30日前往釜山出差！工作是工作和假期的复合词，是一种一边工作一边休息的工作。这是我第一次出差，一半兴奋一半担心，但结果是我成为了团队成员。</p>
-                  <div class="meta"><time datetime="2024-09-13">2024年9月13日</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2024-09-13">2024年9月13日</time> | 김선영(HR Manager) | <strong>Corca</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -248,7 +248,7 @@
                 <div class="post-card-body">
                   <h3>想加入 Corca 吗？ Corca 团队页面简介</h3>
                   <p>Corca 的团队页面 我们想向您介绍新的 (corca.team)，您可以在其中了解有关 Corca 的更多信息！ Corca 招聘页面 Corca 的团队页面可以通过链接 corca.team 访问！ Corca，一个用人工智能技术改变我们生活的世界的团队，corca.team Corca 的团队</p>
-                  <div class="meta"><time datetime="2023-04-28">2023年4月28日</time> | 류가형 (Product Manager)</div>
+                  <div class="meta"><time datetime="2023-04-28">2023年4月28日</time> | 류가형 (Product Manager) | <strong>Corca</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -257,7 +257,7 @@
                 <div class="post-card-body">
                   <h3>“伙伴计划”可帮助您适应新的软木塞。介绍 Corca 的入职文化，即“好友计划”。</h3>
                   <p>在这篇文章中，我想介绍一下“好友计划”，这是 Corca 入职文化的一部分！ Corca 有一个 Orcabot，可以从入职第一天起就帮助入职。 （如果您对 Orcabot 感到好奇，请参阅下面的链接！） Hello Corca，Hello Orcabot 介绍 Orcabot，Corca 入门机器人。</p>
-                  <div class="meta"><time datetime="2023-02-17">2023年2月17日</time> | 류가형 (Product Manager)</div>
+                  <div class="meta"><time datetime="2023-02-17">2023年2月17日</time> | 류가형 (Product Manager) | <strong>Corca</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -266,7 +266,7 @@
                 <div class="post-card-body">
                   <h3>大家都在吃饭吗？ “Is everyone eating?”</h3>
                   <p>“Is everyone eating?” How often do you hear this?这些都是非常友善和美好的话语，但奇怪的是，我认为现在很难经常听到这些话。 In Corca, Orcabot asks twice a day. “Are you all eating?”今天上午 10 点 30 分，Orcabot 又对我友善地说话了。</p>
-                  <div class="meta"><time datetime="2022-05-20">2022年5月20日</time> | 한충환 (MLOps Engineer)</div>
+                  <div class="meta"><time datetime="2022-05-20">2022年5月20日</time> | 한충환 (MLOps Engineer) | <strong>Corca</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -275,7 +275,7 @@
                 <div class="post-card-body">
                   <h3>你好 Corca，介绍“Orca-bot”</h3>
                   <p>第一天。新学校的第一天。到新公司的第一天。或者你第一次见到某人的那一刻。我们一生中会面临许多“第一次”，但第一次并不总是那么容易。在 Corca 的第一天，我带着兴奋和紧张的心情去上班。事实上，这是我很久以来第一次上班，所以我更多的是紧张而不是兴奋。</p>
-                  <div class="meta"><time datetime="2022-05-20">2022年5月20日</time> | J</div>
+                  <div class="meta"><time datetime="2022-05-20">2022年5月20日</time> | J | <strong>Corca</strong></div>
                 </div>
               </a>
             </article>

@@ -4018,22 +4018,22 @@ body {
 }
 
 .post-view {
-  width: min(1520px, 100%);
+  width: min(1408px, 100%);
   margin: 0 auto 120px;
   padding: 64px 0 0;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 768px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 280px) minmax(0, 768px) minmax(0, 280px);
   grid-template-areas:
     "tools tools tools"
     "message message message"
-    ". article toc"
+    "toc article recommendations"
     ". related .";
   justify-content: center;
-  column-gap: 0;
+  column-gap: 40px;
 }
 
 .static-post-view {
   grid-template-areas:
-    ". article toc"
+    "toc article recommendations"
     ". related .";
   padding-top: 0;
 }
@@ -4250,14 +4250,19 @@ body {
 .toc {
   position: sticky;
   top: 112px;
-  justify-self: start;
-  width: min(280px, calc(100% - 40px));
-  margin-left: 40px;
+  justify-self: end;
+  width: min(280px, 100%);
+  margin: 0;
   max-height: calc(100vh - 140px);
   padding: 0 0 0 4px;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+}
+
+.recommendations-panel {
+  grid-area: recommendations;
+  justify-self: start;
 }
 
 .toc strong {
@@ -4388,14 +4393,16 @@ body {
     grid-template-areas:
       "tools"
       "message"
-      "toc"
       "article"
+      "toc"
+      "recommendations"
       "related";
     padding-top: 48px;
   }
 
   .toc {
     position: static;
+    justify-self: center;
     width: min(100%, 768px);
     max-height: none;
     margin: 0 auto 36px;

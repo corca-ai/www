@@ -353,28 +353,20 @@ const REACTION_OPTIONS = [
 const POSTS_PER_PAGE = 9;
 const PUBLIC_POST_TOPICS = [
   "AX",
-  "Tech",
-  "Product",
   "Moonlight",
   "Trace",
-  "Kraken",
   "Ceal",
   "Margin",
+  "Kraken",
   "Corca",
   "문라이트",
   "트레이스",
-  "크라켄",
   "씰",
   "마진",
+  "크라켄",
   "코르카"
 ];
 const DEFAULT_POST_TOPIC = "Corca";
-const HERO_TOPIC_FILTERS = [
-  { key: "product", label: "Product", aliases: ["product", "products", "제품", "문라이트", "moonlight", "트레이스", "trace", "크라켄", "kraken", "마진", "margin", "씰", "ceal"] },
-  { key: "ax", label: "AX", aliases: ["ax", "ai transformation"] },
-  { key: "corca", label: "Corca", aliases: ["corca", "코르카"] },
-  { key: "tech", label: "Tech", aliases: ["tech", "기술"] }
-];
 const listShareIcon = `<svg class="action-icon share-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.7 10.7 15.3 7.3"></path><path d="M8.7 13.3 15.3 16.7"></path></svg>`;
 const listDownloadIcon = `<svg class="action-icon download-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 3v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>`;
 const buttonFeedbackTimers = new WeakMap();
@@ -391,6 +383,7 @@ const savedReads = document.querySelector("#savedReads");
 const postView = document.querySelector("#postView");
 const postArticle = document.querySelector("#postArticle");
 const tableOfContents = document.querySelector("#tableOfContents");
+const recommendationsPanel = document.querySelector("#recommendationsPanel");
 const relatedPosts = document.querySelector("#relatedPosts");
 const postsSection = document.querySelector("#posts");
 const resultCount = document.querySelector("#resultCount");
@@ -433,8 +426,31 @@ const defaultDocumentMeta = {
 };
 
 initAnalytics();
+bindHashlessTocNavigation();
 if (postList) {
   init();
+}
+
+function bindHashlessTocNavigation() {
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    const link = event.target.closest(".toc-section a[href^='#']");
+    if (!link) {
+      return;
+    }
+    const hash = new URL(link.href, window.location.href).hash;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!target) {
+      return;
+    }
+    event.preventDefault();
+    if (window.location.hash) {
+      history.replaceState(history.state, "", `${window.location.pathname}${window.location.search}`);
+    }
+    target.scrollIntoView({ block: "start" });
+  });
 }
 
 async function init() {
@@ -1144,25 +1160,23 @@ function getListPosts(posts) {
 }
 
 function matchesHeroTopic(post, topic) {
-  const filter = HERO_TOPIC_FILTERS.find((item) => item.key === topic);
-  if (!filter) {
-    return false;
-  }
-  const values = [
-    ...(post.tags || []),
-    post.section,
-    getPrimaryPostTopic(post)
-  ].filter(Boolean).map((value) => normalizeSearchText(value));
-  return filter.aliases.some((alias) => values.includes(normalizeSearchText(alias)));
+  const value = getHeroTopicButton(topic)?.dataset.topicValue;
+  return Boolean(value) && normalizeSearchText(getPostSection(post)) === normalizeSearchText(value);
 }
 
 function normalizeHeroTopic(value) {
   const topic = String(value || "").trim().toLowerCase();
-  return HERO_TOPIC_FILTERS.some((item) => item.key === topic) ? topic : "";
+  return getHeroTopicButton(topic) ? topic : "";
 }
 
 function heroTopicLabel(topic) {
-  return HERO_TOPIC_FILTERS.find((item) => item.key === topic)?.label || "";
+  return getHeroTopicButton(topic)?.textContent?.trim() || "";
+}
+
+function getHeroTopicButton(topic) {
+  return [...(heroTopicFilters?.querySelectorAll("[data-topic-filter]") || [])].find(
+    (button) => button.dataset.topicFilter === topic
+  );
 }
 
 function renderSearchContext(post) {
@@ -1265,6 +1279,8 @@ function renderArticleLoading(post) {
   updateCurrentPostSaveButton();
   tableOfContents.hidden = true;
   tableOfContents.innerHTML = "";
+  recommendationsPanel.hidden = true;
+  recommendationsPanel.innerHTML = "";
   relatedPosts.hidden = true;
   relatedPosts.innerHTML = "";
   postArticle.innerHTML = `
@@ -1542,16 +1558,16 @@ function getRecommendedPosts(post, posts = state.posts) {
 }
 
 function renderSidebarRecommendations(posts) {
-  tableOfContents.querySelector(".toc-recommendations")?.remove();
+  recommendationsPanel.innerHTML = "";
   renderMobileRecommendations(posts);
 
   if (!posts.length) {
-    tableOfContents.hidden = !tableOfContents.textContent.trim();
+    recommendationsPanel.hidden = true;
     return;
   }
 
-  tableOfContents.hidden = false;
-  tableOfContents.insertAdjacentHTML("beforeend", `
+  recommendationsPanel.hidden = false;
+  recommendationsPanel.insertAdjacentHTML("beforeend", `
     <section class="toc-recommendations" aria-label="${escapeAttribute(localeText().recommendations)}">
       <strong>${escapeHtml(localeText().recommendations)}</strong>
       <div class="toc-recommendation-list">

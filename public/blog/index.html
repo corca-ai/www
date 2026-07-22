@@ -47,10 +47,9 @@
           <p class="eyebrow">Corca Tech</p>
           <h1><span class="hero-title-main">블로그</span><span class="hero-title-sub">기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.</span></h1>
           <div id="heroTopicFilters" class="hero-topic-filters" aria-label="주제별 글 필터">
-            <button type="button" data-topic-filter="product" aria-pressed="false">Product</button>
-            <button type="button" data-topic-filter="ax" aria-pressed="false">AX</button>
-            <button type="button" data-topic-filter="corca" aria-pressed="false">Corca</button>
-            <button type="button" data-topic-filter="tech" aria-pressed="false">Tech</button>
+            <button type="button" data-topic-filter="product" data-topic-value="제품" aria-pressed="false">제품</button>
+            <button type="button" data-topic-filter="ax" data-topic-value="AX" aria-pressed="false">AX</button>
+            <button type="button" data-topic-filter="corca" data-topic-value="코르카" aria-pressed="false">코르카</button>
           </div>
           <p class="lead">Corca의 기술, AI 제품, 개발 조직, 문화에 대한 이야기를 들려드려요.</p>
         </div>
@@ -89,8 +88,9 @@
           </div>
         </div>
         <p id="postViewMessage" class="list-message" role="status" hidden></p>
-        <aside id="tableOfContents" class="toc" aria-label="목차" hidden></aside>
+        <aside id="tableOfContents" class="toc table-of-contents-panel" aria-label="목차" hidden></aside>
         <article id="postArticle" class="article"></article>
+        <aside id="recommendationsPanel" class="toc recommendations-panel" aria-label="추천 글" hidden></aside>
         <section id="relatedPosts" class="related-posts" aria-label="관련 글" hidden></section>
       </section>
 
@@ -158,7 +158,7 @@
                 <div class="post-card-body">
                   <h3>우리가 만들고 싶은 AI Colleague</h3>
                   <p>Moonlight는 함께 연구하는 AI Colleague입니다</p>
-                  <div class="meta"><time datetime="2026-07-07">2026년 7월 7일</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-07-07">2026년 7월 7일</time> | 김선영(HR Manager) | <strong>문라이트</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -167,7 +167,7 @@
                 <div class="post-card-body">
                   <h3>코르카 신입 적응기</h3>
                   <p>코르카의 신입이 회사에 적응하면서 첫 업무를 진행한 기록, 그 과정에서 배운것</p>
-                  <div class="meta"><time datetime="2026-07-06">2026년 7월 6일</time> | 문정민(AX Consultant)</div>
+                  <div class="meta"><time datetime="2026-07-06">2026년 7월 6일</time> | 문정민(AX Consultant) | <strong>AX</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -176,7 +176,7 @@
                 <div class="post-card-body">
                   <h3>확인하지 않은 것을 사실처럼 말하지 않기</h3>
                   <p>AX 공유회와 Ceal 사용 경험을 바탕으로, AI가 확인하지 않은 내용을 사실처럼 말하지 않게 만드는 작업 원칙과 CLI 운영 규칙을 정리합니다.</p>
-                  <div class="meta"><time datetime="2026-06-25">2026년 6월 25일</time> | 김예린</div>
+                  <div class="meta"><time datetime="2026-06-25">2026년 6월 25일</time> | 김예린 | <strong>AX</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -185,7 +185,7 @@
                 <div class="post-card-body">
                   <h3>오퍼레이션팀의 새로운 동료, Ceal</h3>
                   <p>오퍼레이션팀이 Ceal을 활용해 법인카드, 설문, 생일·입사기념일 공지 같은 반복 운영 업무를 자동화한 사례를 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-05-13">2026년 5월 13일</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-05-13">2026년 5월 13일</time> | 김선영(HR Manager) | <strong>씰</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -194,7 +194,7 @@
                 <div class="post-card-body">
                   <h3>VoC 대응 에이전트 구축기</h3>
                   <p>문라이트 팀이 VoC 응대 과정을 에이전트로 구조화하고, 근거 탐색과 답변 초안 작성 비용을 줄인 과정을 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-04-22">2026년 4월 22일</time> | 하동훈(Software Engineer)</div>
+                  <div class="meta"><time datetime="2026-04-22">2026년 4월 22일</time> | 하동훈(Software Engineer) | <strong>문라이트</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -203,7 +203,7 @@
                 <div class="post-card-body">
                   <h3>코르카 AX Day</h3>
                   <p>AX(AI Transformation)에 진심인 코르카 팀이 하루 6시간을 AX에 몰입하며 실험하고 협업한 AX Day를 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-03-18">2026년 3월 18일</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-03-18">2026년 3월 18일</time> | 김선영(HR Manager) | <strong>AX</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -212,7 +212,7 @@
                 <div class="post-card-body">
                   <h3>우리의 새로운 시작, 코르카 이사 이야기</h3>
                   <p>코르카가 독립 사무실로 이전하며 일하는 방식과 함께 머무는 공간을 어떻게 새롭게 설계했는지 소개합니다.</p>
-                  <div class="meta"><time datetime="2026-02-02">2026년 2월 2일</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2026-02-02">2026년 2월 2일</time> | 김선영(HR Manager) | <strong>코르카</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -221,7 +221,7 @@
                 <div class="post-card-body">
                   <h3>Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기</h3>
                   <p>Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.</p>
-                  <div class="meta"><time datetime="2025-12-10">2025년 12월 10일</time> | 김성훈(iOS Product Engineer)</div>
+                  <div class="meta"><time datetime="2025-12-10">2025년 12월 10일</time> | 김성훈(iOS Product Engineer) | <strong>트레이스</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -230,7 +230,7 @@
                 <div class="post-card-body">
                   <h3>앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기</h3>
                   <p>앱 스토어 최적화(ASO)를 통해 유료 광고 의존도를 낮추고, 키워드와 스토어 페이지 개선으로 안정적인 유입을 만드는 방법을 소개합니다.</p>
-                  <div class="meta"><time datetime="2025-09-26">2025년 9월 26일</time> | 유현명(Product Engineer)</div>
+                  <div class="meta"><time datetime="2025-09-26">2025년 9월 26일</time> | 유현명(Product Engineer) | <strong>트레이스</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -239,7 +239,7 @@
                 <div class="post-card-body">
                   <h3>2024 코르카 워케이션 in 부산</h3>
                   <p>코르카, 부산으로 떠나다! 코르카 팀이 8월 26일~8월 30일 워케이션으로 부산을 다녀왔습니다! 워케이션은 일(Work)과 휴가(Vacation)의 합성어로, 원하는 곳에서 휴식을 취하며 근무도 하는 근무형태입 니다. 이번에 처음 워케이션을 가게 되어 기대 반 걱정 반으로 떠났는데요, 결과는 팀원</p>
-                  <div class="meta"><time datetime="2024-09-13">2024년 9월 13일</time> | 김선영(HR Manager)</div>
+                  <div class="meta"><time datetime="2024-09-13">2024년 9월 13일</time> | 김선영(HR Manager) | <strong>코르카</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -248,7 +248,7 @@
                 <div class="post-card-body">
                   <h3>Want to Join Corca?. 코르카 팀 페이지 소개</h3>
                   <p>코르카의 팀 페이지 코르카를 보다 자세히 알 수 있는, 새로워진 (corca.team)에 대해 소개해드리겠습니다! 코르카 채용 페이지 코르카의 팀 페이지는 corca.team 링크로 방문하실 수 있습니다! 우리가 살아가는 세상을 AI 기술로 변화시키는 팀, Corca corca.team 코르카의 팀</p>
-                  <div class="meta"><time datetime="2023-04-28">2023년 4월 28일</time> | 류가형 (Product Manager)</div>
+                  <div class="meta"><time datetime="2023-04-28">2023년 4월 28일</time> | 류가형 (Product Manager) | <strong>코르카</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -257,7 +257,7 @@
                 <div class="post-card-body">
                   <h3>새로운 코르카인의 적응을 돕는 ‘버디 프로그램’. 코르카의 온보딩 문화, ‘버디 프로그램&#039;을 소개합니다.</h3>
                   <p>이번 글에서는 코르카 온보딩 문화의 하나인 ‘버디 프로그램’에 대해 소개하려고 합니다! 코르카에는 입사 첫날부터 온보딩을 도와주는 오르카봇이 있습니다. (오르카봇에 대해 궁금하시다면 아래 링크를 참고하세요!) Hello 코르카, Hello 오르카봇 코르카 온보딩봇, 오르카봇을 소개합니다</p>
-                  <div class="meta"><time datetime="2023-02-17">2023년 2월 17일</time> | 류가형 (Product Manager)</div>
+                  <div class="meta"><time datetime="2023-02-17">2023년 2월 17일</time> | 류가형 (Product Manager) | <strong>코르카</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -266,7 +266,7 @@
                 <div class="post-card-body">
                   <h3>다들 식사하시나요?. “다들 식사 하시나요?”</h3>
                   <p>다들 식사 하시나요?” 이 말을 얼마나 자주 들으시나요? 참 정감 있고 좋은 말이지만 희한하게도 이런 말은 요즘 살면서 자주 듣기가 쉽지 않아진 것 같아요. 코르카에서는 하루에 두 번, 오르카봇이 물어봅니다. 다들 식사하시나요 “ ?” 오전 10시 30분, 오늘도 오르카봇이 다정히 말을 걸어오네요.</p>
-                  <div class="meta"><time datetime="2022-05-20">2022년 5월 20일</time> | 한충환 (MLOps Engineer)</div>
+                  <div class="meta"><time datetime="2022-05-20">2022년 5월 20일</time> | 한충환 (MLOps Engineer) | <strong>코르카</strong></div>
                 </div>
               </a>
             </article>            <article class="post-card">
@@ -275,7 +275,7 @@
                 <div class="post-card-body">
                   <h3>Hello Corca, ‘오르카봇(Orca-bot)’을 소개합니다</h3>
                   <p>첫날 . 새로운 학교에 가는 첫날. 새로운 회사에 출근하는 첫날. 혹은 누군가를 처음 만나러 가는 순간. 살면서 참 많은 ‘처음’을 마주하지만 처음은 늘 쉽지 않습니다. 코르카에 입사한 첫날, 저 역시 설렘과 긴장감을 반반 섞은 마음으로 출근을 했습니다. 사실 오랜만에 하는 출근이라 설렘보단 긴장감이</p>
-                  <div class="meta"><time datetime="2022-05-20">2022년 5월 20일</time> | J</div>
+                  <div class="meta"><time datetime="2022-05-20">2022년 5월 20일</time> | J | <strong>코르카</strong></div>
                 </div>
               </a>
             </article>

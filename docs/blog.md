@@ -177,6 +177,11 @@ When changing blog files, keep these invariants:
   `:where(#main)` scoping so they neither leak into the shared header/footer nor
   override more specific blog component styles. Document-level primitives such
   as page background and overflow may remain global.
+- Desktop article pages keep the table of contents to the left of the article
+  and recommended posts to the right. Mobile article pages combine both into
+  the existing collapsible navigation inside the article header. Table of
+  contents clicks scroll to the selected heading without leaving a section
+  hash in the browser URL.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.
@@ -186,6 +191,12 @@ When changing blog files, keep these invariants:
   pages load `public/blog/app.js` without the blog-index DOM.
 - `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
   sitemap should be updated together.
+- Every post has exactly one public category in `section`: Product, AX or
+  Corca. Topic filters use that category only. The single value in `tags`
+  controls the label shown on list cards; Product posts keep their product
+  family label, such as Moonlight, Trace, Ceal, Margin or Kraken, while their
+  `section` remains Product. Product posts must provide one of those family
+  labels rather than using Product itself as the card label.
 - Localized post records inherit the resolved Korean cover when translation
   metadata contains the default cover; only a non-default localized cover may
   override it.

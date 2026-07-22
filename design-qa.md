@@ -33,6 +33,7 @@
 - Round 6 Section 4 final tab state: `/private/tmp/ax-v2-qa/round6-tabs-final-01.png`
 - Round 6 environment closing: `/private/tmp/ax-v2-qa/round6-environment-closing.png`
 - Round 6 mobile static fallback: `/private/tmp/ax-v2-qa/round6-compound-mobile-static.png`
+- Round 7 active tab-panel outline: `/private/tmp/ax-v2-qa/round7-tab-panel-outline-champion.png`
 
 ## Capture normalization
 
@@ -134,6 +135,9 @@
 7. Round 6 annotations requested layered scroll depth, tighter proof copy, diffuse testimonial elevation, a bounded tab demonstration, subtle coaching-card outlines, and an exact environment closing break.
    - Fix: added a desktop-only eased parallax with mobile/reduced-motion reset; set the Section 2 line height to 108%; expanded the testimonial shadow runway; changed tabs to a single 2.6-second `01 → 02 → 03 → 01` cycle with user-interaction cancellation; reduced coaching-card borders to 20% opacity; and locked the requested two-line closing.
    - Post-fix evidence: browser probes report distinct media/copy transforms on desktop, no transform or video source on mobile, zero horizontal overflow, the expected timed tab sequence and stopped final state, and no console warning or error.
+8. Round 7 annotation requested a 2 px outline on the active desktop tab panel using the same blue as the selected tab button.
+   - Fix: applied the shared `#70b8ff` active color as a stable 2 px panel border across tab states.
+   - Post-fix evidence: the selected `02 AX 챔피언 양성 코칭` panel reports a 2 px solid `rgb(112, 184, 255)` border, zero horizontal overflow, and no console warning or error.
 
 ## Interaction and console checks
 

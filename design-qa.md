@@ -38,6 +38,7 @@
 - Round 10 dark-section gradient accents: `/private/tmp/ax-v2-qa/round10-dark-gradient-accents.png`
 - Round 10 static Ceal rails: `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png`
 - Round 12 dark Hero-gradient accent: `/private/tmp/ax-v2-qa/round12-dark-hero-gradient.png`
+- Round 16 Section 1-2 native-scroll state: `/private/tmp/ax-v2-qa/round16-compound-static-scroll.png`
 
 ## Capture normalization
 
@@ -85,7 +86,7 @@
 - Testimonial carousel controls sit above the masked track hit area, move reliably in both directions, and share the same smooth snap positions as native touch swiping. Mobile and tablet tracks retain momentum scrolling, horizontal pan gestures, and per-card snap stops.
 - Environment-table arrows use a larger `22 × 34px` triangle whose base is aligned exactly to the center divider; the fading rectangular rail is enlarged to `35 × 16px` across all four rows.
 - The Ceal before/after transition reuses the AX diagnosis comparison arrow component, including its light-to-blue gradient and the responsive 90° rotation on stacked layouts.
-- Section 1-2 uses the approved photorealistic team image with bright sunlight and East Asian and non-Asian colleagues in casual business clothing. Its bright left-side negative space carries the navy heading without a gradient overlay. The 1796 × 876 source is served as a 38 KB AVIF, 55 KB WebP, and 90 KB JPEG fallback with intrinsic dimensions and lazy loading.
+- Section 1-2 uses the approved photorealistic team image with bright sunlight and East Asian and non-Asian colleagues in casual business clothing. Its bright left-side negative space carries the navy heading without a gradient overlay. The 1796 × 876 source is served as a 38 KB AVIF, 55 KB WebP, and 90 KB JPEG fallback with intrinsic dimensions and lazy loading. The section now follows only the native document scroll; no scroll-linked image or copy transform remains.
 - The OpenAI–Corca lockup uses the supplied source asset, converted to a 600 px lossless WebP with PNG fallback and intrinsic dimensions.
 - No source logo or photographic asset was replaced by an inline SVG, emoji, placeholder, or CSS drawing. The Ceal flow rails are an explicitly requested live information diagram rather than a replacement for a supplied raster asset.
 
@@ -106,7 +107,7 @@
 - `/private/tmp/ax-v2-qa/desktop-1440x600.png` verifies the low-height hero rule and prevents the heading from moving behind the header.
 - `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance.
 - `/private/tmp/ax-v2-qa/round5-compound-desktop.png` verifies the approved three-line `첫 성과가 / 복리로 이어지는 조직, / Corca AX가 함께 만듭니다.` copy at a reduced 38.4 px desktop size. The rendered heading ends before the first person begins, with no overlay or horizontal overflow.
-- `/private/tmp/ax-v2-qa/round6-compound-parallax.png` verifies that the team image remains sharp and text-safe while the desktop-only image and copy transforms use distinct eased offsets. The 390 px probe reports no parallax transform, no WebM current source, and no horizontal overflow.
+- `/private/tmp/ax-v2-qa/round6-compound-parallax.png` records the superseded parallax iteration. The final `/private/tmp/ax-v2-qa/round16-compound-static-scroll.png` capture verifies the requested native-scroll replacement: the image remains sharp and text-safe without being pulled toward the sticky header.
 - `/private/tmp/ax-v2-qa/round6-proof-shadow-bottom.png` verifies that the testimonial elevation diffuses into the section background without a clipped lower edge.
 - `/private/tmp/ax-v2-qa/round6-tabs-final-01.png` records the final stopped state after the measured `01 → 02 → 03 → 01` sequence. Browser timestamps measured approximately 2.67 seconds between states, and a further 2.76-second observation remained on 01.
 - `/private/tmp/ax-v2-qa/round6-environment-closing.png` verifies the exact approved two-line closing copy.
@@ -178,6 +179,9 @@
 16. Round 15 requested clearer hierarchy for the diagnosis result card and the environment-table header.
    - Fix: replaced the result card's compact dark-blue shadow with a wider, layered light-blue diffusion and changed the table header from white to a restrained cool gray with readable gray text, without changing either component's layout or copy.
    - Post-fix evidence: the browser reports the two-layer blue shadow, `rgb(232, 235, 239)` header surface, `rgb(77, 88, 104)` header text, zero horizontal overflow, and no console warning or error; the focused round-15 captures record both final rendered states.
+17. Round 16 found the Section 1-2 parallax visually abrupt because its image appeared to jump upward toward the sticky header during ordinary scrolling.
+   - Fix: removed the section's scroll listener, animation frame loop, parallax data hooks, runtime CSS variables, and scroll-linked `translateY` transforms while preserving its responsive photograph crop and copy placement.
+   - Post-fix evidence: four browser scroll samples move the section top linearly with `scrollY`; the section has no parallax data attributes or inline motion variables, the image transform remains static, horizontal overflow is zero, and the browser console contains no warning or error.
 
 ## Interaction and console checks
 

@@ -1762,18 +1762,12 @@ body:has(.ax-v2-dialog[open]) {
 @media (min-width: 721px) {
   .ax-v2-compound-media {
     background: #f7fbff;
-    transform: translate3d(0, var(--ax-v2-compound-media-y, 0), 0) scale(1.04);
+    transform: scale(1.04);
     transform-origin: center;
   }
 
   .ax-v2-compound-copy {
     padding-right: 56%;
-    transform: translate3d(0, var(--ax-v2-compound-copy-y, 0), 0);
-  }
-
-  .ax-v2-compound[data-parallax-active='true'] .ax-v2-compound-media,
-  .ax-v2-compound[data-parallax-active='true'] .ax-v2-compound-copy {
-    will-change: transform;
   }
 
   .ax-v2-compound h2 {
@@ -1793,7 +1787,7 @@ body:has(.ax-v2-dialog[open]) {
   }
 
   .ax-v2-compound-media {
-    transform: translate3d(0, var(--ax-v2-compound-media-y, 0), 0);
+    transform: none;
     transform-origin: center bottom;
   }
 
@@ -2632,12 +2626,6 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ax-v2-compound-media,
-  .ax-v2-compound-copy {
-    transform: none !important;
-    will-change: auto !important;
-  }
-
   .ax-v2-tab-list button,
   .ax-v2-tab-panels article {
     transition: none;

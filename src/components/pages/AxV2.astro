@@ -59,9 +59,8 @@ const brochureHref = import.meta.env.DEV
   <section
     class="ax-v2-compound ax-v2-dark-section"
     aria-labelledby="ax-v2-compound-title"
-    data-compound-parallax
   >
-    <picture class="ax-v2-compound-media" data-compound-media>
+    <picture class="ax-v2-compound-media">
       <source type="image/avif" srcset={axV2Assets.compoundTeam.avif} />
       <source type="image/webp" srcset={axV2Assets.compoundTeam.webp} />
       <img
@@ -73,7 +72,7 @@ const brochureHref = import.meta.env.DEV
         decoding="async"
       />
     </picture>
-    <div class="ax-v2-shell ax-v2-compound-copy" data-compound-copy data-reveal>
+    <div class="ax-v2-shell ax-v2-compound-copy" data-reveal>
       <h2 id="ax-v2-compound-title"><AxLines values={c.compound.lines} /></h2>
     </div>
   </section>

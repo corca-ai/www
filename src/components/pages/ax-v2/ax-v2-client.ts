@@ -279,70 +279,6 @@ function initializeCarousel(root: HTMLElement) {
   );
 }
 
-function initializeCompoundParallax(root: HTMLElement) {
-  const media = root.querySelector<HTMLElement>('[data-compound-media]');
-  const copy = root.querySelector<HTMLElement>('[data-compound-copy]');
-  if (!media || !copy) return;
-
-  const desktop = window.matchMedia('(min-width: 721px)');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let visible = false;
-  let frame = 0;
-  let current = 0;
-  let target = 0;
-
-  const reset = () => {
-    window.cancelAnimationFrame(frame);
-    frame = 0;
-    current = 0;
-    target = 0;
-    root.dataset.parallaxActive = 'false';
-    root.style.removeProperty('--ax-v2-compound-media-y');
-    root.style.removeProperty('--ax-v2-compound-copy-y');
-  };
-
-  const canAnimate = () => visible && desktop.matches && !reducedMotion.matches && !document.hidden;
-
-  const render = () => {
-    frame = 0;
-    if (!canAnimate()) return;
-    current += (target - current) * 0.14;
-    root.style.setProperty('--ax-v2-compound-media-y', `${(current * 18).toFixed(2)}px`);
-    root.style.setProperty('--ax-v2-compound-copy-y', `${(current * -10).toFixed(2)}px`);
-    if (Math.abs(target - current) > 0.002) frame = window.requestAnimationFrame(render);
-  };
-
-  const update = () => {
-    if (!canAnimate()) {
-      reset();
-      return;
-    }
-    const rect = root.getBoundingClientRect();
-    const progress = Math.min(
-      1,
-      Math.max(0, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)),
-    );
-    const eased = progress < 0.5 ? 2 * progress * progress : 1 - (-2 * progress + 2) ** 2 / 2;
-    target = eased * 2 - 1;
-    root.dataset.parallaxActive = 'true';
-    if (!frame) frame = window.requestAnimationFrame(render);
-  };
-
-  new IntersectionObserver(
-    ([entry]) => {
-      visible = Boolean(entry?.isIntersecting);
-      update();
-    },
-    { rootMargin: '12% 0px 12% 0px', threshold: 0 },
-  ).observe(root);
-
-  window.addEventListener('scroll', update, { passive: true });
-  window.addEventListener('resize', update, { passive: true });
-  desktop.addEventListener('change', update);
-  reducedMotion.addEventListener('change', update);
-  document.addEventListener('visibilitychange', update);
-}
-
 function initializeTabs(root: HTMLElement) {
   const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab-button]'));
   const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-tab-panel]'));
@@ -681,9 +617,6 @@ function initialize() {
   page.dataset.initialized = 'true';
   initializeHeroVideo(page);
   initializePartnerBadge(page);
-  page
-    .querySelectorAll<HTMLElement>('[data-compound-parallax]')
-    .forEach(initializeCompoundParallax);
   page.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach(initializeCarousel);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-tabs]').forEach(initializeTabs);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);

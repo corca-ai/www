@@ -214,6 +214,9 @@
 27. Round 27 requested mobile-specific reading rhythms for the champion-coaching description and the environment heading.
    - Fix: introduced one shared responsive-line renderer that switches only authored phrase separators at 720 px and below. The coaching copy now separates `실무자는 AX 코치로부터` before merging the remaining sentence with the final outcome, while the environment emphasis expands from two desktop lines to the requested four mobile lines. Copy, heading semantics, gradient emphasis, and desktop line breaks remain unchanged.
    - Post-fix evidence: at 580 × 998 the coaching description and environment heading expose the requested logical line breaks with zero horizontal overflow; at 1280 × 720 both blocks retain their existing four-line desktop text contract exactly.
+28. Round 28 found the leftmost Ceal-before vertical connector inheriting a legacy rotation and missing the translated node centers on mobile.
+   - Fix: explicitly reset all three vertical connectors to an untransformed state and derive every left, center, and right rail anchor from the actual three-column node grid and its responsive gap, rather than approximate percentages.
+   - Post-fix evidence: at 549 × 998 all three vertical dashed borders land exactly on the corresponding top and bottom node centers, the leftmost stray segment is gone, and horizontal overflow remains zero.
 
 ## Interaction and console checks
 

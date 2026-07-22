@@ -2526,7 +2526,32 @@ body:has(.ax-v2-dialog[open]) {
   }
 }
 
+@media (min-width: 721px) and (max-width: 900px) {
+  .ax-v2-circle-grid {
+    width: min(100%, 720px);
+    margin-inline: auto;
+    grid-template-columns: repeat(2, minmax(0, 348px));
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .ax-v2-circle-card {
+    width: 100%;
+    max-width: 348px;
+    padding: clamp(30px, 4vw, 38px);
+  }
+
+  .ax-v2-circle-card:first-child {
+    width: calc((100% - 24px) / 2);
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 720px) {
+  .ax-v2-circle-card {
+    width: min(100%, 440px);
+  }
+
   .ax-v2-compound {
     min-height: 0;
     padding: 0;

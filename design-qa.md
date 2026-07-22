@@ -198,6 +198,9 @@
 22. Round 21 found the testimonial card's lower diffuse shadow clipped where the carousel viewport met the following gray content area.
    - Fix: increased the track's lower shadow runway from 88 px to 160 px, extended the clipping parent's lower boundary by the matching 76 px, and offset both additions with equal negative-margin adjustments; the card and following statement positions stay unchanged while the shadow can fade naturally.
    - Post-fix evidence: the 923 × 998 focused capture shows the shadow diffusing continuously below the card and controls; measured card-to-clip space increases from 84 px to 160 px, while horizontal overflow remains zero.
+23. Round 22 found the 900 px-and-below single-column circle layout creating oversized cards and excessive vertical whitespace near the tablet breakpoint.
+   - Fix: introduced a 721–900 px triangle composition with one centered upper circle and two lower circles, capped every tablet circle at 348 px, replaced percentage padding with bounded responsive padding, and reduced the 720 px-and-below single-column maximum from 540 px to 440 px.
+   - Post-fix evidence: at 887 × 994 all three circles measure approximately 347 px and form the requested centered triangle; at 721 px all three remain equal at approximately 315 px; at 390 px the single-column circles resolve to 350 px. Every checked card reports matching client and scroll heights, horizontal overflow remains zero, and the browser console contains no warning or error.
 
 ## Interaction and console checks
 

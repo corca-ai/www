@@ -121,6 +121,8 @@
 - `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
 - `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
 - `/private/tmp/ax-v2-qa/round4-packages-comparison.png` verifies that package outlines were replaced by restrained elevation shadows while preserving the three-card hierarchy from PDF page 9.
+- `/private/tmp/ax-v2-qa/round15-diagnosis-blue-shadow.png` verifies that the Corca diagnosis result card gains a broad, layered light-blue elevation without reading as an outline or reducing white-text contrast.
+- `/private/tmp/ax-v2-qa/round15-environment-gray-header.png` verifies that the environment-table header is separated from the blue body rows by a cool neutral-gray surface and readable gray labels.
 
 ## Findings
 
@@ -173,6 +175,9 @@
    - Post-fix evidence: responsive browser probes verify separate copy/image safe areas through the intermediate breakpoint, while tab transitions interpolate opacity, transform, and blur without layout movement; reduced-motion continues to remove both effects.
 15. Round 14 requested stronger visual emphasis for the `61건` diagnosis metric.
    - Fix: reused the established light-section navy-to-Corca-blue-to-violet point-gradient token on the metric value without changing its copy, size, or layout.
+16. Round 15 requested clearer hierarchy for the diagnosis result card and the environment-table header.
+   - Fix: replaced the result card's compact dark-blue shadow with a wider, layered light-blue diffusion and changed the table header from white to a restrained cool gray with readable gray text, without changing either component's layout or copy.
+   - Post-fix evidence: the browser reports the two-layer blue shadow, `rgb(232, 235, 239)` header surface, `rgb(77, 88, 104)` header text, zero horizontal overflow, and no console warning or error; the focused round-15 captures record both final rendered states.
 
 ## Interaction and console checks
 

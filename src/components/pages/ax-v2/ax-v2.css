@@ -1931,6 +1931,11 @@ body:has(.ax-v2-dialog[open]) {
   display: none;
 }
 
+.ax-v2-responsive-mobile-break,
+.ax-v2-responsive-mobile-space {
+  display: none;
+}
+
 .ax-v2-proof-section .ax-v2-lead strong {
   color: #34445a;
   font-weight: 760;
@@ -2619,6 +2624,19 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 @media (max-width: 720px) {
+  .ax-v2-responsive-desktop-space,
+  .ax-v2-responsive-mobile-hidden {
+    display: none;
+  }
+
+  .ax-v2-responsive-mobile-break {
+    display: block;
+  }
+
+  .ax-v2-responsive-mobile-space {
+    display: inline;
+  }
+
   .ax-v2-slowdown-desktop-space {
     display: none;
   }

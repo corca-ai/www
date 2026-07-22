@@ -1,0 +1,34 @@
+---
+interface Props {
+  lines: readonly (readonly string[])[];
+  mobileMergeBefore?: readonly number[];
+  gradientFrom?: number;
+}
+
+const { lines, mobileMergeBefore = [], gradientFrom } = Astro.props;
+const mobileMergeIndexes = new Set(mobileMergeBefore);
+---
+
+{lines.map((segments, lineIndex) => (
+  <>
+    {lineIndex > 0 && (
+      <>
+        <br class:list={{ 'ax-v2-responsive-mobile-hidden': mobileMergeIndexes.has(lineIndex) }} />
+        {mobileMergeIndexes.has(lineIndex) && <span class="ax-v2-responsive-mobile-space"> </span>}
+      </>
+    )}
+    <span class:list={{ 'ax-v2-point-gradient': gradientFrom !== undefined && lineIndex >= gradientFrom }}>
+      {segments.map((segment, segmentIndex) => (
+        <>
+          {segmentIndex > 0 && (
+            <>
+              <span class="ax-v2-responsive-desktop-space"> </span>
+              <br class="ax-v2-responsive-mobile-break" />
+            </>
+          )}
+          {segment}
+        </>
+      ))}
+    </span>
+  </>
+))}

@@ -1,6 +1,7 @@
 ---
 import AxLeadForm from './ax-v2/AxLeadForm.astro';
 import AxLines from './ax-v2/AxLines.astro';
+import AxResponsiveLines from './ax-v2/AxResponsiveLines.astro';
 import { axV2Assets, axV2Content as c } from './ax-v2/content';
 import './ax-v2/ax-v2.css';
 
@@ -313,7 +314,7 @@ const brochureHref = import.meta.env.DEV
             <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
           ))}
         </h3>
-        <p><AxLines values={c.coaching.body} /></p>
+        <p><AxResponsiveLines lines={c.coaching.body} mobileMergeBefore={[3]} /></p>
       </div>
       <div class="ax-v2-card-grid">
         {c.coaching.cards.map((card) => (
@@ -332,9 +333,7 @@ const brochureHref = import.meta.env.DEV
       <h2 class="ax-v2-eyebrow" data-reveal>{c.environment.eyebrow}</h2>
       <div class="ax-v2-heading-block ax-v2-heading-block-wide" data-reveal>
         <h3 id="ax-v2-environment-title">
-          {c.environment.heading.map((line, index) => (
-            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>{line}</span></>
-          ))}
+          <AxResponsiveLines lines={c.environment.heading} gradientFrom={2} />
         </h3>
         <p><AxLines values={c.environment.body} /></p>
       </div>

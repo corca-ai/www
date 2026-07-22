@@ -1,0 +1,131 @@
+---
+import { axV2Content } from './content';
+
+interface Props {
+  id: string;
+  compact?: boolean;
+}
+
+const { id, compact = false } = Astro.props;
+const c = axV2Content.contact;
+const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '').trim();
+const turnstileSiteKey = String(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '').trim();
+const deliveryEnabled =
+  import.meta.env.PUBLIC_AX_CONSULTATION_ENABLED === 'true' &&
+  Boolean(privacyUrl) &&
+  Boolean(turnstileSiteKey);
+const formId = `ax-lead-${id}`;
+---
+
+<form
+  class:list={['ax-v2-lead-form', { 'is-compact': compact }]}
+  id={formId}
+  name="ax_consultation"
+  action="/api/ax/consultations"
+  method="post"
+  data-ax-v2-lead-form
+  data-delivery-enabled={String(deliveryEnabled)}
+  data-turnstile-sitekey={turnstileSiteKey}
+  novalidate
+>
+  <input type="hidden" name="locale" value="ko" />
+  <input type="hidden" name="started_at" value="" data-started-at />
+  <div class="ax-v2-honeypot" aria-hidden="true">
+    <label for={`${formId}-website`}>웹사이트</label>
+    <input id={`${formId}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="ax-v2-form-grid">
+    <div class="ax-v2-field">
+      <label for={`${formId}-name`}>{c.labels.name}</label>
+      <input
+        id={`${formId}-name`}
+        name="name"
+        type="text"
+        autocomplete="name"
+        maxlength="80"
+        placeholder={c.placeholders.name}
+        aria-describedby={`${formId}-name-error`}
+        required
+      />
+      <span class="ax-v2-field-error" id={`${formId}-name-error`} data-field-error="name"></span>
+    </div>
+
+    <div class="ax-v2-field">
+      <label for={`${formId}-email`}>{c.labels.email}</label>
+      <input
+        id={`${formId}-email`}
+        name="email"
+        type="email"
+        autocomplete="email"
+        maxlength="254"
+        placeholder={c.placeholders.email}
+        aria-describedby={`${formId}-email-error`}
+        required
+      />
+      <span class="ax-v2-field-error" id={`${formId}-email-error`} data-field-error="email"></span>
+    </div>
+
+    <div class="ax-v2-field">
+      <label for={`${formId}-phone`}>{c.labels.phone}</label>
+      <input
+        id={`${formId}-phone`}
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        maxlength="30"
+        placeholder={c.placeholders.phone}
+        aria-describedby={`${formId}-phone-error`}
+        required
+      />
+      <span class="ax-v2-field-error" id={`${formId}-phone-error`} data-field-error="phone"></span>
+    </div>
+
+    <div class="ax-v2-field ax-v2-field-message">
+      <label for={`${formId}-message`}>{c.labels.message}</label>
+      <textarea
+        id={`${formId}-message`}
+        name="message"
+        rows="5"
+        maxlength="2000"
+        placeholder={c.placeholders.message}
+        aria-describedby={`${formId}-message-error`}
+      ></textarea>
+      <span class="ax-v2-field-error" id={`${formId}-message-error`} data-field-error="message"></span>
+    </div>
+  </div>
+
+  <label class="ax-v2-consent" for={`${formId}-privacy`}>
+    <input
+      id={`${formId}-privacy`}
+      name="privacy_consent"
+      type="checkbox"
+      value="true"
+      aria-describedby={`${formId}-privacy-error`}
+      required
+      checked
+    />
+    <span>{c.consent}</span>
+    {privacyUrl
+      ? <a href={privacyUrl} target="_blank" rel="noreferrer">{c.privacyDetail}</a>
+      : <span class="ax-v2-policy-pending" aria-disabled="true">{c.privacyDetail}</span>}
+  </label>
+  <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
+
+  {deliveryEnabled && <div class="ax-v2-turnstile" data-turnstile-container></div>}
+
+  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit" disabled={!deliveryEnabled}>
+    <span data-submit-label>{c.submit}</span>
+  </button>
+  <p
+    class:list={['ax-v2-form-status', { 'is-pending': !deliveryEnabled }]}
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    tabindex="-1"
+    data-form-status
+  >
+    {!deliveryEnabled && c.disabled}
+  </p>
+</form>

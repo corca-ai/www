@@ -18,6 +18,7 @@ in front of you:
 | understand the integrated blog structure, admin APIs, Notion publishing, or static asset contract | [Blog](blog.md) |
 | update the localized Corca AX page, assets, consultation form, or Worker delivery settings | [Corca AX page](ax.md) |
 | plan or implement the next `/ax` version without changing the frozen backup | [AX redesign handoff](ax-redesign-handoff.md) |
+| verify the exact approved Korean AX headings, copy, line breaks, links, and figures | [AX Korean content lock v2](ax-content-plan-v2.md) |
 | add or update news, blog posts, colleagues, static pages, locales, domains, or analytics | [Runbook](runbook.md) |
 | write or review inclusive, accessible, evidence-based content | [Content guidelines](content-guidelines.md) |
 | preserve technical SEO, image-alt, structured-data, or performance release contracts | [SEO and performance governance](seo-content-governance.md) |

@@ -1,0 +1,9 @@
+---
+interface Props {
+  values: readonly string[];
+}
+
+const { values } = Astro.props;
+---
+
+{values.map((value, index) => <>{index > 0 && <br />}{value}</>)}

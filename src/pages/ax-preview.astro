@@ -1,0 +1,20 @@
+---
+import AxV2 from '../components/pages/AxV2.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pageMeta } from '../i18n/pageMeta';
+
+const meta = pageMeta.ax.ko;
+---
+
+<BaseLayout
+  lang="ko"
+  title={meta.title}
+  description={meta.description}
+  basePath="/ax"
+  localized={false}
+  noindex
+  ogImage="/og-ax.png"
+  ogImageAlt="Corca AX 기업 AI 전환 컨설팅"
+>
+  <AxV2 />
+</BaseLayout>

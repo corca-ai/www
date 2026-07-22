@@ -1779,6 +1779,41 @@ body:has(.ax-v2-dialog[open]) {
   }
 }
 
+/* Preserve separate text and portrait safe areas when the photograph becomes
+   too narrow for the wide desktop composition. The full image sits at the
+   bottom while the authored three-line statement occupies the open sky above
+   the team, so neither element needs an aggressive type or image reduction. */
+@media (min-width: 721px) and (max-width: 1150px) {
+  .ax-v2-compound {
+    min-height: clamp(610px, 72vw, 720px);
+    padding: clamp(56px, 7vw, 80px) 0 0;
+    align-items: flex-start;
+  }
+
+  .ax-v2-compound-media {
+    transform: translate3d(0, var(--ax-v2-compound-media-y, 0), 0);
+    transform-origin: center bottom;
+  }
+
+  .ax-v2-compound-media img {
+    object-fit: contain;
+    object-position: center bottom;
+  }
+
+  .ax-v2-compound-copy {
+    width: 100%;
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .ax-v2-compound h2 {
+    width: auto;
+    max-width: 620px;
+    margin-inline: auto;
+    font-size: clamp(32px, 4.4vw, 40px);
+  }
+}
+
 .ax-v2-proof-section > .ax-v2-shell > .ax-v2-eyebrow,
 .ax-v2-proof-section .ax-v2-heading-block {
   margin-inline: auto;
@@ -1923,13 +1958,23 @@ body:has(.ax-v2-dialog[open]) {
   border: 2px solid #70b8ff;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.16);
   transition:
-    opacity 720ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 720ms cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+    opacity 880ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 880ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 880ms cubic-bezier(0.16, 1, 0.3, 1);
+  backface-visibility: hidden;
+  will-change: opacity, transform, filter;
 }
 
 .ax-v2-tab-panels article[aria-hidden='true'] {
-  transform: translate3d(0, 14px, 0) scale(0.992);
+  opacity: 0;
+  filter: blur(7px);
+  transform: translate3d(0, 22px, 0) scale(0.986);
+}
+
+.ax-v2-tab-panels article[aria-hidden='false'] {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0) scale(1);
 }
 
 .ax-v2-tab-panels article > span {
@@ -2594,6 +2639,10 @@ body:has(.ax-v2-dialog[open]) {
   .ax-v2-tab-list button,
   .ax-v2-tab-panels article {
     transition: none;
+  }
+
+  .ax-v2-tab-panels article {
+    filter: none;
   }
 }
 

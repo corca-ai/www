@@ -168,6 +168,9 @@
 13. Round 12 found the light-section navy accent too dark against the slowdown section's navy surface.
    - Fix: scoped the existing Hero white-to-sky-blue-to-blue text gradient to the annotated slowdown emphasis while preserving the navy-to-blue-to-violet accent everywhere else.
    - Post-fix evidence: computed styles report `#f5f5f7 → #b8e2ff → #2997ff`, the rendered two-line emphasis remains fully legible, and horizontal overflow remains zero.
+14. Round 13 found that the wide team-photo composition could let its statement approach the people at tablet and narrow-desktop widths, and that tab-panel changes still felt abrupt.
+   - Fix: introduced a 721–1150 px protected composition that keeps the complete team image bottom-centered and moves the authored three-line statement into the open area above it; extended the panel crossfade with a restrained vertical drift, scale, blur, and Apple-style deceleration curve.
+   - Post-fix evidence: responsive browser probes verify separate copy/image safe areas through the intermediate breakpoint, while tab transitions interpolate opacity, transform, and blur without layout movement; reduced-motion continues to remove both effects.
 
 ## Interaction and console checks
 

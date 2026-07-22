@@ -230,8 +230,30 @@ function initializeTabs(root: HTMLElement) {
   const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-tab-panel]'));
   if (buttons.length === 0 || panels.length !== buttons.length) return;
 
-  const select = (index: number, focus = false) => {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktopTabs = window.matchMedia('(min-width: 901px)');
+  let activeIndex = 0;
+  let autoAdvanceTimer = 0;
+  let isVisible = false;
+  let isPaused = false;
+
+  const stopAutoAdvance = () => {
+    window.clearInterval(autoAdvanceTimer);
+    autoAdvanceTimer = 0;
+  };
+
+  const startAutoAdvance = () => {
+    stopAutoAdvance();
+    if (!isVisible || isPaused || reducedMotion.matches || !desktopTabs.matches || document.hidden)
+      return;
+    autoAdvanceTimer = window.setInterval(() => {
+      select((activeIndex + 1) % buttons.length, false, false);
+    }, 2200);
+  };
+
+  const select = (index: number, focus = false, restart = true) => {
     const nextIndex = Math.max(0, Math.min(buttons.length - 1, index));
+    activeIndex = nextIndex;
     buttons.forEach((button, buttonIndex) => {
       const selected = buttonIndex === nextIndex;
       button.setAttribute('aria-selected', String(selected));
@@ -239,6 +261,7 @@ function initializeTabs(root: HTMLElement) {
       panels[buttonIndex]?.setAttribute('aria-hidden', String(!selected));
     });
     if (focus) buttons[nextIndex]?.focus();
+    if (restart) startAutoAdvance();
   };
 
   buttons.forEach((button, index) => {
@@ -259,6 +282,37 @@ function initializeTabs(root: HTMLElement) {
       }
     });
   });
+
+  root.addEventListener('pointerenter', () => {
+    isPaused = true;
+    stopAutoAdvance();
+  });
+  root.addEventListener('pointerleave', () => {
+    isPaused = false;
+    startAutoAdvance();
+  });
+  root.addEventListener('focusin', () => {
+    isPaused = true;
+    stopAutoAdvance();
+  });
+  root.addEventListener('focusout', (event) => {
+    if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
+    isPaused = false;
+    startAutoAdvance();
+  });
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      isVisible = Boolean(entry?.isIntersecting);
+      startAutoAdvance();
+    },
+    { threshold: 0.45 },
+  );
+  observer.observe(root);
+
+  reducedMotion.addEventListener('change', startAutoAdvance);
+  desktopTabs.addEventListener('change', startAutoAdvance);
+  document.addEventListener('visibilitychange', startAutoAdvance);
 }
 
 function initializeAccordion(root: HTMLElement) {

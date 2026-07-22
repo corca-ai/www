@@ -11,13 +11,16 @@ export const axV2Content = {
     cta: '상담 신청하기',
   },
   compound: {
-    lines: ['첫 성과가 복리 이득으로 이어지는 조직,', 'Corca AX가 함께 만듭니다.'],
+    lines: ['첫 성과가', '복리 이득으로 이어지는 조직,', 'Corca AX가 함께 만듭니다.'],
   },
   transformation: {
     eyebrow: 'Corca AX가 하는 일',
     heading: ['Corca AX는', '조직의 체질을 바꿉니다.'],
     lead: ['AI 도구는 외부에서 사올 수 있지만', 'AI 시대에 맞는 조직은 스스로 만들어야만 합니다.'],
-    body: '이미 AI를 도입했지만, 일부 파워유저를 넘어 전사 성과로 확산하지 못하는 중견·대기업들이 Corca와 함께 변화하고 있습니다.',
+    body: [
+      '이미 AI를 도입했지만, 일부 파워유저를 넘어 전사 성과로 확산하지 못하는',
+      '중견·대기업들이 Corca와 함께 변화하고 있습니다.',
+    ],
     testimonials: [
       {
         id: 'kyowon',
@@ -48,8 +51,7 @@ export const axV2Content = {
     body: [
       'Corca에서도 다양한 시행착오를 거쳐 AI 네이티브 도구와 프로세스가 정착됐습니다.',
       '변화의 핵심은 전 직원의 참여를 만든 문화와 구조였습니다.',
-      'Corca AX는',
-      '결과가 아닌 과정을, 정답이 아닌 AX 경험을 전이합니다.',
+      'Corca AX는 결과가 아닌 과정을, 정답이 아닌 AX 경험을 전이합니다.',
     ],
     cards: [
       {
@@ -78,8 +80,10 @@ export const axV2Content = {
   slowdown: {
     eyebrow: 'AX가 느려지는 이유',
     heading: [
-      '모델 성능만으로는 AX가 확산되지 않습니다.',
-      '적절한 과제 선정, 구성원 역량 향상, 조직 환경 구축이 모두 필요합니다.',
+      '모델 성능만으로는',
+      'AX가 확산되지 않습니다.',
+      '적절한 과제 선정, 구성원 역량 향상,',
+      '조직 환경 구축이 모두 필요합니다.',
     ],
     body: [
       '기술은 조직보다 먼저 도착하지만, 성과는 조직이 준비될 때 시작됩니다.',
@@ -111,15 +115,18 @@ export const axV2Content = {
     eyebrow: 'AX 과제 진단',
     heading: ['조직의 역량과 문제의 특성에 따라', '필요한 기술과 해결 전략이 달라져야 합니다.'],
     metric: ['61건', '고객사당 평균 개선 과제 수'],
-    body: 'Corca AX는 기존의 공급자 중심 분류를 원점에서 다시 검토하여 고객 성과 중심의 해결 전략을 제시했습니다.',
+    body: [
+      'Corca AX는 기존의 공급자 중심 분류를 원점에서 다시 검토하여',
+      '고객 성과 중심의 해결 전략을 제시했습니다.',
+    ],
     legacy: {
-      title: '기존의 공급자 중심 분류',
+      title: ['기존의', '공급자 중심 분류'],
       body: 'Codex 엔터프라이즈 도입을 원하는 고객사 과제를 대부분 솔루션 구축으로 수렴시켰습니다.',
       items: ['44 솔루션 구축 필요', '9 엔터프라이즈 가능', '6 불가', '2 기능 PoC 가능'],
     },
     corca: {
-      title: 'Corca AX의 고객 성과 중심 진단과 해결 전략',
-      body: '61개 과제를 일괄 구축하지 않고, 6개의 실행 경로로 재설계했습니다.',
+      title: ['Corca AX의', '고객 성과 중심 진단과 해결 전략'],
+      body: ['61개 과제를 일괄 구축하지 않고,', '6개의 실행 경로로 재설계했습니다.'],
       items: [
         '30 Codex 스킬과 반복 워크플로우로 충분히 해결 가능',
         '8 전통적 ML 기술과 알고리즘으로 해결하는 게 더 적합',
@@ -136,9 +143,10 @@ export const axV2Content = {
     eyebrow: 'AX 챔피언 양성 코칭',
     heading: ['문제를 아는 사람과,', 'AI를 아는 사람이 함께 풉니다.'],
     body: [
-      "진단된 과제로 현업 실무자와 Corca의 AX 코치가 '짝 작업'을 하며 고객의 업무 암묵지와 Corca의 AI 활용법을 한 화면에서 결합합니다.",
-      '실무자는 AX 코치로부터 문제 분해 방식 · AI 활용법 · AX 마인드셋을 익히고, 팀에서',
-      '재현 가능한 첫 성공 사례를 만듭니다.',
+      "진단된 과제로 현업 실무자와 Corca의 AX 코치가 '짝 작업'을 하며",
+      '고객의 업무 암묵지와 Corca의 AI 활용법을 한 화면에서 결합합니다.',
+      '실무자는 AX 코치로부터 문제 분해 방식 · AI 활용법 · AX 마인드셋을 익히고,',
+      '팀에서 재현 가능한 첫 성공 사례를 만듭니다.',
     ],
     cards: [
       {
@@ -169,7 +177,8 @@ export const axV2Content = {
   environment: {
     eyebrow: 'AX 환경·운영체계 구축',
     heading: [
-      '안전한 데이터 연결, 역할 기반 권한, 비용 가시화.',
+      '안전한 데이터 연결,',
+      '역할 기반 권한, 비용 가시화.',
       'AX 챔피언들이 제대로 성과를 내려면',
       '적절한 조직 환경과 문화가 필요합니다',
     ],
@@ -212,11 +221,27 @@ export const axV2Content = {
     eyebrow: 'AX 환경 구축의 핵심',
     descriptor: '조직 내 데이터를 안전하게 연결해서 효율적으로 사용하는 컨텍스트 게이트웨이',
     heading: ['전사 AX 확산의 기술적 병목', '연결, 권한, 통제'],
-    body: 'Corca의 AX 환경 구축 솔루션인 Ceal은 에이전트의 조직 데이터 접근 경로를 하나로 연결하고 통제합니다.',
+    body: [
+      'Corca의 AX 환경 구축 솔루션인 Ceal은',
+      '에이전트의 조직 데이터 접근 경로를 하나로 연결하고 통제합니다.',
+    ],
     before: 'Ceal 이전',
     after: 'Ceal 이후',
     center: 'Ceal — 연결 · 권한 · 통제',
-    systems: ['Slack', 'GitHub', '사내 시스템'],
+    beforeBadge: '각자 알아서 연결',
+    afterBadge: '승인된 단일 게이트웨이에 연결',
+    agents: ['개인 Codex', '개인 Claude Code', '사내 에이전트'],
+    systems: ['Slack · Notion', 'GitHub · Drive', '사내 시스템'],
+    beforeNotes: [
+      '각 개인이 직접 개별 리소스에 API와 MCP로 연결해야 합니다.',
+      '누가 언제 어디에 접근했는지 보이지 않습니다.',
+      '리소스 연결마다 검색과 컨텍스트 주입이 반복되면서 토큰 사용이 늘어날 수 있습니다.',
+    ],
+    afterNotes: [
+      '모두가 한 게이트웨이에 쉽게 연결하여 모든 호출이 보이고, 기록이 남습니다.',
+      '팀 프로파일별로 권한을 분리하며 권한 외 접근은 게이트웨이에서 막힙니다.',
+      '중복 검색 및 불필요한 컨텍스트 주입을 줄여 토큰 사용을 최적화합니다.',
+    ],
     closing: [
       '흩어진 데이터를 연결합니다.',
       '접근 기록을 남깁니다.',
@@ -276,7 +301,8 @@ export const axV2Content = {
     heading: ['Corca가 2026년 7월', 'OpenAI Select Partner로 선정되었습니다.'],
     body: [
       'Corca는 OpenAI와 협력해 다양한 조직의 AX를 돕고 있습니다.',
-      'Corca를 통해 OpenAI 엔터프라이즈 계약을 체결하시는 조직에는 중복되는 컨설팅 범위의 비용 조정을 비롯한 연계 혜택이 제공됩니다.',
+      'Corca를 통해 OpenAI 엔터프라이즈 계약을 체결하시는 조직에는',
+      '중복되는 컨설팅 범위의 비용 조정을 비롯한 연계 혜택이 제공됩니다.',
     ],
     pressLabel: '언론보도 보기',
     pressUrl: 'https://www.mk.co.kr/news/it/12102704',
@@ -328,9 +354,9 @@ export const axV2Assets = {
     video: '/video/ax/B-0715-A_seamless_loop_video_of_a_maj.webm',
   },
   compoundTeam: {
-    avif: '/images/pages/ax-v2/v2/compound-team-1796.avif',
-    webp: '/images/pages/ax-v2/v2/compound-team-1796.webp',
-    jpg: '/images/pages/ax-v2/v2/compound-team-1796.jpg',
+    avif: '/images/pages/ax-v2/v2/compound-team-natural-v2-1796.avif',
+    webp: '/images/pages/ax-v2/v2/compound-team-natural-v2-1796.webp',
+    jpg: '/images/pages/ax-v2/v2/compound-team-natural-v2-1796.jpg',
     width: 1796,
     height: 876,
   },

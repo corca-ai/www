@@ -34,6 +34,9 @@
 - Round 6 environment closing: `/private/tmp/ax-v2-qa/round6-environment-closing.png`
 - Round 6 mobile static fallback: `/private/tmp/ax-v2-qa/round6-compound-mobile-static.png`
 - Round 7 active tab-panel outline: `/private/tmp/ax-v2-qa/round7-tab-panel-outline-champion.png`
+- Round 10 gradient accents: `/private/tmp/ax-v2-qa/round10-gradient-accents.png`
+- Round 10 dark-section gradient accents: `/private/tmp/ax-v2-qa/round10-dark-gradient-accents.png`
+- Round 10 static Ceal rails: `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png`
 
 ## Capture normalization
 
@@ -105,6 +108,9 @@
 - `/private/tmp/ax-v2-qa/round8-proof-gradient-and-type.png` verifies the PDF-referenced blue gradient on `조직의 체질을 바꿉니다.`, the bold second lead line, and the 80% supporting-body scale without changing the authored copy or breaks.
 - `/private/tmp/ax-v2-qa/round8-carousel-controls-and-marquee.png` verifies centered white carousel buttons and the unchanged logo-mask composition; the browser probe reports a 52.5-second marquee duration and zero horizontal overflow.
 - `/private/tmp/ax-v2-qa/round9-section-scroll-arrival.png` verifies the desktop section arrival below the 66 px sticky header after eased native scrolling, with no clipped heading or horizontal overflow.
+- `/private/tmp/ax-v2-qa/round10-gradient-accents.png` verifies the shared navy-to-Corca-blue-to-violet accent on the approved internal-proof line and all three circle titles, together with the enlarged gray cadence labels.
+- `/private/tmp/ax-v2-qa/round10-dark-gradient-accents.png` verifies the same accent treatment remains legible on the approved two-line slowdown emphasis against the navy section.
+- `/private/tmp/ax-v2-qa/round10-ceal-static-rails.png` verifies that the Ceal-before diagram remains translation-safe HTML while its nine cross-connections are static, dashed, glow-free, and visually aligned with the supplied PDF crop.
 - `/private/tmp/ax-v2-qa/hero-tablet-viewport.png` and `/private/tmp/ax-v2-qa/hero-mobile-viewport.png` verify the three-line tablet and four-line mobile H3 rules respectively.
 - `/private/tmp/ax-v2-qa/round4-environment-comparison.png` verifies the enlarged table labels and the faded blue-purple row connectors against PDF page 7.
 - `/private/tmp/ax-v2-qa/round4-ceal-comparison.png` verifies the translated HTML node labels, before-state criss-cross network, after-state gateway rails, and compact panel height against PDF page 8.
@@ -147,6 +153,9 @@
 10. Round 9 requested premium acceleration and deceleration when moving between page sections.
    - Fix: added desktop-only native `proximity` section snapping with 66 px sticky-header padding, smooth scrolling, and a restrained `cubic-bezier(0.65, 0, 0.35, 1)` reveal arrival. Mobile and reduced-motion users retain ordinary, non-forced scrolling.
    - Post-fix evidence: a browser timing probe moved from 0 to the 1,268 px target through measured intermediate positions `51 → 388 → 956 → 1,197 → 1,268`, confirming a gentle start and decelerated arrival. Computed styles report section `scroll-snap-align: start`, 0.95/1.05-second reveal durations, zero horizontal overflow, and no console warning or error.
+11. Round 10 requested consistent gradient emphasis across the approved phrase fragments, larger neutral cadence labels, a final punctuation correction, and a static Ceal-before connection map.
+   - Fix: promoted the approved proof-title gradient to a shared accent class and applied it only to the annotated lines and card leads; increased cadence labels from 14 px to 17 px in gray; added the requested period to `필요합니다.`; and removed the residual blue rail fill, glow, animation, and transition from the dashed Ceal-before connections.
+   - Post-fix evidence: browser probes report the shared gradient image, 17 px `rgb(123, 135, 151)` cadence labels, nine `animation-name: none` transparent rails with no box shadow, the corrected sentence-ending period, zero horizontal overflow, and no semantic heading changes.
 
 ## Interaction and console checks
 

@@ -84,7 +84,7 @@ const brochureHref = import.meta.env.DEV
       <div class="ax-v2-heading-block" data-reveal>
         <h3 id="ax-v2-transformation-title">
           <span>{c.transformation.heading[0]}</span><br />
-          <span class="ax-v2-transformation-emphasis">{c.transformation.heading[1]}</span>
+          <span class="ax-v2-point-gradient">{c.transformation.heading[1]}</span>
         </h3>
         <p class="ax-v2-lead ax-v2-spaced-lines">
           <span>{c.transformation.lead[0]}</span><br />
@@ -157,14 +157,18 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.internalProof.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
-        <h3 id="ax-v2-internal-title"><AxLines values={c.internalProof.heading} /></h3>
+        <h3 id="ax-v2-internal-title">
+          {c.internalProof.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
+          ))}
+        </h3>
         <p><AxLines values={c.internalProof.body} /></p>
       </div>
       <div class="ax-v2-circle-grid">
         {c.internalProof.cards.map((card) => (
           <article class="ax-v2-circle-card" data-reveal>
             <span>{card.cadence}</span>
-            <h4>{card.title}</h4>
+            <h4 class="ax-v2-point-gradient">{card.title}</h4>
             <strong>{card.lead}</strong>
             <p><AxLines values={card.body} /></p>
           </article>
@@ -183,7 +187,11 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.slowdown.eyebrow}</h2>
       <div class="ax-v2-heading-block ax-v2-heading-block-wide" data-reveal>
-        <h3 id="ax-v2-slowdown-title"><AxLines values={c.slowdown.heading} /></h3>
+        <h3 id="ax-v2-slowdown-title">
+          {c.slowdown.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>{line}</span></>
+          ))}
+        </h3>
         <p><AxLines values={c.slowdown.body} /></p>
         <strong class="ax-v2-section-closing"><AxLines values={c.slowdown.closing} /></strong>
       </div>
@@ -250,7 +258,11 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.diagnosis.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
-        <h3 id="ax-v2-diagnosis-title"><AxLines values={c.diagnosis.heading} /></h3>
+        <h3 id="ax-v2-diagnosis-title">
+          {c.diagnosis.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
+          ))}
+        </h3>
         <div class="ax-v2-metric"><strong>{c.diagnosis.metric[0]}</strong><span>{c.diagnosis.metric[1]}</span></div>
         <p><AxLines values={c.diagnosis.body} /></p>
       </div>
@@ -282,14 +294,18 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.coaching.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
-        <h3 id="ax-v2-coaching-title"><AxLines values={c.coaching.heading} /></h3>
+        <h3 id="ax-v2-coaching-title">
+          {c.coaching.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
+          ))}
+        </h3>
         <p><AxLines values={c.coaching.body} /></p>
       </div>
       <div class="ax-v2-card-grid">
         {c.coaching.cards.map((card) => (
           <article class="ax-v2-feature-card" data-reveal>
             <h4>{card.title}</h4>
-            <strong><AxLines values={card.lead} /></strong>
+            <strong class="ax-v2-point-gradient"><AxLines values={card.lead} /></strong>
             <p><AxLines values={card.body} /></p>
           </article>
         ))}
@@ -301,7 +317,11 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.environment.eyebrow}</h2>
       <div class="ax-v2-heading-block ax-v2-heading-block-wide" data-reveal>
-        <h3 id="ax-v2-environment-title"><AxLines values={c.environment.heading} /></h3>
+        <h3 id="ax-v2-environment-title">
+          {c.environment.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>{line}</span></>
+          ))}
+        </h3>
         <p><AxLines values={c.environment.body} /></p>
       </div>
       <div class="ax-v2-environment-table" data-reveal>
@@ -338,7 +358,11 @@ const brochureHref = import.meta.env.DEV
       <h2 class="ax-v2-eyebrow" data-reveal>{c.ceal.eyebrow}</h2>
       <p class="ax-v2-descriptor" data-reveal>{c.ceal.descriptor}</p>
       <div class="ax-v2-heading-block" data-reveal>
-        <h3 id="ax-v2-ceal-title"><AxLines values={c.ceal.heading} /></h3>
+        <h3 id="ax-v2-ceal-title">
+          {c.ceal.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
+          ))}
+        </h3>
         <p><AxLines values={c.ceal.body} /></p>
       </div>
       <div class="ax-v2-ceal-diagrams" data-ceal-diagrams data-reveal>
@@ -377,7 +401,11 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.packages.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
-        <h3 id="ax-v2-packages-title"><AxLines values={c.packages.heading} /></h3>
+        <h3 id="ax-v2-packages-title">
+          {c.packages.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
+          ))}
+        </h3>
       </div>
       <div class="ax-v2-package-grid">
         {c.packages.cards.map((card, index) => (
@@ -397,7 +425,11 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-shell ax-v2-partner-grid">
       <div data-reveal>
         <h2 class="ax-v2-eyebrow">{c.partner.eyebrow}</h2>
-        <h3 id="ax-v2-partner-title"><AxLines values={c.partner.heading} /></h3>
+        <h3 id="ax-v2-partner-title">
+          {c.partner.heading.map((line, index) => (
+            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
+          ))}
+        </h3>
         <p><AxLines values={c.partner.body} /></p>
         <a class="ax-v2-text-link" href={c.partner.pressUrl} target="_blank" rel="noreferrer">
           {c.partner.pressLabel}<span aria-hidden="true"> ↗</span>

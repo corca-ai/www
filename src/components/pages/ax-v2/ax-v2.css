@@ -503,8 +503,8 @@
 }
 
 .ax-v2-circle-card > span {
-  color: var(--ax-v2-blue);
-  font-size: 14px;
+  color: #7b8797;
+  font-size: 17px;
   font-weight: 720;
 }
 
@@ -1798,7 +1798,7 @@ body:has(.ax-v2-dialog[open]) {
   line-height: 1.08;
 }
 
-.ax-v2-transformation-emphasis {
+.ax-v2-point-gradient {
   color: #0757d9;
   background: linear-gradient(90deg, #0c315f 0%, #0757d9 54%, #1700c8 100%);
   background-clip: text;
@@ -2153,8 +2153,11 @@ body:has(.ax-v2-dialog[open]) {
 .ax-v2-chaos-rails i {
   position: absolute;
   border-top: 2px dashed #8fa6c3;
+  background: transparent;
+  box-shadow: none;
   opacity: 0.78;
-  animation: none;
+  animation: none !important;
+  transition: none;
   transform-origin: left top;
 }
 

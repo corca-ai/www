@@ -195,6 +195,9 @@
 21. Round 20 requested a 20% larger consultation dialog title without changing the surrounding two-column form composition.
    - Fix: increased only the dialog title's rendered size from 16 px to 19.2 px with a selector that cleanly separates it from the adjacent 16 px explanatory copy, while preserving the authored two-line copy and all form dimensions.
    - Post-fix evidence: the 923 × 998 focused modal capture reports the requested 19.2 px title, the original two-line break, no overlap with the form column, a fully contained 723 px panel, and zero horizontal overflow.
+22. Round 21 found the testimonial card's lower diffuse shadow clipped where the carousel viewport met the following gray content area.
+   - Fix: increased the track's lower shadow runway from 88 px to 160 px, extended the clipping parent's lower boundary by the matching 76 px, and offset both additions with equal negative-margin adjustments; the card and following statement positions stay unchanged while the shadow can fade naturally.
+   - Post-fix evidence: the 923 × 998 focused capture shows the shadow diffusing continuously below the card and controls; measured card-to-clip space increases from 84 px to 160 px, while horizontal overflow remains zero.
 
 ## Interaction and console checks
 

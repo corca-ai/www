@@ -83,6 +83,7 @@
 - The existing dolphin hero media and approved OpenAI Select Partner badge are reused rather than approximated.
 - The OpenAI Select Partner badge now follows the existing `/ax` contract exactly: fixed at `131px` on desktop, eased upward fade at the Hero boundary, and static absolute positioning on mobile.
 - Testimonial carousel controls sit above the masked track hit area, move reliably in both directions, and share the same smooth snap positions as native touch swiping. Mobile and tablet tracks retain momentum scrolling, horizontal pan gestures, and per-card snap stops.
+- Environment-table arrows use a larger `22 × 34px` triangle whose base is aligned exactly to the center divider; the fading rectangular rail is enlarged to `35 × 16px` across all four rows.
 - Section 1-2 uses the approved photorealistic team image with bright sunlight and East Asian and non-Asian colleagues in casual business clothing. Its bright left-side negative space carries the navy heading without a gradient overlay. The 1796 × 876 source is served as a 38 KB AVIF, 55 KB WebP, and 90 KB JPEG fallback with intrinsic dimensions and lazy loading.
 - The OpenAI–Corca lockup uses the supplied source asset, converted to a 600 px lossless WebP with PNG fallback and intrinsic dimensions.
 - No source logo or photographic asset was replaced by an inline SVG, emoji, placeholder, or CSS drawing. The Ceal flow rails are an explicitly requested live information diagram rather than a replacement for a supplied raster asset.

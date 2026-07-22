@@ -2051,10 +2051,10 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 .ax-v2-table-arrow {
-  width: 46px;
-  height: 26px;
+  width: 57px;
+  height: 34px;
   position: absolute;
-  right: -23px;
+  right: -22px;
   top: 50%;
   z-index: 1;
   transform: translateY(-50%);
@@ -2062,22 +2062,22 @@ body:has(.ax-v2-dialog[open]) {
 
 .ax-v2-table-arrow::before {
   content: '';
-  width: 32px;
-  height: 14px;
+  width: 35px;
+  height: 16px;
   position: absolute;
   left: 0;
-  top: 6px;
+  top: 9px;
   background: linear-gradient(90deg, rgba(86, 108, 255, 0) 0%, rgba(86, 108, 255, 0.78) 100%);
 }
 
 .ax-v2-table-arrow::after {
   content: '';
   position: absolute;
-  right: 0;
+  left: 35px;
   top: 0;
-  border-top: 13px solid transparent;
-  border-bottom: 13px solid transparent;
-  border-left: 16px solid #3f46d9;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-left: 22px solid #3f46d9;
 }
 
 .ax-v2-ceal-section {

@@ -4,7 +4,11 @@ import { fileURLToPath } from 'node:url';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = join(repoRoot, 'dist');
-const astroCssPattern = /\/_astro\/BaseLayout\.[^"')\s]+\.css/g;
+// Astro names the shared shell stylesheet after the component that owns the
+// extracted CSS. It used to be BaseLayout and is currently CommonHead. Match
+// either name so a harmless bundling-name change does not break production
+// builds after Astro has already emitted valid pages.
+const astroCssPattern = /\/_astro\/(?:BaseLayout|CommonHead)\.[^"')\s]+\.css/g;
 const analyticsConfigPattern = /<script id="corca-analytics-config">.*?<\/script>/g;
 const blogAppScriptPattern = /<script type="module" src="\/blog\/app\.js[^"']*"><\/script>/;
 const commonHeadPattern = /<!-- corca-common-head:start -->[\s\S]*?<!-- corca-common-head:end -->/g;

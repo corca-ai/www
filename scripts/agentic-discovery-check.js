@@ -265,7 +265,11 @@ for (const [lang, path] of localePages) {
   const slides = [...html.matchAll(/<(?:article|figure)\b[^>]*data-carousel-slide[^>]*>/g)].map(
     (match) => match[0],
   );
-  assert(slides.length === 5, `${path} must expose five semantic carousel slides`);
+  const expectedSlides = lang === 'ko' ? 2 : 5;
+  assert(
+    slides.length === expectedSlides,
+    `${path} must expose ${expectedSlides} semantic carousel slides`,
+  );
   for (const slide of slides) {
     assert(!/\brole="group"/.test(slide), `${path} overrides a semantic slide with role=group`);
     assert(!/\baria-label=/.test(slide), `${path} uses aria-label as carousel data`);
@@ -284,14 +288,18 @@ for (const [lang, path] of localePages) {
   const controls = [
     ...html.matchAll(/<button\b[^>]*data-carousel-(?:previous|next|select|playback)[^>]*>/g),
   ].map((match) => match[0]);
-  assert(controls.length === 11, `${path} must expose eleven carousel controls`);
+  const expectedControls = lang === 'ko' ? 2 : 11;
+  assert(
+    controls.length === expectedControls,
+    `${path} must expose ${expectedControls} carousel controls`,
+  );
   assert(
     controls.every((control) => /\baria-label="[^"]+"/.test(control)),
     `${path} has an unnamed carousel control`,
   );
   assert(
-    count(/aria-live="polite"[^>]*data-carousel-status/g) === 2,
-    `${path} needs two polite carousel status regions`,
+    count(/aria-live="polite"[^>]*data-carousel-status/g) === (lang === 'ko' ? 1 : 2),
+    `${path} has the wrong number of polite carousel status regions`,
   );
 }
 

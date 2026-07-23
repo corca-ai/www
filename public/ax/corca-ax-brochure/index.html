@@ -9,6 +9,13 @@
       content="코르카 AX 가속화 컨설팅 브로셔. 웹에서 읽고 A4로 인쇄할 수 있는 정적 문서입니다."
     />
     <title>코르카 AX 가속화 컨설팅 브로셔</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SZY1B11LXS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-SZY1B11LXS', { send_page_view: true });
+    </script>
     <link rel="stylesheet" href="./brochure.css" />
   </head>
   <body>
@@ -595,6 +602,67 @@
       document.getElementById("print-brochure").addEventListener("click", () => {
         window.print();
       });
+
+      (() => {
+        const pages = Array.from(document.querySelectorAll(".page[data-page-id]"));
+        let activePage = null;
+        let activeSince = 0;
+        let engagedSent = false;
+
+        const pageParameters = (page) => ({
+          deck_id: "corca-ax-consulting",
+          deck_page_id: page.dataset.pageId,
+          deck_page_number: pages.indexOf(page) + 1,
+        });
+
+        const finishActivePage = () => {
+          if (!activePage || !activeSince) return;
+          const seconds = Math.round((performance.now() - activeSince) / 1000);
+          if (seconds > 0) {
+            gtag("event", "ax_deck_page_engagement", {
+              ...pageParameters(activePage),
+              engagement_seconds: seconds,
+            });
+          }
+          activeSince = 0;
+        };
+
+        const activatePage = (page) => {
+          if (page === activePage) return;
+          finishActivePage();
+          activePage = page;
+          activeSince = performance.now();
+          gtag("event", "ax_deck_page_view", pageParameters(page));
+        };
+
+        gtag("event", "ax_deck_open", {
+          deck_id: "corca-ax-consulting",
+          deck_page_count: pages.length,
+        });
+
+        window.setTimeout(() => {
+          if (document.visibilityState !== "visible" || engagedSent) return;
+          engagedSent = true;
+          gtag("event", "ax_deck_engaged", {
+            deck_id: "corca-ax-consulting",
+            engagement_seconds: 30,
+          });
+        }, 30000);
+
+        const observer = new IntersectionObserver((entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+          if (visible) activatePage(visible.target);
+        }, { threshold: [0.35, 0.55, 0.75] });
+        pages.forEach((page) => observer.observe(page));
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "hidden") finishActivePage();
+          else if (activePage) activeSince = performance.now();
+        });
+        window.addEventListener("pagehide", finishActivePage);
+      })();
     </script>
   </body>
 </html>

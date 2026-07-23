@@ -73,11 +73,11 @@ The mobile layout remains independent of this height rule.
 
 ## Update copy or assets
 
-All visible AX copy is represented in `content.ts` for all four locales. Keep
-the content object's shape identical across locales and keep form topic IDs
-stable: `strategy_discovery`, `decision_map`, `operations_transition`,
-`organization_adoption`, `openai_adoption` and `other`. The Worker uses those
-IDs as an API contract; translated labels may change without changing an ID.
+The frozen multilingual page keeps its visible copy in `content.ts`. The Korean
+redesign keeps its approved Notion copy in `ax-v2/content.ts` and the durable
+source ledger in `docs/ax-content-plan-v2.md`. Do not edit the frozen content
+to change the redesign, and do not duplicate copy inside presentational
+components.
 
 For an asset replacement, keep the public URL in `assetPaths.ts` and replace the
 corresponding file. Responsive scene images have desktop and mobile variants;
@@ -87,45 +87,27 @@ in the asset registry.
 
 ## Consultation form
 
-The form posts JSON to `POST /api/ax/consultations`. The Worker validates the
-payload, rejects oversized or suspicious submissions, verifies Cloudflare
-Turnstile and sends the result through Resend. It does not write submissions to
-an application database. Resend and recipient mailboxes process and retain the
-message under Corca's configured retention practices and their own policies;
-the form links to Corca's published privacy policy.
+The current Korean AX form is a UI-only preview while Corca's CTO prepares the
+approved consultation API and destination contract. It validates the four
+visible fields (`name`, `email`, `phone`, `message`) and privacy consent in the
+browser, presents field-level guidance, and opens a completion dialog after a
+valid native form submit. It makes no network request and does not send or
+store the entered values.
 
-Configure these Cloudflare Worker secrets or variables before enabling live
-submissions:
+Do not add a temporary mailbox binding, database, admin route, or analytics
+payload containing form values. The future integration must use the API
+contract supplied by the CTO. Its endpoint, authentication, anti-abuse rules,
+destination and retention behavior remain intentionally unspecified until
+that contract is approved.
 
-| Name | Required | Purpose |
-| --- | --- | --- |
-| `TURNSTILE_SECRET_KEY` | yes | Server-side Turnstile verification secret. |
-| `RESEND_API_KEY` | yes | Resend API credential used for delivery. |
-| `RESEND_FROM` | recommended | Verified sender, for example `Corca AX <ax@corca.ai>`. |
-| `AX_CONSULTATION_TO` | optional | Comma-separated recipients; defaults to the AX contact owner. |
+The published privacy-policy URL is `/privacy`. Before enabling transmission,
+update the policy with the approved processor, overseas-transfer and retention
+details, and repeat the privacy/security review. Name, email, phone number and
+message content must never be sent to Google Analytics or `dataLayer`.
 
-Set `PUBLIC_TURNSTILE_SITE_KEY` in the Astro build environment so the static page
-can render the public Turnstile widget. In local development that means an
-ignored `.env` file or a shell environment variable; in Cloudflare Workers
-Builds it means a build variable. Put the Worker runtime values
-(`TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `RESEND_FROM` and
-`AX_CONSULTATION_TO`) in the ignored `.dev.vars` file for local end-to-end tests
-and in Worker secrets or variables for production. The site key is public; the
-secret key must never be exposed to Astro or committed.
-
-The client records UTM parameters and emits AX-specific `dataLayer` events when
-Google Analytics is present. Delivery failures return a generic localized
-message to visitors; detailed API error codes remain available in the network
-response for diagnosis.
-
-Before production delivery is enabled, the privacy owner must confirm that the
-published notice, the one-year consultation retention practice and the Resend
-processor setup are current. That review must include any required processing
-agreement, overseas transfer disclosure and deletion procedure. Also verify the
-sender domain, final recipients and Turnstile host allowlist; keep the endpoint
-unconfigured until those checks are complete. Add a Cloudflare rate-limiting or
-WAF rule for `POST /api/ax/consultations` before launch so valid-but-automated
-Turnstile traffic cannot exhaust the delivery quota or recipient inbox.
+Lead operations will use the approved recipient mailbox and a Google
+Spreadsheet plug-in rather than a site-hosted admin dashboard. Reporting and
+dashboard work are outside the current public-site release.
 
 ## Verification
 

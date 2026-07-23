@@ -12,6 +12,8 @@ jobs:
   # Core gates — Biome, astro check, build.
   quality:
     runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://www.corca.ai
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /blog/admin
 Disallow: /blog/admin/
 
-Sitemap: https://www.borca.ai/sitemap.xml
+Sitemap: https://www.corca.ai/sitemap.xml

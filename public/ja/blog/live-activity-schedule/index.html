@@ -6,15 +6,21 @@
     <title>Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機 | Corca Blog</title>
     <meta name="description" content="TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.corca.ai/ja/blog/live-activity-schedule">
+    <link rel="alternate" hreflang="ko-KR" href="https://www.corca.ai/blog/live-activity-schedule">
+    <link rel="alternate" hreflang="en-US" href="https://www.corca.ai/en/blog/live-activity-schedule">
+    <link rel="alternate" hreflang="ja-JP" href="https://www.corca.ai/ja/blog/live-activity-schedule">
+    <link rel="alternate" hreflang="zh-CN" href="https://www.corca.ai/zh/blog/live-activity-schedule">
+    <link rel="alternate" hreflang="x-default" href="https://www.corca.ai/blog/live-activity-schedule">
     <meta property="og:title" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機">
     <meta property="og:description" content="TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。">
     <meta property="og:site_name" content="Corca Blog">
     <meta property="og:locale" content="ja_JP">
     <meta property="og:type" content="article">
-    <meta property="og:image" content="https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png">
-    <meta property="og:image:secure_url" content="https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png">
+    <meta property="og:image" content="https://www.corca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png">
+    <meta property="og:image:secure_url" content="https://www.corca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png">
     <meta property="og:image:alt" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機 代表画像">
-    <meta property="og:url" content="https://www.borca.ai/ja/blog/live-activity-schedule">
+    <meta property="og:url" content="https://www.corca.ai/ja/blog/live-activity-schedule">
     <meta property="article:published_time" content="2025-12-10T00:00:00.000Z">
     <meta property="article:modified_time" content="2025-12-10T00:00:00.000Z">
     <meta property="article:author" content="김성훈(iOS Product Engineer)">
@@ -23,12 +29,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機">
     <meta name="twitter:description" content="TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。">
-    <meta name="twitter:image" content="https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png">
+    <meta name="twitter:image" content="https://www.corca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png">
     <meta name="twitter:image:alt" content="Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機 代表画像">
     <meta name="theme-color" content="#ffffff">
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
-    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機","description":"TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。","image":"https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","thumbnailUrl":"https://www.borca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","url":"https://www.borca.ai/ja/blog/live-activity-schedule","keywords":["Trace"],"articleSection":"Product","wordCount":4901,"datePublished":"2025-12-10","dateModified":"2025-12-10","author":{"@type":"Organization","name":"김성훈(iOS Product Engineer)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"ja","timeRequired":"PT10M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.borca.ai/blog"},"mainEntityOfPage":"https://www.borca.ai/ja/blog/live-activity-schedule"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.borca.ai/blog"},{"@type":"ListItem","position":2,"name":"記事","item":"https://www.borca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機"}]}]}</script>
+    <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機","description":"TraceチームがiOS Live Activity、ActivityKit Push、Push to Startを活用して、リアルタイムのスケジュール体験を実装したプロセスをまとめます。","image":"https://www.corca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","thumbnailUrl":"https://www.corca.ai/blog/assets/medium-import/live-activity-schedule-figure-01.png","url":"https://www.corca.ai/ja/blog/live-activity-schedule","keywords":["Trace"],"articleSection":"Product","wordCount":4901,"datePublished":"2025-12-10","dateModified":"2025-12-10","author":{"@type":"Organization","name":"김성훈(iOS Product Engineer)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"ja","timeRequired":"PT10M","isPartOf":{"@type":"Blog","name":"Corca Blog","url":"https://www.corca.ai/blog"},"mainEntityOfPage":"https://www.corca.ai/ja/blog/live-activity-schedule"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Corca Blog","item":"https://www.corca.ai/blog"},{"@type":"ListItem","position":2,"name":"記事","item":"https://www.corca.ai/blog/#posts"},{"@type":"ListItem","position":3,"name":"Live Activity、より深く試してみましょう：リアルタイムスケジュール機能開発機"}]}]}</script>
     <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="/blog/styles.css?v=21c8f94d2d2f">
@@ -74,9 +80,9 @@
                 <span>私たちが作りたいAI Colleague</span>
                 <small><time datetime="2026-07-07">2026年7月7日</time> · 김선영(HR Manager)</small>
               </a>
-              <a class="toc-recommendation" href="/ja/blog/corca-newbie-trip">
-                <span>コルカ新入適応器</span>
-                <small><time datetime="2026-07-06">2026年7月6日</time> · 문정민(AX Consultant)</small>
+              <a class="toc-recommendation" href="/ja/blog/ceal-operations-team">
+                <span>オペレーションチームの新しい仲間、Ceal</span>
+                <small><time datetime="2026-05-13">2026年5月13日</time> · 김선영(HR Manager)</small>
               </a>
   </div>
 </section>
@@ -199,9 +205,9 @@
                 <span>私たちが作りたいAI Colleague</span>
                 <small><time datetime="2026-07-07">2026年7月7日</time> · 김선영(HR Manager)</small>
               </a>
-              <a class="toc-recommendation" href="/ja/blog/corca-newbie-trip">
-                <span>コルカ新入適応器</span>
-                <small><time datetime="2026-07-06">2026年7月6日</time> · 문정민(AX Consultant)</small>
+              <a class="toc-recommendation" href="/ja/blog/ceal-operations-team">
+                <span>オペレーションチームの新しい仲間、Ceal</span>
+                <small><time datetime="2026-05-13">2026年5月13日</time> · 김선영(HR Manager)</small>
               </a>
   </div>
 </section>

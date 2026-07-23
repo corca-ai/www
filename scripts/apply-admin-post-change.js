@@ -1029,7 +1029,7 @@ function renderBlogTagsSitemap(postRecordsByLocale) {
     ].sort((a, b) => a.localeCompare(b, localeLabels[locale].lang));
     for (const tag of tags) {
       entries.push({
-        path: `${localeLabels[locale].blogPath}?search=${encodeURIComponent(tag)}`,
+        path: `${localeLabels[locale].blogPath}?q=${encodeURIComponent(tag)}`,
         lastmod,
       });
     }
@@ -1301,6 +1301,28 @@ function localizePostTopic(value, locale) {
   return topicMap[text] || text;
 }
 
+function renderStaticPostSeoLinks(post, locale, availableLocalesBySlug) {
+  const availableLocales = availableLocalesBySlug?.get(post.slug) || new Set([locale]);
+  const lines = [
+    `    <link rel="canonical" href="${escapeAttribute(absoluteSiteUrl(staticPostPath(post, locale)))}">`,
+  ];
+
+  for (const code of supportedLocales) {
+    if (!availableLocales.has(code)) continue;
+    lines.push(
+      `    <link rel="alternate" hreflang="${localeLabels[code].hreflang}" href="${escapeAttribute(absoluteSiteUrl(staticPostPath(post, code)))}">`,
+    );
+  }
+
+  if (availableLocales.has('ko')) {
+    lines.push(
+      `    <link rel="alternate" hreflang="x-default" href="${escapeAttribute(absoluteSiteUrl(staticPostPath(post, 'ko')))}">`,
+    );
+  }
+
+  return lines.join('\n');
+}
+
 function renderStaticPostPage(
   post,
   articleHtml,
@@ -1334,6 +1356,7 @@ function renderStaticPostPage(
     <title>${escapeHtml(post.title)} | Corca Blog</title>
     <meta name="description" content="${escapeAttribute(post.description)}">
     <meta name="robots" content="index, follow">
+${renderStaticPostSeoLinks(post, locale, availableLocalesBySlug)}
     <meta property="og:title" content="${escapeAttribute(post.title)}">
     <meta property="og:description" content="${escapeAttribute(post.description)}">
     <meta property="og:site_name" content="Corca Blog">

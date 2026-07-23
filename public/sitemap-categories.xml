@@ -2,51 +2,51 @@
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl?v=20260721-blue"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.borca.ai/blog?topic=product</loc>
+    <loc>https://www.corca.ai/blog?topic=product</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/blog?topic=ax</loc>
+    <loc>https://www.corca.ai/blog?topic=ax</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/blog?topic=corca</loc>
+    <loc>https://www.corca.ai/blog?topic=corca</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/en/blog?topic=product</loc>
+    <loc>https://www.corca.ai/en/blog?topic=product</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/en/blog?topic=ax</loc>
+    <loc>https://www.corca.ai/en/blog?topic=ax</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/en/blog?topic=corca</loc>
+    <loc>https://www.corca.ai/en/blog?topic=corca</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/ja/blog?topic=product</loc>
+    <loc>https://www.corca.ai/ja/blog?topic=product</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/ja/blog?topic=ax</loc>
+    <loc>https://www.corca.ai/ja/blog?topic=ax</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/ja/blog?topic=corca</loc>
+    <loc>https://www.corca.ai/ja/blog?topic=corca</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/zh/blog?topic=product</loc>
+    <loc>https://www.corca.ai/zh/blog?topic=product</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/zh/blog?topic=ax</loc>
+    <loc>https://www.corca.ai/zh/blog?topic=ax</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
   <url>
-    <loc>https://www.borca.ai/zh/blog?topic=corca</loc>
+    <loc>https://www.corca.ai/zh/blog?topic=corca</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
 </urlset>

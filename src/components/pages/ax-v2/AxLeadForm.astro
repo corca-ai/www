@@ -21,8 +21,6 @@ const formId = `ax-lead-${id}`;
   data-ax-v2-lead-form
   data-locale="ko"
   data-sending-label={c.sending}
-  data-success-label={c.success}
-  data-error-label={c.error}
   novalidate
 >
   <div
@@ -52,21 +50,6 @@ const formId = `ax-lead-${id}`;
     </div>
 
     <div class="ax-v2-field">
-      <label for={`${formId}-email`}>{c.labels.email}</label>
-      <input
-        id={`${formId}-email`}
-        name="email"
-        type="email"
-        autocomplete="email"
-        maxlength="254"
-        placeholder={c.placeholders.email}
-        aria-describedby={`${formId}-email-error`}
-        required
-      />
-      <span class="ax-v2-field-error" id={`${formId}-email-error`} data-field-error="email"></span>
-    </div>
-
-    <div class="ax-v2-field">
       <label for={`${formId}-phone`}>{c.labels.phone}</label>
       <input
         id={`${formId}-phone`}
@@ -82,6 +65,20 @@ const formId = `ax-lead-${id}`;
         required
       />
       <span class="ax-v2-field-error" id={`${formId}-phone-error`} data-field-error="phone"></span>
+    </div>
+
+    <div class="ax-v2-field">
+      <label for={`${formId}-email`}>{c.labels.email}</label>
+      <input
+        id={`${formId}-email`}
+        name="email"
+        type="email"
+        autocomplete="email"
+        maxlength="254"
+        placeholder={c.placeholders.email}
+        aria-describedby={`${formId}-email-error`}
+      />
+      <span class="ax-v2-field-error" id={`${formId}-email-error`} data-field-error="email"></span>
     </div>
 
     <div class="ax-v2-field ax-v2-field-message">
@@ -121,7 +118,7 @@ const formId = `ax-lead-${id}`;
   </label>
   <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
 
-  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit">
+  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit" disabled>
     <span data-submit-label>{c.submit}</span>
   </button>
   <p
@@ -131,7 +128,5 @@ const formId = `ax-lead-${id}`;
     aria-atomic="true"
     tabindex="-1"
     data-form-status
-  >
-    {c.note}
-  </p>
+  ></p>
 </form>

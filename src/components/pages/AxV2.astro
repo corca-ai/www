@@ -70,21 +70,29 @@ const brochureHref = import.meta.env.DEV
   <section
     class="ax-v2-compound ax-v2-dark-section"
     aria-labelledby="ax-v2-compound-title"
+    data-compound-parallax
   >
-    <picture class="ax-v2-compound-media">
-      <source type="image/avif" srcset={axV2Assets.compoundTeam.avif} />
-      <source type="image/webp" srcset={axV2Assets.compoundTeam.webp} />
+    <picture class="ax-v2-compound-media" data-compound-media>
+      <source type="image/avif" srcset={axV2Assets.compoundOrcas.avif} />
+      <source type="image/webp" srcset={axV2Assets.compoundOrcas.webp} />
       <img
-        src={axV2Assets.compoundTeam.jpg}
-        width={axV2Assets.compoundTeam.width}
-        height={axV2Assets.compoundTeam.height}
-        alt="밝은 햇살 아래 자연스럽게 나란히 선 다양한 배경의 협업팀"
+        src={axV2Assets.compoundOrcas.jpg}
+        width={axV2Assets.compoundOrcas.width}
+        height={axV2Assets.compoundOrcas.height}
+        alt="맑은 아침의 푸른 대서양을 활기차게 유영하는 열 마리 범고래 무리"
         loading="lazy"
         decoding="async"
       />
     </picture>
-    <div class="ax-v2-shell ax-v2-compound-copy" data-reveal>
-      <h2 id="ax-v2-compound-title"><AxLines values={c.compound.lines} /></h2>
+    <div class="ax-v2-shell ax-v2-compound-copy" data-compound-copy>
+      <h2 id="ax-v2-compound-title">
+        {c.compound.lines.map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            <span class={`ax-v2-compound-line ax-v2-compound-line-${index + 1}`}>{line}</span>
+          </>
+        ))}
+      </h2>
     </div>
   </section>
 
@@ -114,9 +122,34 @@ const brochureHref = import.meta.env.DEV
                 data-carousel-slide
                 data-carousel-announcement={`${index + 1} / ${c.transformation.testimonials.length} — ${item.source}`}
                 data-slide-label={`${index + 1} / ${c.transformation.testimonials.length} — ${item.source}`}
+                data-testimonial-highlight-card={item.highlights.length > 0 ? '' : undefined}
                 aria-labelledby={`ax-v2-testimonial-source-${index + 1}`}
               >
-                <blockquote><AxLines values={item.quote} /></blockquote>
+                <blockquote>
+                  {item.quote.map((line, lineIndex) => {
+                    const highlightIndex = item.highlights.findIndex(({ start }) => start === lineIndex);
+                    const highlight = highlightIndex >= 0 ? item.highlights[highlightIndex] : undefined;
+                    const isCoveredByEarlierHighlight = item.highlights.some(
+                      ({ start, end }) => lineIndex > start && lineIndex <= end,
+                    );
+                    if (isCoveredByEarlierHighlight) return null;
+                    return (
+                      <>
+                        {lineIndex > 0 && <br />}
+                        {highlight ? (
+                          <mark
+                            class="ax-v2-testimonial-highlight"
+                            data-highlight-order={highlightIndex + 1}
+                          >
+                            {item.quote.slice(highlight.start, highlight.end + 1).map((highlightLine, offset) => (
+                              <>{offset > 0 && <br />}{highlightLine}</>
+                            ))}
+                          </mark>
+                        ) : line}
+                      </>
+                    );
+                  })}
+                </blockquote>
                 <figcaption>
                   <picture>
                     <source type="image/webp" srcset={logo.webp} />
@@ -341,14 +374,27 @@ const brochureHref = import.meta.env.DEV
     </div>
   </section>
 
-  <section class="ax-v2-section" aria-labelledby="ax-v2-environment-title">
+  <section class="ax-v2-section ax-v2-environment-section" aria-labelledby="ax-v2-environment-title">
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.environment.eyebrow}</h2>
-      <div class="ax-v2-heading-block ax-v2-heading-block-wide" data-reveal>
+      <div class="ax-v2-heading-block ax-v2-heading-block-wide ax-v2-heading-block-centered" data-reveal>
         <h3 id="ax-v2-environment-title">
           <AxResponsiveLines lines={c.environment.heading} gradientFrom={2} />
         </h3>
-        <p><AxLines values={c.environment.body} /></p>
+        <p>
+          {c.environment.body.map((line, index) => {
+            const [beforeEmphasis, afterEmphasis] = line.split(c.environment.bodyEmphasis);
+            return (
+              <>
+                {index > 0 && <br />}
+                {beforeEmphasis}
+                {afterEmphasis !== undefined && (
+                  <><strong>{c.environment.bodyEmphasis}</strong>{afterEmphasis}</>
+                )}
+              </>
+            );
+          })}
+        </p>
       </div>
       <div class="ax-v2-environment-table" data-reveal>
         <table>
@@ -379,11 +425,26 @@ const brochureHref = import.meta.env.DEV
     </div>
   </section>
 
-  <section class="ax-v2-section ax-v2-dark-section ax-v2-ceal-section" aria-labelledby="ax-v2-ceal-title">
+  <section
+    class="ax-v2-section ax-v2-dark-section ax-v2-ceal-section ax-v2-ceal-section-centered"
+    aria-labelledby="ax-v2-ceal-title"
+  >
+    <picture class="ax-v2-ceal-background" aria-hidden="true">
+      <source type="image/avif" srcset={axV2Assets.cealSealBackground.avif} />
+      <source type="image/webp" srcset={axV2Assets.cealSealBackground.webp} />
+      <img
+        src={axV2Assets.cealSealBackground.jpg}
+        width={axV2Assets.cealSealBackground.width}
+        height={axV2Assets.cealSealBackground.height}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.ceal.eyebrow}</h2>
       <p class="ax-v2-descriptor" data-reveal>{c.ceal.descriptor}</p>
-      <div class="ax-v2-heading-block" data-reveal>
+      <div class="ax-v2-heading-block ax-v2-heading-block-centered" data-reveal>
         <h3 id="ax-v2-ceal-title">
           {c.ceal.heading.map((line, index) => (
             <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
@@ -437,10 +498,13 @@ const brochureHref = import.meta.env.DEV
       </div>
       <div class="ax-v2-package-grid">
         {c.packages.cards.map((card, index) => (
-          <article class:list={['ax-v2-package-card', { 'is-featured': index === 1 }]} data-reveal>
+          <article
+            class:list={['ax-v2-package-card', { 'is-featured': index === 1 }]}
+            style={`--reveal-delay: ${index * 0.28}s`}
+            data-reveal
+          >
             <span>{card.name}</span>
             <h4>{card.title}</h4>
-            <strong>{card.decision}</strong>
             <ul>{card.items.map((item) => <li>{item}</li>)}</ul>
           </article>
         ))}
@@ -504,24 +568,36 @@ const brochureHref = import.meta.env.DEV
 
   <dialog class="ax-v2-dialog" aria-labelledby="ax-v2-dialog-title" data-ax-v2-dialog>
     <div class="ax-v2-dialog-panel">
-      <button class="ax-v2-dialog-close" type="button" aria-label="상담 신청 창 닫기" data-dialog-close>×</button>
+      <button class="ax-v2-dialog-close" type="button" aria-label="상담 신청 창 닫기" data-dialog-close>
+        <span aria-hidden="true">×</span>
+      </button>
       <div class="ax-v2-dialog-heading">
         <p class="ax-v2-dialog-title" id="ax-v2-dialog-title"><AxLines values={c.contact.heading} /></p>
-        <p><AxLines values={c.contact.body} /></p>
+        <p class="ax-v2-dialog-description">
+          {c.contact.dialogBody.lead}<br />
+          {c.contact.dialogBody.selection}<br class="ax-v2-dialog-desktop-break" /><span
+            class="ax-v2-dialog-mobile-space"> </span
+          >{c.contact.dialogBody.constraint}<br />
+          {c.contact.dialogBody.route}<br />
+          {c.contact.dialogBody.next}
+        </p>
       </div>
       <AxLeadForm id="modal" compact />
     </div>
   </dialog>
 
-  <dialog class="ax-v2-hold-dialog" aria-labelledby="ax-v2-hold-title" data-ax-v2-hold-dialog>
+  <dialog class="ax-v2-hold-dialog" aria-labelledby="ax-v2-hold-title" data-ax-v2-success-dialog>
     <div class="ax-v2-hold-panel">
-      <p class="ax-v2-eyebrow">상담 신청 완료</p>
+      <div class="ax-v2-success-icon" aria-hidden="true">✓</div>
+      <p class="ax-v2-eyebrow">상담 접수 완료</p>
       <p class="ax-v2-hold-title" id="ax-v2-hold-title">상담 신청이 접수되었습니다.</p>
       <p class="ax-v2-hold-copy">
-        남겨주신 내용을 담당자가 확인한 뒤<br />
-        상담 일정을 안내드리겠습니다.
+        보내주신 내용을 담당자가 꼼꼼히 확인한 뒤 곧 연락드리겠습니다.<br />
+        감사합니다.<br />
+        이 창은 잠시 후 자동으로 닫힙니다.
       </p>
-      <button class="ax-v2-primary-button" type="button" data-ax-v2-hold-close>확인</button>
+      <div class="ax-v2-success-timer" aria-hidden="true"><span></span></div>
+      <button class="ax-v2-primary-button" type="button" data-ax-v2-success-close>닫기</button>
     </div>
   </dialog>
 </div>

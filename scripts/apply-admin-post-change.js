@@ -63,7 +63,7 @@ const localeLabels = {
     dateLocale: 'ja-JP',
   },
   zh: {
-    lang: 'zh',
+    lang: 'zh-CN',
     hreflang: 'zh-CN',
     ogLocale: 'zh_CN',
     blogPath: '/zh/blog',
@@ -79,7 +79,6 @@ const localeLabels = {
 };
 const supportedLocales = Object.keys(localePaths);
 const translationTargetLocales = supportedLocales.filter((locale) => locale !== 'ko');
-const defaultAuthor = 'Corca Team';
 const defaultCover = 'assets/editorial-cover.jpg';
 const blogIndexLabels = {
   ko: {
@@ -307,7 +306,7 @@ async function upsertPost(value) {
     description,
     date: normalizeDate(metadata.date || parsed?.metadata.date || todayInTimeZone('Asia/Seoul')),
     tags,
-    author: String(metadata.author || parsed?.metadata.author || defaultAuthor).trim(),
+    author: String(metadata.author || parsed?.metadata.author || '').trim(),
     cover:
       uploadedCover || normalizeCover(metadata.cover || parsed?.metadata.cover || defaultCover),
     language: normalizeLanguage(metadata.language || parsed?.metadata.language || 'ko'),
@@ -673,7 +672,7 @@ async function readBasePostRecords() {
       description,
       date: normalizeDate(requiredString(parsed.metadata.date, 'date')),
       tags,
-      author: String(parsed.metadata.author || defaultAuthor).trim(),
+      author: String(parsed.metadata.author || '').trim(),
       cover,
       wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
       language: normalizeLanguage(parsed.metadata.language || 'ko'),
@@ -741,7 +740,7 @@ async function localizePostRecord(baseRecord, locale) {
     title,
     description,
     tags: localizePostTags(tags, locale),
-    author: String(parsed.metadata.author || baseRecord.post.author || defaultAuthor).trim(),
+    author: String(parsed.metadata.author || baseRecord.post.author || '').trim(),
     cover: localizedCover === defaultCover ? baseRecord.post.cover : localizedCover,
     wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
     language: locale,
@@ -809,11 +808,11 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 
     html = html
       .replace(/<html lang="[^"]*"/, `<html lang="${localeLabels[locale].lang}"`)
-      .replace(/\n\s*<meta name="robots" content="index,follow,max-image-preview:large">/g, '')
+      .replace(/\n\s*<meta name="robots"[^>]*>/gi, '')
       .replace(/\n\s*<link rel="canonical" href="[^"]+">/g, '')
       .replace(
         /<meta name="description" content="[^"]*">/,
-        `<meta name="description" content="${escapeAttribute(labels.description)}">`,
+        `<meta name="description" content="${escapeAttribute(labels.description)}">\n    <meta name="robots" content="index, follow">`,
       )
       .replace(
         /<meta property="og:description" content="[^"]*">/,
@@ -831,7 +830,7 @@ async function renderBlogIndexPages(postRecordsByLocale) {
       .replace(/"description":\s*"[^"]*"/, `"description": ${JSON.stringify(labels.description)}`)
       .replace(
         /"inLanguage":\s*"[^"]*"/,
-        `"inLanguage": ${JSON.stringify(localeLabels[locale].hreflang)}`,
+        `"inLanguage": ${JSON.stringify(localeLabels[locale].lang)}`,
       )
       .replace(
         /<span class="hero-title-sub">[\s\S]*?<\/span>/,
@@ -1102,7 +1101,7 @@ function renderBlogRss(records) {
       <pubDate>${escapeHtml(rssDate(post.date))}</pubDate>
       <description><![CDATA[${cdata(post.description)}]]></description>
       <category><![CDATA[${cdata(getRssCategory(post))}]]></category>
-      <dc:creator><![CDATA[${cdata(post.author || defaultAuthor)}]]></dc:creator>
+${post.author ? `      <dc:creator><![CDATA[${cdata(post.author)}]]></dc:creator>` : ''}
     </item>`;
     })
     .join('\n');
@@ -1148,7 +1147,7 @@ function renderBlogJsonFeed(records) {
       content_html: absolutizeBlogContentHtml(articleHtml),
       summary: post.description,
       date_published: `${post.date}T00:00:00.000Z`,
-      authors: [{ name: post.author || defaultAuthor }],
+      ...(post.author ? { authors: [{ name: post.author }] } : {}),
       tags: [...new Set([post.section, ...(post.tags || [])].filter(Boolean))],
     };
   });
@@ -1244,7 +1243,7 @@ function renderIndexNoscript(records, locale, labels) {
                 <div class="post-card-body">
                   <h3>${escapeHtml(post.title)}</h3>
                   <p>${escapeHtml(post.description)}</p>
-                  <div class="meta"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time> | ${escapeHtml(post.author)} | <strong>${escapeHtml(post.tags[0] || post.section)}</strong></div>
+                  <div class="meta"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time>${post.author ? ` | ${escapeHtml(post.author)}` : ''} | <strong>${escapeHtml(post.tags[0] || post.section)}</strong></div>
                 </div>
               </a>
             </article>`,
@@ -1342,6 +1341,12 @@ function renderStaticPostPage(
   const pageNav = adjacentPostNav(post, posts, postBySlug, locale);
   const articleSection = post.section || post.tags[0] || '코르카';
   const imageAlt = post.coverAlt || `${post.title} ${localeLabels[locale].imageAltSuffix}`;
+  const articleAuthorMeta = post.author
+    ? `    <meta property="article:author" content="${escapeAttribute(post.author)}">\n`
+    : '';
+  const visibleAuthor = post.author
+    ? `              <span class="meta-item">${escapeHtml(post.author)}</span>\n`
+    : '';
 
   return `<!doctype html>
 <html lang="${localeLabels[locale].lang}">
@@ -1350,6 +1355,7 @@ function renderStaticPostPage(
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${escapeHtml(post.title)} | Corca Blog</title>
     <meta name="description" content="${escapeAttribute(post.description)}">
+    <meta name="robots" content="index, follow">
 ${renderStaticPostSeoLinks(post, locale, availableLocalesBySlug)}
     <meta property="og:title" content="${escapeAttribute(post.title)}">
     <meta property="og:description" content="${escapeAttribute(post.description)}">
@@ -1362,8 +1368,7 @@ ${renderStaticPostSeoLinks(post, locale, availableLocalesBySlug)}
     <meta property="og:url" content="${pageUrl}">
     <meta property="article:published_time" content="${publishedTime}">
     <meta property="article:modified_time" content="${publishedTime}">
-    <meta property="article:author" content="${escapeAttribute(post.author)}">
-    <meta property="article:section" content="${escapeAttribute(articleSection)}">
+${articleAuthorMeta}    <meta property="article:section" content="${escapeAttribute(articleSection)}">
 ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttribute(tag)}">`).join('\n')}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${escapeAttribute(post.title)}">
@@ -1386,8 +1391,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
             <p>${escapeHtml(post.description)}</p>
             <div class="article-meta">
               <span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
-              <span class="meta-item">${escapeHtml(post.author)}</span>
-            </div>
+${visibleAuthor}            </div>
             ${renderStaticMobileNavigation(toc, recommendations, locale)}
           </header>
           <div class="article-content">
@@ -1464,9 +1468,9 @@ function postStructuredData(post, coverUrl, canonical, section, locale) {
         wordCount: post.wordCount,
         datePublished: post.date,
         dateModified: post.date,
-        author: { '@type': 'Organization', name: post.author },
+        ...(post.author ? { author: { '@type': 'Organization', name: post.author } } : {}),
         publisher: { '@type': 'Organization', name: 'Corca' },
-        inLanguage: localeLabels[locale].hreflang,
+        inLanguage: localeLabels[locale].lang,
         timeRequired: `PT${Math.max(1, Math.ceil(post.wordCount / 500))}M`,
         isPartOf: { '@type': 'Blog', name: 'Corca Blog', url: blogUrl },
         mainEntityOfPage: canonical,
@@ -1512,7 +1516,7 @@ function sharedTagScore(a, b) {
 function renderRecommendation(post, locale) {
   return `              <a class="toc-recommendation" href="${escapeAttribute(staticPostPath(post, locale))}">
                 <span>${escapeHtml(post.title)}</span>
-                <small><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time> · ${escapeHtml(post.author)}</small>
+                <small><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time>${post.author ? ` · ${escapeHtml(post.author)}` : ''}</small>
               </a>`;
 }
 
@@ -1690,7 +1694,6 @@ function inferDocumentMetadata(html) {
   const author = firstPresent([
     metaContent(source, ({ name }) => name === 'author'),
     metaContent(source, ({ property }) => property === 'article:author'),
-    defaultAuthor,
   ]);
   const cover = normalizeCover(
     firstPresent([
@@ -1715,7 +1718,7 @@ function renderPostSource(metadata, articleHtml) {
     description: String(metadata.description || '').trim(),
     date: String(metadata.date || '').trim(),
     tags: localizePostTags(normalizedTags, language),
-    author: String(metadata.author || defaultAuthor).trim(),
+    author: String(metadata.author || '').trim(),
     cover: normalizeCover(metadata.cover),
     language,
   };

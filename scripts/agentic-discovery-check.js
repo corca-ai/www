@@ -222,9 +222,9 @@ for (const [pathname, input, expected] of [
 }
 
 const localePages = [
-  ['ko-KR', 'ax/index.html'],
-  ['en-US', 'en/ax/index.html'],
-  ['ja-JP', 'ja/ax/index.html'],
+  ['ko', 'ax/index.html'],
+  ['en', 'en/ax/index.html'],
+  ['ja', 'ja/ax/index.html'],
   ['zh-CN', 'zh/ax/index.html'],
 ];
 

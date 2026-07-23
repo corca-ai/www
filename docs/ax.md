@@ -14,11 +14,20 @@ Any content or visual redesign must also satisfy the shared
 [SEO and performance governance](seo-content-governance.md), including the AX
 mobile critical-path and production measurement gates.
 
+The Korean page that existed before the next content redesign is preserved at
+`/ax-backup`. It is intentionally `noindex, nofollow`, is absent from every
+sitemap and canonicalizes to `/ax`. Its implementation lives in
+`AxLegacy.astro` and `components/pages/ax/`; do not edit those files for the new
+design. Start the redesign from the [AX redesign handoff](ax-redesign-handoff.md)
+and add a new component and versioned asset paths instead.
+
 ## Ownership map
 
 | Concern | Source |
 | --- | --- |
-| Page composition | `src/components/pages/Ax.astro` |
+| Active route wrapper | `src/components/pages/Ax.astro` |
+| Frozen 2026-07-22 page composition | `src/components/pages/AxLegacy.astro` |
+| Frozen Korean backup wrapper | `src/components/pages/AxBackup.astro` and `src/pages/ax-backup.astro` |
 | Localized page copy and form strings | `src/components/pages/ax/content.ts` |
 | Stable consultation topic IDs | `src/components/pages/ax/contract.ts` |
 | Carousel, consultation form and client behavior | `src/components/pages/ax/` |

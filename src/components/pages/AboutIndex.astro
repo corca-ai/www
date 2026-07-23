@@ -66,6 +66,33 @@ const dict = {
 };
 const c = dict[lang];
 
+const IMAGE_ALT: Record<Lang, Record<string, string>> = {
+  ko: {
+    '/about/vision-mission': '코르카의 비전과 미션을 표현한 이미지',
+    '/about/how-we-work': '코르카 팀이 AX Day에서 함께 일하는 모습',
+    '/news': `${latestNews.title.ko} 기사 대표 이미지`,
+    '/about/colleagues': `${firstColleague.role.ko} 인터뷰 사진`,
+  },
+  en: {
+    '/about/vision-mission': 'Visual representing Corca’s vision and mission',
+    '/about/how-we-work': 'Corca team members working together during AX Day',
+    '/news': `Featured image for “${latestNews.title.en}”`,
+    '/about/colleagues': `Interview portrait of ${firstColleague.role.en}`,
+  },
+  ja: {
+    '/about/vision-mission': 'Corcaのビジョンとミッションを表すイメージ',
+    '/about/how-we-work': 'AX Dayで共に働くCorcaチームの様子',
+    '/news': `「${latestNews.title.ja}」の記事画像`,
+    '/about/colleagues': `${firstColleague.role.ja}のインタビュー写真`,
+  },
+  zh: {
+    '/about/vision-mission': '展现Corca愿景与使命的图片',
+    '/about/how-we-work': 'Corca团队在AX Day协作的场景',
+    '/news': `《${latestNews.title.zh}》的文章配图`,
+    '/about/colleagues': `${firstColleague.role.zh}的采访照片`,
+  },
+};
+
 // Representative image per sub-page. vision-mission/how-we-work are fixed
 // (hero bg, AX Day office photo); news/colleagues come from the collections
 // above so they follow the latest content automatically.
@@ -98,7 +125,7 @@ const EXTRA: Record<string, { title: string; meta: string } | undefined> = {
       <div class={i % 2 === 1 ? 'order-first md:order-last' : 'order-first'}>
         <img
           src={IMAGES[it.slug]}
-          alt=""
+          alt={IMAGE_ALT[lang][it.slug]}
           width="900"
           height="620"
           loading={i === 0 ? 'eager' : 'lazy'}

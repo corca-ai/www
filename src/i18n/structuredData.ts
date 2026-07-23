@@ -1,4 +1,4 @@
-import type { Lang } from './ui';
+import { documentLanguage, type Lang } from './ui';
 import { absoluteUrl } from './utils';
 
 // Page-level schema.org nodes, merged into BaseLayout's JSON-LD `@graph`
@@ -49,11 +49,9 @@ export function softwareAppLd(
     url: absoluteUrl(basePath, lang, site.origin),
     applicationCategory: info.category,
     operatingSystem: info.os,
-    inLanguage: ['ko', 'en', 'ja', 'zh'],
+    inLanguage: documentLanguage[lang],
     installUrl: info.appUrl,
     downloadUrl: info.appUrl,
-    // Both products are free to download / start using (freemium).
-    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     publisher: orgRef(site),
   };
 }
@@ -65,14 +63,7 @@ const axServiceType: Record<Lang, string> = {
   zh: '企业AI转型（AX）咨询',
 };
 
-const axOfferNames: Record<Lang, [string, string, string]> = {
-  ko: ['AX 의사결정 지도', '첫 업무 운영 전환', '업무·부서 확장'],
-  en: ['AX Decision Map', 'First Workflow to Production', 'Workflow & Department Expansion'],
-  ja: ['AX意思決定マップ', '最初の業務の運用移行', '業務・部門への展開'],
-  zh: ['AX决策地图', '首个业务上线运营', '业务与部门扩展'],
-};
-
-/** Service and offers for the Corca AX consulting page. */
+/** Service for the Corca AX consulting page. */
 export function axServiceLd(
   site: URL,
   lang: Lang,
@@ -80,27 +71,14 @@ export function axServiceLd(
   name: string,
   description: string,
 ) {
-  const offerNames = axOfferNames[lang];
   return {
     '@type': 'Service',
     name,
     description,
     url: absoluteUrl(basePath, lang, site.origin),
     serviceType: axServiceType[lang],
+    inLanguage: documentLanguage[lang],
     areaServed: { '@type': 'Country', name: 'KR' },
     provider: orgRef(site),
-    offers: [
-      { '@type': 'Offer', name: offerNames[0], price: '35000000', priceCurrency: 'KRW' },
-      { '@type': 'Offer', name: offerNames[1], price: '100000000', priceCurrency: 'KRW' },
-      {
-        '@type': 'Offer',
-        name: offerNames[2],
-        priceSpecification: {
-          '@type': 'PriceSpecification',
-          minPrice: '200000000',
-          priceCurrency: 'KRW',
-        },
-      },
-    ],
   };
 }

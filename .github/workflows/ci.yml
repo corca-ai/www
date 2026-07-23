@@ -34,6 +34,8 @@ jobs:
         run: pnpm check:agentic
       - name: SEO performance contract
         run: pnpm check:performance-contract
+      - name: Metadata, schema and image-alt governance
+        run: pnpm check:seo-governance
 
   # Duplication (nose) + docs (awiki) gates. Both are public corca-ai tools;
   # installed here from their public release binaries — no token needed.

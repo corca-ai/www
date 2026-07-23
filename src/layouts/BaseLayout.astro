@@ -3,7 +3,7 @@ import '../styles/global.css';
 import CommonHead from '../components/CommonHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { localeTag, ogLocale, locales, defaultLang, contact, type Lang } from '../i18n/ui';
+import { documentLanguage, localeTag, ogLocale, locales, defaultLang, contact, type Lang } from '../i18n/ui';
 import { absoluteUrl } from '../i18n/utils';
 import { SITE_ORIGIN } from '../site';
 
@@ -88,7 +88,7 @@ const webSiteNode = {
   '@id': `${site.href}#website`,
   url: site.href,
   name: 'Corca',
-  inLanguage: localeTag[lang],
+  inLanguage: documentLanguage[lang],
   publisher: { '@id': `${site.href}#organization` },
 };
 const graph = {
@@ -98,7 +98,7 @@ const graph = {
 ---
 
 <!doctype html>
-<html lang={localeTag[lang]}>
+<html lang={documentLanguage[lang]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

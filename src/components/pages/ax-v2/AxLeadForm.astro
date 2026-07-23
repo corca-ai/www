@@ -1,13 +1,22 @@
 ---
-import { axV2Content } from './content';
+import type { Lang } from '../../../i18n/ui';
+import { axV2ContentByLang } from './content';
 
 interface Props {
   id: string;
+  lang: Lang;
   compact?: boolean;
 }
 
-const { id, compact = false } = Astro.props;
-const c = axV2Content.contact;
+const { id, lang, compact = false } = Astro.props;
+const c = axV2ContentByLang[lang].contact;
+const phoneTitle = {
+  ko: '전화번호 숫자를 입력해 주세요. 하이픈은 자동으로 추가됩니다.',
+  en: 'Enter a phone number. Hyphens are added automatically.',
+  ja: '電話番号を入力してください。ハイフンは自動で追加されます。',
+  zh: '请输入电话号码，系统会自动添加连字符。',
+}[lang];
+const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
 const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '/privacy').trim();
 const formId = `ax-lead-${id}`;
 ---
@@ -19,7 +28,7 @@ const formId = `ax-lead-${id}`;
   action="/api/ax/consultations"
   method="post"
   data-ax-v2-lead-form
-  data-locale="ko"
+  data-locale={lang}
   data-sending-label={c.sending}
   novalidate
 >
@@ -57,10 +66,10 @@ const formId = `ax-lead-${id}`;
         type="tel"
         autocomplete="tel"
         inputmode="numeric"
-        pattern="[0-9]{8,15}"
-        maxlength="15"
+        pattern="(?:02-[0-9]{3,8}-[0-9]{4}|[0-9]{3}-[0-9]{1,8}-[0-9]{4})"
+        maxlength="17"
         placeholder={c.placeholders.phone}
-        title="하이픈 없이 숫자 8~15자리로 입력해 주세요."
+        title={phoneTitle}
         aria-describedby={`${formId}-phone-error`}
         required
       />
@@ -97,7 +106,7 @@ const formId = `ax-lead-${id}`;
   </div>
 
   <label class="ax-v2-honeypot" aria-hidden="true">
-    <span>웹사이트</span>
+    <span>{websiteLabel}</span>
     <input name="website" tabindex="-1" autocomplete="off" />
   </label>
 

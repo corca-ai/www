@@ -11,6 +11,105 @@ function emitAnalytics(event: string, parameters: Record<string, unknown> = {}) 
   window.dataLayer.push({ event, ...parameters });
 }
 
+const FORM_MESSAGES = {
+  ko: {
+    request: {
+      DELIVERY_FAILED: '상담 신청 전송에 실패했습니다.',
+      DELIVERY_NOT_CONFIGURED: '상담 접수 설정을 불러오지 못했습니다.',
+      FORM_EXPIRED: '입력 시간이 만료되었습니다. 다시 제출해 주세요.',
+      FORM_SUBMITTED_TOO_QUICKLY: '잠시 후 다시 제출해 주세요.',
+      RATE_LIMITED: '요청이 많습니다. 잠시 후 다시 시도해 주세요.',
+      VALIDATION_ERROR: '입력 내용을 다시 확인해 주세요.',
+      network: '네트워크 연결을 확인한 뒤 다시 시도해 주세요.',
+      unknown: '상담 신청을 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.',
+    },
+    fields: {
+      INVALID_NAME: '성함을 확인해 주세요.',
+      INVALID_EMAIL: '이메일 주소를 확인해 주세요.',
+      INVALID_PHONE: '전화번호를 확인해 주세요.',
+      MESSAGE_REQUIRED: '문의내용을 입력해 주세요.',
+      MESSAGE_TOO_LONG: '문의내용은 2,000자 이내로 입력해 주세요.',
+      PRIVACY_CONSENT_REQUIRED: '개인정보처리방침 동의가 필요합니다.',
+    },
+    fieldFallback: '입력 내용을 확인해 주세요.',
+    required: '필수 항목을 모두 올바르게 입력해 주세요.',
+    sending: '상담 신청을 안전하게 전송하고 있습니다.',
+    sent: '상담 신청이 잘 전송되었습니다.',
+  },
+  en: {
+    request: {
+      DELIVERY_FAILED: 'We could not send your consultation request.',
+      DELIVERY_NOT_CONFIGURED: 'The consultation service is not available right now.',
+      FORM_EXPIRED: 'Your form session expired. Please submit it again.',
+      FORM_SUBMITTED_TOO_QUICKLY: 'Please wait a moment and try again.',
+      RATE_LIMITED: 'Too many requests. Please try again shortly.',
+      VALIDATION_ERROR: 'Please review the information entered.',
+      network: 'Check your network connection and try again.',
+      unknown: 'We could not send your request. Please try again shortly.',
+    },
+    fields: {
+      INVALID_NAME: 'Please check your name.',
+      INVALID_EMAIL: 'Please check your email address.',
+      INVALID_PHONE: 'Please check your phone number.',
+      MESSAGE_REQUIRED: 'Please enter a message.',
+      MESSAGE_TOO_LONG: 'Please keep your message under 2,000 characters.',
+      PRIVACY_CONSENT_REQUIRED: 'You must agree to the Privacy Policy.',
+    },
+    fieldFallback: 'Please review this field.',
+    required: 'Please complete all required fields correctly.',
+    sending: 'Sending your consultation request securely.',
+    sent: 'Your consultation request has been sent.',
+  },
+  ja: {
+    request: {
+      DELIVERY_FAILED: '相談申請を送信できませんでした。',
+      DELIVERY_NOT_CONFIGURED: '現在、相談受付サービスを利用できません。',
+      FORM_EXPIRED: '入力時間が終了しました。もう一度送信してください。',
+      FORM_SUBMITTED_TOO_QUICKLY: 'しばらくしてからもう一度お試しください。',
+      RATE_LIMITED: 'リクエストが多すぎます。しばらくしてからお試しください。',
+      VALIDATION_ERROR: '入力内容をご確認ください。',
+      network: 'ネットワーク接続を確認して、もう一度お試しください。',
+      unknown: '相談申請を送信できませんでした。しばらくしてからお試しください。',
+    },
+    fields: {
+      INVALID_NAME: 'お名前をご確認ください。',
+      INVALID_EMAIL: 'メールアドレスをご確認ください。',
+      INVALID_PHONE: '電話番号をご確認ください。',
+      MESSAGE_REQUIRED: 'お問い合わせ内容を入力してください。',
+      MESSAGE_TOO_LONG: 'お問い合わせ内容は2,000文字以内で入力してください。',
+      PRIVACY_CONSENT_REQUIRED: 'プライバシーポリシーへの同意が必要です。',
+    },
+    fieldFallback: '入力内容をご確認ください。',
+    required: '必須項目を正しく入力してください。',
+    sending: '相談申請を安全に送信しています。',
+    sent: '相談申請を送信しました。',
+  },
+  zh: {
+    request: {
+      DELIVERY_FAILED: '咨询申请发送失败。',
+      DELIVERY_NOT_CONFIGURED: '当前无法使用咨询服务。',
+      FORM_EXPIRED: '填写时间已过期，请重新提交。',
+      FORM_SUBMITTED_TOO_QUICKLY: '请稍候再试。',
+      RATE_LIMITED: '请求过多，请稍后重试。',
+      VALIDATION_ERROR: '请检查填写内容。',
+      network: '请检查网络连接后重试。',
+      unknown: '咨询申请未能发送，请稍后重试。',
+    },
+    fields: {
+      INVALID_NAME: '请检查姓名。',
+      INVALID_EMAIL: '请检查电子邮箱地址。',
+      INVALID_PHONE: '请检查电话号码。',
+      MESSAGE_REQUIRED: '请输入咨询内容。',
+      MESSAGE_TOO_LONG: '咨询内容请控制在2,000字以内。',
+      PRIVACY_CONSENT_REQUIRED: '需要同意隐私政策。',
+    },
+    fieldFallback: '请检查填写内容。',
+    required: '请正确填写所有必填项。',
+    sending: '正在安全发送咨询申请。',
+    sent: '咨询申请已发送。',
+  },
+} as const;
+
 class AxV2HeroMediaController {
   private visible = false;
   private sourceConnected = false;
@@ -408,15 +507,19 @@ function initializeDialog(page: HTMLElement) {
   if (!dialog || !closer) return;
 
   let returnFocus: HTMLElement | null = null;
+  let closeTimer = 0;
   const close = () => {
-    if (!dialog.open) return;
-    dialog.close();
-    returnFocus?.focus();
+    if (!dialog.open || dialog.classList.contains('is-closing')) return;
+    dialog.classList.add('is-closing');
+    const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1_600;
+    closeTimer = window.setTimeout(() => dialog.close(), duration);
   };
 
   openers.forEach((button) => {
     button.addEventListener('click', () => {
       returnFocus = button;
+      window.clearTimeout(closeTimer);
+      dialog.classList.remove('is-closing');
       dialog.showModal();
       requestAnimationFrame(() => {
         dialog.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
@@ -431,7 +534,11 @@ function initializeDialog(page: HTMLElement) {
     event.preventDefault();
     close();
   });
-  dialog.addEventListener('close', () => returnFocus?.focus());
+  dialog.addEventListener('close', () => {
+    window.clearTimeout(closeTimer);
+    dialog.classList.remove('is-closing');
+    returnFocus?.focus();
+  });
 }
 
 function initializeSuccessDialog(page: HTMLElement) {
@@ -467,7 +574,7 @@ function initializeSuccessDialog(page: HTMLElement) {
       dialog.showModal();
       closer.focus();
       requestAnimationFrame(() => dialog.classList.add('is-counting'));
-      closeTimer = window.setTimeout(close, 2_000);
+      closeTimer = window.setTimeout(close, 5_000);
     });
   });
 
@@ -494,6 +601,7 @@ function initializeLeadForm(form: HTMLFormElement) {
   if (!submit || !submitLabel || !status || !formAlert) return;
   const defaultSubmitLabel = submitLabel.textContent ?? '2주 진단 상담 신청하기';
   const locale = form.dataset.locale ?? 'ko';
+  const messages = FORM_MESSAGES[locale as keyof typeof FORM_MESSAGES] ?? FORM_MESSAGES.ko;
   let startedAt = Date.now();
   let submitting = false;
 
@@ -520,18 +628,8 @@ function initializeLeadForm(form: HTMLFormElement) {
   };
 
   const showRequestError = (code: string) => {
-    const messages: Record<string, string> = {
-      DELIVERY_FAILED: '상담 신청 전송에 실패했습니다.',
-      DELIVERY_NOT_CONFIGURED: '상담 접수 설정을 불러오지 못했습니다.',
-      FORM_EXPIRED: '입력 시간이 만료되었습니다. 다시 제출해 주세요.',
-      FORM_SUBMITTED_TOO_QUICKLY: '잠시 후 다시 제출해 주세요.',
-      RATE_LIMITED: '요청이 많습니다. 잠시 후 다시 시도해 주세요.',
-      VALIDATION_ERROR: '입력 내용을 다시 확인해 주세요.',
-      network: '네트워크 연결을 확인한 뒤 다시 시도해 주세요.',
-      unknown: '상담 신청을 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.',
-    };
     formAlert.textContent =
-      messages[code] ?? messages.unknown ?? '상담 신청을 전송하지 못했습니다.';
+      messages.request[code as keyof typeof messages.request] ?? messages.request.unknown;
     formAlert.hidden = false;
     formAlert.focus({ preventScroll: true });
     status.textContent = formAlert.textContent;
@@ -540,21 +638,16 @@ function initializeLeadForm(form: HTMLFormElement) {
   };
 
   const showFieldErrors = (fields: Record<string, string>) => {
-    const messages: Record<string, string> = {
-      INVALID_NAME: '성함을 확인해 주세요.',
-      INVALID_EMAIL: '이메일 주소를 확인해 주세요.',
-      INVALID_PHONE: '전화번호는 하이픈 없이 숫자 8~15자리로 입력해 주세요.',
-      MESSAGE_REQUIRED: '문의내용을 입력해 주세요.',
-      MESSAGE_TOO_LONG: '문의내용은 2,000자 이내로 입력해 주세요.',
-      PRIVACY_CONSENT_REQUIRED: '개인정보처리방침 동의가 필요합니다.',
-    };
     for (const [name, code] of Object.entries(fields)) {
       const field = form.elements.namedItem(name);
       if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
         field.setAttribute('aria-invalid', 'true');
       }
       const error = form.querySelector<HTMLElement>(`[data-field-error="${name}"]`);
-      if (error) error.textContent = messages[code] ?? '입력 내용을 확인해 주세요.';
+      if (error) {
+        error.textContent =
+          messages.fields[code as keyof typeof messages.fields] ?? messages.fieldFallback;
+      }
     }
   };
 
@@ -571,7 +664,7 @@ function initializeLeadForm(form: HTMLFormElement) {
     const fields: Record<string, string> = {};
     for (const field of invalidFields) fields[field.name] = fieldCode(field);
     showFieldErrors(fields);
-    formAlert.textContent = '필수 항목을 모두 올바르게 입력해 주세요.';
+    formAlert.textContent = messages.required;
     formAlert.hidden = false;
     formAlert.focus({ preventScroll: true });
     const firstInvalid = invalidFields[0];
@@ -584,7 +677,17 @@ function initializeLeadForm(form: HTMLFormElement) {
   if (phoneInput instanceof HTMLInputElement) {
     phoneInput.addEventListener('input', () => {
       const digits = phoneInput.value.replace(/\D/g, '').slice(0, 15);
-      if (phoneInput.value !== digits) phoneInput.value = digits;
+      const prefixLength = digits.startsWith('02') ? 2 : 3;
+      const prefix = digits.slice(0, prefixLength);
+      const remainder = digits.slice(prefixLength);
+      let formatted = prefix;
+      if (remainder.length > 0) {
+        formatted +=
+          remainder.length <= 4
+            ? `-${remainder}`
+            : `-${remainder.slice(0, -4)}-${remainder.slice(-4)}`;
+      }
+      if (phoneInput.value !== formatted) phoneInput.value = formatted;
     });
   }
 
@@ -623,14 +726,14 @@ function initializeLeadForm(form: HTMLFormElement) {
         form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(':invalid'),
       );
       revealValidationAlert(invalidFields);
-      status.textContent = '입력 내용을 확인해 주세요.';
+      status.textContent = messages.fieldFallback;
       status.className = 'ax-v2-form-status is-error';
       return;
     }
     submitting = true;
     syncSubmitState();
     submitLabel.textContent = form.dataset.sendingLabel ?? '상담 신청을 전송하고 있습니다.';
-    status.textContent = '상담 신청을 안전하게 전송하고 있습니다.';
+    status.textContent = messages.sending;
     status.className = 'ax-v2-form-status';
     const data = new FormData(form);
     const search = new URLSearchParams(window.location.search);
@@ -677,7 +780,7 @@ function initializeLeadForm(form: HTMLFormElement) {
 
       form.reset();
       startedAt = Date.now();
-      status.textContent = '상담 신청이 잘 전송되었습니다.';
+      status.textContent = messages.sent;
       status.className = 'ax-v2-form-status is-success';
       status.focus({ preventScroll: true });
       emitAnalytics('generate_lead', { form_id: 'ax_consultation', locale });
@@ -708,6 +811,30 @@ function initializeAnimatedDiagram(root: HTMLElement) {
   });
 }
 
+function initializeInternalProofSequence(root: HTMLElement) {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry?.isIntersecting) return;
+      root.classList.add('is-sequence-visible');
+      observer.disconnect();
+    },
+    { threshold: 0.16, rootMargin: '0px 0px -8% 0px' },
+  );
+  observer.observe(root);
+}
+
+function initializeDiagnosisSequence(root: HTMLElement) {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry?.isIntersecting) return;
+      root.classList.add('is-sequence-visible');
+      observer.disconnect();
+    },
+    { threshold: 0.14, rootMargin: '0px 0px -8% 0px' },
+  );
+  observer.observe(root);
+}
+
 function initializeBrochureLinks(page: HTMLElement) {
   page.querySelectorAll<HTMLAnchorElement>('[data-ax-brochure-link]').forEach((link) => {
     link.addEventListener('click', () => {
@@ -728,21 +855,55 @@ function initializeCompoundParallax(page: HTMLElement) {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let frame = 0;
   let listening = false;
+  let targetOffset = 0;
+  let currentOffset = 0;
+  let velocity = 0;
+  let previousTime = 0;
+  let initialized = false;
 
-  const render = () => {
-    frame = 0;
+  const measureTarget = () => {
     const rect = section.getBoundingClientRect();
     const sectionCenter = rect.top + rect.height / 2;
     const viewportCenter = window.innerHeight / 2;
     const rate = compact.matches ? 0.12 : 0.18;
     const limit = compact.matches ? 44 : 96;
-    const offset = Math.max(-limit, Math.min(limit, (viewportCenter - sectionCenter) * rate));
-    section.style.setProperty('--ax-v2-compound-media-y', `${offset}px`);
+    targetOffset = Math.max(-limit, Math.min(limit, (viewportCenter - sectionCenter) * rate));
+  };
+
+  const render = (time: number) => {
+    if (!initialized) {
+      currentOffset = targetOffset;
+      initialized = true;
+    }
+
+    const deltaTime = previousTime ? Math.min((time - previousTime) / 1000, 0.032) : 1 / 60;
+    previousTime = time;
+
+    // A critically damped spring gives the image weight without bounce: it
+    // accelerates toward the scroll target, then eases to a quiet stop.
+    const stiffness = compact.matches ? 42 : 48;
+    const damping = 2 * Math.sqrt(stiffness);
+    const acceleration = (targetOffset - currentOffset) * stiffness - velocity * damping;
+    velocity += acceleration * deltaTime;
+    currentOffset += velocity * deltaTime;
+
+    const settled = Math.abs(targetOffset - currentOffset) < 0.02 && Math.abs(velocity) < 0.02;
+    if (settled) {
+      currentOffset = targetOffset;
+      velocity = 0;
+    }
+
+    section.style.setProperty('--ax-v2-compound-media-y', `${currentOffset.toFixed(3)}px`);
+    frame = settled ? 0 : window.requestAnimationFrame(render);
   };
 
   const update = () => {
-    if (frame) return;
-    frame = window.requestAnimationFrame(render);
+    if (!listening) return;
+    measureTarget();
+    if (!frame) {
+      previousTime = 0;
+      frame = window.requestAnimationFrame(render);
+    }
   };
 
   const stop = () => {
@@ -752,6 +913,11 @@ function initializeCompoundParallax(page: HTMLElement) {
     window.removeEventListener('resize', update);
     if (frame) window.cancelAnimationFrame(frame);
     frame = 0;
+    targetOffset = 0;
+    currentOffset = 0;
+    velocity = 0;
+    previousTime = 0;
+    initialized = false;
     section.style.removeProperty('--ax-v2-compound-media-y');
   };
 
@@ -785,6 +951,12 @@ function initialize() {
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);
   page.querySelectorAll<HTMLFormElement>('[data-ax-v2-lead-form]').forEach(initializeLeadForm);
   page.querySelectorAll<HTMLElement>('[data-ceal-diagrams]').forEach(initializeAnimatedDiagram);
+  page
+    .querySelectorAll<HTMLElement>('[data-internal-proof-sequence]')
+    .forEach(initializeInternalProofSequence);
+  page
+    .querySelectorAll<HTMLElement>('[data-diagnosis-sequence]')
+    .forEach(initializeDiagnosisSequence);
   initializeBrochureLinks(page);
   initializeDialog(page);
   initializeSuccessDialog(page);

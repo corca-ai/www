@@ -632,6 +632,40 @@
   font-weight: 640;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html.js .ax-v2-internal-sequence .ax-v2-circle-card,
+  html.js .ax-v2-internal-sequence .ax-v2-press-row {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0) scale(0.985);
+    transition:
+      opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 980ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  html.js .ax-v2-internal-sequence.is-sequence-visible .ax-v2-circle-card,
+  html.js .ax-v2-internal-sequence.is-sequence-visible .ax-v2-press-row {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.js .ax-v2-internal-sequence.is-sequence-visible .ax-v2-circle-card:nth-child(1) {
+    transition-delay: 160ms;
+  }
+
+  html.js .ax-v2-internal-sequence.is-sequence-visible .ax-v2-circle-card:nth-child(2) {
+    transition-delay: 340ms;
+  }
+
+  html.js .ax-v2-internal-sequence.is-sequence-visible .ax-v2-circle-card:nth-child(3) {
+    transition-delay: 520ms;
+  }
+
+  html.js .ax-v2-internal-sequence.is-sequence-visible .ax-v2-press-row {
+    transition-delay: 780ms;
+  }
+}
+
 /* Click tabs / mobile accordion */
 .ax-v2-section-closing {
   margin-top: 48px;
@@ -828,6 +862,7 @@
 }
 
 .ax-v2-comparison-arrow {
+  --ax-v2-comparison-arrow-rest: rotate(0deg);
   align-self: center;
   color: transparent;
   background: linear-gradient(90deg, #f5f5f7 2%, #87a7ec 48%, #0757c7 94%);
@@ -843,6 +878,69 @@
   color: var(--ax-v2-muted);
   font-size: 13px;
   text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js .ax-v2-diagnosis-sequence .ax-v2-comparison-legacy,
+  html.js .ax-v2-diagnosis-sequence .ax-v2-comparison-arrow,
+  html.js .ax-v2-diagnosis-sequence .ax-v2-comparison-corca,
+  html.js .ax-v2-diagnosis-sequence .ax-v2-section-closing,
+  html.js .ax-v2-diagnosis-sequence .ax-v2-source-note {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+
+  html.js .ax-v2-diagnosis-sequence .ax-v2-comparison-legacy {
+    transform: translate3d(0, 28px, 0) scale(0.986);
+    transition:
+      opacity 0.78s ease-out 0.1s,
+      transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+  }
+
+  html.js .ax-v2-diagnosis-sequence .ax-v2-comparison-arrow {
+    clip-path: inset(0 100% 0 0);
+    transform: translate3d(-22px, 0, 0) var(--ax-v2-comparison-arrow-rest);
+    transition:
+      opacity 0.52s ease-out 0.78s,
+      transform 0.78s cubic-bezier(0.16, 1, 0.3, 1) 0.78s,
+      clip-path 0.78s cubic-bezier(0.16, 1, 0.3, 1) 0.78s;
+  }
+
+  html.js .ax-v2-diagnosis-sequence .ax-v2-comparison-corca {
+    transform: translate3d(0, 28px, 0) scale(0.986);
+    transition:
+      opacity 0.72s ease-out 1.48s,
+      transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.48s;
+  }
+
+  html.js .ax-v2-diagnosis-sequence .ax-v2-section-closing {
+    transform: translate3d(0, 24px, 0);
+    transition:
+      opacity 0.68s ease-out 2.28s,
+      transform 0.86s cubic-bezier(0.16, 1, 0.3, 1) 2.28s;
+  }
+
+  html.js .ax-v2-diagnosis-sequence .ax-v2-source-note {
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity 0.62s ease-out 2.62s,
+      transform 0.78s cubic-bezier(0.16, 1, 0.3, 1) 2.62s;
+  }
+
+  html.js .ax-v2-diagnosis-sequence.is-sequence-visible .ax-v2-comparison-legacy,
+  html.js .ax-v2-diagnosis-sequence.is-sequence-visible .ax-v2-comparison-arrow,
+  html.js .ax-v2-diagnosis-sequence.is-sequence-visible .ax-v2-comparison-corca,
+  html.js .ax-v2-diagnosis-sequence.is-sequence-visible .ax-v2-section-closing,
+  html.js .ax-v2-diagnosis-sequence.is-sequence-visible .ax-v2-source-note {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  html.js .ax-v2-diagnosis-sequence.is-sequence-visible .ax-v2-comparison-arrow {
+    clip-path: inset(0);
+    transform: var(--ax-v2-comparison-arrow-rest);
+  }
 }
 
 /* Cards and environment table */
@@ -1353,7 +1451,7 @@
     0 0 0 1px rgba(95, 188, 255, 0.42),
     0 12px 30px rgba(8, 116, 255, 0.34),
     0 0 30px rgba(101, 189, 255, 0.24);
-  animation: ax-v2-submit-ready-glow 2.6s ease-in-out infinite;
+  animation: ax-v2-submit-ready-glow 2.17s ease-in-out 1 forwards;
 }
 
 .ax-v2-form-submit.is-ready::after {
@@ -1372,7 +1470,7 @@
   );
   filter: blur(3px);
   transform: skewX(-18deg);
-  animation: ax-v2-submit-ready-shimmer 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: ax-v2-submit-ready-shimmer 2.17s cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
 }
 
 .ax-v2-form-submit:disabled::after {
@@ -1454,6 +1552,9 @@
 .ax-v2-dialog::backdrop {
   background: rgba(0, 10, 28, 0.7);
   backdrop-filter: blur(14px);
+  transition:
+    background 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ax-v2-dialog[open] {
@@ -1475,6 +1576,19 @@
   border-radius: 32px;
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.28);
   animation: ax-v2-dialog-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ax-v2-dialog.is-closing .ax-v2-dialog-panel {
+  opacity: 0;
+  transform: translateY(18px) scale(0.985);
+}
+
+.ax-v2-dialog.is-closing::backdrop {
+  background: rgba(0, 10, 28, 0);
+  backdrop-filter: blur(0);
 }
 
 .ax-v2-dialog-close {
@@ -1656,7 +1770,7 @@ body:has(.ax-v2-dialog[open]) {
 }
 
 .ax-v2-hold-dialog.is-counting .ax-v2-success-timer span {
-  animation: ax-v2-success-countdown 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: ax-v2-success-countdown 5s linear forwards;
 }
 
 .ax-v2-hold-panel .ax-v2-primary-button {
@@ -1802,6 +1916,7 @@ body:has(.ax-v2-hold-dialog[open]) {
   }
 
   .ax-v2-comparison-arrow {
+    --ax-v2-comparison-arrow-rest: rotate(90deg);
     justify-self: center;
     transform: rotate(90deg);
   }
@@ -2104,6 +2219,11 @@ body:has(.ax-v2-hold-dialog[open]) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ax-v2-dialog-panel,
+  .ax-v2-dialog::backdrop {
+    transition: none;
+  }
+
   .ax-v2-hold-panel {
     animation: none;
     transition: none;
@@ -2189,10 +2309,11 @@ body:has(.ax-v2-hold-dialog[open]) {
   .ax-v2-compound-copy {
     width: 100%;
     position: absolute;
-    top: clamp(84px, 8vw, 128px);
+    top: 41%;
     inset-inline: 0;
     padding-right: 0;
     text-align: center;
+    transform: translateY(-50%);
   }
 
   .ax-v2-compound h2 {

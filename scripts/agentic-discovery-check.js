@@ -265,7 +265,7 @@ for (const [lang, path] of localePages) {
   const slides = [...html.matchAll(/<(?:article|figure)\b[^>]*data-carousel-slide[^>]*>/g)].map(
     (match) => match[0],
   );
-  const expectedSlides = lang === 'ko' ? 2 : 5;
+  const expectedSlides = 2;
   assert(
     slides.length === expectedSlides,
     `${path} must expose ${expectedSlides} semantic carousel slides`,
@@ -288,7 +288,7 @@ for (const [lang, path] of localePages) {
   const controls = [
     ...html.matchAll(/<button\b[^>]*data-carousel-(?:previous|next|select|playback)[^>]*>/g),
   ].map((match) => match[0]);
-  const expectedControls = lang === 'ko' ? 2 : 11;
+  const expectedControls = 2;
   assert(
     controls.length === expectedControls,
     `${path} must expose ${expectedControls} carousel controls`,
@@ -298,7 +298,7 @@ for (const [lang, path] of localePages) {
     `${path} has an unnamed carousel control`,
   );
   assert(
-    count(/aria-live="polite"[^>]*data-carousel-status/g) === (lang === 'ko' ? 1 : 2),
+    count(/aria-live="polite"[^>]*data-carousel-status/g) === 1,
     `${path} has the wrong number of polite carousel status regions`,
   );
 }

@@ -433,8 +433,13 @@ const brochureHref = import.meta.env.DEV
     </div>
   </section>
 
-  <section class="ax-v2-section ax-v2-blue-wash" aria-labelledby="ax-v2-coaching-title">
-    <div class="ax-v2-shell">
+  <section
+    class="ax-v2-section ax-v2-blue-wash ax-v2-coaching-section"
+    aria-labelledby="ax-v2-coaching-title"
+    data-coaching-parallax
+  >
+    <div class="ax-v2-coaching-parallax-bg" aria-hidden="true"></div>
+    <div class="ax-v2-shell ax-v2-coaching-content">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.coaching.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
         <h3 id="ax-v2-coaching-title">
@@ -643,7 +648,7 @@ const brochureHref = import.meta.env.DEV
         </a>
       </div>
       <div class="ax-v2-inline-form" data-reveal>
-        <AxLeadForm id="inline" lang={lang} />
+        <AxLeadForm id="inline" lang={lang} compact />
       </div>
     </div>
   </section>

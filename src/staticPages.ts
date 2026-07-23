@@ -6,6 +6,7 @@ import Colleagues from './components/pages/Colleagues.astro';
 import Home from './components/pages/Home.astro';
 import HowWeWork from './components/pages/HowWeWork.astro';
 import News from './components/pages/News.astro';
+import Privacy from './components/pages/Privacy.astro';
 import Products from './components/pages/Products.astro';
 import { type Meta, pageMeta } from './i18n/pageMeta';
 import { axServiceLd } from './i18n/structuredData';
@@ -18,6 +19,7 @@ type StaticPage = {
   ogImage?: string;
   ogImageAlt?: (lang: Lang) => string;
   jsonLd?: (site: URL, lang: Lang, meta: Meta) => Record<string, unknown>[];
+  noindex?: boolean;
 };
 
 // The static (non-product) pages: id → live URL base, component and per-locale
@@ -52,6 +54,12 @@ const staticPageDefinitions = {
         meta.description,
       ),
     ],
+  },
+  privacy: {
+    basePath: '/privacy',
+    Component: Privacy,
+    meta: (l) => pageMeta.privacy[l],
+    noindex: true,
   },
   products: { basePath: '/products', Component: Products, meta: (l) => pageMeta.products[l] },
   about: { basePath: '/about', Component: AboutIndex, meta: (l) => pageMeta.about[l] },

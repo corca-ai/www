@@ -113,6 +113,9 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   if (topic && !isConsultationTopic(topic)) fields.topic = 'INVALID_TOPIC';
   if (message.length > 2_000) fields.message = 'MESSAGE_TOO_LONG';
   if (payload.privacy_consent !== true) fields.privacy_consent = 'PRIVACY_CONSENT_REQUIRED';
+  if (locale === 'zh' && payload.cross_border_consent !== true) {
+    fields.cross_border_consent = 'CROSS_BORDER_CONSENT_REQUIRED';
+  }
   if (!isLocale(locale)) fields.locale = 'INVALID_LOCALE';
   if (startedAt === null) fields.started_at = 'INVALID_STARTED_AT';
   if (!utm.valid) fields.utm = 'INVALID_UTM';

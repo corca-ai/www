@@ -54,6 +54,8 @@ if (product?.app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta
 if (staticPage?.jsonLd) jsonLd.push(...staticPage.jsonLd(site, lang, meta));
 const ogImage = staticPage?.ogImage;
 const ogImageAlt = staticPage?.ogImageAlt?.(lang);
+const noindex = staticPage?.noindex;
+const noindexProps = noindex === undefined ? {} : { noindex };
 const socialImageProps = ogImage
   ? { ogImage, ...(ogImageAlt ? { ogImageAlt } : {}) }
   : {};
@@ -65,6 +67,7 @@ const socialImageProps = ogImage
   description={meta.description}
   basePath={basePath}
   jsonLd={jsonLd}
+  {...noindexProps}
   {...socialImageProps}
 >
   <Component lang={lang} />

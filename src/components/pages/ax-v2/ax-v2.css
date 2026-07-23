@@ -49,6 +49,31 @@
   background: #e8f2ff;
 }
 
+.ax-v2-coaching-section {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+.ax-v2-coaching-parallax-bg {
+  position: absolute;
+  z-index: 0;
+  inset: -12%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 28%, rgba(41, 151, 255, 0.17), transparent 35%),
+    radial-gradient(circle at 84% 72%, rgba(9, 105, 218, 0.12), transparent 38%),
+    linear-gradient(160deg, #edf6ff 0%, #e8f2ff 42%, #dcecff 100%);
+  transform: translate3d(0, var(--ax-v2-coaching-bg-y, 0), 0) scale(1.12);
+  transform-origin: center;
+  will-change: transform;
+}
+
+.ax-v2-coaching-content {
+  position: relative;
+  z-index: 1;
+}
+
 .ax-v2-center {
   text-align: center;
 }
@@ -1931,6 +1956,11 @@ body:has(.ax-v2-hold-dialog[open]) {
 }
 
 @media (max-width: 720px) {
+  .ax-v2-coaching-parallax-bg {
+    inset: -16%;
+    transform: translate3d(0, var(--ax-v2-coaching-bg-y, 0), 0) scale(1.16);
+  }
+
   .ax-v2-dialog-desktop-break {
     display: none;
   }

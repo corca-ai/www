@@ -22,7 +22,9 @@ const localizedPath = (basePath: string, lang: Lang) => {
 // Corporate/product routes are registry-backed. Blog landing pages are static
 // assets rendered by the publishing pipeline, so they are added explicitly.
 const basePaths = [
-  ...Object.values(staticPages).map((page) => page.basePath),
+  ...Object.values(staticPages)
+    .filter((page) => !page.noindex)
+    .map((page) => page.basePath),
   ...products.map((product) => `/products/${product.slug}`),
   '/blog',
 ];

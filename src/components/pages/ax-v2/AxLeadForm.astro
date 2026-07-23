@@ -9,11 +9,6 @@ interface Props {
 const { id, compact = false } = Astro.props;
 const c = axV2Content.contact;
 const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '/privacy').trim();
-const turnstileSiteKey = String(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '').trim();
-const deliveryEnabled =
-  import.meta.env.PUBLIC_AX_CONSULTATION_ENABLED === 'true' &&
-  Boolean(privacyUrl) &&
-  Boolean(turnstileSiteKey);
 const formId = `ax-lead-${id}`;
 ---
 
@@ -21,19 +16,20 @@ const formId = `ax-lead-${id}`;
   class:list={['ax-v2-lead-form', { 'is-compact': compact }]}
   id={formId}
   name="ax_consultation"
-  action="/api/ax/consultations"
+  action="/ax#ax-contact"
   method="post"
   data-ax-v2-lead-form
-  data-delivery-enabled={String(deliveryEnabled)}
-  data-turnstile-sitekey={turnstileSiteKey}
   novalidate
 >
-  <input type="hidden" name="locale" value="ko" />
-  <input type="hidden" name="started_at" value="" data-started-at />
-  <div class="ax-v2-honeypot" aria-hidden="true">
-    <label for={`${formId}-website`}>웹사이트</label>
-    <input id={`${formId}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
-  </div>
+  <div
+    class="ax-v2-form-alert"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    tabindex="-1"
+    data-form-alert
+    hidden
+  ></div>
 
   <div class="ax-v2-form-grid">
     <div class="ax-v2-field">
@@ -73,9 +69,11 @@ const formId = `ax-lead-${id}`;
         name="phone"
         type="tel"
         autocomplete="tel"
-        inputmode="tel"
-        maxlength="30"
+        inputmode="numeric"
+        pattern="[0-9]{8,15}"
+        maxlength="15"
         placeholder={c.placeholders.phone}
+        title="하이픈 없이 숫자 8~15자리로 입력해 주세요."
         aria-describedby={`${formId}-phone-error`}
         required
       />
@@ -91,6 +89,7 @@ const formId = `ax-lead-${id}`;
         maxlength="2000"
         placeholder={c.placeholders.message}
         aria-describedby={`${formId}-message-error`}
+        required
       ></textarea>
       <span class="ax-v2-field-error" id={`${formId}-message-error`} data-field-error="message"></span>
     </div>
@@ -113,19 +112,17 @@ const formId = `ax-lead-${id}`;
   </label>
   <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
 
-  {deliveryEnabled && <div class="ax-v2-turnstile" data-turnstile-container></div>}
-
-  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit" disabled={!deliveryEnabled}>
+  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit">
     <span data-submit-label>{c.submit}</span>
   </button>
   <p
-    class:list={['ax-v2-form-status', { 'is-pending': !deliveryEnabled }]}
+    class="ax-v2-form-status is-pending"
     role="status"
     aria-live="polite"
     aria-atomic="true"
     tabindex="-1"
     data-form-status
   >
-    {!deliveryEnabled && c.disabled}
+    현재 상담 접수 API를 준비하고 있습니다. 입력 내용을 확인할 수 있지만 아직 전송되거나 저장되지 않습니다.
   </p>
 </form>

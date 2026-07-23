@@ -41,6 +41,7 @@
 - Round 16 Section 1-2 native-scroll state: `/private/tmp/ax-v2-qa/round16-compound-static-scroll.png`
 - Round 17 testimonial shadow runway: `/private/tmp/ax-v2-qa/round17-testimonial-shadow-runway.png`
 - Round 24 responsive browser probes: 887 × 994 tablet, 721 × 900 boundary, 720 × 900 mobile boundary, and 390 × 844 mobile.
+- Round 29 Section 1-2 mobile team composition: `/private/tmp/ax-v2-qa/round29-compound-mobile-390.png` and a 580 × 998 live-browser check.
 
 ## Capture normalization
 
@@ -108,6 +109,7 @@
 - `/private/tmp/ax-v2-qa/mobile-390-top-2.png` verifies the mobile hero crop, line breaks, CTA, badge, and text/media non-overlap.
 - `/private/tmp/ax-v2-qa/desktop-1440x600.png` verifies the low-height hero rule and prevents the heading from moving behind the header.
 - `/private/tmp/ax-v2-qa/compound-comparison.png` compares the generated team source and the rendered Section 1-2 in one image. The implementation preserves subject sharpness, warm sunlight, right-weighted people composition, and left-side text clearance.
+- `/private/tmp/ax-v2-qa/round29-compound-mobile-390.png` verifies the final mobile Section 1-2 crop contract. The responsive frame uses a 1.43:1 aspect at 390 px and a right-edge object anchor, keeping all four team members inside the centered visible composition instead of clipping the fourth person.
 - `/private/tmp/ax-v2-qa/round5-compound-desktop.png` verifies the approved three-line `첫 성과가 / 복리로 이어지는 조직, / Corca AX가 함께 만듭니다.` copy at a reduced 38.4 px desktop size. The rendered heading ends before the first person begins, with no overlay or horizontal overflow.
 - `/private/tmp/ax-v2-qa/round6-compound-parallax.png` records the superseded parallax iteration. The final `/private/tmp/ax-v2-qa/round16-compound-static-scroll.png` capture verifies the requested native-scroll replacement: the image remains sharp and text-safe without being pulled toward the sticky header.
 - `/private/tmp/ax-v2-qa/round6-proof-shadow-bottom.png` verifies that the testimonial elevation diffuses into the section background without a clipped lower edge.
@@ -217,6 +219,15 @@
 28. Round 28 found the leftmost Ceal-before vertical connector inheriting a legacy rotation and missing the translated node centers on mobile.
    - Fix: explicitly reset all three vertical connectors to an untransformed state and derive every left, center, and right rail anchor from the actual three-column node grid and its responsive gap, rather than approximate percentages.
    - Post-fix evidence: at 549 × 998 all three vertical dashed borders land exactly on the corresponding top and bottom node centers, the leftmost stray segment is gone, and horizontal overflow remains zero.
+29. Round 29 found the Section 1-2 photograph cropping the fourth team member at the right edge on mobile.
+   - Fix: replaced the fixed 460 px mobile media height with a bounded `min(70vw, 500px)` responsive frame and anchored the cover crop to the image's right edge, where the four-person group is located in the source asset.
+   - Post-fix evidence: the 580 × 998 live-browser capture shows all four faces and bodies inside the image frame; the same CSS resolves to a 273 px-high frame at 390 px, preserves the group-focused 1.43:1 crop, and introduces no horizontal overflow.
+30. Round 30 found the responsive OpenAI Select Partner badge touching the GNB at the 900 px-and-below breakpoint.
+   - Fix: placed the fixed tablet badge at `66px + 20px` and the in-Hero mobile badge 20 px below the Hero start, preserving the desktop `/ax` badge contract and mobile scrolling behavior.
+   - Post-fix evidence: live-browser probes at 880 × 1000 and 580 × 998 report a 66 px header bottom, an 86 px badge top, an exact 20 px gap, and zero horizontal overflow.
+31. Round 31 added the private AX acquisition and conversion dashboard requested for sales follow-up.
+   - Fix: implemented a noindex `/admin` login and responsive dashboard backed by a signed HttpOnly session cookie, GA4 Data API aggregates, Gmail lead-label handoff, brochure page dwell instrumentation, date controls, funnel KPIs, referral mix, daily conversion events, and anonymous recent signals. Customer names, email addresses, phone numbers, and inquiry text remain outside GA and the dashboard.
+   - Post-fix evidence: the Cloudflare local preview accepts `admin / 11111`, rejects invalid credentials, persists the valid session across reload, and renders the sample-mode dashboard at 390 × 844, 768 × 900, and 1440 × 900 with zero horizontal overflow. Browser warnings/errors are empty; Biome, Astro, agentic, SEO-governance, performance-contract, and production-build checks pass.
 
 ## Interaction and console checks
 

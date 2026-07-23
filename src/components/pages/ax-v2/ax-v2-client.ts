@@ -1,64 +1,14 @@
 export {};
 
-interface TurnstileApi {
-  render: (
-    container: HTMLElement,
-    options: {
-      sitekey: string;
-      theme?: 'auto' | 'dark' | 'light';
-      callback?: (token: string) => void;
-      'expired-callback'?: () => void;
-      'error-callback'?: () => void;
-    },
-  ) => string;
-  reset: (widgetId?: string) => void;
-}
-
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
-    turnstile?: TurnstileApi;
   }
 }
-
-const TURNSTILE_SCRIPT_ID = 'ax-v2-turnstile-api';
-let turnstilePromise: Promise<TurnstileApi> | undefined;
 
 function emitAnalytics(event: string, parameters: Record<string, unknown> = {}) {
   if (!Array.isArray(window.dataLayer)) window.dataLayer = [];
   window.dataLayer.push({ event, ...parameters });
-}
-
-function loadTurnstile(): Promise<TurnstileApi> {
-  if (window.turnstile) return Promise.resolve(window.turnstile);
-  if (turnstilePromise) return turnstilePromise;
-
-  turnstilePromise = new Promise<TurnstileApi>((resolve, reject) => {
-    const settle = () => {
-      const api = window.turnstile;
-      if (api) resolve(api);
-      else reject(new Error('Turnstile API did not initialize'));
-    };
-    const fail = () => reject(new Error('Turnstile API failed to load'));
-    const installed = document.querySelector<HTMLScriptElement>(`#${TURNSTILE_SCRIPT_ID}`);
-    if (installed) {
-      installed.onload = settle;
-      installed.onerror = fail;
-      return;
-    }
-
-    const script = Object.assign(document.createElement('script'), {
-      id: TURNSTILE_SCRIPT_ID,
-      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit',
-      async: true,
-      defer: true,
-      onload: settle,
-      onerror: fail,
-    });
-    document.head.appendChild(script);
-  });
-
-  return turnstilePromise;
 }
 
 class AxV2HeroMediaController {
@@ -161,7 +111,7 @@ function initializePartnerBadge(page: HTMLElement) {
   const hero = page.querySelector<HTMLElement>('#ax-top');
   if (!badge || !hero) return;
 
-  const mobile = window.matchMedia('(max-width: 720px)');
+  const compact = window.matchMedia('(max-width: 900px)');
   let frame = 0;
   let badgeTop = 0;
   let badgeHeight = 0;
@@ -174,12 +124,15 @@ function initializePartnerBadge(page: HTMLElement) {
 
   const render = () => {
     frame = 0;
-    if (mobile.matches) {
+    if (compact.matches) {
       exiting = false;
       badge.classList.remove('is-exiting');
-      badge.removeAttribute('aria-hidden');
+      badge.style.removeProperty('--ax-v2-badge-exit-progress');
+      badge.setAttribute('aria-hidden', 'false');
       return;
     }
+
+    badge.style.removeProperty('--ax-v2-badge-exit-progress');
 
     const heroBottom = hero.getBoundingClientRect().bottom;
     const exitLine = badgeTop + badgeHeight + 80;
@@ -204,7 +157,7 @@ function initializePartnerBadge(page: HTMLElement) {
   render();
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', refresh, { passive: true });
-  mobile.addEventListener('change', refresh);
+  compact.addEventListener('change', refresh);
 }
 
 function initializeCarousel(root: HTMLElement) {
@@ -437,62 +390,45 @@ function initializeDialog(page: HTMLElement) {
   dialog.addEventListener('close', () => returnFocus?.focus());
 }
 
-function collectUtm() {
-  const params = new URLSearchParams(window.location.search);
-  const utm: Record<string, string> = {};
-  for (const key of ['source', 'medium', 'campaign', 'term', 'content']) {
-    const value = params.get(`utm_${key}`);
-    if (value) utm[key] = value.slice(0, 200);
-  }
-  return utm;
+function initializeHoldDialog(page: HTMLElement) {
+  const dialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-hold-dialog]');
+  const closer = dialog?.querySelector<HTMLButtonElement>('[data-ax-v2-hold-close]');
+  if (!dialog || !closer) return;
+
+  let returnFocus: HTMLElement | null = null;
+  const close = () => {
+    if (dialog.open) dialog.close();
+  };
+
+  page.addEventListener('ax:lead-ready', (event) => {
+    const form = event.target instanceof HTMLFormElement ? event.target : null;
+    returnFocus = form?.querySelector<HTMLButtonElement>('button[type="submit"]') ?? null;
+    const leadDialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-dialog]');
+    if (leadDialog?.open) leadDialog.close();
+    requestAnimationFrame(() => {
+      dialog.showModal();
+      closer.focus();
+    });
+  });
+
+  closer.addEventListener('click', close);
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) close();
+  });
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+  });
+  dialog.addEventListener('close', () => returnFocus?.focus());
 }
 
 function initializeLeadForm(form: HTMLFormElement) {
-  const enabled = form.dataset.deliveryEnabled === 'true';
-  const startedAt = form.querySelector<HTMLInputElement>('[data-started-at]');
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]');
   const status = form.querySelector<HTMLElement>('[data-form-status]');
-  const turnstileContainer = form.querySelector<HTMLElement>('[data-turnstile-container]');
-  if (!startedAt || !submit || !submitLabel || !status) return;
-  startedAt.value = String(Date.now());
-  if (!enabled) return;
-
-  let turnstileToken = '';
-  let turnstileWidgetId = '';
-  let started = false;
-  const markStarted = () => {
-    if (started) return;
-    started = true;
-    emitAnalytics('form_start', { form_id: form.id, form_name: form.name, locale: 'ko' });
-  };
-  form.addEventListener('input', markStarted, { once: true });
-
-  if (turnstileContainer) {
-    const initializeTurnstile = async () => {
-      if (turnstileWidgetId) return;
-      try {
-        const api = await loadTurnstile();
-        turnstileWidgetId = api.render(turnstileContainer, {
-          sitekey: form.dataset.turnstileSitekey ?? '',
-          theme: 'light',
-          callback: (token) => {
-            turnstileToken = token;
-          },
-          'expired-callback': () => {
-            turnstileToken = '';
-          },
-          'error-callback': () => {
-            turnstileToken = '';
-          },
-        });
-      } catch {
-        status.textContent = '보안 확인을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
-        status.className = 'ax-v2-form-status is-error';
-      }
-    };
-    form.addEventListener('focusin', () => void initializeTurnstile(), { once: true });
-  }
+  const formAlert = form.querySelector<HTMLElement>('[data-form-alert]');
+  if (!submit || !submitLabel || !status || !formAlert) return;
+  const defaultSubmitLabel = submitLabel.textContent ?? '2주 진단 상담 신청하기';
 
   const clearErrors = () => {
     form
@@ -503,13 +439,16 @@ function initializeLeadForm(form: HTMLFormElement) {
     form.querySelectorAll<HTMLElement>('[data-field-error]').forEach((element) => {
       element.textContent = '';
     });
+    formAlert.hidden = true;
+    formAlert.textContent = '';
   };
 
   const showFieldErrors = (fields: Record<string, string>) => {
     const messages: Record<string, string> = {
       INVALID_NAME: '성함을 확인해 주세요.',
       INVALID_EMAIL: '이메일 주소를 확인해 주세요.',
-      INVALID_PHONE: '전화번호를 확인해 주세요.',
+      INVALID_PHONE: '전화번호는 하이픈 없이 숫자 8~15자리로 입력해 주세요.',
+      MESSAGE_REQUIRED: '문의내용을 입력해 주세요.',
       MESSAGE_TOO_LONG: '문의내용은 2,000자 이내로 입력해 주세요.',
       PRIVACY_CONSENT_REQUIRED: '개인정보처리방침 동의가 필요합니다.',
     };
@@ -523,78 +462,79 @@ function initializeLeadForm(form: HTMLFormElement) {
     }
   };
 
-  form.addEventListener('submit', async (event) => {
+  const fieldCode = (field: HTMLInputElement | HTMLTextAreaElement) => {
+    if (field.name === 'name') return 'INVALID_NAME';
+    if (field.name === 'email') return 'INVALID_EMAIL';
+    if (field.name === 'phone') return 'INVALID_PHONE';
+    if (field.name === 'message') return 'MESSAGE_REQUIRED';
+    if (field.name === 'privacy_consent') return 'PRIVACY_CONSENT_REQUIRED';
+    return 'INVALID_NAME';
+  };
+
+  const revealValidationAlert = (invalidFields: Array<HTMLInputElement | HTMLTextAreaElement>) => {
+    const fields: Record<string, string> = {};
+    for (const field of invalidFields) fields[field.name] = fieldCode(field);
+    showFieldErrors(fields);
+    formAlert.textContent = '필수 항목을 모두 올바르게 입력해 주세요.';
+    formAlert.hidden = false;
+    formAlert.focus({ preventScroll: true });
+    const firstInvalid = invalidFields[0];
+    if (!firstInvalid) return;
+    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.setTimeout(() => firstInvalid.focus({ preventScroll: true }), 320);
+  };
+
+  const phoneInput = form.elements.namedItem('phone');
+  if (phoneInput instanceof HTMLInputElement) {
+    phoneInput.addEventListener('input', () => {
+      const digits = phoneInput.value.replace(/\D/g, '').slice(0, 15);
+      if (phoneInput.value !== digits) phoneInput.value = digits;
+    });
+  }
+
+  form.addEventListener(
+    'invalid',
+    (event) => {
+      event.preventDefault();
+    },
+    true,
+  );
+
+  form.addEventListener('input', (event) => {
+    const field = event.target;
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+    if (!field.checkValidity()) return;
+    field.removeAttribute('aria-invalid');
+    const error = form.querySelector<HTMLElement>(`[data-field-error="${field.name}"]`);
+    if (error) error.textContent = '';
+    if (!form.querySelector('[aria-invalid="true"]')) {
+      formAlert.hidden = true;
+      formAlert.textContent = '';
+    }
+  });
+
+  form.addEventListener('submit', (event) => {
     event.preventDefault();
     clearErrors();
     if (!form.checkValidity()) {
-      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(':invalid').forEach((field) => {
-        field.setAttribute('aria-invalid', 'true');
-      });
-      form.reportValidity();
+      const invalidFields = Array.from(
+        form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(':invalid'),
+      );
+      revealValidationAlert(invalidFields);
       status.textContent = '입력 내용을 확인해 주세요.';
       status.className = 'ax-v2-form-status is-error';
       return;
     }
-    if (!turnstileToken) {
-      status.textContent = '보안 확인을 완료해 주세요.';
-      status.className = 'ax-v2-form-status is-error';
-      return;
-    }
-
-    const data = new FormData(form);
-    const payload = {
-      name: String(data.get('name') ?? ''),
-      email: String(data.get('email') ?? ''),
-      phone: String(data.get('phone') ?? ''),
-      message: String(data.get('message') ?? ''),
-      privacy_consent: data.get('privacy_consent') === 'true',
-      locale: 'ko',
-      started_at: Number(startedAt.value),
-      utm: collectUtm(),
-      website: String(data.get('website') ?? ''),
-      turnstile_token: turnstileToken,
-    };
-
     submit.disabled = true;
-    submitLabel.textContent = '전송 중입니다';
-    status.textContent = '';
-    status.className = 'ax-v2-form-status';
-    try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const result = (await response.json()) as {
-        ok?: boolean;
-        error?: { code?: string; fields?: Record<string, string> };
-      };
-      if (!response.ok || !result.ok) {
-        if (result.error?.fields) showFieldErrors(result.error.fields);
-        status.textContent =
-          result.error?.code === 'DELIVERY_NOT_CONFIGURED'
-            ? '상담 메일 접수가 아직 활성화되지 않았습니다.'
-            : '상담 요청을 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.';
-        status.className = 'ax-v2-form-status is-error';
-        return;
-      }
-
-      emitAnalytics('form_submit', { form_id: form.id, form_name: form.name, locale: 'ko' });
-      emitAnalytics('ax_lead_submit_success', { form_id: form.id, locale: 'ko' });
-      form.reset();
-      startedAt.value = String(Date.now());
-      status.textContent = '상담 요청이 접수되었습니다.';
-      status.className = 'ax-v2-form-status is-success';
-      status.focus({ preventScroll: true });
-    } catch {
-      status.textContent = '상담 요청을 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.';
-      status.className = 'ax-v2-form-status is-error';
-    } finally {
+    submitLabel.textContent = '입력 확인 완료';
+    status.textContent = '상담 신청 입력 내용이 확인되었습니다.';
+    status.className = 'ax-v2-form-status is-success';
+    status.focus({ preventScroll: true });
+    form.dispatchEvent(new CustomEvent('ax:lead-ready', { bubbles: true }));
+    window.setTimeout(() => {
       submit.disabled = false;
-      submitLabel.textContent = '2주 진단 상담 신청하기';
-      if (window.turnstile && turnstileWidgetId) window.turnstile.reset(turnstileWidgetId);
-      turnstileToken = '';
-    }
+      submitLabel.textContent = defaultSubmitLabel;
+    }, 350);
   });
 }
 
@@ -611,6 +551,18 @@ function initializeAnimatedDiagram(root: HTMLElement) {
   });
 }
 
+function initializeBrochureLinks(page: HTMLElement) {
+  page.querySelectorAll<HTMLAnchorElement>('[data-ax-brochure-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      emitAnalytics('ax_deck_click', {
+        deck_id: 'corca-ax-consulting',
+        link_url: link.href,
+        link_location: 'ax_contact',
+      });
+    });
+  });
+}
+
 function initialize() {
   const page = document.querySelector<HTMLElement>('[data-ax-v2-page]');
   if (!page || page.dataset.initialized === 'true') return;
@@ -622,7 +574,9 @@ function initialize() {
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);
   page.querySelectorAll<HTMLFormElement>('[data-ax-v2-lead-form]').forEach(initializeLeadForm);
   page.querySelectorAll<HTMLElement>('[data-ceal-diagrams]').forEach(initializeAnimatedDiagram);
+  initializeBrochureLinks(page);
   initializeDialog(page);
+  initializeHoldDialog(page);
 }
 
 initialize();

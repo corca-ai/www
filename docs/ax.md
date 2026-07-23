@@ -87,44 +87,27 @@ in the asset registry.
 
 ## Consultation form
 
-The redesigned form posts JSON to `POST /api/ax/consultations`. The Worker
-validates the payload, rejects oversized or suspicious submissions, verifies
-Cloudflare Turnstile and sends the result through a native Cloudflare Email
-Service binding. It does not write submissions to an application database.
-The binding is restricted to one verified destination address, while the
-recipient mailbox applies Corca's approved retention practice.
+The current Korean AX form is a UI-only preview while Corca's CTO prepares the
+approved consultation API and destination contract. It validates the four
+visible fields (`name`, `email`, `phone`, `message`) and privacy consent in the
+browser, presents field-level guidance, and opens a completion dialog after a
+valid native form submit. It makes no network request and does not send or
+store the entered values.
 
-Configure these Cloudflare Worker secrets or variables before enabling live
-submissions:
+Do not add a temporary mailbox binding, database, admin route, or analytics
+payload containing form values. The future integration must use the API
+contract supplied by the CTO. Its endpoint, authentication, anti-abuse rules,
+destination and retention behavior remain intentionally unspecified until
+that contract is approved.
 
-| Name | Required | Purpose |
-| --- | --- | --- |
-| `TURNSTILE_SECRET_KEY` | yes | Server-side Turnstile verification secret. |
-| `AX_CONSULTATION_EMAIL` | yes | `send_email` binding restricted with `destination_address`. |
-| `AX_CONSULTATION_FROM` | yes | Sender on a domain onboarded to Cloudflare Email Service. |
-| `AX_CONSULTATION_DELIVERY_ENABLED` | yes | Must be exactly `true` after privacy and delivery approval. |
-| `AX_CONSULTATION_RATE_LIMITER` | recommended | Cloudflare rate-limit binding for the endpoint. |
+The published privacy-policy URL is `/privacy`. Before enabling transmission,
+update the policy with the approved processor, overseas-transfer and retention
+details, and repeat the privacy/security review. Name, email, phone number and
+message content must never be sent to Google Analytics or `dataLayer`.
 
-Set `PUBLIC_TURNSTILE_SITE_KEY`, `PUBLIC_AX_PRIVACY_POLICY_URL` and
-`PUBLIC_AX_CONSULTATION_ENABLED=true` in the Astro build environment only after
-the published privacy URL and delivery configuration are approved. Configure
-the Worker's runtime secret and variables separately. The site key and public
-URL may be included in static HTML; the Turnstile secret must never be exposed
-to Astro or committed.
-
-The client records UTM parameters and emits AX-specific `dataLayer` events when
-Google Analytics is present. Delivery failures return a generic localized
-message to visitors; detailed API error codes remain available in the network
-response for diagnosis.
-
-Before production delivery is enabled, the privacy owner must confirm the
-published notice, selected-by-default consent behavior, collected fields,
-retention period, processing responsibility and deletion procedure. Also
-verify the onboarded sender domain, fixed destination address and Turnstile
-host allowlist. Keep both delivery feature flags disabled until those checks
-are complete. Configure the rate-limit binding or an equivalent WAF rule for
-`POST /api/ax/consultations` before launch so valid-but-automated Turnstile
-traffic cannot exhaust the delivery quota or recipient inbox.
+Lead operations will use the approved recipient mailbox and a Google
+Spreadsheet plug-in rather than a site-hosted admin dashboard. Reporting and
+dashboard work are outside the current public-site release.
 
 ## Verification
 

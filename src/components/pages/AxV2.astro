@@ -41,8 +41,18 @@ const brochureHref = import.meta.env.DEV
     <div class="ax-v2-hero-copy ax-v2-shell" data-reveal>
       <h1 id="ax-v2-hero-title">{c.hero.h1}</h1>
       <h2>
-        {c.hero.h2.map((line, index) => (
-          <>{index > 0 && <br />}<span class:list={{ 'ax-v2-gradient-text': index === 1 }}>{line}</span></>
+        {c.hero.h2.map((segments, index) => (
+          <>
+            {index > 0 && <br />}
+            <span class:list={{ 'ax-v2-gradient-text': index === 1 }}>
+              {segments.map((segment, segmentIndex) => (
+                <>
+                  {segmentIndex > 0 && <><br class="ax-v2-hero-h2-break--compact" />{' '}</>}
+                  {segment}
+                </>
+              ))}
+            </span>
+          </>
         ))}
       </h2>
       <h3>
@@ -101,7 +111,10 @@ const brochureHref = import.meta.env.DEV
               <figure
                 class="ax-v2-testimonial-card"
                 data-testimonial-slide
+                data-carousel-slide
+                data-carousel-announcement={`${index + 1} / ${c.transformation.testimonials.length} — ${item.source}`}
                 data-slide-label={`${index + 1} / ${c.transformation.testimonials.length} — ${item.source}`}
+                aria-labelledby={`ax-v2-testimonial-source-${index + 1}`}
               >
                 <blockquote><AxLines values={item.quote} /></blockquote>
                 <figcaption>
@@ -116,7 +129,7 @@ const brochureHref = import.meta.env.DEV
                       decoding="async"
                     />
                   </picture>
-                  <h4>{item.source}</h4>
+                  <h4 id={`ax-v2-testimonial-source-${index + 1}`}>{item.source}</h4>
                 </figcaption>
               </figure>
             );
@@ -479,7 +492,7 @@ const brochureHref = import.meta.env.DEV
         <a href={`mailto:${c.contact.email}`}>{c.contact.emailLabel}<strong>{c.contact.email}</strong></a>
         <a href="tel:+82269256978">{c.contact.phoneLabel}<strong>{c.contact.phone}</strong></a>
         <p>{c.contact.brochureLead}</p>
-        <a href={brochureHref} target="_blank" rel="nofollow noopener noreferrer" hreflang="ko">
+        <a href={brochureHref} target="_blank" rel="nofollow noopener noreferrer" hreflang="ko" data-ax-brochure-link>
           {c.contact.brochureLabel}<span aria-hidden="true"> ↗</span>
         </a>
       </div>
@@ -497,6 +510,18 @@ const brochureHref = import.meta.env.DEV
         <p><AxLines values={c.contact.body} /></p>
       </div>
       <AxLeadForm id="modal" compact />
+    </div>
+  </dialog>
+
+  <dialog class="ax-v2-hold-dialog" aria-labelledby="ax-v2-hold-title" data-ax-v2-hold-dialog>
+    <div class="ax-v2-hold-panel">
+      <p class="ax-v2-eyebrow">입력 확인 완료</p>
+      <p class="ax-v2-hold-title" id="ax-v2-hold-title">상담 신청 준비가 완료되었습니다.</p>
+      <p class="ax-v2-hold-copy">
+        현재 상담 접수 API를 준비하고 있습니다.<br />
+        입력 내용은 전송되거나 저장되지 않았습니다.
+      </p>
+      <button class="ax-v2-primary-button" type="button" data-ax-v2-hold-close>확인</button>
     </div>
   </dialog>
 </div>

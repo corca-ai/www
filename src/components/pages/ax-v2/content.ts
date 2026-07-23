@@ -1,7 +1,10 @@
 export const axV2Content = {
   hero: {
     h1: 'Corca | AX 가속화 컨설팅',
-    h2: ['AI 도입은 누구나 할 수 있습니다.', '조직의 변화는 아무나 만들지 못합니다.'],
+    h2: [
+      ['AI 도입은', '누구나 할 수 있습니다.'],
+      ['조직의 변화는', '아무나 만들지 못합니다.'],
+    ],
     h3: [
       '실제 업무 과제를 해결하고,',
       '내부 챔피언과 확산 체계를 남기는',
@@ -346,11 +349,12 @@ export const axV2Content = {
     consent: '필수 | 개인정보처리방침 내용에 동의합니다',
     privacyDetail: '전문보기',
     submit: '2주 진단 상담 신청하기',
-    sending: '전송 중입니다',
-    success: '상담 요청이 접수되었습니다.',
-    disabled: '개인정보처리방침과 메일 수신 설정 승인 후 상담 접수가 활성화됩니다.',
+    sending: '입력 내용을 확인하고 있습니다.',
+    success: '상담 신청 준비가 완료되었습니다.',
+    disabled:
+      '현재 상담 접수 API를 준비하고 있습니다. 입력 내용은 아직 전송되거나 저장되지 않습니다.',
     validation: '입력 내용을 확인해 주세요.',
-    error: '상담 요청을 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.',
+    error: '입력 내용을 다시 확인해 주세요.',
     directLead: 'Corca AX Lead와 직접 상담하고 싶으시다면,',
     emailLabel: '직접 메일 상담',
     email: 'bae.hwidong@corca.ai',

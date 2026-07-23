@@ -1,6 +1,7 @@
 ---
 import type { Lang } from '../../i18n/ui';
 import AxLegacy from './AxLegacy.astro';
+import AxV2 from './AxV2.astro';
 
 interface Props {
   lang: Lang;
@@ -15,4 +16,4 @@ const { lang } = Astro.props;
   Replace this wrapper with a new component during the redesign; do not edit
   AxLegacy.astro or components/pages/ax solely to change the new page.
 -->
-<AxLegacy lang={lang} />
+{lang === 'ko' ? <AxV2 /> : <AxLegacy lang={lang} />}

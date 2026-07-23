@@ -1,9 +1,87 @@
 ---
+import type { Lang } from '../../i18n/ui';
 import AxLeadForm from './ax-v2/AxLeadForm.astro';
 import AxLines from './ax-v2/AxLines.astro';
 import AxResponsiveLines from './ax-v2/AxResponsiveLines.astro';
-import { axV2Assets, axV2Content as c } from './ax-v2/content';
+import { axV2Assets, axV2ContentByLang } from './ax-v2/content';
 import './ax-v2/ax-v2.css';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = axV2ContentByLang[lang];
+const uiCopy = {
+  ko: {
+    compoundAlt: '맑은 아침의 푸른 대서양을 활기차게 유영하는 열 마리 범고래 무리',
+    testimonials: '고객 후기',
+    carousel: '고객 후기 이동',
+    previous: '이전 고객 후기',
+    next: '다음 고객 후기',
+    clientLogos: 'Corca AX와 함께한 고객사 로고',
+    executionAreas: 'Corca AX 실행 영역',
+    cealIntroduction: 'Ceal 도입',
+    onPremises: '온프레미스로 설치',
+    openAiCorcaAlt: 'OpenAI와 Corca 로고',
+    dialogClose: '상담 신청 창 닫기',
+    successEyebrow: '상담 접수 완료',
+    successTitle: '상담 신청이 접수되었습니다.',
+    successBody: ['보내주신 내용을 담당자가 꼼꼼히 확인한 뒤 곧 연락드리겠습니다.', '감사합니다.', '이 창은 잠시 후 자동으로 닫힙니다.'],
+    close: '닫기',
+  },
+  en: {
+    compoundAlt: 'Ten orcas swimming across the blue Atlantic on a clear morning',
+    testimonials: 'Client testimonials',
+    carousel: 'Navigate client testimonials',
+    previous: 'Previous testimonial',
+    next: 'Next testimonial',
+    clientLogos: 'Organizations working with Corca AX',
+    executionAreas: 'Corca AX execution areas',
+    cealIntroduction: 'Introduce Ceal',
+    onPremises: 'On-premises',
+    openAiCorcaAlt: 'OpenAI and Corca logos',
+    dialogClose: 'Close consultation form',
+    successEyebrow: 'Request received',
+    successTitle: 'Your consultation request is complete.',
+    successBody: ['Our team will review your message carefully and contact you soon.', 'Thank you.', 'This window will close automatically.'],
+    close: 'Close',
+  },
+  ja: {
+    compoundAlt: '晴れた朝の青い大西洋を泳ぐ10頭のシャチ',
+    testimonials: 'お客様の声',
+    carousel: 'お客様の声を移動',
+    previous: '前のお客様の声',
+    next: '次のお客様の声',
+    clientLogos: 'Corca AXをご利用のお客様',
+    executionAreas: 'Corca AXの実行領域',
+    cealIntroduction: 'Ceal導入',
+    onPremises: 'オンプレミス設置',
+    openAiCorcaAlt: 'OpenAIとCorcaのロゴ',
+    dialogClose: '相談フォームを閉じる',
+    successEyebrow: '受付完了',
+    successTitle: '相談申請を受け付けました。',
+    successBody: ['担当者が内容を確認し、まもなくご連絡します。', 'ありがとうございます。', 'この画面は自動的に閉じます。'],
+    close: '閉じる',
+  },
+  zh: {
+    compoundAlt: '十头虎鲸在晴朗清晨的蓝色大西洋中畅游',
+    testimonials: '客户评价',
+    carousel: '浏览客户评价',
+    previous: '上一条评价',
+    next: '下一条评价',
+    clientLogos: '与Corca AX合作的客户',
+    executionAreas: 'Corca AX执行领域',
+    cealIntroduction: '引入Ceal',
+    onPremises: '本地部署',
+    openAiCorcaAlt: 'OpenAI与Corca标志',
+    dialogClose: '关闭咨询表单',
+    successEyebrow: '申请已受理',
+    successTitle: '您的咨询申请已提交。',
+    successBody: ['负责人将认真查看您的信息并尽快与您联系。', '感谢您的咨询。', '此窗口将自动关闭。'],
+    close: '关闭',
+  },
+}[lang];
 
 const brochureHref = import.meta.env.DEV
   ? '/ax/corca-ax-brochure/index.html'
@@ -79,7 +157,7 @@ const brochureHref = import.meta.env.DEV
         src={axV2Assets.compoundOrcas.jpg}
         width={axV2Assets.compoundOrcas.width}
         height={axV2Assets.compoundOrcas.height}
-        alt="맑은 아침의 푸른 대서양을 활기차게 유영하는 열 마리 범고래 무리"
+        alt={uiCopy.compoundAlt}
         loading="lazy"
         decoding="async"
       />
@@ -111,7 +189,7 @@ const brochureHref = import.meta.env.DEV
         <p><AxLines values={c.transformation.body} /></p>
       </div>
 
-      <div class="ax-v2-testimonials" role="region" aria-label="고객 후기" tabindex="0" data-testimonial-carousel>
+      <div class="ax-v2-testimonials" role="region" aria-label={uiCopy.testimonials} tabindex="0" data-testimonial-carousel>
         <div class="ax-v2-testimonial-track" data-testimonial-track>
           {c.transformation.testimonials.map((item, index) => {
             const logo = axV2Assets.testimonials[item.id];
@@ -172,9 +250,9 @@ const brochureHref = import.meta.env.DEV
           <p class="ax-v2-carousel-status ax-v2-visually-hidden" role="status" aria-live="polite" aria-atomic="true" data-carousel-status>
             1 / {c.transformation.testimonials.length} — {c.transformation.testimonials[0].source}
           </p>
-          <div class="ax-v2-carousel-controls" aria-label="고객 후기 이동">
-            <button type="button" aria-label="이전 고객 후기" data-carousel-previous disabled>←</button>
-            <button type="button" aria-label="다음 고객 후기" data-carousel-next>→</button>
+          <div class="ax-v2-carousel-controls" aria-label={uiCopy.carousel}>
+            <button type="button" aria-label={uiCopy.previous} data-carousel-previous disabled>←</button>
+            <button type="button" aria-label={uiCopy.next} data-carousel-next>→</button>
           </div>
         </div>
       </div>
@@ -182,7 +260,7 @@ const brochureHref = import.meta.env.DEV
       <p class="ax-v2-proof-statement" data-reveal>{c.transformation.proof}</p>
     </div>
 
-    <div class="ax-v2-logo-marquee" role="img" aria-label="Corca AX와 함께한 고객사 로고">
+    <div class="ax-v2-logo-marquee" role="img" aria-label={uiCopy.clientLogos}>
       <div class="ax-v2-logo-track">
         {[0, 1].map((copyIndex) => (
           <div class="ax-v2-logo-group" aria-hidden="true" data-copy={copyIndex}>
@@ -210,21 +288,23 @@ const brochureHref = import.meta.env.DEV
         </h3>
         <p><AxLines values={c.internalProof.body} /></p>
       </div>
-      <div class="ax-v2-circle-grid">
-        {c.internalProof.cards.map((card) => (
-          <article class="ax-v2-circle-card" data-reveal>
-            <span>{card.cadence}</span>
-            <h4 class="ax-v2-point-gradient">{card.title}</h4>
-            <strong>{card.lead}</strong>
-            <p><AxLines values={card.body} /></p>
-          </article>
-        ))}
-      </div>
-      <div class="ax-v2-press-row" data-reveal>
-        <p>{c.internalProof.pressLead}</p>
-        <a class="ax-v2-text-link" href={c.internalProof.pressUrl} target="_blank" rel="noreferrer">
-          {c.internalProof.pressLabel}<span aria-hidden="true"> ↗</span>
-        </a>
+      <div class="ax-v2-internal-sequence" data-internal-proof-sequence>
+        <div class="ax-v2-circle-grid">
+          {c.internalProof.cards.map((card) => (
+            <article class="ax-v2-circle-card">
+              <span>{card.cadence}</span>
+              <h4 class="ax-v2-point-gradient">{card.title}</h4>
+              <strong>{card.lead}</strong>
+              <p><AxLines values={card.body} /></p>
+            </article>
+          ))}
+        </div>
+        <div class="ax-v2-press-row">
+          <p>{c.internalProof.pressLead}</p>
+          <a class="ax-v2-text-link" href={c.internalProof.pressUrl} target="_blank" rel="noreferrer">
+            {c.internalProof.pressLabel}<span aria-hidden="true"> ↗</span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -258,7 +338,7 @@ const brochureHref = import.meta.env.DEV
       </div>
 
       <div class="ax-v2-split-tabs" data-ax-v2-tabs>
-        <div class="ax-v2-tab-list" role="tablist" aria-label="Corca AX 실행 영역">
+        <div class="ax-v2-tab-list" role="tablist" aria-label={uiCopy.executionAreas}>
           {c.slowdown.tabs.map((tab, index) => (
             <button
               type="button"
@@ -327,27 +407,29 @@ const brochureHref = import.meta.env.DEV
         <div class="ax-v2-metric"><strong class="ax-v2-point-gradient">{c.diagnosis.metric[0]}</strong><span>{c.diagnosis.metric[1]}</span></div>
         <p><AxLines values={c.diagnosis.body} /></p>
       </div>
-      <div class="ax-v2-comparison" data-reveal>
-        <article class="ax-v2-comparison-legacy">
-          <h4><AxLines values={c.diagnosis.legacy.title} /></h4>
-          <p>{c.diagnosis.legacy.body}</p>
-          <ul>{c.diagnosis.legacy.items.map((item) => {
-            const [count, ...label] = item.split(' ');
-            return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;
-          })}</ul>
-        </article>
-        <span class="ax-v2-comparison-arrow" aria-hidden="true">➜</span>
-        <article class="ax-v2-comparison-corca">
-          <h4><AxLines values={c.diagnosis.corca.title} /></h4>
-          <p><AxLines values={c.diagnosis.corca.body} /></p>
-          <ol>{c.diagnosis.corca.items.map((item) => {
-            const [count, ...label] = item.split(' ');
-            return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;
-          })}</ol>
-        </article>
+      <div class="ax-v2-diagnosis-sequence" data-diagnosis-sequence>
+        <div class="ax-v2-comparison">
+          <article class="ax-v2-comparison-legacy">
+            <h4><AxLines values={c.diagnosis.legacy.title} /></h4>
+            <p>{c.diagnosis.legacy.body}</p>
+            <ul>{c.diagnosis.legacy.items.map((item) => {
+              const [count, ...label] = item.split(' ');
+              return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;
+            })}</ul>
+          </article>
+          <span class="ax-v2-comparison-arrow" aria-hidden="true">➜</span>
+          <article class="ax-v2-comparison-corca">
+            <h4><AxLines values={c.diagnosis.corca.title} /></h4>
+            <p><AxLines values={c.diagnosis.corca.body} /></p>
+            <ol>{c.diagnosis.corca.items.map((item) => {
+              const [count, ...label] = item.split(' ');
+              return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;
+            })}</ol>
+          </article>
+        </div>
+        <strong class="ax-v2-section-closing ax-v2-dark-closing"><AxLines values={c.diagnosis.closing} /></strong>
+        <p class="ax-v2-source-note">{c.diagnosis.note}</p>
       </div>
-      <strong class="ax-v2-section-closing ax-v2-dark-closing"><AxLines values={c.diagnosis.closing} /></strong>
-      <p class="ax-v2-source-note">{c.diagnosis.note}</p>
     </div>
   </section>
 
@@ -463,7 +545,7 @@ const brochureHref = import.meta.env.DEV
           <ul class="ax-v2-ceal-notes">{c.ceal.beforeNotes.map((note) => <li>{note}</li>)}</ul>
         </figure>
         <div class="ax-v2-ceal-transition" aria-hidden="true">
-          <span>Ceal 도입</span><strong class="ax-v2-comparison-arrow">➜</strong>
+          <span>{uiCopy.cealIntroduction}</span><strong class="ax-v2-comparison-arrow">➜</strong>
         </div>
         <figure class="ax-v2-ceal-after">
           <figcaption><strong>{c.ceal.after}</strong><span>{c.ceal.afterBadge}</span></figcaption>
@@ -471,7 +553,7 @@ const brochureHref = import.meta.env.DEV
           <div class="ax-v2-order-rails ax-v2-order-rails-top" aria-hidden="true">
             <i></i><i></i><i></i><i></i><i></i>
           </div>
-          <strong class="ax-v2-ceal-gateway">{c.ceal.center}<small>온프레미스로 설치</small></strong>
+          <strong class="ax-v2-ceal-gateway">{c.ceal.center}<small>{uiCopy.onPremises}</small></strong>
           <div class="ax-v2-order-rails ax-v2-order-rails-bottom" aria-hidden="true">
             <i></i><i></i><i></i><i></i><i></i>
           </div>
@@ -533,7 +615,7 @@ const brochureHref = import.meta.env.DEV
           src={axV2Assets.openAiCorca.png}
           width={axV2Assets.openAiCorca.width}
           height={axV2Assets.openAiCorca.height}
-          alt="OpenAI와 Corca 로고"
+          alt={uiCopy.openAiCorcaAlt}
           loading="lazy"
           decoding="async"
         />
@@ -561,14 +643,14 @@ const brochureHref = import.meta.env.DEV
         </a>
       </div>
       <div class="ax-v2-inline-form" data-reveal>
-        <AxLeadForm id="inline" />
+        <AxLeadForm id="inline" lang={lang} />
       </div>
     </div>
   </section>
 
   <dialog class="ax-v2-dialog" aria-labelledby="ax-v2-dialog-title" data-ax-v2-dialog>
     <div class="ax-v2-dialog-panel">
-      <button class="ax-v2-dialog-close" type="button" aria-label="상담 신청 창 닫기" data-dialog-close>
+      <button class="ax-v2-dialog-close" type="button" aria-label={uiCopy.dialogClose} data-dialog-close>
         <span aria-hidden="true">×</span>
       </button>
       <div class="ax-v2-dialog-heading">
@@ -582,22 +664,20 @@ const brochureHref = import.meta.env.DEV
           {c.contact.dialogBody.next}
         </p>
       </div>
-      <AxLeadForm id="modal" compact />
+      <AxLeadForm id="modal" lang={lang} compact />
     </div>
   </dialog>
 
   <dialog class="ax-v2-hold-dialog" aria-labelledby="ax-v2-hold-title" data-ax-v2-success-dialog>
     <div class="ax-v2-hold-panel">
       <div class="ax-v2-success-icon" aria-hidden="true">✓</div>
-      <p class="ax-v2-eyebrow">상담 접수 완료</p>
-      <p class="ax-v2-hold-title" id="ax-v2-hold-title">상담 신청이 접수되었습니다.</p>
+      <p class="ax-v2-eyebrow">{uiCopy.successEyebrow}</p>
+      <p class="ax-v2-hold-title" id="ax-v2-hold-title">{uiCopy.successTitle}</p>
       <p class="ax-v2-hold-copy">
-        보내주신 내용을 담당자가 꼼꼼히 확인한 뒤 곧 연락드리겠습니다.<br />
-        감사합니다.<br />
-        이 창은 잠시 후 자동으로 닫힙니다.
+        {uiCopy.successBody.map((line) => <>{line}<br /></>)}
       </p>
       <div class="ax-v2-success-timer" aria-hidden="true"><span></span></div>
-      <button class="ax-v2-primary-button" type="button" data-ax-v2-success-close>닫기</button>
+      <button class="ax-v2-primary-button" type="button" data-ax-v2-success-close>{uiCopy.close}</button>
     </div>
   </dialog>
 </div>

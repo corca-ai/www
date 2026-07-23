@@ -1,3 +1,6 @@
+import { axV2ContentOverrides } from '../../../../i18n/ax-v2-content-localized';
+import type { Lang } from '../../../i18n/ui';
+
 export const axV2Content = {
   hero: {
     h1: 'Corca | AX 가속화 컨설팅',
@@ -378,6 +381,38 @@ export const axV2Content = {
     brochureLabel: 'Corca AX 가속화 컨설팅',
   },
 } as const;
+
+function mergeLocalized<T>(base: T, override: unknown): T {
+  if (override === undefined) return base;
+  if (Array.isArray(base) && Array.isArray(override)) {
+    const containsObjects = override.some(
+      (item) => typeof item === 'object' && item !== null && !Array.isArray(item),
+    );
+    if (!containsObjects) return override as T;
+    return base.map((item, index) => mergeLocalized(item, override[index])) as T;
+  }
+  if (
+    typeof base === 'object' &&
+    base !== null &&
+    typeof override === 'object' &&
+    override !== null
+  ) {
+    return Object.fromEntries(
+      Object.entries(base).map(([key, value]) => [
+        key,
+        mergeLocalized(value, (override as Record<string, unknown>)[key]),
+      ]),
+    ) as T;
+  }
+  return override as T;
+}
+
+export const axV2ContentByLang: Record<Lang, typeof axV2Content> = {
+  ko: axV2Content,
+  en: mergeLocalized(axV2Content, axV2ContentOverrides.en),
+  ja: mergeLocalized(axV2Content, axV2ContentOverrides.ja),
+  zh: mergeLocalized(axV2Content, axV2ContentOverrides.zh),
+};
 
 export const axV2Assets = {
   hero: {

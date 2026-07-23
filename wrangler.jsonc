@@ -20,6 +20,15 @@
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
+  // The AX consultation endpoint can send only from ax@corca.ai and only to
+  // the verified Corca inbox. The visitor's address is used as Reply-To.
+  "send_email": [
+    {
+      "name": "AX_EMAIL",
+      "destination_address": "contact+ax@corca.ai",
+      "allowed_sender_addresses": ["ax@corca.ai"]
+    }
+  ],
   // Beta site custom domain — provisions DNS + cert on the borca.ai zone. To also
   // redirect the apex (borca.ai → www.borca.ai), add { "pattern": "borca.ai",
   // "custom_domain": true } here; the Worker already canonicalizes the host.

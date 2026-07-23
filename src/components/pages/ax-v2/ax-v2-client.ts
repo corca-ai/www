@@ -357,6 +357,23 @@ function initializeAccordion(root: HTMLElement) {
   });
 }
 
+function bindDialogDismissal(
+  dialog: HTMLDialogElement,
+  closer: HTMLButtonElement,
+  close: () => void,
+  restoreFocus: () => void,
+) {
+  closer.addEventListener('click', close);
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) close();
+  });
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+  });
+  dialog.addEventListener('close', restoreFocus);
+}
+
 function initializeDialog(page: HTMLElement) {
   const dialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-dialog]');
   const openers = Array.from(page.querySelectorAll<HTMLButtonElement>('[data-dialog-open]'));
@@ -379,56 +396,46 @@ function initializeDialog(page: HTMLElement) {
       });
     });
   });
-  closer.addEventListener('click', close);
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) close();
-  });
-  dialog.addEventListener('cancel', (event) => {
-    event.preventDefault();
-    close();
-  });
-  dialog.addEventListener('close', () => returnFocus?.focus());
+  bindDialogDismissal(dialog, closer, close, () => returnFocus?.focus());
 }
 
-function initializeHoldDialog(page: HTMLElement) {
+function initializeHoldDialog(page: HTMLElement): (form: HTMLFormElement) => void {
   const dialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-hold-dialog]');
   const closer = dialog?.querySelector<HTMLButtonElement>('[data-ax-v2-hold-close]');
-  if (!dialog || !closer) return;
+  if (!dialog || !closer) return () => {};
 
   let returnFocus: HTMLElement | null = null;
   const close = () => {
     if (dialog.open) dialog.close();
   };
 
-  page.addEventListener('ax:lead-ready', (event) => {
-    const form = event.target instanceof HTMLFormElement ? event.target : null;
-    returnFocus = form?.querySelector<HTMLButtonElement>('button[type="submit"]') ?? null;
+  const show = (form: HTMLFormElement) => {
+    returnFocus = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     const leadDialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-dialog]');
     if (leadDialog?.open) leadDialog.close();
-    requestAnimationFrame(() => {
-      dialog.showModal();
-      closer.focus();
-    });
-  });
+    dialog.showModal();
+    closer.focus();
+  };
 
-  closer.addEventListener('click', close);
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) close();
-  });
-  dialog.addEventListener('cancel', (event) => {
-    event.preventDefault();
-    close();
-  });
-  dialog.addEventListener('close', () => returnFocus?.focus());
+  bindDialogDismissal(dialog, closer, close, () => returnFocus?.focus());
+  return show;
 }
 
-function initializeLeadForm(form: HTMLFormElement) {
+function initializeLeadForm(
+  form: HTMLFormElement,
+  showLeadSuccess: (form: HTMLFormElement) => void,
+) {
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]');
   const status = form.querySelector<HTMLElement>('[data-form-status]');
   const formAlert = form.querySelector<HTMLElement>('[data-form-alert]');
   if (!submit || !submitLabel || !status || !formAlert) return;
   const defaultSubmitLabel = submitLabel.textContent ?? '2주 진단 상담 신청하기';
+  const sendingLabel = form.dataset.sendingLabel ?? '상담 신청을 전송하고 있습니다.';
+  const successLabel = form.dataset.successLabel ?? '상담 신청이 접수되었습니다.';
+  const submissionError =
+    form.dataset.errorLabel ?? '상담 신청을 전달하지 못했습니다. 잠시 후 다시 시도해 주세요.';
+  let startedAt = Date.now();
 
   const clearErrors = () => {
     form
@@ -484,6 +491,42 @@ function initializeLeadForm(form: HTMLFormElement) {
     window.setTimeout(() => firstInvalid.focus({ preventScroll: true }), 320);
   };
 
+  const parseApiError = (value: unknown): { code: string; fields: Record<string, string> } => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return { code: '', fields: {} };
+    }
+    const error = 'error' in value ? value.error : null;
+    if (!error || typeof error !== 'object' || Array.isArray(error)) {
+      return { code: '', fields: {} };
+    }
+
+    const code = 'code' in error && typeof error.code === 'string' ? error.code : '';
+    const rawFields = 'fields' in error ? error.fields : null;
+    const fields: Record<string, string> = {};
+    if (rawFields && typeof rawFields === 'object' && !Array.isArray(rawFields)) {
+      for (const [name, fieldCodeValue] of Object.entries(rawFields)) {
+        if (typeof fieldCodeValue === 'string') fields[name] = fieldCodeValue;
+      }
+    }
+    return { code, fields };
+  };
+
+  const showSubmissionError = (code: string, fields: Record<string, string>) => {
+    if (Object.keys(fields).length > 0) showFieldErrors(fields);
+    const messages: Record<string, string> = {
+      FORM_EXPIRED: '페이지를 새로고침한 뒤 다시 작성해 주세요.',
+      FORM_SUBMITTED_TOO_QUICKLY: '잠시 후 다시 제출해 주세요.',
+      RATE_LIMITED: '요청이 많습니다. 잠시 후 다시 시도해 주세요.',
+      VALIDATION_ERROR: '입력 내용을 확인해 주세요.',
+    };
+    const message = messages[code] ?? submissionError;
+    formAlert.textContent = message;
+    formAlert.hidden = false;
+    formAlert.focus({ preventScroll: true });
+    status.textContent = message;
+    status.className = 'ax-v2-form-status is-error';
+  };
+
   const phoneInput = form.elements.namedItem('phone');
   if (phoneInput instanceof HTMLInputElement) {
     phoneInput.addEventListener('input', () => {
@@ -513,7 +556,7 @@ function initializeLeadForm(form: HTMLFormElement) {
     }
   });
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearErrors();
     if (!form.checkValidity()) {
@@ -525,16 +568,68 @@ function initializeLeadForm(form: HTMLFormElement) {
       status.className = 'ax-v2-form-status is-error';
       return;
     }
+
     submit.disabled = true;
-    submitLabel.textContent = '입력 확인 완료';
-    status.textContent = '상담 신청 입력 내용이 확인되었습니다.';
-    status.className = 'ax-v2-form-status is-success';
-    status.focus({ preventScroll: true });
-    form.dispatchEvent(new CustomEvent('ax:lead-ready', { bubbles: true }));
-    window.setTimeout(() => {
+    submitLabel.textContent = sendingLabel;
+    status.textContent = sendingLabel;
+    status.className = 'ax-v2-form-status';
+
+    const data = new FormData(form);
+    const query = new URLSearchParams(window.location.search);
+    const utm: Record<string, string> = {};
+    for (const key of ['source', 'medium', 'campaign', 'term', 'content']) {
+      const value = query.get(`utm_${key}`);
+      if (value) utm[key] = value;
+    }
+    const payload = {
+      email: String(data.get('email') ?? ''),
+      locale: form.dataset.locale ?? 'ko',
+      message: String(data.get('message') ?? ''),
+      name: String(data.get('name') ?? ''),
+      phone: String(data.get('phone') ?? ''),
+      privacy_consent: data.get('privacy_consent') === 'true',
+      started_at: startedAt,
+      utm,
+      website: String(data.get('website') ?? ''),
+    };
+    const controller = new AbortController();
+    const requestTimeout = window.setTimeout(() => controller.abort(), 12_000);
+
+    try {
+      const response = await fetch(form.action, {
+        body: JSON.stringify(payload),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        signal: controller.signal,
+      });
+      const result: unknown = await response.json().catch(() => null);
+      if (!response.ok) {
+        const error = parseApiError(result);
+        showSubmissionError(error.code, error.fields);
+        return;
+      }
+
+      form.reset();
+      startedAt = Date.now();
+      status.textContent = successLabel;
+      status.className = 'ax-v2-form-status is-success';
+      status.focus({ preventScroll: true });
+      emitAnalytics('generate_lead', {
+        form_id: 'ax_consultation',
+        form_location: form.id,
+        locale: form.dataset.locale ?? 'ko',
+      });
+      showLeadSuccess(form);
+    } catch {
+      showSubmissionError('', {});
+    } finally {
+      window.clearTimeout(requestTimeout);
       submit.disabled = false;
       submitLabel.textContent = defaultSubmitLabel;
-    }, 350);
+    }
   });
 }
 
@@ -569,14 +664,16 @@ function initialize() {
   page.dataset.initialized = 'true';
   initializeHeroVideo(page);
   initializePartnerBadge(page);
+  initializeDialog(page);
+  const showLeadSuccess = initializeHoldDialog(page);
   page.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach(initializeCarousel);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-tabs]').forEach(initializeTabs);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);
-  page.querySelectorAll<HTMLFormElement>('[data-ax-v2-lead-form]').forEach(initializeLeadForm);
+  page.querySelectorAll<HTMLFormElement>('[data-ax-v2-lead-form]').forEach((form) => {
+    initializeLeadForm(form, showLeadSuccess);
+  });
   page.querySelectorAll<HTMLElement>('[data-ceal-diagrams]').forEach(initializeAnimatedDiagram);
   initializeBrochureLinks(page);
-  initializeDialog(page);
-  initializeHoldDialog(page);
 }
 
 initialize();

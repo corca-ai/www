@@ -1,14 +1,59 @@
 export {};
 
+interface TurnstileApi {
+  render: (
+    container: HTMLElement,
+    options: {
+      sitekey: string;
+      theme?: 'auto' | 'dark' | 'light';
+      callback?: (token: string) => void;
+      'expired-callback'?: () => void;
+      'error-callback'?: () => void;
+    },
+  ) => string;
+  reset: (widgetId?: string) => void;
+}
+
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
+    turnstile?: TurnstileApi;
   }
 }
+
+const TURNSTILE_SCRIPT_ID = 'ax-v2-turnstile-api';
+let turnstilePromise: Promise<TurnstileApi> | undefined;
 
 function emitAnalytics(event: string, parameters: Record<string, unknown> = {}) {
   if (!Array.isArray(window.dataLayer)) window.dataLayer = [];
   window.dataLayer.push({ event, ...parameters });
+}
+
+function loadTurnstile(): Promise<TurnstileApi> {
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+  if (turnstilePromise) return turnstilePromise;
+
+  turnstilePromise = new Promise((resolve, reject) => {
+    const existing = document.getElementById(TURNSTILE_SCRIPT_ID) as HTMLScriptElement | null;
+    const script = existing ?? document.createElement('script');
+    const handleLoad = () => {
+      if (window.turnstile) resolve(window.turnstile);
+      else reject(new Error('Turnstile API did not initialize'));
+    };
+    const handleError = () => reject(new Error('Turnstile API failed to load'));
+
+    script.addEventListener('load', handleLoad, { once: true });
+    script.addEventListener('error', handleError, { once: true });
+    if (!existing) {
+      script.id = TURNSTILE_SCRIPT_ID;
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      document.head.append(script);
+    }
+  });
+
+  return turnstilePromise;
 }
 
 class AxV2HeroMediaController {
@@ -176,19 +221,62 @@ function initializeCarousel(root: HTMLElement) {
     if (announce) status.textContent = slides[activeIndex]?.dataset.slideLabel ?? '';
   };
 
-  const scrollTo = (index: number) => {
+  const getScrollTarget = (index: number) => {
     const slide = slides[index];
-    if (!slide) return;
+    if (!slide) return 0;
+    return slide.offsetLeft + slide.offsetWidth / 2 - trackElement.clientWidth / 2;
+  };
+
+  const revealCenteredSlide = () => {
+    const trackRect = trackElement.getBoundingClientRect();
+    const viewportCenter = trackRect.left + trackRect.width / 2;
+    const centeredSlide = slides.reduce((nearest, slide) => {
+      const nearestRect = nearest.getBoundingClientRect();
+      const slideRect = slide.getBoundingClientRect();
+      const nearestDistance = Math.abs(nearestRect.left + nearestRect.width / 2 - viewportCenter);
+      const slideDistance = Math.abs(slideRect.left + slideRect.width / 2 - viewportCenter);
+      return slideDistance < nearestDistance ? slide : nearest;
+    });
+    const slideRect = centeredSlide.getBoundingClientRect();
+    const centeredDistance = Math.abs(slideRect.left + slideRect.width / 2 - viewportCenter);
+    const visibleHeight =
+      Math.min(window.innerHeight, slideRect.bottom) - Math.max(0, slideRect.top);
+    if (centeredDistance > 4 || visibleHeight < slideRect.height * 0.98) return;
+    centeredSlide.classList.add('is-highlight-drawn');
+  };
+
+  const scrollTo = (index: number) => {
+    if (!slides[index]) return;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     trackElement.scrollTo({
-      left:
-        slide.offsetLeft -
-        trackElement.offsetLeft -
-        Math.max(0, (trackElement.clientWidth - slide.offsetWidth) / 2),
+      left: getScrollTarget(index),
       behavior: reducedMotion ? 'auto' : 'smooth',
     });
     update(index);
   };
+
+  let resizeFrame = 0;
+  const alignActiveSlide = () => {
+    window.cancelAnimationFrame(resizeFrame);
+    resizeFrame = window.requestAnimationFrame(() => {
+      trackElement.scrollTo({ left: getScrollTarget(activeIndex), behavior: 'auto' });
+      revealCenteredSlide();
+    });
+  };
+
+  const resizeObserver = new ResizeObserver(alignActiveSlide);
+  resizeObserver.observe(trackElement);
+  const visibilityObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.98)) {
+        revealCenteredSlide();
+      }
+    },
+    { threshold: [0.45, 0.75, 0.98, 1] },
+  );
+  slides.forEach((slide) => {
+    visibilityObserver.observe(slide);
+  });
 
   previous.addEventListener('click', () => scrollTo(activeIndex - 1));
   next.addEventListener('click', () => scrollTo(activeIndex + 1));
@@ -216,16 +304,17 @@ function initializeCarousel(root: HTMLElement) {
       scrollTimer = window.setTimeout(() => {
         const viewportCenter = trackElement.scrollLeft + trackElement.clientWidth / 2;
         const nearestIndex = slides.reduce((nearest, slide, index) => {
-          const targetCenter = slide.offsetLeft - trackElement.offsetLeft + slide.offsetWidth / 2;
+          const targetCenter = slide.offsetLeft + slide.offsetWidth / 2;
           const nearestSlide = slides[nearest];
           const nearestCenter = nearestSlide
-            ? nearestSlide.offsetLeft - trackElement.offsetLeft + nearestSlide.offsetWidth / 2
+            ? nearestSlide.offsetLeft + nearestSlide.offsetWidth / 2
             : 0;
           return Math.abs(targetCenter - viewportCenter) < Math.abs(nearestCenter - viewportCenter)
             ? index
             : nearest;
         }, 0);
         update(nearestIndex, nearestIndex !== activeIndex);
+        revealCenteredSlide();
       }, 140);
     },
     { passive: true },
@@ -390,24 +479,40 @@ function initializeDialog(page: HTMLElement) {
   dialog.addEventListener('close', () => returnFocus?.focus());
 }
 
-function initializeHoldDialog(page: HTMLElement) {
-  const dialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-hold-dialog]');
-  const closer = dialog?.querySelector<HTMLButtonElement>('[data-ax-v2-hold-close]');
+function initializeSuccessDialog(page: HTMLElement) {
+  const dialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-success-dialog]');
+  const closer = dialog?.querySelector<HTMLButtonElement>('[data-ax-v2-success-close]');
   if (!dialog || !closer) return;
 
   let returnFocus: HTMLElement | null = null;
-  const close = () => {
-    if (dialog.open) dialog.close();
+  let closeTimer = 0;
+  let finishTimer = 0;
+
+  const clearTimers = () => {
+    window.clearTimeout(closeTimer);
+    window.clearTimeout(finishTimer);
   };
 
-  page.addEventListener('ax:lead-ready', (event) => {
+  const close = () => {
+    clearTimers();
+    if (!dialog.open) return;
+    dialog.classList.add('is-closing');
+    finishTimer = window.setTimeout(() => dialog.close(), 280);
+  };
+
+  page.addEventListener('ax:lead-sent', (event) => {
     const form = event.target instanceof HTMLFormElement ? event.target : null;
     returnFocus = form?.querySelector<HTMLButtonElement>('button[type="submit"]') ?? null;
     const leadDialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-dialog]');
     if (leadDialog?.open) leadDialog.close();
     requestAnimationFrame(() => {
+      clearTimers();
+      dialog.classList.remove('is-counting', 'is-closing');
+      if (dialog.open) dialog.close();
       dialog.showModal();
       closer.focus();
+      requestAnimationFrame(() => dialog.classList.add('is-counting'));
+      closeTimer = window.setTimeout(close, 2_000);
     });
   });
 
@@ -419,7 +524,11 @@ function initializeHoldDialog(page: HTMLElement) {
     event.preventDefault();
     close();
   });
-  dialog.addEventListener('close', () => returnFocus?.focus());
+  dialog.addEventListener('close', () => {
+    clearTimers();
+    dialog.classList.remove('is-counting', 'is-closing');
+    returnFocus?.focus();
+  });
 }
 
 function initializeLeadForm(form: HTMLFormElement) {
@@ -429,6 +538,21 @@ function initializeLeadForm(form: HTMLFormElement) {
   const formAlert = form.querySelector<HTMLElement>('[data-form-alert]');
   if (!submit || !submitLabel || !status || !formAlert) return;
   const defaultSubmitLabel = submitLabel.textContent ?? '2주 진단 상담 신청하기';
+  const siteKey = form.dataset.turnstileSiteKey ?? '';
+  const locale = form.dataset.locale ?? 'ko';
+  let startedAt = Date.now();
+  let turnstileToken = '';
+  let turnstileWidgetId: string | undefined;
+  let submitting = false;
+
+  const syncSubmitState = () => {
+    const controls = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
+    );
+    const isReady = controls.every((field) => !field.willValidate || field.validity.valid);
+    submit.disabled = submitting || !isReady;
+    submit.classList.toggle('is-ready', isReady && !submitting);
+  };
 
   const clearErrors = () => {
     form
@@ -441,6 +565,36 @@ function initializeLeadForm(form: HTMLFormElement) {
     });
     formAlert.hidden = true;
     formAlert.textContent = '';
+  };
+
+  const resetTurnstile = () => {
+    turnstileToken = '';
+    if (window.turnstile && turnstileWidgetId !== undefined) {
+      window.turnstile.reset(turnstileWidgetId);
+    }
+  };
+
+  const showRequestError = (code: string) => {
+    const messages: Record<string, string> = {
+      BOT_CHECK_FAILED: '보안 확인을 다시 완료해 주세요.',
+      BOT_CHECK_NOT_CONFIGURED: '보안 확인 설정을 불러오지 못했습니다.',
+      BOT_CHECK_UNAVAILABLE: '보안 확인 서비스에 일시적인 문제가 있습니다.',
+      DELIVERY_FAILED: '상담 신청 전송에 실패했습니다.',
+      DELIVERY_NOT_CONFIGURED: '상담 접수 설정을 불러오지 못했습니다.',
+      FORM_EXPIRED: '입력 시간이 만료되었습니다. 다시 제출해 주세요.',
+      FORM_SUBMITTED_TOO_QUICKLY: '잠시 후 다시 제출해 주세요.',
+      RATE_LIMITED: '요청이 많습니다. 잠시 후 다시 시도해 주세요.',
+      VALIDATION_ERROR: '입력 내용을 다시 확인해 주세요.',
+      network: '네트워크 연결을 확인한 뒤 다시 시도해 주세요.',
+      unknown: '상담 신청을 전송하지 못했습니다. 잠시 후 다시 시도해 주세요.',
+    };
+    formAlert.textContent =
+      messages[code] ?? messages.unknown ?? '상담 신청을 전송하지 못했습니다.';
+    formAlert.hidden = false;
+    formAlert.focus({ preventScroll: true });
+    status.textContent = formAlert.textContent;
+    status.className = 'ax-v2-form-status is-error';
+    emitAnalytics('form_error', { error_code: code, form_id: 'ax_consultation' });
   };
 
   const showFieldErrors = (fields: Record<string, string>) => {
@@ -500,10 +654,38 @@ function initializeLeadForm(form: HTMLFormElement) {
     true,
   );
 
+  const turnstileContainer = form.querySelector<HTMLElement>('[data-form-turnstile]');
+  if (siteKey && turnstileContainer) {
+    void loadTurnstile()
+      .then((turnstile) => {
+        turnstileWidgetId = turnstile.render(turnstileContainer, {
+          sitekey: siteKey,
+          theme: 'light',
+          callback: (token) => {
+            turnstileToken = token;
+            if (status.classList.contains('is-error')) {
+              status.textContent = '보안 확인이 완료되었습니다.';
+              status.className = 'ax-v2-form-status';
+            }
+          },
+          'expired-callback': () => {
+            turnstileToken = '';
+          },
+          'error-callback': () => {
+            turnstileToken = '';
+          },
+        });
+      })
+      .catch(() => showRequestError('BOT_CHECK_UNAVAILABLE'));
+  }
+
   form.addEventListener('input', (event) => {
     const field = event.target;
     if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
-    if (!field.checkValidity()) return;
+    if (!field.checkValidity()) {
+      syncSubmitState();
+      return;
+    }
     field.removeAttribute('aria-invalid');
     const error = form.querySelector<HTMLElement>(`[data-field-error="${field.name}"]`);
     if (error) error.textContent = '';
@@ -511,9 +693,12 @@ function initializeLeadForm(form: HTMLFormElement) {
       formAlert.hidden = true;
       formAlert.textContent = '';
     }
+    syncSubmitState();
   });
+  form.addEventListener('change', syncSubmitState);
+  syncSubmitState();
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearErrors();
     if (!form.checkValidity()) {
@@ -525,23 +710,87 @@ function initializeLeadForm(form: HTMLFormElement) {
       status.className = 'ax-v2-form-status is-error';
       return;
     }
-    submit.disabled = true;
-    submitLabel.textContent = '입력 확인 완료';
-    status.textContent = '상담 신청 입력 내용이 확인되었습니다.';
-    status.className = 'ax-v2-form-status is-success';
-    status.focus({ preventScroll: true });
-    form.dispatchEvent(new CustomEvent('ax:lead-ready', { bubbles: true }));
-    window.setTimeout(() => {
-      submit.disabled = false;
+    if (siteKey && !turnstileToken) {
+      showRequestError('BOT_CHECK_FAILED');
+      return;
+    }
+
+    submitting = true;
+    syncSubmitState();
+    submitLabel.textContent = form.dataset.sendingLabel ?? '상담 신청을 전송하고 있습니다.';
+    status.textContent = '상담 신청을 안전하게 전송하고 있습니다.';
+    status.className = 'ax-v2-form-status';
+    const data = new FormData(form);
+    const search = new URLSearchParams(window.location.search);
+    const utm = Object.fromEntries(
+      ['source', 'medium', 'campaign', 'content', 'term']
+        .map((key) => [key, search.get(`utm_${key}`)] as const)
+        .filter((entry): entry is readonly [string, string] => Boolean(entry[1])),
+    );
+    const privacyConsent = form.elements.namedItem('privacy_consent');
+    const payload = {
+      name: String(data.get('name') ?? ''),
+      email: String(data.get('email') ?? ''),
+      phone: String(data.get('phone') ?? ''),
+      message: String(data.get('message') ?? ''),
+      privacy_consent: privacyConsent instanceof HTMLInputElement && privacyConsent.checked,
+      website: String(data.get('website') ?? ''),
+      started_at: startedAt,
+      turnstile_token: turnstileToken,
+      utm,
+      locale,
+    };
+    const requestController = new AbortController();
+    const requestTimeout = window.setTimeout(() => requestController.abort(), 15_000);
+
+    emitAnalytics('form_submit', { form_id: 'ax_consultation', locale });
+
+    try {
+      const response = await fetch('/api/ax/consultations', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: requestController.signal,
+      });
+      const result = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        error?: { code?: string; fields?: Record<string, string> };
+      } | null;
+
+      if (!response.ok || !result?.ok) {
+        const fields = result?.error?.fields;
+        if (fields) showFieldErrors(fields);
+        resetTurnstile();
+        showRequestError(result?.error?.code ?? 'unknown');
+        return;
+      }
+
+      form.reset();
+      resetTurnstile();
+      startedAt = Date.now();
+      status.textContent = '상담 신청이 잘 전송되었습니다.';
+      status.className = 'ax-v2-form-status is-success';
+      status.focus({ preventScroll: true });
+      emitAnalytics('generate_lead', { form_id: 'ax_consultation', locale });
+      form.dispatchEvent(new CustomEvent('ax:lead-sent', { bubbles: true }));
+    } catch {
+      resetTurnstile();
+      showRequestError('network');
+    } finally {
+      window.clearTimeout(requestTimeout);
+      submitting = false;
+      syncSubmitState();
       submitLabel.textContent = defaultSubmitLabel;
-    }, 350);
+    }
   });
 }
 
 function initializeAnimatedDiagram(root: HTMLElement) {
   const observer = new IntersectionObserver(
     ([entry]) => {
-      root.dataset.motionActive = String(Boolean(entry?.isIntersecting && !document.hidden));
+      const isIntersecting = Boolean(entry?.isIntersecting);
+      root.dataset.motionActive = String(isIntersecting && !document.hidden);
+      if (isIntersecting) root.classList.add('is-sequence-visible');
     },
     { threshold: 0.15 },
   );
@@ -563,12 +812,66 @@ function initializeBrochureLinks(page: HTMLElement) {
   });
 }
 
+function initializeCompoundParallax(page: HTMLElement) {
+  const section = page.querySelector<HTMLElement>('[data-compound-parallax]');
+  if (!section) return;
+
+  const compact = window.matchMedia('(max-width: 720px)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let frame = 0;
+  let listening = false;
+
+  const render = () => {
+    frame = 0;
+    const rect = section.getBoundingClientRect();
+    const sectionCenter = rect.top + rect.height / 2;
+    const viewportCenter = window.innerHeight / 2;
+    const rate = compact.matches ? 0.12 : 0.18;
+    const limit = compact.matches ? 44 : 96;
+    const offset = Math.max(-limit, Math.min(limit, (viewportCenter - sectionCenter) * rate));
+    section.style.setProperty('--ax-v2-compound-media-y', `${offset}px`);
+  };
+
+  const update = () => {
+    if (frame) return;
+    frame = window.requestAnimationFrame(render);
+  };
+
+  const stop = () => {
+    if (!listening) return;
+    listening = false;
+    window.removeEventListener('scroll', update);
+    window.removeEventListener('resize', update);
+    if (frame) window.cancelAnimationFrame(frame);
+    frame = 0;
+    section.style.removeProperty('--ax-v2-compound-media-y');
+  };
+
+  const start = () => {
+    if (listening) return;
+    listening = true;
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  };
+
+  const reconcile = () => {
+    if (!reducedMotion.matches) start();
+    else stop();
+  };
+
+  compact.addEventListener('change', update);
+  reducedMotion.addEventListener('change', reconcile);
+  reconcile();
+}
+
 function initialize() {
   const page = document.querySelector<HTMLElement>('[data-ax-v2-page]');
   if (!page || page.dataset.initialized === 'true') return;
   page.dataset.initialized = 'true';
   initializeHeroVideo(page);
   initializePartnerBadge(page);
+  initializeCompoundParallax(page);
   page.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach(initializeCarousel);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-tabs]').forEach(initializeTabs);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);
@@ -576,7 +879,7 @@ function initialize() {
   page.querySelectorAll<HTMLElement>('[data-ceal-diagrams]').forEach(initializeAnimatedDiagram);
   initializeBrochureLinks(page);
   initializeDialog(page);
-  initializeHoldDialog(page);
+  initializeSuccessDialog(page);
 }
 
 initialize();

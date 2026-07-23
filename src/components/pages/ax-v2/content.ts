@@ -37,6 +37,11 @@ export const axV2Content = {
           '크레딧 비용에 대한 부담도 줄어들고',
           '생산성이 향상되었습니다."',
         ],
+        highlights: [
+          { start: 1, end: 1 },
+          { start: 6, end: 6 },
+          { start: 7, end: 7 },
+        ],
         logoAlt: 'Kyowon 교원 로고',
         source: '교원그룹 - AI TF 파트장',
       },
@@ -50,6 +55,11 @@ export const axV2Content = {
           '코르카의 AX 가속화 컨설팅을 받지 않았다면',
           '타이키의 AX가 어쩌면 지금까지도',
           '충분히 이뤄지지 않았을 것 같습니다."',
+        ],
+        highlights: [
+          { start: 4, end: 4 },
+          { start: 5, end: 5 },
+          { start: 6, end: 6 },
         ],
         logoAlt: '타이키 테크놀로지스 로고',
         source: '타이키 테크놀로지스 - AX 프로덕트 매니저',
@@ -207,6 +217,7 @@ export const axV2Content = {
       '효과적이라고 알려진 실천법들이 있지만,',
       '개별 조직의 특성과 문화에 맞게 조정해야 합니다.',
     ],
+    bodyEmphasis: '개별 조직의 특성과 문화에 맞게 조정',
     columns: ['AX 환경 병목', '현업에서 겪는 증상', '경영진이 떠안는 리스크'],
     rows: [
       {
@@ -239,14 +250,14 @@ export const axV2Content = {
   ceal: {
     eyebrow: 'AX 환경 구축의 핵심',
     descriptor: '조직 내 데이터를 안전하게 연결해서 효율적으로 사용하는 컨텍스트 게이트웨이',
-    heading: ['전사 AX 확산의 기술적 병목', '연결, 권한, 통제'],
+    heading: ['전사 AX 확산의 기술적 병목', '데이터, 보안, 비용'],
     body: [
       'Corca의 AX 환경 구축 솔루션인 Ceal은',
       '에이전트의 조직 데이터 접근 경로를 하나로 연결하고 통제합니다.',
     ],
     before: 'Ceal 이전',
     after: 'Ceal 이후',
-    center: 'Ceal — 연결 · 권한 · 통제',
+    center: 'Ceal — 데이터, 보안, 비용',
     beforeBadge: '각자 알아서 연결',
     afterBadge: '승인된 단일 게이트웨이에 연결',
     agents: ['개인 Codex', '개인 Claude Code', '사내 에이전트'],
@@ -275,7 +286,6 @@ export const axV2Content = {
       {
         name: 'Discovery · 2주',
         title: 'AX 과제 진단',
-        decision: '프로젝트 범위에 맞게 협의 후 결정',
         items: [
           'AI 전환 과제 목록을 효과적으로 수집하기 위한 안내',
           '고객사 역량 및 특성에 맞게 과제 분류, 해결 전략 제시',
@@ -287,7 +297,6 @@ export const axV2Content = {
       {
         name: 'Growth · 총 8주 (Discovery 포함)',
         title: 'AX 챔피언 양성 코칭',
-        decision: '프로젝트 범위에 맞게 협의 후 결정',
         items: [
           'AX 챔피언 후보 선정 · 먼저 할수록 유리한 과제 선정',
           'HR 및 AX 조직 대상 PoC 코칭 세션 1-2회',
@@ -300,7 +309,6 @@ export const axV2Content = {
       {
         name: 'Integration · 협의',
         title: 'AX 환경 · 운영체계 구축',
-        decision: '프로젝트 범위에 맞게 협의 후 결정',
         items: [
           '데이터 유출 · 비용 폭증 방지용 전사 AX 거버넌스 수립',
           'AX 전파를 돕는 보상/제도/평가 연계 프레임워크',
@@ -328,6 +336,13 @@ export const axV2Content = {
   },
   contact: {
     heading: ['고민 중인 과제가 있으신가요?', '2주 AX 진단으로 시작하세요.'],
+    dialogBody: {
+      lead: '이미 AI를 도입했지만',
+      selection: '과제 선정, 활용 확산,',
+      constraint: '데이터·보안·비용 통제에 막혀 있다면',
+      route: '2주 동안 우선순위와 해결 경로를 진단하고',
+      next: '다음 실행 계획을 설계해보세요.',
+    },
     body: [
       '이미 AI를 도입했지만',
       '과제 선정, 활용 확산, 데이터·보안·비용 통제에 막혀 있다면',
@@ -336,23 +351,22 @@ export const axV2Content = {
     ],
     labels: {
       name: '성함',
-      email: '연락처',
+      email: '이메일',
       phone: '전화번호',
       message: '문의내용',
     },
     placeholders: {
       name: '이름을 입력하세요',
-      email: '이메일 입력하세요',
+      email: '이메일을 입력하세요 (선택)',
       phone: '010-000-000',
       message: '현재 고민 중인 상황을 적어주시면 더 자세한 상담이 가능합니다',
     },
     consent: '필수 | 개인정보처리방침 내용에 동의합니다',
     privacyDetail: '전문보기',
     submit: '2주 진단 상담 신청하기',
-    sending: '입력 내용을 확인하고 있습니다.',
-    success: '상담 신청 준비가 완료되었습니다.',
-    disabled:
-      '현재 상담 접수 API를 준비하고 있습니다. 입력 내용은 아직 전송되거나 저장되지 않습니다.',
+    sending: '상담 신청을 전송하고 있습니다.',
+    success: '상담 신청이 잘 전송되었습니다.',
+    disabled: '상담 접수 기능을 불러오고 있습니다.',
     validation: '입력 내용을 확인해 주세요.',
     error: '입력 내용을 다시 확인해 주세요.',
     directLead: 'Corca AX Lead와 직접 상담하고 싶으시다면,',
@@ -373,12 +387,19 @@ export const axV2Assets = {
     wideWebp: '/images/pages/ax/visuals/01-hero-wide.webp',
     video: '/video/ax/B-0715-A_seamless_loop_video_of_a_maj.webm',
   },
-  compoundTeam: {
-    avif: '/images/pages/ax-v2/v2/compound-team-natural-v2-1796.avif',
-    webp: '/images/pages/ax-v2/v2/compound-team-natural-v2-1796.webp',
-    jpg: '/images/pages/ax-v2/v2/compound-team-natural-v2-1796.jpg',
-    width: 1796,
-    height: 876,
+  compoundOrcas: {
+    avif: '/images/pages/ax-v2/v3/compound-atlantic-orca-pod-v3-1694.avif',
+    webp: '/images/pages/ax-v2/v3/compound-atlantic-orca-pod-v3-1694.webp',
+    jpg: '/images/pages/ax-v2/v3/compound-atlantic-orca-pod-v3-1694.jpg',
+    width: 1694,
+    height: 928,
+  },
+  cealSealBackground: {
+    avif: '/images/pages/ax-v2/v3/ceal-seal-background-v1-1586.avif',
+    webp: '/images/pages/ax-v2/v3/ceal-seal-background-v1-1586.webp',
+    jpg: '/images/pages/ax-v2/v3/ceal-seal-background-v1-1586.jpg',
+    width: 1586,
+    height: 992,
   },
   partnerNetwork: '/images/pages/ax/visuals/OAI_PartnerNetwork_SelectPartner_Portrait.svg',
   testimonials: {

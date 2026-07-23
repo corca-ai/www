@@ -9,6 +9,7 @@ interface Props {
 const { id, compact = false } = Astro.props;
 const c = axV2Content.contact;
 const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '/privacy').trim();
+const turnstileSiteKey = String(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '').trim();
 const formId = `ax-lead-${id}`;
 ---
 
@@ -16,9 +17,12 @@ const formId = `ax-lead-${id}`;
   class:list={['ax-v2-lead-form', { 'is-compact': compact }]}
   id={formId}
   name="ax_consultation"
-  action="/ax#ax-contact"
+  action="/api/ax/consultations"
   method="post"
   data-ax-v2-lead-form
+  data-locale="ko"
+  data-turnstile-site-key={turnstileSiteKey}
+  data-sending-label={c.sending}
   novalidate
 >
   <div
@@ -48,21 +52,6 @@ const formId = `ax-lead-${id}`;
     </div>
 
     <div class="ax-v2-field">
-      <label for={`${formId}-email`}>{c.labels.email}</label>
-      <input
-        id={`${formId}-email`}
-        name="email"
-        type="email"
-        autocomplete="email"
-        maxlength="254"
-        placeholder={c.placeholders.email}
-        aria-describedby={`${formId}-email-error`}
-        required
-      />
-      <span class="ax-v2-field-error" id={`${formId}-email-error`} data-field-error="email"></span>
-    </div>
-
-    <div class="ax-v2-field">
       <label for={`${formId}-phone`}>{c.labels.phone}</label>
       <input
         id={`${formId}-phone`}
@@ -80,6 +69,20 @@ const formId = `ax-lead-${id}`;
       <span class="ax-v2-field-error" id={`${formId}-phone-error`} data-field-error="phone"></span>
     </div>
 
+    <div class="ax-v2-field">
+      <label for={`${formId}-email`}>{c.labels.email}</label>
+      <input
+        id={`${formId}-email`}
+        name="email"
+        type="email"
+        autocomplete="email"
+        maxlength="254"
+        placeholder={c.placeholders.email}
+        aria-describedby={`${formId}-email-error`}
+      />
+      <span class="ax-v2-field-error" id={`${formId}-email-error`} data-field-error="email"></span>
+    </div>
+
     <div class="ax-v2-field ax-v2-field-message">
       <label for={`${formId}-message`}>{c.labels.message}</label>
       <textarea
@@ -94,6 +97,13 @@ const formId = `ax-lead-${id}`;
       <span class="ax-v2-field-error" id={`${formId}-message-error`} data-field-error="message"></span>
     </div>
   </div>
+
+  <label class="ax-v2-honeypot" aria-hidden="true">
+    <span>웹사이트</span>
+    <input name="website" tabindex="-1" autocomplete="off" />
+  </label>
+
+  {turnstileSiteKey && <div class="ax-v2-form-turnstile" data-form-turnstile aria-live="polite"></div>}
 
   <label class="ax-v2-consent" for={`${formId}-privacy`}>
     <input
@@ -112,17 +122,15 @@ const formId = `ax-lead-${id}`;
   </label>
   <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
 
-  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit">
+  <button class="ax-v2-primary-button ax-v2-form-submit" type="submit" disabled>
     <span data-submit-label>{c.submit}</span>
   </button>
   <p
-    class="ax-v2-form-status is-pending"
+    class="ax-v2-form-status"
     role="status"
     aria-live="polite"
     aria-atomic="true"
     tabindex="-1"
     data-form-status
-  >
-    현재 상담 접수 API를 준비하고 있습니다. 입력 내용을 확인할 수 있지만 아직 전송되거나 저장되지 않습니다.
-  </p>
+  ></p>
 </form>

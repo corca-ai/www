@@ -2,30 +2,13 @@ type PlaybackState = 'playing' | 'paused' | 'ended';
 
 export {};
 
-interface TurnstileApi {
-  render: (
-    container: HTMLElement,
-    options: {
-      sitekey: string;
-      theme?: 'dark' | 'light' | 'auto';
-      callback?: (token: string) => void;
-      'expired-callback'?: () => void;
-      'error-callback'?: () => void;
-    },
-  ) => string;
-  reset: (widgetId?: string) => void;
-}
-
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
-    turnstile?: TurnstileApi;
   }
 }
 
 const SLIDE_DURATION = 2_200;
-const TURNSTILE_SCRIPT_ID = 'ax-turnstile-api';
-let turnstilePromise: Promise<TurnstileApi> | undefined;
 
 const clamp = (value: number, minimum: number, maximum: number) =>
   Math.min(maximum, Math.max(minimum, value));
@@ -33,35 +16,6 @@ const clamp = (value: number, minimum: number, maximum: number) =>
 function track(event: string, parameters: Record<string, unknown> = {}) {
   window.dataLayer = window.dataLayer ?? [];
   window.dataLayer.push({ event, ...parameters });
-}
-
-function loadTurnstile(): Promise<TurnstileApi> {
-  if (window.turnstile) return Promise.resolve(window.turnstile);
-  if (turnstilePromise) return turnstilePromise;
-
-  turnstilePromise = new Promise((resolve, reject) => {
-    const existing = document.getElementById(TURNSTILE_SCRIPT_ID) as HTMLScriptElement | null;
-    const script = existing ?? document.createElement('script');
-
-    const handleLoad = () => {
-      if (window.turnstile) resolve(window.turnstile);
-      else reject(new Error('Turnstile API did not initialize'));
-    };
-    const handleError = () => reject(new Error('Turnstile API failed to load'));
-
-    script.addEventListener('load', handleLoad, { once: true });
-    script.addEventListener('error', handleError, { once: true });
-
-    if (!existing) {
-      script.id = TURNSTILE_SCRIPT_ID;
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      script.async = true;
-      script.defer = true;
-      document.head.append(script);
-    }
-  });
-
-  return turnstilePromise;
 }
 
 function initializeCarousel(root: HTMLElement) {
@@ -321,18 +275,8 @@ function initializeForm(form: HTMLFormElement) {
 
   const errors = JSON.parse(form.dataset.errorMap ?? '{}') as Record<string, string>;
   const locale = form.dataset.locale ?? 'ko';
-  const siteKey = form.dataset.turnstileSiteKey ?? '';
-  let turnstileToken = '';
-  let turnstileWidgetId: string | undefined;
   let startedAt = Date.now();
   let started = false;
-
-  const resetTurnstile = () => {
-    turnstileToken = '';
-    if (window.turnstile && turnstileWidgetId !== undefined) {
-      window.turnstile.reset(turnstileWidgetId);
-    }
-  };
 
   const showError = (code: string) => {
     errorMessage.textContent = errors[code] ?? errors.unknown ?? 'Unable to send your request.';
@@ -352,30 +296,6 @@ function initializeForm(form: HTMLFormElement) {
     track('form_start', { form_id: 'ax_consultation', locale });
   });
 
-  const turnstileContainer = form.querySelector<HTMLElement>('[data-form-turnstile]');
-  if (siteKey && turnstileContainer) {
-    void loadTurnstile()
-      .then((turnstile) => {
-        turnstileWidgetId = turnstile.render(turnstileContainer, {
-          sitekey: siteKey,
-          theme: 'dark',
-          callback: (token) => {
-            turnstileToken = token;
-            if (errorMessage.textContent === errors.BOT_CHECK_FAILED) errorBox.hidden = true;
-          },
-          'expired-callback': () => {
-            turnstileToken = '';
-          },
-          'error-callback': () => {
-            turnstileToken = '';
-          },
-        });
-      })
-      .catch(() => {
-        turnstileToken = '';
-      });
-  }
-
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     clearStatus();
@@ -385,11 +305,6 @@ function initializeForm(form: HTMLFormElement) {
       showError('validation');
       return;
     }
-    if (siteKey && !turnstileToken) {
-      showError('BOT_CHECK_FAILED');
-      return;
-    }
-
     submit.disabled = true;
     submitLabel.textContent = form.dataset.sendingLabel ?? 'Sending…';
     const data = new FormData(form);
@@ -408,7 +323,6 @@ function initializeForm(form: HTMLFormElement) {
       privacy_consent: data.get('privacy_consent') === 'on',
       website: String(data.get('website') ?? ''),
       started_at: startedAt,
-      turnstile_token: turnstileToken,
       utm,
       locale,
     };
@@ -434,13 +348,11 @@ function initializeForm(form: HTMLFormElement) {
         const fieldCode = result?.error?.fields
           ? Object.values(result.error.fields).find((code) => Boolean(errors[code]))
           : undefined;
-        resetTurnstile();
         showError(fieldCode ?? result?.error?.code ?? 'unknown');
         return;
       }
 
       form.reset();
-      resetTurnstile();
       errorBox.hidden = true;
       successBox.hidden = false;
       startedAt = Date.now();
@@ -448,7 +360,6 @@ function initializeForm(form: HTMLFormElement) {
       track('generate_lead', { form_id: 'ax_consultation', topic: payload.topic, locale });
       successBox.focus({ preventScroll: true });
     } catch {
-      resetTurnstile();
       showError('network');
     } finally {
       window.clearTimeout(requestTimeout);

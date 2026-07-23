@@ -6,11 +6,10 @@
 // domain move is a one-line change there plus the `routes` host in wrangler.jsonc.
 import { canonicalUrl } from '../src/canonical';
 import { SITE_ORIGIN } from '../src/site';
-import { type AxConsultationEnv, handleAxConsultation } from './axConsultations';
+import { handleAxConsultation } from './axConsultations';
 import { withStaticAssetCacheHeaders } from './staticAssetHeaders.js';
 
-interface Env extends AxConsultationEnv {
-  ASSETS: { fetch(request: Request): Promise<Response> };
+interface WorkerEnv extends Env {
   CORCA_NOTION_WEBHOOK_SECRET?: string;
   GITHUB_DISPATCH_TOKEN?: string;
   GITHUB_DISPATCH_REPOSITORY?: string;
@@ -29,7 +28,7 @@ function isPreviewHost(hostname: string): boolean {
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const url = new URL(request.url);
     const target = canonicalUrl(request.url, SITE_ORIGIN, !isPreviewRequest(request, url));
     if (target) return Response.redirect(target, 301);
@@ -50,7 +49,7 @@ export default {
     const response = await env.ASSETS.fetch(request);
     return withStaticAssetCacheHeaders(request, response);
   },
-};
+} satisfies ExportedHandler<WorkerEnv>;
 
 function isPreviewRequest(request: Request, url: URL): boolean {
   const forwardedHost = (request.headers.get('Host') || '').split(':')[0] || '';
@@ -73,7 +72,7 @@ function isLocalDevClientIp(value: string): boolean {
   );
 }
 
-async function handleNotionPublishWebhook(request: Request, env: Env): Promise<Response> {
+async function handleNotionPublishWebhook(request: Request, env: WorkerEnv): Promise<Response> {
   if (request.method.toUpperCase() !== 'POST') {
     return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
   }

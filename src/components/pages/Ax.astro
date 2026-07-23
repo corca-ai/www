@@ -16,4 +16,4 @@ const { lang } = Astro.props;
   Replace this wrapper with a new component during the redesign; do not edit
   AxLegacy.astro or components/pages/ax solely to change the new page.
 -->
-{lang === 'ko' ? <AxV2 /> : <AxLegacy lang={lang} />}
+{lang === 'ko' ? <AxV2 /> : <AxLegacy lang={lang} showConsultationForm />}

@@ -16,9 +16,13 @@ const formId = `ax-lead-${id}`;
   class:list={['ax-v2-lead-form', { 'is-compact': compact }]}
   id={formId}
   name="ax_consultation"
-  action="/ax#ax-contact"
+  action="/api/ax/consultations"
   method="post"
   data-ax-v2-lead-form
+  data-locale="ko"
+  data-sending-label={c.sending}
+  data-success-label={c.success}
+  data-error-label={c.error}
   novalidate
 >
   <div
@@ -95,6 +99,11 @@ const formId = `ax-lead-${id}`;
     </div>
   </div>
 
+  <label class="ax-v2-honeypot" aria-hidden="true">
+    <span>웹사이트</span>
+    <input name="website" tabindex="-1" autocomplete="off" />
+  </label>
+
   <label class="ax-v2-consent" for={`${formId}-privacy`}>
     <input
       id={`${formId}-privacy`}
@@ -116,13 +125,13 @@ const formId = `ax-lead-${id}`;
     <span data-submit-label>{c.submit}</span>
   </button>
   <p
-    class="ax-v2-form-status is-pending"
+    class="ax-v2-form-status"
     role="status"
     aria-live="polite"
     aria-atomic="true"
     tabindex="-1"
     data-form-status
   >
-    현재 상담 접수 API를 준비하고 있습니다. 입력 내용을 확인할 수 있지만 아직 전송되거나 저장되지 않습니다.
+    {c.note}
   </p>
 </form>

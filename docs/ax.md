@@ -87,27 +87,37 @@ in the asset registry.
 
 ## Consultation form
 
-The current Korean AX form is a UI-only preview while Corca's CTO prepares the
-approved consultation API and destination contract. It validates the four
-visible fields (`name`, `email`, `phone`, `message`) and privacy consent in the
-browser, presents field-level guidance, and opens a completion dialog after a
-valid native form submit. It makes no network request and does not send or
-store the entered values.
+The Korean redesign and the three localized legacy forms post JSON to
+`POST /api/ax/consultations`. The Worker validates the payload, rejects
+oversized or suspicious submissions and sends the result through the
+Cloudflare Email Sending binding. It does not write submissions to an
+application database. Cloudflare Email Service and recipient mailboxes process
+and retain the message under Corca's configured retention practices and their
+own policies; every form links to Corca's published privacy policy at
+`/privacy`.
 
-Do not add a temporary mailbox binding, database, admin route, or analytics
-payload containing form values. The future integration must use the API
-contract supplied by the CTO. Its endpoint, authentication, anti-abuse rules,
-destination and retention behavior remain intentionally unspecified until
-that contract is approved.
+The `AX_EMAIL` binding in `wrangler.jsonc` restricts delivery to the verified
+`contact+ax@corca.ai` destination and restricts the sender to `ax@corca.ai`.
+Those addresses are server-side constants and cannot be supplied by the
+browser. The visitor's validated email address is used only as `Reply-To`, so a
+recipient can reply normally without allowing sender spoofing. The localized
+form's email fallback uses the same fixed recipient.
 
-The published privacy-policy URL is `/privacy`. Before enabling transmission,
-update the policy with the approved processor, overseas-transfer and retention
-details, and repeat the privacy/security review. Name, email, phone number and
-message content must never be sent to Google Analytics or `dataLayer`.
+The clients record UTM parameters and emit only non-PII AX conversion events
+when Google Analytics is present. Name, email, phone number and message content
+must never be sent to Google Analytics or `dataLayer`. Delivery failures return
+a generic localized message to visitors; detailed API error codes remain
+available in the network response for diagnosis.
 
-Lead operations will use the approved recipient mailbox and a Google
-Spreadsheet plug-in rather than a site-hosted admin dashboard. Reporting and
-dashboard work are outside the current public-site release.
+The published notice, three-year consultation retention practice, Cloudflare
+Email Service processor setup, sender domain and final recipient must stay in
+sync with this implementation. Add a Cloudflare rate-limiting or WAF rule for
+`POST /api/ax/consultations` when the site moves to `corca.ai`, so automated
+traffic cannot exhaust the delivery quota or recipient inbox.
+
+Lead operations use the approved recipient mailbox and a Google Spreadsheet
+plug-in rather than a site-hosted admin dashboard. Reporting and dashboard work
+are outside the current public-site release.
 
 ## Verification
 

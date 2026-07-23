@@ -27,9 +27,6 @@ type AxFormErrors = {
   consent: string;
   formExpired: string;
   tooQuick: string;
-  botCheckRequired: string;
-  botCheckUnavailable: string;
-  deliveryUnavailable: string;
   deliveryFailed: string;
   generic: string;
   emailLink: string;
@@ -655,7 +652,7 @@ export const axContent: Record<Lang, AxContent> = {
           other: '기타',
         },
         consent:
-          '상담을 위해 이름·이메일·전화번호를 수집하고 담당자에게 전달하며, 신청일로부터 1년간 보관하는 데 동의합니다. 동의를 거부할 수 있으나 상담 신청은 제한됩니다.',
+          '상담을 위해 이름·이메일·전화번호를 수집하고 담당자에게 전달하며, 신청일로부터 3년간 보관하는 데 동의합니다. 동의를 거부할 수 있으나 상담 신청은 제한됩니다.',
         privacyPolicyLabel: '개인정보 처리방침 보기 ↗',
         submit: '20분 상담 신청하기',
         sending: '보내는 중입니다',
@@ -671,10 +668,6 @@ export const axContent: Record<Lang, AxContent> = {
           consent: '개인정보 수집·이용에 동의해 주세요.',
           formExpired: '상담 양식을 새로고침한 뒤 다시 작성해 주세요.',
           tooQuick: '잠시 후 다시 제출해 주세요.',
-          botCheckRequired: '자동 제출 방지 확인을 완료해 주세요.',
-          botCheckUnavailable:
-            '자동 제출 방지 확인이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.',
-          deliveryUnavailable: '현재 온라인 접수가 준비 중입니다. 이메일로 문의해 주세요.',
           deliveryFailed:
             '상담 요청을 전달하지 못했습니다. 잠시 후 다시 시도하거나 이메일로 문의해 주세요.',
           generic: '잠시 후 다시 시도해 주세요.',
@@ -1134,7 +1127,7 @@ export const axContent: Record<Lang, AxContent> = {
           other: 'Other',
         },
         consent:
-          'I consent to the collection of my name, email, and phone number, their sharing with the consultation owner, and retention for one year from the request date. I may refuse, but then cannot submit this request.',
+          'I consent to the collection of my name, email, and phone number, their sharing with the consultation owner, and retention for three years from the request date. I may refuse, but then cannot submit this request.',
         privacyPolicyLabel: 'View the privacy policy ↗',
         submit: 'Book a 20-minute consultation',
         sending: 'Sending…',
@@ -1150,11 +1143,6 @@ export const axContent: Record<Lang, AxContent> = {
           consent: 'Agree to the collection and use of your personal information.',
           formExpired: 'Refresh the page and complete the form again.',
           tooQuick: 'Please wait a moment, then submit again.',
-          botCheckRequired: 'Complete the anti-bot check.',
-          botCheckUnavailable:
-            'The anti-bot check is taking longer than expected. Please try again shortly.',
-          deliveryUnavailable:
-            'Online submissions are not available yet. Please contact us by email.',
           deliveryFailed:
             'We could not deliver your request. Try again shortly or contact us by email.',
           generic: 'Please try again shortly.',
@@ -1590,7 +1578,7 @@ export const axContent: Record<Lang, AxContent> = {
           other: 'その他',
         },
         consent:
-          '相談対応のため、氏名・メールアドレス・電話番号を収集して担当者に共有し、申込日から1年間保管することに同意します。同意を拒否できますが、その場合は相談を申し込めません。',
+          '相談対応のため、氏名・メールアドレス・電話番号を収集して担当者に共有し、申込日から3年間保管することに同意します。同意を拒否できますが、その場合は相談を申し込めません。',
         privacyPolicyLabel: '個人情報処理方針を見る ↗',
         submit: '20分相談を申し込む',
         sending: '送信中です',
@@ -1606,10 +1594,6 @@ export const axContent: Record<Lang, AxContent> = {
           consent: '個人情報の収集・利用に同意してください。',
           formExpired: 'ページを更新し、フォームをもう一度入力してください。',
           tooQuick: '少し待ってから、もう一度送信してください。',
-          botCheckRequired: '自動送信防止の確認を完了してください。',
-          botCheckUnavailable:
-            '自動送信防止の確認に時間がかかっています。しばらくしてからもう一度お試しください。',
-          deliveryUnavailable: '現在オンライン受付を準備中です。メールでお問い合わせください。',
           deliveryFailed:
             'ご相談内容を送信できませんでした。しばらくしてから再試行するか、メールでお問い合わせください。',
           generic: 'しばらくしてからもう一度お試しください。',
@@ -2026,7 +2010,7 @@ export const axContent: Record<Lang, AxContent> = {
           other: '其他',
         },
         consent:
-          '我同意为咨询之目的收集姓名、电子邮箱和电话号码，将其提供给咨询负责人，并自申请之日起保存一年。您可以拒绝同意，但将无法提交咨询申请。',
+          '我同意为咨询之目的收集姓名、电子邮箱和电话号码，将其提供给咨询负责人，并自申请之日起保存三年。您可以拒绝同意，但将无法提交咨询申请。',
         privacyPolicyLabel: '查看隐私政策 ↗',
         submit: '预约20分钟咨询',
         sending: '正在发送',
@@ -2042,9 +2026,6 @@ export const axContent: Record<Lang, AxContent> = {
           consent: '请同意收集和使用个人信息。',
           formExpired: '请刷新页面后重新填写表单。',
           tooQuick: '请稍候片刻再重新提交。',
-          botCheckRequired: '请完成防自动提交验证。',
-          botCheckUnavailable: '防自动提交验证暂时延迟，请稍后重试。',
-          deliveryUnavailable: '在线提交功能正在准备中，请通过电子邮件联系我们。',
           deliveryFailed: '未能发送您的咨询请求，请稍后重试或通过电子邮件联系我们。',
           generic: '请稍后重试。',
           emailLink: '通过电子邮件联系我们',

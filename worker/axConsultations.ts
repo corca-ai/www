@@ -1,34 +1,16 @@
-interface EmailAddress {
-  email: string;
-  name?: string;
-}
+import { type AxTopicId, axTopicIds } from '../src/components/pages/ax/contract';
 
-interface EmailMessageBuilder {
-  to?: string | EmailAddress | (string | EmailAddress)[];
-  from: string | EmailAddress;
-  subject: string;
-  html?: string;
-  text?: string;
-  replyTo?: string | EmailAddress;
-}
-
-interface SendEmail {
-  send(message: EmailMessageBuilder): Promise<{ messageId: string }>;
-}
-
-interface RateLimiter {
-  limit(options: { key: string }): Promise<{ success: boolean }>;
-}
-
-export interface AxConsultationEnv {
-  AX_CONSULTATION_DELIVERY_ENABLED?: string;
-  AX_CONSULTATION_EMAIL?: SendEmail;
-  AX_CONSULTATION_FROM?: string;
-  AX_CONSULTATION_RATE_LIMITER?: RateLimiter;
-  TURNSTILE_SECRET_KEY?: string;
-}
+export type AxConsultationEnv = Pick<Env, 'AX_EMAIL'>;
 
 const locales = ['ko', 'en', 'ja', 'zh'] as const;
+const topicLabels: Record<AxTopicId, string> = {
+  strategy_discovery: 'AX 전략·과제 발굴',
+  decision_map: '2주 의사결정 지도',
+  operations_transition: '6주 운영 전환',
+  organization_adoption: '조직 확산·AX Champion',
+  openai_adoption: 'OpenAI 도입·활성화',
+  other: '기타',
+};
 type Locale = (typeof locales)[number];
 type FieldErrors = Record<string, string>;
 
@@ -38,6 +20,7 @@ interface ValidConsultation {
   message: string;
   name: string;
   phone: string;
+  topic: AxTopicId | '';
   utm: string;
 }
 
@@ -49,6 +32,8 @@ type ValidationResult =
       ok: false;
     };
 
+const consultationRecipient = 'contact+ax@corca.ai';
+const consultationSender = 'ax@corca.ai';
 const maxBodyBytes = 32 * 1024;
 const maxFormAgeMs = 24 * 60 * 60 * 1000;
 const minFormTimeMs = 2_000;
@@ -85,13 +70,6 @@ export async function handleAxConsultation(
 
   if (stringValue(payload.website)) return jsonSuccess();
 
-  const rateLimiter = env.AX_CONSULTATION_RATE_LIMITER;
-  if (rateLimiter) {
-    const clientKey = request.headers.get('CF-Connecting-IP') || 'unknown';
-    const rateLimit = await rateLimiter.limit({ key: clientKey });
-    if (!rateLimit.success) return jsonError(429, 'RATE_LIMITED');
-  }
-
   const validation = validateConsultation(payload, Date.now());
   if (!validation.ok) {
     return jsonError(
@@ -101,18 +79,7 @@ export async function handleAxConsultation(
     );
   }
 
-  const turnstileToken = stringValue(payload.turnstile_token ?? payload['cf-turnstile-response']);
-  const turnstile = await verifyTurnstile(
-    turnstileToken,
-    String(env.TURNSTILE_SECRET_KEY || '').trim(),
-    request.headers.get('CF-Connecting-IP') || '',
-  );
-  if (turnstile === 'not_configured') return jsonError(503, 'BOT_CHECK_NOT_CONFIGURED');
-  if (turnstile === 'failed') return jsonError(422, 'BOT_CHECK_FAILED');
-  if (turnstile === 'unavailable') return jsonError(503, 'BOT_CHECK_UNAVAILABLE');
-
   const delivery = await sendConsultationEmail(validation.value, env);
-  if (delivery === 'not_configured') return jsonError(503, 'DELIVERY_NOT_CONFIGURED');
   if (delivery === 'failed') return jsonError(502, 'DELIVERY_FAILED');
 
   return jsonSuccess();
@@ -123,6 +90,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   const email = stringValue(payload.email).toLowerCase();
   const phone = stringValue(payload.phone);
   const message = stringValue(payload.message);
+  const topic = stringValue(payload.topic);
   const locale = stringValue(payload.locale);
   const startedAt = parseStartedAt(payload.started_at);
   const utm = normalizeUtm(payload.utm);
@@ -142,6 +110,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   ) {
     fields.phone = 'INVALID_PHONE';
   }
+  if (topic && !isConsultationTopic(topic)) fields.topic = 'INVALID_TOPIC';
   if (message.length > 2_000) fields.message = 'MESSAGE_TOO_LONG';
   if (payload.privacy_consent !== true) fields.privacy_consent = 'PRIVACY_CONSENT_REQUIRED';
   if (!isLocale(locale)) fields.locale = 'INVALID_LOCALE';
@@ -166,9 +135,14 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
       message,
       name,
       phone,
+      topic: topic as AxTopicId | '',
       utm: utm.value,
     },
   };
+}
+
+function isConsultationTopic(value: string): value is AxTopicId {
+  return (axTopicIds as readonly string[]).includes(value);
 }
 
 function isLocale(value: string): value is Locale {
@@ -211,54 +185,23 @@ function normalizeUtm(value: unknown): { valid: boolean; value: string } {
   return { valid: text.length <= 1_000, value: text.slice(0, 1_000) };
 }
 
-async function verifyTurnstile(
-  token: string,
-  secret: string,
-  remoteIp: string,
-): Promise<'failed' | 'not_configured' | 'unavailable' | 'verified'> {
-  if (!secret) return 'not_configured';
-  if (!token) return 'failed';
-
-  const form = new URLSearchParams({ response: token, secret });
-  if (remoteIp) form.set('remoteip', remoteIp);
-  try {
-    const response = await fetchWithTimeout(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      {
-        body: form,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        method: 'POST',
-      },
-      8_000,
-    );
-    if (!response.ok) return 'unavailable';
-    const result: unknown = await response.json();
-    return isRecord(result) && result.success === true ? 'verified' : 'failed';
-  } catch {
-    return 'unavailable';
-  }
-}
-
 async function sendConsultationEmail(
   input: ValidConsultation,
   env: AxConsultationEnv,
-): Promise<'failed' | 'not_configured' | 'sent'> {
-  if (env.AX_CONSULTATION_DELIVERY_ENABLED !== 'true') return 'not_configured';
-  const binding = env.AX_CONSULTATION_EMAIL;
-  const sender = String(env.AX_CONSULTATION_FROM || '').trim();
-  if (!binding || !sender) return 'not_configured';
-
+): Promise<'failed' | 'sent'> {
   const submittedAt = new Intl.DateTimeFormat('ko-KR', {
     dateStyle: 'long',
     timeStyle: 'short',
     timeZone: 'Asia/Seoul',
   }).format(new Date());
+  const topicLabel = input.topic ? topicLabels[input.topic] : '';
   const text = [
     'Corca AX 상담 요청',
     '',
     `이름: ${input.name}`,
     `이메일: ${input.email}`,
     `연락처: ${input.phone}`,
+    ...(input.topic ? [`문의 유형: ${topicLabel} (${input.topic})`] : []),
     `페이지 언어: ${input.locale}`,
     `문의 내용: ${input.message || '입력하지 않음'}`,
     `유입 정보: ${input.utm || '없음'}`,
@@ -268,6 +211,7 @@ async function sendConsultationEmail(
     ['이름', escapeHtml(input.name)],
     ['이메일', escapeHtml(input.email)],
     ['연락처', escapeHtml(input.phone)],
+    ...(input.topic ? [['문의 유형', escapeHtml(`${topicLabel} (${input.topic})`)]] : []),
     ['페이지 언어', escapeHtml(input.locale)],
     ['문의 내용', escapeHtml(input.message || '입력하지 않음').replace(/\n/g, '<br />')],
     ['유입 정보', escapeHtml(input.utm || '없음')],
@@ -281,15 +225,22 @@ async function sendConsultationEmail(
   const html = `<div style="font-family:Arial,'Apple SD Gothic Neo',sans-serif;color:#10213d;line-height:1.65;max-width:680px;margin:0 auto;padding:32px"><p style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#056eb9;margin:0 0 12px">CORCA AX</p><h1 style="font-size:28px;line-height:1.25;margin:0 0 28px">새 상담 요청이 접수되었습니다.</h1><table style="width:100%;border-collapse:collapse;font-size:15px"><tbody>${rows}</tbody></table></div>`;
 
   try {
-    await binding.send({
-      from: sender,
-      subject: '[Corca AX 상담 요청] 새 상담 요청',
+    await env.AX_EMAIL.send({
+      from: { email: consultationSender, name: 'Corca AX' },
       html,
-      text,
       replyTo: input.email,
+      subject: `[Corca AX 상담 요청] ${topicLabel || '새 상담 요청'}`,
+      text,
+      to: consultationRecipient,
     });
     return 'sent';
-  } catch {
+  } catch (error) {
+    console.error(
+      JSON.stringify({
+        event: 'ax_consultation_email_failed',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+    );
     return 'failed';
   }
 }
@@ -332,20 +283,6 @@ async function readLimitedBody(
 
 function jsonSuccess(): Response {
   return new Response(JSON.stringify({ ok: true }), { headers: noStoreHeaders, status: 200 });
-}
-
-async function fetchWithTimeout(
-  input: string,
-  init: RequestInit,
-  timeoutMs: number,
-): Promise<Response> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    return await fetch(input, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timeout);
-  }
 }
 
 function jsonError(

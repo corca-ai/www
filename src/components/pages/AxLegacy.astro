@@ -10,12 +10,11 @@ import './ax/ax.css';
 
 interface Props {
   lang: Lang;
+  showConsultationForm?: boolean;
 }
 
-const { lang } = Astro.props;
+const { lang, showConsultationForm = false } = Astro.props;
 const c = axContent[lang];
-// Switch back to true to restore the existing consultation form on the AX page.
-const showConsultationForm = false;
 const brochureHref = import.meta.env.DEV
   ? '/ax/corca-ax-brochure/index.html'
   : '/ax/corca-ax-brochure/';
@@ -73,10 +72,6 @@ const formCopy = {
     VALIDATION_ERROR: form.errors.checkFields,
     FORM_EXPIRED: form.errors.formExpired,
     FORM_SUBMITTED_TOO_QUICKLY: form.errors.tooQuick,
-    BOT_CHECK_FAILED: form.errors.botCheckRequired,
-    BOT_CHECK_NOT_CONFIGURED: form.errors.botCheckUnavailable,
-    BOT_CHECK_UNAVAILABLE: form.errors.botCheckUnavailable,
-    DELIVERY_NOT_CONFIGURED: form.errors.deliveryUnavailable,
     DELIVERY_FAILED: form.errors.deliveryFailed,
     INVALID_NAME: form.errors.name,
     INVALID_EMAIL: form.errors.email,
@@ -131,8 +126,8 @@ const cadenceClasses = ['cadence-monthly', 'cadence-weekly', 'cadence-daily'];
       </h1>
       <p class="hero-sub">{c.hero.subtitle[0]}<br class="hero-sub-break" />{' '}{c.hero.subtitle[1]}</p>
       <div class="hero-actions">
-        <a href={contactMailto} class="primary-button" data-ax-track-link="hero">
-          {c.hero.consultationCta}<span class="sr-only"> — {c.contact.emailAriaLabel}</span>
+        <a href={showConsultationForm ? '#ax-contact' : contactMailto} class="primary-button" data-ax-track-link="hero">
+          {c.hero.consultationCta}{!showConsultationForm && <span class="sr-only"> — {c.contact.emailAriaLabel}</span>}
         </a>
       </div>
     </div>

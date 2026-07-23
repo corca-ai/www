@@ -76,7 +76,7 @@ const effectiveDate = '2026년 7월 23일';
               <tr>
                 <th>AX 상담 신청</th>
                 <td>성명, 이메일, 전화번호, 문의내용, 개인정보 수집·이용 동의 여부</td>
-                <td>이메일, 전화 또는 미팅 (웹사이트 폼은 API 연동 전 입력 확인만 제공)</td>
+                <td>웹사이트 상담 폼, 이메일, 전화 또는 미팅</td>
               </tr>
               <tr>
                 <th>유입·이용 분석</th>
@@ -92,9 +92,9 @@ const effectiveDate = '2026년 7월 23일';
           </table>
         </div>
         <aside class="privacy-note">
-          현재 웹사이트의 AX 상담폼은 입력 형식과 필수 항목을 확인하는 미리보기 기능만 제공합니다.
-          입력한 내용은 회사 또는 외부 서비스로 전송되거나 저장되지 않습니다. 상담 접수 API와 수신 체계가
-          확정되고 이 방침에 처리 기준을 반영한 뒤 실제 접수 기능을 별도로 활성화합니다.
+          웹사이트 AX 상담 폼으로 제출한 내용은 Cloudflare Email Service를 통해 회사의 승인된 상담
+          수신함으로 전달됩니다. 웹사이트 애플리케이션 데이터베이스에는 별도로 저장하지 않으며, 수신한
+          상담 정보는 위 보유기간과 회사의 접근권한·파기 절차에 따라 관리합니다.
         </aside>
         <p>
           회사는 만 14세 미만 아동을 대상으로 서비스를 제공하거나 고의로 개인정보를 수집하지 않습니다.
@@ -126,7 +126,7 @@ const effectiveDate = '2026년 7월 23일';
           <table>
             <thead><tr><th>수탁자</th><th>위탁 업무</th></tr></thead>
             <tbody>
-              <tr><th>Cloudflare, Inc.</th><td>웹사이트 제공, 보안·봇 방지</td></tr>
+              <tr><th>Cloudflare, Inc.</th><td>웹사이트 제공, 보안 및 상담 이메일 전송</td></tr>
               <tr><th>Google LLC</th><td>Google Analytics 이용 분석</td></tr>
             </tbody>
           </table>
@@ -143,8 +143,8 @@ const effectiveDate = '2026년 7월 23일';
             <tbody>
               <tr>
                 <th>Cloudflare, Inc.</th>
-                <td>미국 등 서비스 제공 지역 / 웹사이트 이용 시 암호화된 네트워크 전송</td>
-                <td>접속·기기 정보 / 호스팅 및 보안</td>
+                <td>미국 등 서비스 제공 지역 / 웹사이트 이용·상담 신청 시 암호화된 네트워크 전송</td>
+                <td>접속·기기 정보 및 상담 신청 정보 / 호스팅, 보안 및 이메일 전송</td>
                 <td>위탁 목적 달성 또는 계약 종료 시까지</td>
               </tr>
               <tr>

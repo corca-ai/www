@@ -22,6 +22,7 @@
       "!src/blog/posts",
       "!public/fonts",
       "!pnpm-lock.yaml",
+      "!worker-configuration.d.ts",
       "!.raw-assets-backup",
       "!**/*.astro",
       "!**/*.css"

@@ -9,6 +9,10 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const fixtureRoot = await mkdtemp(join(tmpdir(), 'corca-www-admin-post-change-'));
 const workDir = join(fixtureRoot, 'www');
 const slug = 'admin-edit-fixture';
+const removedSlugs = [
+  'corca-newbie-trip',
+  'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image',
+];
 const fallbackThumbnail = 'assets/admin-posts/adjacent-thumbnail-fixture-222222222222.png';
 const tinyPngBase64 =
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
@@ -53,27 +57,15 @@ try {
       }
     }
   }
-  for (const sourcePath of [
-    'public/blog/admin/post-sources/corca-newbie-trip.html',
-    'public/blog/admin/post-translations/en/corca-newbie-trip.html',
-    'public/blog/admin/post-translations/ja/corca-newbie-trip.html',
-    'public/blog/admin/post-translations/zh/corca-newbie-trip.html',
-  ]) {
-    const newbieMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
-    assert.deepEqual(newbieMetadata.tags, ['AX']);
-    assert.equal(newbieMetadata.section, 'AX');
-  }
-  for (const sourcePath of [
-    'public/blog/admin/post-sources/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
-    'public/blog/admin/post-translations/en/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
-    'public/blog/admin/post-translations/ja/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
-    'public/blog/admin/post-translations/zh/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image.html',
-  ]) {
-    const axPostSource = await readFile(join(repoRoot, sourcePath), 'utf8');
-    const axPostMetadata = embeddedMetadata(axPostSource);
-    assert.deepEqual(axPostMetadata.tags, ['AX']);
-    assert.equal(axPostMetadata.section, 'AX');
-    assert.doesNotMatch(axPostSource, /ceal-terview · 2026-06-25/i);
+  for (const removedSlug of removedSlugs) {
+    for (const sourcePath of [
+      `public/blog/admin/post-sources/${removedSlug}.html`,
+      `public/blog/admin/post-translations/en/${removedSlug}.html`,
+      `public/blog/admin/post-translations/ja/${removedSlug}.html`,
+      `public/blog/admin/post-translations/zh/${removedSlug}.html`,
+    ]) {
+      await assert.rejects(readFile(join(repoRoot, sourcePath), 'utf8'), { code: 'ENOENT' });
+    }
   }
   for (const [sourcePath, expectedTag, expectedSection] of [
     ['public/blog/admin/post-sources/voc-agent.html', '문라이트', '제품'],
@@ -153,6 +145,10 @@ try {
       await readFile(join(repoRoot, `public/${localeRoot}/index.json`), 'utf8'),
     );
     assert.equal(
+      posts.some((post) => removedSlugs.includes(post.slug)),
+      false,
+    );
+    assert.equal(
       posts.every(
         (post) =>
           post.tags.length === 1 &&
@@ -166,21 +162,12 @@ try {
       assert.deepEqual(post?.tags, [displayTopic]);
       assert.equal(post?.section, productCategory);
     }
-    const axPost = posts.find(
-      (post) => post.slug === 'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image',
-    );
-    assert.deepEqual(axPost?.tags, ['AX']);
-    assert.equal(axPost?.section, 'AX');
-    assert.doesNotMatch(
-      await readFile(
-        join(
-          repoRoot,
-          `public/${localeRoot}/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image/index.html`,
-        ),
-        'utf8',
-      ),
-      /ceal-terview · 2026-06-25/i,
-    );
+    for (const removedSlug of removedSlugs) {
+      await assert.rejects(
+        readFile(join(repoRoot, `public/${localeRoot}/${removedSlug}/index.html`), 'utf8'),
+        { code: 'ENOENT' },
+      );
+    }
     assert.deepEqual(posts.find((post) => post.slug === 'corca-team-page')?.tags, [corcaCategory]);
     assert.deepEqual(posts.find((post) => post.slug === 'corca-buddy-program')?.tags, [
       corcaCategory,

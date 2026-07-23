@@ -6,6 +6,7 @@ type PageMeta = Record<Lang, Meta>;
 /** The static (non-product) pages that carry SEO copy here. */
 export type PageMetaKey =
   | 'ax'
+  | 'privacy'
   | 'products'
   | 'about'
   | 'about-corca'
@@ -19,6 +20,26 @@ export type PageMetaKey =
 // breadcrumb/app name is derived from the part before the first pipe. Product
 // pages keep their own copy in their manifest, so they are not listed here.
 export const pageMeta = {
+  privacy: {
+    ko: {
+      title: '개인정보처리방침 | Corca',
+      description: 'Corca 웹사이트와 AX 상담 서비스의 개인정보 처리 기준을 안내합니다.',
+    },
+    en: {
+      title: 'Privacy Policy | Corca',
+      description:
+        'How Corca handles personal information through its website and AX consultation service.',
+    },
+    ja: {
+      title: 'プライバシーポリシー | Corca',
+      description:
+        'CorcaのウェブサイトおよびAX相談サービスにおける個人情報の取扱いについてご案内します。',
+    },
+    zh: {
+      title: '隐私政策 | Corca',
+      description: '说明Corca网站及AX咨询服务如何处理个人信息。',
+    },
+  },
   ax: {
     ko: {
       title: 'Corca AX | AI 도입을 반복되는 성과로 바꾸는 기업 AX 컨설팅',

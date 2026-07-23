@@ -1,0 +1,46 @@
+---
+import { privacyContent } from '../../../i18n/privacy-content';
+import type { Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const content = privacyContent[lang];
+---
+
+<article class="privacy-page">
+  <header class="privacy-hero">
+    <div class="privacy-shell">
+      <p class="privacy-eyebrow">{content.eyebrow}</p>
+      <h1>{content.heading}</h1>
+      <p class="privacy-lead">{content.lead}</p>
+      <p class="privacy-date">{content.effectiveLabel} {content.effectiveDate}</p>
+    </div>
+  </header>
+
+  <div class="privacy-shell privacy-body">
+    <nav class="privacy-toc" aria-label={content.tocLabel}>
+      <strong>{content.tocLabel}</strong>
+      <ol>
+        {content.sections.map((section) => <li><a href={`#${section.id}`}>{section.title}</a></li>)}
+      </ol>
+    </nav>
+
+    <section class="privacy-intro" aria-label={content.overviewLabel}>
+      <p>{content.intro}</p>
+    </section>
+
+    {content.sections.map((section) => (
+      <section id={section.id} class:list={{ 'privacy-officer': section.id === 'contact' }}>
+        <h2>{section.title}</h2>
+        <div class="privacy-section-content" set:html={section.html} />
+      </section>
+    ))}
+  </div>
+</article>
+
+<style>
+  .privacy-page{overflow-x:clip;background:#f6f8fb;color:#101828;word-break:keep-all}.privacy-shell{width:min(1080px,calc(100% - 40px));margin:0 auto}.privacy-hero{padding:clamp(78px,11vw,150px) 0 clamp(62px,8vw,104px);background:linear-gradient(145deg,#071a38 0%,#0b3266 58%,#086bce 100%);color:#fff}.privacy-eyebrow{margin:0 0 18px;color:#65b9ff;font-size:14px;font-weight:750;letter-spacing:.12em}.privacy-hero h1{margin:0;font-size:clamp(42px,7vw,76px);line-height:1.05;letter-spacing:-.055em}.privacy-lead{max-width:760px;margin:28px 0 0;color:#dcecff;font-size:clamp(18px,2.2vw,24px);line-height:1.65}.privacy-date{margin:30px 0 0;color:#a9c7e9;font-size:14px}.privacy-body{padding:clamp(48px,8vw,100px) 0 120px}.privacy-toc{padding:30px 34px;border:1px solid #dce5f1;border-radius:24px;background:#fff;box-shadow:0 20px 60px -45px rgba(14,47,86,.4)}.privacy-toc strong{display:block;margin-bottom:18px;font-size:20px}.privacy-toc ol{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 28px;margin:0;padding-left:22px}.privacy-toc a{color:#344054;text-decoration:none}.privacy-toc a:hover{text-decoration:underline}.privacy-intro{margin-top:52px!important;padding:32px 34px;border-radius:22px;background:#e8f2ff}.privacy-body>section{scroll-margin-top:96px;margin-top:72px}.privacy-body h2{margin:0 0 24px;font-size:clamp(26px,3.2vw,38px);line-height:1.2;letter-spacing:-.035em}.privacy-section-content :global(p),.privacy-section-content :global(li),.privacy-intro p{color:#475467;font-size:17px;line-height:1.85}.privacy-section-content :global(ul){padding-left:24px}.privacy-section-content :global(a){color:#086bce}.privacy-section-content :global(aside){margin-top:28px;padding:24px 26px;border-left:4px solid #147bf3;border-radius:0 16px 16px 0;background:#edf5ff;color:#173b68;font-size:16px;line-height:1.75}.privacy-section-content :global(.privacy-table-wrap){contain:inline-size;overflow-x:auto;max-width:100%;margin:26px 0;border:1px solid #d9e2ec;border-radius:18px;background:#fff}.privacy-section-content :global(table){width:100%;min-width:720px;border-collapse:collapse}.privacy-section-content :global(th),.privacy-section-content :global(td){padding:20px 22px;border-bottom:1px solid #e6ebf1;text-align:left;vertical-align:top;line-height:1.65}.privacy-section-content :global(thead th){background:#0b2b55;color:#fff;font-size:15px}.privacy-section-content :global(tbody th){width:20%;color:#173b68}.privacy-section-content :global(tr:last-child th),.privacy-section-content :global(tr:last-child td){border-bottom:0}.privacy-officer{padding:clamp(30px,5vw,52px);border-radius:28px;background:#09264c;color:#fff}.privacy-officer h2{color:#fff}.privacy-officer .privacy-section-content :global(p){color:#bdd0e7}.privacy-officer .privacy-section-content :global(dl){margin:28px 0;border-top:1px solid rgba(255,255,255,.24)}.privacy-officer .privacy-section-content :global(dl div){display:grid;grid-template-columns:180px 1fr;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.24)}.privacy-officer .privacy-section-content :global(dt){color:#9ab9dc}.privacy-officer .privacy-section-content :global(dd){margin:0;font-weight:700}.privacy-officer .privacy-section-content :global(a){color:#fff}@media(max-width:760px){.privacy-shell{width:min(100% - 32px,1080px)}.privacy-toc{padding:24px}.privacy-toc ol{grid-template-columns:1fr;gap:10px}.privacy-body>section{margin-top:56px}.privacy-intro{padding:24px!important}.privacy-section-content :global(p),.privacy-section-content :global(li),.privacy-intro p{font-size:16px}.privacy-officer .privacy-section-content :global(dl div){grid-template-columns:1fr;gap:4px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>

@@ -17,7 +17,8 @@ const phoneTitle = {
   zh: '请输入电话号码，系统会自动添加连字符。',
 }[lang];
 const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
-const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || '/privacy').trim();
+const localizedPrivacyUrl = lang === 'ko' ? '/privacy' : `/${lang}/privacy`;
+const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || localizedPrivacyUrl).trim();
 const formId = `ax-lead-${id}`;
 ---
 
@@ -118,7 +119,6 @@ const formId = `ax-lead-${id}`;
       value="true"
       aria-describedby={`${formId}-privacy-error`}
       required
-      checked
     />
     <span>{c.consent}</span>
     {privacyUrl
@@ -126,6 +126,23 @@ const formId = `ax-lead-${id}`;
       : <span class="ax-v2-policy-pending" aria-disabled="true">{c.privacyDetail}</span>}
   </label>
   <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
+
+  {lang === 'zh' && (
+    <>
+      <label class="ax-v2-consent" for={`${formId}-cross-border`}>
+        <input
+          id={`${formId}-cross-border`}
+          name="cross_border_consent"
+          type="checkbox"
+          value="true"
+          aria-describedby={`${formId}-cross-border-error`}
+          required
+        />
+        <span>我单独同意将咨询所需的个人信息跨境传输至韩国，并由隐私政策中列明的境外服务商处理。</span>
+      </label>
+      <span class="ax-v2-field-error" id={`${formId}-cross-border-error`} data-field-error="cross_border_consent"></span>
+    </>
+  )}
 
   <button class="ax-v2-primary-button ax-v2-form-submit" type="submit" disabled>
     <span data-submit-label>{c.submit}</span>

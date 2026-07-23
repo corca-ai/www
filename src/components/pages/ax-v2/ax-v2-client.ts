@@ -30,6 +30,7 @@ const FORM_MESSAGES = {
       MESSAGE_REQUIRED: '문의내용을 입력해 주세요.',
       MESSAGE_TOO_LONG: '문의내용은 2,000자 이내로 입력해 주세요.',
       PRIVACY_CONSENT_REQUIRED: '개인정보처리방침 동의가 필요합니다.',
+      CROSS_BORDER_CONSENT_REQUIRED: '국외 이전에 대한 별도 동의가 필요합니다.',
     },
     fieldFallback: '입력 내용을 확인해 주세요.',
     required: '필수 항목을 모두 올바르게 입력해 주세요.',
@@ -54,6 +55,7 @@ const FORM_MESSAGES = {
       MESSAGE_REQUIRED: 'Please enter a message.',
       MESSAGE_TOO_LONG: 'Please keep your message under 2,000 characters.',
       PRIVACY_CONSENT_REQUIRED: 'You must agree to the Privacy Policy.',
+      CROSS_BORDER_CONSENT_REQUIRED: 'Separate consent is required for the international transfer.',
     },
     fieldFallback: 'Please review this field.',
     required: 'Please complete all required fields correctly.',
@@ -78,6 +80,7 @@ const FORM_MESSAGES = {
       MESSAGE_REQUIRED: 'お問い合わせ内容を入力してください。',
       MESSAGE_TOO_LONG: 'お問い合わせ内容は2,000文字以内で入力してください。',
       PRIVACY_CONSENT_REQUIRED: 'プライバシーポリシーへの同意が必要です。',
+      CROSS_BORDER_CONSENT_REQUIRED: '外国への移転について個別の同意が必要です。',
     },
     fieldFallback: '入力内容をご確認ください。',
     required: '必須項目を正しく入力してください。',
@@ -102,6 +105,7 @@ const FORM_MESSAGES = {
       MESSAGE_REQUIRED: '请输入咨询内容。',
       MESSAGE_TOO_LONG: '咨询内容请控制在2,000字以内。',
       PRIVACY_CONSENT_REQUIRED: '需要同意隐私政策。',
+      CROSS_BORDER_CONSENT_REQUIRED: '需要单独同意个人信息跨境传输。',
     },
     fieldFallback: '请检查填写内容。',
     required: '请正确填写所有必填项。',
@@ -657,6 +661,7 @@ function initializeLeadForm(form: HTMLFormElement) {
     if (field.name === 'phone') return 'INVALID_PHONE';
     if (field.name === 'message') return 'MESSAGE_REQUIRED';
     if (field.name === 'privacy_consent') return 'PRIVACY_CONSENT_REQUIRED';
+    if (field.name === 'cross_border_consent') return 'CROSS_BORDER_CONSENT_REQUIRED';
     return 'INVALID_NAME';
   };
 
@@ -743,12 +748,15 @@ function initializeLeadForm(form: HTMLFormElement) {
         .filter((entry): entry is readonly [string, string] => Boolean(entry[1])),
     );
     const privacyConsent = form.elements.namedItem('privacy_consent');
+    const crossBorderConsent = form.elements.namedItem('cross_border_consent');
     const payload = {
       name: String(data.get('name') ?? ''),
       email: String(data.get('email') ?? ''),
       phone: String(data.get('phone') ?? ''),
       message: String(data.get('message') ?? ''),
       privacy_consent: privacyConsent instanceof HTMLInputElement && privacyConsent.checked,
+      cross_border_consent:
+        crossBorderConsent instanceof HTMLInputElement && crossBorderConsent.checked,
       website: String(data.get('website') ?? ''),
       started_at: startedAt,
       utm,
@@ -847,8 +855,15 @@ function initializeBrochureLinks(page: HTMLElement) {
   });
 }
 
-function initializeCompoundParallax(page: HTMLElement) {
-  const section = page.querySelector<HTMLElement>('[data-compound-parallax]');
+type SpringParallaxOptions = {
+  property: string;
+  desktopRate: number;
+  compactRate: number;
+  desktopLimit: number;
+  compactLimit: number;
+};
+
+function initializeSpringParallax(section: HTMLElement | null, options: SpringParallaxOptions) {
   if (!section) return;
 
   const compact = window.matchMedia('(max-width: 720px)');
@@ -865,8 +880,8 @@ function initializeCompoundParallax(page: HTMLElement) {
     const rect = section.getBoundingClientRect();
     const sectionCenter = rect.top + rect.height / 2;
     const viewportCenter = window.innerHeight / 2;
-    const rate = compact.matches ? 0.12 : 0.18;
-    const limit = compact.matches ? 44 : 96;
+    const rate = compact.matches ? options.compactRate : options.desktopRate;
+    const limit = compact.matches ? options.compactLimit : options.desktopLimit;
     targetOffset = Math.max(-limit, Math.min(limit, (viewportCenter - sectionCenter) * rate));
   };
 
@@ -893,7 +908,7 @@ function initializeCompoundParallax(page: HTMLElement) {
       velocity = 0;
     }
 
-    section.style.setProperty('--ax-v2-compound-media-y', `${currentOffset.toFixed(3)}px`);
+    section.style.setProperty(options.property, `${currentOffset.toFixed(3)}px`);
     frame = settled ? 0 : window.requestAnimationFrame(render);
   };
 
@@ -918,7 +933,7 @@ function initializeCompoundParallax(page: HTMLElement) {
     velocity = 0;
     previousTime = 0;
     initialized = false;
-    section.style.removeProperty('--ax-v2-compound-media-y');
+    section.style.removeProperty(options.property);
   };
 
   const start = () => {
@@ -939,13 +954,30 @@ function initializeCompoundParallax(page: HTMLElement) {
   reconcile();
 }
 
+function initializeParallax(page: HTMLElement) {
+  initializeSpringParallax(page.querySelector<HTMLElement>('[data-compound-parallax]'), {
+    property: '--ax-v2-compound-media-y',
+    desktopRate: 0.18,
+    compactRate: 0.12,
+    desktopLimit: 96,
+    compactLimit: 44,
+  });
+  initializeSpringParallax(page.querySelector<HTMLElement>('[data-coaching-parallax]'), {
+    property: '--ax-v2-coaching-bg-y',
+    desktopRate: 0.12,
+    compactRate: 0.08,
+    desktopLimit: 64,
+    compactLimit: 32,
+  });
+}
+
 function initialize() {
   const page = document.querySelector<HTMLElement>('[data-ax-v2-page]');
   if (!page || page.dataset.initialized === 'true') return;
   page.dataset.initialized = 'true';
   initializeHeroVideo(page);
   initializePartnerBadge(page);
-  initializeCompoundParallax(page);
+  initializeParallax(page);
   page.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach(initializeCarousel);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-tabs]').forEach(initializeTabs);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);

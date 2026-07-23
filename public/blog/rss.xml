@@ -6,8 +6,8 @@
   xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title><![CDATA[Corca Blog]]></title>
-    <link>https://www.borca.ai/blog</link>
-    <atom:link href="https://www.borca.ai/rss" rel="self" type="application/rss+xml" />
+    <link>https://www.corca.ai/blog</link>
+    <atom:link href="https://www.corca.ai/rss" rel="self" type="application/rss+xml" />
     <description><![CDATA[Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.]]></description>
     <language>ko-KR</language>
     <lastBuildDate>Tue, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
@@ -15,35 +15,17 @@
     <ttl>60</ttl>
     <item>
       <title><![CDATA[우리가 만들고 싶은 AI Colleague]]></title>
-      <link>https://www.borca.ai/blog/we-make-ai-colleague</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/we-make-ai-colleague</guid>
+      <link>https://www.corca.ai/blog/we-make-ai-colleague</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/we-make-ai-colleague</guid>
       <pubDate>Tue, 07 Jul 2026 00:00:00 GMT</pubDate>
       <description><![CDATA[Moonlight는 함께 연구하는 AI Colleague입니다]]></description>
       <category><![CDATA[제품 · 문라이트]]></category>
       <dc:creator><![CDATA[김선영(HR Manager)]]></dc:creator>
     </item>
     <item>
-      <title><![CDATA[코르카 신입 적응기]]></title>
-      <link>https://www.borca.ai/blog/corca-newbie-trip</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-newbie-trip</guid>
-      <pubDate>Mon, 06 Jul 2026 00:00:00 GMT</pubDate>
-      <description><![CDATA[코르카의 신입이 회사에 적응하면서 첫 업무를 진행한 기록, 그 과정에서 배운것]]></description>
-      <category><![CDATA[AX]]></category>
-      <dc:creator><![CDATA[문정민(AX Consultant)]]></dc:creator>
-    </item>
-    <item>
-      <title><![CDATA[확인하지 않은 것을 사실처럼 말하지 않기]]></title>
-      <link>https://www.borca.ai/blog/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image</guid>
-      <pubDate>Thu, 25 Jun 2026 00:00:00 GMT</pubDate>
-      <description><![CDATA[AX 공유회와 Ceal 사용 경험을 바탕으로, AI가 확인하지 않은 내용을 사실처럼 말하지 않게 만드는 작업 원칙과 CLI 운영 규칙을 정리합니다.]]></description>
-      <category><![CDATA[AX]]></category>
-      <dc:creator><![CDATA[김예린]]></dc:creator>
-    </item>
-    <item>
       <title><![CDATA[오퍼레이션팀의 새로운 동료, Ceal]]></title>
-      <link>https://www.borca.ai/blog/ceal-operations-team</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/ceal-operations-team</guid>
+      <link>https://www.corca.ai/blog/ceal-operations-team</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/ceal-operations-team</guid>
       <pubDate>Wed, 13 May 2026 00:00:00 GMT</pubDate>
       <description><![CDATA[오퍼레이션팀이 Ceal을 활용해 법인카드, 설문, 생일·입사기념일 공지 같은 반복 운영 업무를 자동화한 사례를 소개합니다.]]></description>
       <category><![CDATA[제품 · 씰]]></category>
@@ -51,8 +33,8 @@
     </item>
     <item>
       <title><![CDATA[VoC 대응 에이전트 구축기]]></title>
-      <link>https://www.borca.ai/blog/voc-agent</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/voc-agent</guid>
+      <link>https://www.corca.ai/blog/voc-agent</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/voc-agent</guid>
       <pubDate>Wed, 22 Apr 2026 00:00:00 GMT</pubDate>
       <description><![CDATA[문라이트 팀이 VoC 응대 과정을 에이전트로 구조화하고, 근거 탐색과 답변 초안 작성 비용을 줄인 과정을 소개합니다.]]></description>
       <category><![CDATA[제품 · 문라이트]]></category>
@@ -60,8 +42,8 @@
     </item>
     <item>
       <title><![CDATA[코르카 AX Day]]></title>
-      <link>https://www.borca.ai/blog/corca-ax-day</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-ax-day</guid>
+      <link>https://www.corca.ai/blog/corca-ax-day</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/corca-ax-day</guid>
       <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
       <description><![CDATA[AX(AI Transformation)에 진심인 코르카 팀이 하루 6시간을 AX에 몰입하며 실험하고 협업한 AX Day를 소개합니다.]]></description>
       <category><![CDATA[AX]]></category>
@@ -69,8 +51,8 @@
     </item>
     <item>
       <title><![CDATA[우리의 새로운 시작, 코르카 이사 이야기]]></title>
-      <link>https://www.borca.ai/blog/corca-office-move</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-office-move</guid>
+      <link>https://www.corca.ai/blog/corca-office-move</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/corca-office-move</guid>
       <pubDate>Mon, 02 Feb 2026 00:00:00 GMT</pubDate>
       <description><![CDATA[코르카가 독립 사무실로 이전하며 일하는 방식과 함께 머무는 공간을 어떻게 새롭게 설계했는지 소개합니다.]]></description>
       <category><![CDATA[코르카]]></category>
@@ -78,8 +60,8 @@
     </item>
     <item>
       <title><![CDATA[Live Activity, 더 깊게 사용해보기: 실시간 일정 기능 개발기]]></title>
-      <link>https://www.borca.ai/blog/live-activity-schedule</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/live-activity-schedule</guid>
+      <link>https://www.corca.ai/blog/live-activity-schedule</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/live-activity-schedule</guid>
       <pubDate>Wed, 10 Dec 2025 00:00:00 GMT</pubDate>
       <description><![CDATA[Trace 팀이 iOS Live Activity와 ActivityKit Push, Push to Start를 활용해 실시간 일정 경험을 구현한 과정을 정리합니다.]]></description>
       <category><![CDATA[제품 · 트레이스]]></category>
@@ -87,8 +69,8 @@
     </item>
     <item>
       <title><![CDATA[앱 스토어 최적화 : 마케팅의 새로운 성장 공식. 앱 스토어 최적화로 앱에 안정적인 유입 확보하기]]></title>
-      <link>https://www.borca.ai/blog/app-store-optimization</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/app-store-optimization</guid>
+      <link>https://www.corca.ai/blog/app-store-optimization</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/app-store-optimization</guid>
       <pubDate>Fri, 26 Sep 2025 00:00:00 GMT</pubDate>
       <description><![CDATA[앱 스토어 최적화(ASO)를 통해 유료 광고 의존도를 낮추고, 키워드와 스토어 페이지 개선으로 안정적인 유입을 만드는 방법을 소개합니다.]]></description>
       <category><![CDATA[제품 · 트레이스]]></category>
@@ -96,8 +78,8 @@
     </item>
     <item>
       <title><![CDATA[2024 코르카 워케이션 in 부산]]></title>
-      <link>https://www.borca.ai/blog/corca-workation-busan-2024</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-workation-busan-2024</guid>
+      <link>https://www.corca.ai/blog/corca-workation-busan-2024</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/corca-workation-busan-2024</guid>
       <pubDate>Fri, 13 Sep 2024 00:00:00 GMT</pubDate>
       <description><![CDATA[코르카, 부산으로 떠나다! 코르카 팀이 8월 26일~8월 30일 워케이션으로 부산을 다녀왔습니다! 워케이션은 일(Work)과 휴가(Vacation)의 합성어로, 원하는 곳에서 휴식을 취하며 근무도 하는 근무형태입 니다. 이번에 처음 워케이션을 가게 되어 기대 반 걱정 반으로 떠났는데요, 결과는 팀원]]></description>
       <category><![CDATA[코르카]]></category>
@@ -105,8 +87,8 @@
     </item>
     <item>
       <title><![CDATA[Want to Join Corca?. 코르카 팀 페이지 소개]]></title>
-      <link>https://www.borca.ai/blog/corca-team-page</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-team-page</guid>
+      <link>https://www.corca.ai/blog/corca-team-page</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/corca-team-page</guid>
       <pubDate>Fri, 28 Apr 2023 00:00:00 GMT</pubDate>
       <description><![CDATA[코르카의 팀 페이지 코르카를 보다 자세히 알 수 있는, 새로워진 (corca.team)에 대해 소개해드리겠습니다! 코르카 채용 페이지 코르카의 팀 페이지는 corca.team 링크로 방문하실 수 있습니다! 우리가 살아가는 세상을 AI 기술로 변화시키는 팀, Corca corca.team 코르카의 팀]]></description>
       <category><![CDATA[코르카]]></category>
@@ -114,8 +96,8 @@
     </item>
     <item>
       <title><![CDATA[새로운 코르카인의 적응을 돕는 ‘버디 프로그램’. 코르카의 온보딩 문화, ‘버디 프로그램'을 소개합니다.]]></title>
-      <link>https://www.borca.ai/blog/corca-buddy-program</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-buddy-program</guid>
+      <link>https://www.corca.ai/blog/corca-buddy-program</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/corca-buddy-program</guid>
       <pubDate>Fri, 17 Feb 2023 00:00:00 GMT</pubDate>
       <description><![CDATA[이번 글에서는 코르카 온보딩 문화의 하나인 ‘버디 프로그램’에 대해 소개하려고 합니다! 코르카에는 입사 첫날부터 온보딩을 도와주는 오르카봇이 있습니다. (오르카봇에 대해 궁금하시다면 아래 링크를 참고하세요!) Hello 코르카, Hello 오르카봇 코르카 온보딩봇, 오르카봇을 소개합니다]]></description>
       <category><![CDATA[코르카]]></category>
@@ -123,8 +105,8 @@
     </item>
     <item>
       <title><![CDATA[다들 식사하시나요?. “다들 식사 하시나요?”]]></title>
-      <link>https://www.borca.ai/blog/corca-lunch-bot</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/corca-lunch-bot</guid>
+      <link>https://www.corca.ai/blog/corca-lunch-bot</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/corca-lunch-bot</guid>
       <pubDate>Fri, 20 May 2022 00:00:00 GMT</pubDate>
       <description><![CDATA[다들 식사 하시나요?” 이 말을 얼마나 자주 들으시나요? 참 정감 있고 좋은 말이지만 희한하게도 이런 말은 요즘 살면서 자주 듣기가 쉽지 않아진 것 같아요. 코르카에서는 하루에 두 번, 오르카봇이 물어봅니다. 다들 식사하시나요 “ ?” 오전 10시 30분, 오늘도 오르카봇이 다정히 말을 걸어오네요.]]></description>
       <category><![CDATA[코르카]]></category>
@@ -132,8 +114,8 @@
     </item>
     <item>
       <title><![CDATA[Hello Corca, ‘오르카봇(Orca-bot)’을 소개합니다]]></title>
-      <link>https://www.borca.ai/blog/hello-orca-bot</link>
-      <guid isPermaLink="true">https://www.borca.ai/blog/hello-orca-bot</guid>
+      <link>https://www.corca.ai/blog/hello-orca-bot</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/hello-orca-bot</guid>
       <pubDate>Fri, 20 May 2022 00:00:00 GMT</pubDate>
       <description><![CDATA[첫날 . 새로운 학교에 가는 첫날. 새로운 회사에 출근하는 첫날. 혹은 누군가를 처음 만나러 가는 순간. 살면서 참 많은 ‘처음’을 마주하지만 처음은 늘 쉽지 않습니다. 코르카에 입사한 첫날, 저 역시 설렘과 긴장감을 반반 섞은 마음으로 출근을 했습니다. 사실 오랜만에 하는 출근이라 설렘보단 긴장감이]]></description>
       <category><![CDATA[코르카]]></category>

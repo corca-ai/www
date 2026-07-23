@@ -56,7 +56,7 @@ jobs:
           NOTION_REQUIRE_RECENT_READY: ${{ github.event_name == 'repository_dispatch' && '1' || '' }}
           NOTION_RECENT_READY_MINUTES: ${{ vars.NOTION_RECENT_READY_MINUTES || '90' }}
           NOTION_SKIP_UPDATES: ${{ vars.NOTION_SKIP_UPDATES || '1' }}
-          CORCA_SITE_URL: ${{ vars.CORCA_SITE_URL || 'https://www.borca.ai' }}
+          CORCA_SITE_URL: ${{ vars.CORCA_SITE_URL || 'https://www.corca.ai' }}
 
       - name: Create Notion sync pull request
         id: commit_posts

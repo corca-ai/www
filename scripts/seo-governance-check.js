@@ -165,6 +165,7 @@ for (const [language, path] of [
 }
 
 const axBackup = readDist('ax-backup/index.html');
+const publicOrigin = new URL(entries[0].url).origin;
 const backupRobots = metaContent(axBackup, 'name', 'robots')
   .toLowerCase()
   .split(',')
@@ -178,7 +179,9 @@ assert(
   'AX backup must retain the Korean document language',
 );
 assert(
-  /<link\b[^>]*rel=["']canonical["'][^>]*href=["']https:\/\/www\.borca\.ai\/ax["']/i.test(axBackup),
+  axBackup
+    .match(/<link\b[^>]*rel=["']canonical["'][^>]*>/i)?.[0]
+    ?.match(/\bhref=["']([^"']+)["']/i)?.[1] === `${publicOrigin}/ax`,
   'AX backup must canonicalize to the live AX route',
 );
 

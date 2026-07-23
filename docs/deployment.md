@@ -42,7 +42,7 @@ production page until the expected text is present:
 
 ```sh
 pnpm release:site -- \
-  --url https://www.borca.ai/ax \
+  --url https://www.corca.ai/ax \
   --expect 'text unique to this release'
 ```
 

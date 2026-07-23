@@ -3,7 +3,7 @@
 set -euo pipefail
 
 base_branch="main"
-verify_url="https://www.borca.ai/"
+verify_url="https://www.corca.ai/"
 expect_text=""
 timeout_seconds=900
 
@@ -16,7 +16,7 @@ merge it, and verify the production URL.
 
 Options:
   --base <branch>       Pull-request base branch (default: main)
-  --url <url>           Production URL to verify (default: https://www.borca.ai/)
+  --url <url>           Production URL to verify (default: https://www.corca.ai/)
   --expect <text>       Text that must appear in the production response
   --timeout <seconds>   Maximum wait for merge and production (default: 900)
   -h, --help            Show this help

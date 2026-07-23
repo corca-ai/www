@@ -97,7 +97,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   const fields: FieldErrors = {};
 
   if (!name || name.length > 80) fields.name = 'INVALID_NAME';
-  if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) {
+  if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email))) {
     fields.email = 'INVALID_EMAIL';
   }
 
@@ -199,7 +199,7 @@ async function sendConsultationEmail(
     'Corca AX 상담 요청',
     '',
     `이름: ${input.name}`,
-    `이메일: ${input.email}`,
+    `이메일: ${input.email || '입력하지 않음'}`,
     `연락처: ${input.phone}`,
     ...(input.topic ? [`문의 유형: ${topicLabel} (${input.topic})`] : []),
     `페이지 언어: ${input.locale}`,
@@ -209,7 +209,7 @@ async function sendConsultationEmail(
   ].join('\n');
   const rows = [
     ['이름', escapeHtml(input.name)],
-    ['이메일', escapeHtml(input.email)],
+    ['이메일', escapeHtml(input.email || '입력하지 않음')],
     ['연락처', escapeHtml(input.phone)],
     ...(input.topic ? [['문의 유형', escapeHtml(`${topicLabel} (${input.topic})`)]] : []),
     ['페이지 언어', escapeHtml(input.locale)],
@@ -228,7 +228,7 @@ async function sendConsultationEmail(
     await env.AX_EMAIL.send({
       from: { email: consultationSender, name: 'Corca AX' },
       html,
-      replyTo: input.email,
+      ...(input.email ? { replyTo: input.email } : {}),
       subject: `[Corca AX 상담 요청] ${topicLabel || '새 상담 요청'}`,
       text,
       to: consultationRecipient,

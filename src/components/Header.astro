@@ -122,6 +122,7 @@ const langOptions = locales.map((l) => ({
               <a
                 href={o.href}
                 hreflang={o.hreflang}
+                data-preserve-scroll
                 aria-label={o.name}
                 aria-current={o.active ? 'true' : undefined}
                 class:list={["block px-4 py-2 text-[13px] font-medium hover:bg-brand/8", o.active ? "font-semibold text-brand" : "text-ink-soft"]}
@@ -172,7 +173,7 @@ const langOptions = locales.map((l) => ({
           <a href={blogHref} aria-current={isBlogCurrent ? 'page' : undefined} class="border-b border-black/5 py-4 text-[16px] font-medium">{t.nav.blog}</a>
           <div class="flex gap-2 py-4">
             {langOptions.map((o) => (
-              <a href={o.href} hreflang={o.hreflang} aria-label={o.name} aria-current={o.active ? 'true' : undefined} class:list={["rounded-full border px-4 py-1.5 text-[14px]", o.active ? "border-brand font-semibold text-brand" : "border-black/15 text-ink-soft"]}>{o.short}</a>
+              <a href={o.href} hreflang={o.hreflang} data-preserve-scroll aria-label={o.name} aria-current={o.active ? 'true' : undefined} class:list={["rounded-full border px-4 py-1.5 text-[14px]", o.active ? "border-brand font-semibold text-brand" : "border-black/15 text-ink-soft"]}>{o.short}</a>
             ))}
           </div>
         </nav>
@@ -239,4 +240,41 @@ const langOptions = locales.map((l) => ({
       }
     });
   }
+
+  // Keep the reader at the same vertical position when switching locales.
+  const localeScrollKey = 'corca:locale-scroll';
+  document.querySelectorAll<HTMLAnchorElement>('a[data-preserve-scroll]').forEach((link) => {
+    link.addEventListener('click', () => {
+      try {
+        const destination = new URL(link.href, window.location.href);
+        sessionStorage.setItem(
+          localeScrollKey,
+          JSON.stringify({ path: destination.pathname, y: window.scrollY }),
+        );
+      } catch {
+        // Ignore storage or URL failures; navigation should still work normally.
+      }
+    });
+  });
+
+  const restoreLocaleScroll = () => {
+    try {
+      const raw = sessionStorage.getItem(localeScrollKey);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as { path?: unknown; y?: unknown };
+      sessionStorage.removeItem(localeScrollKey);
+      if (saved.path !== window.location.pathname || typeof saved.y !== 'number') return;
+      window.scrollTo(0, Math.max(0, saved.y));
+    } catch {
+      // Ignore malformed or unavailable session state.
+    }
+  };
+
+  window.addEventListener(
+    'load',
+    () => {
+      requestAnimationFrame(() => requestAnimationFrame(restoreLocaleScroll));
+    },
+    { once: true },
+  );
 </script>

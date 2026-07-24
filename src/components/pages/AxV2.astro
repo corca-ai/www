@@ -12,6 +12,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const c = axV2ContentByLang[lang];
+const slowdownGradientStart = lang === 'ja' ? 1 : 2;
 const uiCopy = {
   ko: {
     compoundAlt: '맑은 아침의 푸른 대서양을 활기차게 유영하는 열 마리 범고래 무리',
@@ -139,35 +140,6 @@ const uiCopy = {
         ))}
       </h3>
       <button class="ax-v2-primary-button" type="button" data-contact-jump>{c.hero.cta}</button>
-    </div>
-  </section>
-
-  <section
-    class="ax-v2-compound ax-v2-dark-section"
-    aria-labelledby="ax-v2-compound-title"
-    data-compound-parallax
-  >
-    <picture class="ax-v2-compound-media" data-compound-media>
-      <source type="image/avif" srcset={axV2Assets.compoundOrcas.avif} />
-      <source type="image/webp" srcset={axV2Assets.compoundOrcas.webp} />
-      <img
-        src={axV2Assets.compoundOrcas.jpg}
-        width={axV2Assets.compoundOrcas.width}
-        height={axV2Assets.compoundOrcas.height}
-        alt={uiCopy.compoundAlt}
-        loading="lazy"
-        decoding="async"
-      />
-    </picture>
-    <div class="ax-v2-shell ax-v2-compound-copy" data-compound-copy>
-      <h2 id="ax-v2-compound-title">
-        {c.compound.lines.map((line, index) => (
-          <>
-            {index > 0 && <br />}
-            <span class={`ax-v2-compound-line ax-v2-compound-line-${index + 1}`}>{line}</span>
-          </>
-        ))}
-      </h2>
     </div>
   </section>
 
@@ -314,7 +286,7 @@ const uiCopy = {
           {c.slowdown.heading.map((segments, index) => (
             <>
               {index > 0 && <br />}
-              <span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>
+              <span class:list={{ 'ax-v2-point-gradient': index >= slowdownGradientStart }}>
                 {segments.map((segment, segmentIndex) => (
                   <>
                     {segmentIndex > 0 && (
@@ -408,11 +380,7 @@ const uiCopy = {
         <div class="ax-v2-comparison">
           <article class="ax-v2-comparison-legacy">
             <h4><AxLines values={c.diagnosis.legacy.title} /></h4>
-            <p>
-              {Array.isArray(c.diagnosis.legacy.body)
-                ? <AxLines values={c.diagnosis.legacy.body} />
-                : c.diagnosis.legacy.body}
-            </p>
+            <p>{c.diagnosis.legacy.bodyLines.length > 0 ? <AxLines values={c.diagnosis.legacy.bodyLines} /> : c.diagnosis.legacy.body}</p>
             <ul>{c.diagnosis.legacy.items.map((item) => {
               const [count, ...label] = item.split(' ');
               return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;
@@ -517,21 +485,8 @@ const uiCopy = {
     class="ax-v2-section ax-v2-dark-section ax-v2-ceal-section ax-v2-ceal-section-centered"
     aria-labelledby="ax-v2-ceal-title"
   >
-    <picture class="ax-v2-ceal-background" aria-hidden="true">
-      <source type="image/avif" srcset={axV2Assets.cealSealBackground.avif} />
-      <source type="image/webp" srcset={axV2Assets.cealSealBackground.webp} />
-      <img
-        src={axV2Assets.cealSealBackground.jpg}
-        width={axV2Assets.cealSealBackground.width}
-        height={axV2Assets.cealSealBackground.height}
-        alt=""
-        loading="lazy"
-        decoding="async"
-      />
-    </picture>
     <div class="ax-v2-shell">
       <h2 class="ax-v2-eyebrow" data-reveal>{c.ceal.eyebrow}</h2>
-      <p class="ax-v2-descriptor" data-reveal>{c.ceal.descriptor}</p>
       <div class="ax-v2-heading-block ax-v2-heading-block-centered" data-reveal>
         <h3 id="ax-v2-ceal-title">
           {c.ceal.heading.map((line, index) => (
@@ -660,6 +615,35 @@ const uiCopy = {
     </div>
   </section>
 
+  <section
+    class="ax-v2-compound ax-v2-dark-section"
+    aria-labelledby="ax-v2-compound-title"
+    data-compound-parallax
+  >
+    <picture class="ax-v2-compound-media" data-compound-media>
+      <source type="image/avif" srcset={axV2Assets.compoundOrcas.avif} />
+      <source type="image/webp" srcset={axV2Assets.compoundOrcas.webp} />
+      <img
+        src={axV2Assets.compoundOrcas.jpg}
+        width={axV2Assets.compoundOrcas.width}
+        height={axV2Assets.compoundOrcas.height}
+        alt={uiCopy.compoundAlt}
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
+    <div class="ax-v2-shell ax-v2-compound-copy" data-compound-copy>
+      <h2 id="ax-v2-compound-title">
+        {c.compound.lines.map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            <span class={`ax-v2-compound-line ax-v2-compound-line-${index + 1}`}>{line}</span>
+          </>
+        ))}
+      </h2>
+    </div>
+  </section>
+
   <dialog class="ax-v2-dialog" aria-labelledby="ax-v2-dialog-title" data-ax-v2-dialog>
     <div class="ax-v2-dialog-panel">
       <button class="ax-v2-dialog-close" type="button" aria-label={uiCopy.dialogClose} data-dialog-close>
@@ -705,13 +689,19 @@ const uiCopy = {
 
       button.dataset.contactJumpBound = 'true';
       button.addEventListener('click', () => {
+        const nameInput = contactSection.querySelector('input[name="name"]');
         const alignContactSection = () => {
           const top = window.scrollY + contactSection.getBoundingClientRect().top;
           window.scrollTo({ left: window.scrollX, top, behavior: 'instant' });
         };
 
         alignContactSection();
-        requestAnimationFrame(alignContactSection);
+        requestAnimationFrame(() => {
+          alignContactSection();
+          if (nameInput instanceof HTMLInputElement) {
+            nameInput.focus({ preventScroll: true });
+          }
+        });
       });
     };
 

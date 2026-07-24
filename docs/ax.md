@@ -105,8 +105,9 @@ recipient can reply normally without allowing sender spoofing. The localized
 form's email fallback uses the same fixed recipient.
 
 The clients record UTM parameters and emit only non-PII AX conversion events
-when Google Analytics is present. Name, email, phone number and message content
-must never be sent to Google Analytics or `dataLayer`. Delivery failures return
+when Google Analytics is present. Name, email, selected consulting interests,
+other-interest detail and consultation reason must never be sent to Google
+Analytics or `dataLayer`. Delivery failures return
 a generic localized message to visitors; detailed API error codes remain
 available in the network response for diagnosis.
 

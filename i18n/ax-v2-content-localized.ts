@@ -20,19 +20,19 @@ export const axV2ContentOverrides = {
     },
     transformation: {
       eyebrow: 'What Corca AX does',
-      heading: ['Corca AX', 'changes how organizations work.'],
+      heading: ['Corca AX changes', 'how organizations work.'],
       lead: [
         'AI tools can be bought from outside.',
         'An AI-ready organization must be built from within.',
       ],
       body: [
-        'Mid-sized and large enterprises that adopted AI but could not scale beyond',
-        'a handful of power users are transforming with Corca.',
+        'Organizations that adopted AI but could not turn it into company-wide results',
+        'are transforming with Corca.',
       ],
       testimonials: [
         {
           quote: [
-            '“When we began our Codex Enterprise PoC,',
+            '“When we began our ChatGPT Enterprise PoC,',
             'everyone was finding their way—then we met Corca.',
             'Together, we selected initiatives and developed AX champions.',
             'Engagement rose dramatically,',
@@ -63,11 +63,11 @@ export const axV2ContentOverrides = {
     },
     internalProof: {
       eyebrow: 'We changed ourselves first',
-      heading: ['Before advising clients,', 'we transformed and proved it at Corca.'],
+      heading: ['Before advising clients,', 'we changed ourselves', 'and proved it first.'],
       body: [
-        'After many experiments, AI-native tools and processes became part of how Corca works.',
-        'The key was a culture and structure that brought every employee into the change.',
-        'Corca AX transfers the process—not just the outcome—and the experience, not a fixed answer.',
+        'Experiment by experiment, AI-native tools became part of Corca’s daily work.',
+        'Culture and structure brought every employee into the change.',
+        'Corca AX shares that process and experience—not a fixed answer.',
       ],
       cards: [
         {
@@ -99,12 +99,7 @@ export const axV2ContentOverrides = {
     },
     slowdown: {
       eyebrow: 'Why AX slows down',
-      heading: [
-        ['Model performance alone'],
-        ['does not scale AX.'],
-        ['The right initiatives,', 'people capabilities,'],
-        ['and organizational systems', 'must work together.'],
-      ],
+      heading: [['Models alone don’t scale AX.'], ['People, priorities,'], ['and systems do.']],
       body: [
         'Technology arrives before organizations are ready, but results begin only when the organization is prepared.',
         'If adoption stays with a few individuals, the way the organization works does not change. Successful practices need a structure that repeats and spreads them.',
@@ -113,12 +108,12 @@ export const axV2ContentOverrides = {
       tabs: [
         {
           title: 'AX Opportunity Diagnosis',
-          subtitle: 'Find the right business problems,',
+          subtitle: 'Find the right business problems.',
           body: 'The right technology and strategy depend on organizational capability and the nature of the problem. We collect AX opportunities and classify what to solve, how, by whom, and in what order.',
         },
         {
           title: 'AX Champion Coaching',
-          subtitle: 'Help practitioners solve problems themselves,',
+          subtitle: 'Help practitioners solve problems themselves.',
           body: 'We select future AX champion candidates and work together on real business problems in their actual environments, building lasting individual capability.',
         },
         {
@@ -130,15 +125,15 @@ export const axV2ContentOverrides = {
     },
     diagnosis: {
       eyebrow: 'AX Opportunity Diagnosis',
-      heading: ['Technology and strategy must reflect', 'the organization and the problem.'],
+      heading: ['Strategy must fit', 'the organization', 'and the problem.'],
       metric: ['61', 'average improvement opportunities per client'],
       body: [
-        'Corca AX revisited provider-led categories from first principles',
+        'Corca AX reconsidered the solution-led approach from first principles',
         'and created outcome-led paths to execution.',
       ],
       legacy: {
-        title: ['Traditional', 'provider-led classification'],
-        body: 'Most client needs around Codex Enterprise adoption were funneled into building new solutions.',
+        title: ['Traditional', 'solution-led approach'],
+        body: 'Most challenges from clients seeking ChatGPT Enterprise were framed only as requiring a custom solution build.',
         items: [
           '44 solution builds required',
           '9 suitable for Enterprise',
@@ -149,8 +144,8 @@ export const axV2ContentOverrides = {
       corca: {
         title: ['Corca AX', 'outcome-led diagnosis and execution paths'],
         body: [
-          'Instead of building all 61 opportunities,',
-          'we redesigned them into six paths to value.',
+          'Corca AX reviewed each organization’s opportunities',
+          'and reclassified them into six solution paths.',
         ],
         items: [
           '30 solved with Codex skills and repeatable workflows',
@@ -169,7 +164,7 @@ export const axV2ContentOverrides = {
     },
     coaching: {
       eyebrow: 'AX Champion Coaching',
-      heading: ['People who know the problem', 'work with people who know AI.'],
+      heading: ['Problem experts', 'and AI experts', 'solve together.'],
       body: [
         ['Practitioners pair with Corca AX coaches on diagnosed opportunities,'],
         ['combining the client’s tacit knowledge with Corca’s AI methods in one workspace.'],
@@ -206,8 +201,6 @@ export const axV2ContentOverrides = {
     environment: {
       eyebrow: 'AX Environment & Operating Model',
       heading: [
-        ['Secure data connections,'],
-        ['role-based access, visible costs.'],
         ['AX champions need', 'the right environment and culture'],
         ['to produce repeatable results.'],
       ],
@@ -248,7 +241,6 @@ export const axV2ContentOverrides = {
     },
     ceal: {
       eyebrow: 'The foundation of the AX environment',
-      descriptor: 'A context gateway that connects organizational data securely and efficiently',
       heading: ['The technical bottleneck to enterprise AX', 'Data, Security, Cost'],
       body: [
         'Ceal, Corca’s AX environment solution,',
@@ -318,7 +310,7 @@ export const axV2ContentOverrides = {
         },
       ],
       notes: [
-        'Training, Ceal, and Codex Enterprise contract costs are separate. Overlapping consulting scope is adjusted when solution and enterprise contracts run together.',
+        'Training, Ceal, and ChatGPT Enterprise onboarding and contract costs are separate. Overlapping consulting scope is adjusted when solution and enterprise contracts run together.',
         'Final pricing depends on participants, business units, opportunity count, and onsite sessions.',
       ],
     },
@@ -326,7 +318,7 @@ export const axV2ContentOverrides = {
       heading: ['Corca was named an', 'OpenAI Select Partner in July 2026.'],
       body: [
         'Corca works with OpenAI to help organizations accelerate AX.',
-        'Organizations that sign an OpenAI Enterprise agreement through Corca',
+        'Organizations that sign an OpenAI ChatGPT Enterprise agreement through Corca',
         'receive coordinated benefits, including adjustments for overlapping consulting scope.',
       ],
       pressLabel: 'View coverage',
@@ -346,23 +338,38 @@ export const axV2ContentOverrides = {
         'we will diagnose priorities and solution paths in two weeks',
         'and design your next execution plan.',
       ],
-      labels: { name: 'Name', email: 'Email', phone: 'Phone', message: 'Message' },
-      placeholders: {
-        name: 'Enter your name',
-        email: 'Enter your email (optional)',
-        phone: '010-0000-0000',
-        message:
-          'Tell us about your current challenge so we can prepare a more useful consultation',
+      labels: {
+        name: 'Name',
+        email: 'Email',
+        interests: 'Select all consulting areas you are interested in.',
+        otherInterest: 'Please describe the other area of interest.',
+        reason: 'Please tell us why you selected these areas.',
       },
-      consent:
-        'Required | The personal information you provide will be used securely only to respond to your consultation request.',
-      submit: 'Request a two-week diagnosis',
+      interestOptions: [
+        { value: 'strategy_diagnosis', label: 'AX opportunity diagnosis' },
+        { value: 'champion_coaching', label: 'AX champion coaching' },
+        { value: 'environment_solution', label: 'AX environment solution adoption' },
+        { value: 'custom_ai_solution', label: 'Custom AI solution development' },
+        { value: 'enterprise_adoption', label: 'ChatGPT Enterprise adoption and activation' },
+        { value: 'ai_native_team', label: 'AI-native team building' },
+        { value: 'ai_capability_training', label: 'AI capability training' },
+        { value: 'other', label: 'Other' },
+      ],
+      placeholders: {
+        name: 'John Doe',
+        email: 'john.doe@company.com',
+        otherInterest: 'Describe the consulting area you have in mind.',
+        reason: 'The more detail you share, the more effective our consultation can be.',
+      },
+      privacyNotice:
+        'The email address you provide will be used only to respond to your consultation request.',
+      submit: 'Request a consultation',
       sending: 'Sending your request.',
       success: 'Your request has been sent.',
       disabled: 'Loading the consultation form.',
       validation: 'Please review the information entered.',
       error: 'Please check the information and try again.',
-      directLead: 'Prefer to speak directly with the Corca AX Lead?',
+      directLead: 'Would you like to speak directly with the Corca AX Lead?',
       emailLabel: 'Email consultation',
       phoneLabel: 'Phone consultation',
     },
@@ -391,13 +398,13 @@ export const axV2ContentOverrides = {
         'AI時代に適した組織は、自らつくる必要があります。',
       ],
       body: [
-        'AIを導入しても一部のパワーユーザーに留まり、全社成果へ広げられない',
-        '中堅・大企業がCorcaとともに変革を進めています。',
+        'AIを導入したものの、全社的な成果につなげられなかった企業が、',
+        'Corcaとともに変革を進めています。',
       ],
       testimonials: [
         {
           quote: [
-            '「Codex EnterpriseのPoC開始後、',
+            '「ChatGPT EnterpriseのPoC開始後、',
             '誰もが手探りの中でCorcaと出会いました。',
             '課題選定とAXチャンピオン育成を一緒に進め、',
             '参加者の集中度が大きく高まり、',
@@ -428,7 +435,7 @@ export const axV2ContentOverrides = {
     },
     internalProof: {
       eyebrow: 'まず自分たちから変えました',
-      heading: ['お客様に勧める前に、', 'Corca自身が変わり、検証しました。'],
+      heading: ['お客様に勧める前に、', 'Corcaが先に変わり、', '検証しました。'],
       body: [
         '試行錯誤を重ね、CorcaにはAIネイティブなツールとプロセスが定着しました。',
         '変革の鍵は、全社員の参加を生む文化と仕組みでした。',
@@ -437,7 +444,7 @@ export const axV2ContentOverrides = {
       cards: [
         {
           cadence: '毎月開催',
-          lead: ['非エンジニアから', 'AXチャンピオンへ'],
+          lead: 'AXチャンピオンへ',
           body: ['全社員がペアワークで新しい試みに挑み、', 'AI活用力を高めます。'],
         },
         {
@@ -461,12 +468,7 @@ export const axV2ContentOverrides = {
     },
     slowdown: {
       eyebrow: 'AXが進まない理由',
-      heading: [
-        ['モデル性能だけでは'],
-        ['AXは広がりません。'],
-        ['適切な課題選定、', '人材の能力向上、'],
-        ['組織環境の整備が', 'すべて必要です。'],
-      ],
+      heading: [['モデルだけではAXは広がりません。'], ['課題・人材・組織環境が必要です。']],
       body: [
         '技術は組織より先に届きますが、成果は組織の準備が整って初めて生まれます。',
         '活用が一部の個人に留まれば、働き方は変わりません。成功を繰り返し、広げる仕組みが必要です。',
@@ -475,12 +477,12 @@ export const axV2ContentOverrides = {
       tabs: [
         {
           title: 'AX課題診断',
-          subtitle: '本当に解くべき課題を見つけ、',
+          subtitle: '本当に解くべき課題を見つけます。',
           body: '組織の能力と課題の特性に応じて、必要な技術と戦略は異なります。何を、どのように、誰が、どの順番で解くかを整理します。',
         },
         {
           title: 'AXチャンピオン育成コーチング',
-          subtitle: '現場が自ら解けるように支援し、',
+          subtitle: '現場が自ら解けるように支援します。',
           body: '将来のAXを担うチャンピオン候補を選び、実際の環境で実務課題を一緒に解きながら、個人の能力を高めます。',
         },
         {
@@ -492,15 +494,21 @@ export const axV2ContentOverrides = {
     },
     diagnosis: {
       eyebrow: 'AX課題診断',
-      heading: ['組織の能力と課題の特性に合わせて', '技術と解決戦略を変える必要があります。'],
+      heading: ['組織と課題に合わせて', '技術と解決戦略を', '選びます。'],
       metric: ['61件', '顧客1社あたりの平均改善課題数'],
       body: [
-        'Corca AXは提供者中心の分類を原点から見直し、',
+        'Corca AXはソリューション中心のアプローチを原点から見直し、',
         '顧客成果を起点とする実行戦略を提示しました。',
       ],
       legacy: {
-        title: ['従来の', '提供者中心の分類'],
-        body: 'Codex Enterprise導入課題の多くを、ソリューション構築へ集約していました。',
+        title: ['従来の', 'ソリューション中心のアプローチ'],
+        body: 'ChatGPT Enterprise導入を希望する顧客の課題の多くを、自社ソリューションの構築が必要だという提案に集約していました。',
+        bodyLines: [
+          'ChatGPT Enterprise導入を望む',
+          '顧客の課題の多くを、',
+          '自社ソリューション構築が',
+          '必要な課題に集約していました。',
+        ],
         items: [
           '44 ソリューション構築が必要',
           '9 Enterpriseで対応可能',
@@ -510,7 +518,7 @@ export const axV2ContentOverrides = {
       },
       corca: {
         title: ['Corca AXの', '成果中心の診断と解決戦略'],
-        body: ['61課題をすべて構築するのではなく、', '6つの実行経路へ再設計しました。'],
+        body: ['Corca AXは各組織の課題を見直し、', '6つの解決経路に再分類しました。'],
         items: [
           '30 Codexスキルと反復ワークフローで解決',
           '8 従来型MLとアルゴリズムが適切',
@@ -525,7 +533,7 @@ export const axV2ContentOverrides = {
     },
     coaching: {
       eyebrow: 'AXチャンピオン育成コーチング',
-      heading: ['課題を知る人と、', 'AIを知る人が一緒に解きます。'],
+      heading: ['課題を知る人と、', 'AIを知る人が', '一緒に解きます。'],
       body: [
         ['診断した課題を現場担当者とCorca AXコーチがペアで進め、'],
         ['業務の暗黙知とCorcaのAI活用法を一つの画面で結びます。'],
@@ -552,12 +560,7 @@ export const axV2ContentOverrides = {
     },
     environment: {
       eyebrow: 'AX環境・運営体制構築',
-      heading: [
-        ['安全なデータ接続、'],
-        ['役割ベースの権限、コストの可視化。'],
-        ['AXチャンピオンが成果を出すには'],
-        ['適切な組織環境と文化が必要です。'],
-      ],
+      heading: [['AXチャンピオンの成果には'], ['組織環境と文化が'], ['必要です。']],
       body: [
         '多くの組織から悩みと試行錯誤を集めました。',
         '現場と経営層では課題が異なります。',
@@ -592,8 +595,7 @@ export const axV2ContentOverrides = {
     },
     ceal: {
       eyebrow: 'AX環境構築の中核',
-      descriptor: '組織データを安全かつ効率的に利用するコンテキストゲートウェイ',
-      heading: ['全社AX拡大の技術的ボトルネック', 'データ、セキュリティ、コスト'],
+      heading: ['全社AXを阻む', 'データ・セキュリティ・コスト'],
       body: [
         'CorcaのAX環境ソリューションCealは、',
         'エージェントの組織データアクセスを一つに接続し統制します。',
@@ -662,15 +664,15 @@ export const axV2ContentOverrides = {
         },
       ],
       notes: [
-        '研修、Ceal、Codex Enterprise契約費用は別途です。重複するコンサルティング範囲は調整されます。',
+        '研修、Ceal、ChatGPT Enterpriseの導入支援・契約費用は別途です。重複するコンサルティング範囲は調整されます。',
         '最終価格は参加人数、対象部門、課題数、オンサイト回数により決定します。',
       ],
     },
     partner: {
-      heading: ['Corcaは2026年7月、', 'OpenAI Select Partnerに選定されました。'],
+      heading: ['Corcaは2026年7月、', 'OpenAI Select Partner', 'に選定されました。'],
       body: [
         'CorcaはOpenAIと連携し、さまざまな組織のAXを支援しています。',
-        'Corca経由でOpenAI Enterprise契約を締結する組織には、',
+        'Corca経由でOpenAIのChatGPT Enterprise契約を締結する組織には、',
         '重複する支援範囲の費用調整など連携特典を提供します。',
       ],
       pressLabel: '記事を見る',
@@ -690,21 +692,37 @@ export const axV2ContentOverrides = {
         '2週間で優先順位と解決経路を診断し、',
         '次の実行計画を設計します。',
       ],
-      labels: { name: 'お名前', email: 'メール', phone: '電話番号', message: 'お問い合わせ内容' },
-      placeholders: {
-        name: 'お名前を入力',
-        email: 'メールアドレスを入力（任意）',
-        phone: '010-0000-0000',
-        message: '現在の課題をご記入いただくと、より具体的にご相談できます',
+      labels: {
+        name: 'お名前',
+        email: 'メール',
+        interests: '関心のあるコンサルティング内容をすべて選択してください。',
+        otherInterest: '関心のある内容を入力してください。',
+        reason: '上記を選択した理由をお聞かせください。',
       },
-      consent: '必須 | ご入力いただいた個人情報は、ご相談への対応のためにのみ安全に使用されます。',
-      submit: '2週間診断を申し込む',
+      interestOptions: [
+        { value: 'strategy_diagnosis', label: 'AX課題診断' },
+        { value: 'champion_coaching', label: 'AXチャンピオン育成コーチング' },
+        { value: 'environment_solution', label: 'AX環境構築ソリューション導入' },
+        { value: 'custom_ai_solution', label: '組織に合わせたAIソリューション開発' },
+        { value: 'enterprise_adoption', label: 'ChatGPT Enterprise導入と活用率向上' },
+        { value: 'ai_native_team', label: 'AIネイティブなチームづくり' },
+        { value: 'ai_capability_training', label: 'AI活用力向上研修' },
+        { value: 'other', label: 'その他' },
+      ],
+      placeholders: {
+        name: '山田太郎',
+        email: 'taro.yamada@company.com',
+        otherInterest: '関心のあるコンサルティング内容を入力してください。',
+        reason: '詳しくお聞かせいただくほど、より効果的なご相談が可能です。',
+      },
+      privacyNotice: 'ご入力いただいたメールアドレスは、ご相談への対応のためにのみ使用します。',
+      submit: '相談を申し込む',
       sending: '相談申請を送信しています。',
       success: '相談申請を送信しました。',
       disabled: '相談フォームを読み込んでいます。',
       validation: '入力内容をご確認ください。',
       error: '入力内容を確認して再度お試しください。',
-      directLead: 'Corca AX Leadへ直接相談する場合',
+      directLead: 'Corca AX Leadに直接相談したい場合は、',
       emailLabel: 'メール相談',
       phoneLabel: '電話相談',
     },
@@ -729,14 +747,11 @@ export const axV2ContentOverrides = {
       eyebrow: 'Corca AX的工作',
       heading: ['Corca AX', '改变组织的工作方式。'],
       lead: ['AI工具可以从外部采购，', '适应AI时代的组织必须从内部打造。'],
-      body: [
-        '许多已引入AI却无法从少数超级用户扩展到全公司成果的',
-        '中大型企业正在与Corca共同变革。',
-      ],
+      body: ['许多导入AI却未能将其转化为全公司成果的企业，', '正在与Corca共同变革。'],
       testimonials: [
         {
           quote: [
-            '“启动Codex Enterprise PoC后，',
+            '“启动ChatGPT Enterprise PoC后，',
             '大家都在摸索时，我们遇到了Corca。',
             '我们共同筛选课题并培养AX推动者，',
             '参与者的投入度显著提高，',
@@ -797,12 +812,7 @@ export const axV2ContentOverrides = {
     },
     slowdown: {
       eyebrow: 'AX为何进展缓慢',
-      heading: [
-        ['仅靠模型性能'],
-        ['无法推广AX。'],
-        ['正确的课题选择、', '成员能力提升，'],
-        ['以及组织环境建设', '缺一不可。'],
-      ],
+      heading: [['仅靠模型无法推广AX。'], ['课题、人才与组织环境缺一不可。']],
       body: [
         '技术总是先于组织到来，但只有组织准备就绪，成果才会发生。',
         '如果应用停留在少数个人，工作方式就不会改变。必须建立让成功实践反复发生并持续扩散的机制。',
@@ -811,12 +821,12 @@ export const axV2ContentOverrides = {
       tabs: [
         {
           title: 'AX课题诊断',
-          subtitle: '找到真正值得解决的问题，',
+          subtitle: '找到真正值得解决的问题。',
           body: '所需技术与策略取决于组织能力和问题特性。我们梳理解决什么、如何解决、由谁负责以及先后顺序。',
         },
         {
           title: 'AX推动者培养',
-          subtitle: '帮助业务人员自主解决问题，',
+          subtitle: '帮助业务人员自主解决问题。',
           body: '我们选拔未来AX推动者，并在真实环境中共同解决真实业务问题，建立可持续的个人能力。',
         },
         {
@@ -830,15 +840,18 @@ export const axV2ContentOverrides = {
       eyebrow: 'AX课题诊断',
       heading: ['技术与解决策略必须匹配', '组织能力和问题特性。'],
       metric: ['61项', '每家客户平均改善课题数'],
-      body: ['Corca AX从根本上重新审视供应商导向的分类，', '提出以客户成果为中心的执行路径。'],
+      body: [
+        'Corca AX从根本上重新审视以解决方案为中心的做法，',
+        '提出以客户成果为中心的执行路径。',
+      ],
       legacy: {
-        title: ['传统的', '供应商导向分类'],
-        body: '客户提出的Codex Enterprise需求大多被归为新建解决方案。',
+        title: ['传统的', '解决方案导向做法'],
+        body: '多数希望导入ChatGPT Enterprise的客户课题，都被简单归结为“需要构建自有解决方案”。',
         items: ['44 需要构建解决方案', '9 可由Enterprise解决', '6 不可行', '2 可进行功能PoC'],
       },
       corca: {
         title: ['Corca AX的', '成果导向诊断与解决策略'],
-        body: ['不是把61项课题全部开发，', '而是重新设计为6条执行路径。'],
+        body: ['Corca AX重新审视每个组织的课题，', '并将其重新分为6条解决路径。'],
         items: [
           '30 通过Codex技能与重复工作流解决',
           '8 更适合传统ML与算法',
@@ -880,12 +893,7 @@ export const axV2ContentOverrides = {
     },
     environment: {
       eyebrow: 'AX环境与运营体系',
-      heading: [
-        ['安全的数据连接、'],
-        ['基于角色的权限、可视化成本。'],
-        ['AX推动者要持续产生成果，'],
-        ['需要合适的组织环境与文化。'],
-      ],
+      heading: [['AX推动者要持续产生成果，'], ['需要组织环境与文化。']],
       body: [
         '我们收集了多个组织的困惑与经验。',
         '业务人员与管理层面对的问题并不相同。',
@@ -908,7 +916,6 @@ export const axV2ContentOverrides = {
     },
     ceal: {
       eyebrow: 'AX环境建设的核心',
-      descriptor: '安全高效连接组织数据的上下文网关',
       heading: ['企业级AX扩展的技术瓶颈', '数据、安全、成本'],
       body: ['Corca的AX环境解决方案Ceal', '统一连接并管控智能体访问组织数据的路径。'],
       before: '使用Ceal之前',
@@ -975,21 +982,21 @@ export const axV2ContentOverrides = {
         },
       ],
       notes: [
-        '培训、Ceal及Codex Enterprise合同费用另计。同步推进时将调整重复的咨询范围。',
+        '培训、Ceal及ChatGPT Enterprise导入支持与合同费用另计。同步推进时将调整重复的咨询范围。',
         '最终价格取决于参与人数、业务部门、课题数量和现场服务次数。',
       ],
     },
     partner: {
-      heading: ['Corca于2026年7月', '获选OpenAI Select Partner。'],
+      heading: ['Corca于2026年7月', '成为OpenAI', 'Select Partner'],
       body: [
         'Corca与OpenAI合作，帮助各类组织推进AX。',
-        '通过Corca签订OpenAI Enterprise合同的组织',
+        '通过Corca签订OpenAI的ChatGPT Enterprise合同的组织',
         '可获得包括重复服务范围费用调整在内的协同权益。',
       ],
       pressLabel: '查看报道',
     },
     contact: {
-      heading: ['正在思考业务课题？', '从2周AX诊断开始。'],
+      heading: ['有业务课题吗？', '从2周AX诊断开始'],
       dialogBody: {
         lead: '如果您已引入AI，却仍受阻于',
         selection: '课题选择与推广应用，',
@@ -1003,21 +1010,37 @@ export const axV2ContentOverrides = {
         '我们将在2周内诊断优先级与解决路径，',
         '并设计下一步执行计划。',
       ],
-      labels: { name: '姓名', email: '电子邮箱', phone: '电话号码', message: '咨询内容' },
-      placeholders: {
-        name: '请输入姓名',
-        email: '请输入电子邮箱（选填）',
-        phone: '010-0000-0000',
-        message: '请描述当前课题，以便我们提供更有针对性的咨询',
+      labels: {
+        name: '姓名',
+        email: '电子邮箱',
+        interests: '请选择所有您感兴趣的咨询服务类型。',
+        otherInterest: '请填写其他感兴趣的服务类型。',
+        reason: '请告诉我们您选择以上服务的原因。',
       },
-      consent: '必填 | 您填写的个人信息将仅用于安全地回复咨询。',
-      submit: '申请2周诊断',
+      interestOptions: [
+        { value: 'strategy_diagnosis', label: 'AX课题诊断' },
+        { value: 'champion_coaching', label: 'AX推动者培养辅导' },
+        { value: 'environment_solution', label: '导入AX环境建设解决方案' },
+        { value: 'custom_ai_solution', label: '定制组织专属AI解决方案' },
+        { value: 'enterprise_adoption', label: '导入ChatGPT Enterprise并提升使用率' },
+        { value: 'ai_native_team', label: 'AI原生团队建设' },
+        { value: 'ai_capability_training', label: 'AI能力提升培训' },
+        { value: 'other', label: '其他' },
+      ],
+      placeholders: {
+        name: '张伟',
+        email: 'zhang.wei@company.com',
+        otherInterest: '请填写您感兴趣的咨询服务类型。',
+        reason: '您提供的信息越详细，我们就越能为您提供有效的咨询。',
+      },
+      privacyNotice: '您填写的电子邮箱地址仅用于回复咨询。',
+      submit: '申请咨询',
       sending: '正在发送咨询申请。',
       success: '咨询申请已发送。',
       disabled: '正在加载咨询表单。',
       validation: '请检查填写内容。',
       error: '请检查填写内容后重试。',
-      directLead: '希望直接联系Corca AX Lead？',
+      directLead: '如果您希望直接接受 Corca AX Lead 的咨询，',
       emailLabel: '邮件咨询',
       phoneLabel: '电话咨询',
     },

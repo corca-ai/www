@@ -454,6 +454,7 @@ export const axV2Assets = {
     height: 992,
   },
   partnerNetwork: '/images/pages/ax/visuals/OAI_PartnerNetwork_SelectPartner.svg',
+  partnerNetworkPortrait: '/images/pages/ax/visuals/OAI_PartnerNetwork_SelectPartner_Portrait.svg',
   testimonials: {
     kyowon: {
       webp: '/images/pages/ax/logos/v1/high-logo02.webp',

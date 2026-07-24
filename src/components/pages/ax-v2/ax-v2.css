@@ -1243,7 +1243,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.55fr);
   gap: 80px;
-  align-items: center;
+  align-items: end;
 }
 
 .ax-v2-partner-grid h3 {
@@ -1255,14 +1255,14 @@
 }
 
 .ax-v2-partner-grid .ax-v2-text-link {
-  margin-top: 30px;
+  margin-top: 78px;
 }
 
 .ax-v2-partner-brand {
   display: grid;
   justify-items: end;
   justify-self: end;
-  width: min(100%, 375px);
+  width: min(100%, 338px);
   gap: clamp(30px, 3vw, 48px);
 }
 
@@ -2331,6 +2331,10 @@ body:has(.ax-v2-hold-dialog[open]) {
   .ax-v2-partner-brand {
     width: min(100%, 300px);
     gap: 28px;
+  }
+
+  .ax-v2-partner-grid .ax-v2-text-link {
+    margin-top: 48px;
   }
 
   .ax-v2-partner-lockup {

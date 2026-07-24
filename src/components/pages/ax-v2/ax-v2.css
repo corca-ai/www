@@ -1404,6 +1404,11 @@
   grid-column: 1 / -1;
 }
 
+.ax-v2-field-interests,
+.ax-v2-field-reason {
+  grid-column: 1 / -1;
+}
+
 .ax-v2-field label {
   margin: 0 0 9px;
   display: block;
@@ -1411,7 +1416,58 @@
   font-weight: 720;
 }
 
-.ax-v2-field input,
+.ax-v2-field-label {
+  margin: 0 0 12px;
+  display: block;
+  font-size: 14px;
+  font-weight: 720;
+}
+
+.ax-v2-interest-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ax-v2-interest-option {
+  min-height: 0;
+  margin: 0 !important;
+  padding: 4px 0;
+  display: flex !important;
+  gap: 8px;
+  align-items: flex-start;
+  border: 0;
+  border-radius: 0;
+  color: var(--ax-v2-ink);
+  background: transparent;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.ax-v2-interest-option:has(input:checked) {
+  color: #0757d9;
+}
+
+.ax-v2-interest-option input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--ax-v2-blue);
+}
+
+.ax-v2-other-interest {
+  margin-top: 12px;
+}
+
+.ax-v2-other-interest[hidden] {
+  display: none;
+}
+
+.ax-v2-field input:not([type='checkbox']),
 .ax-v2-field textarea {
   width: 100%;
   border: 1px solid #c7d4e3;
@@ -1425,7 +1481,7 @@
     box-shadow 160ms ease;
 }
 
-.ax-v2-field input {
+.ax-v2-field input:not([type='checkbox']) {
   height: 54px;
   padding: 0 16px;
 }
@@ -1434,6 +1490,11 @@
   min-height: 140px;
   padding: 16px;
   resize: vertical;
+}
+
+.ax-v2-field textarea[data-autogrow] {
+  overflow-y: hidden;
+  resize: none;
 }
 
 .ax-v2-field :is(input, textarea):hover {
@@ -1480,6 +1541,14 @@
   flex: 0 0 auto;
   margin-top: 1px;
   accent-color: var(--ax-v2-blue);
+}
+
+.ax-v2-privacy-notice {
+  margin: 10px 0 0;
+  color: var(--ax-v2-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .ax-v2-form-submit {
@@ -1693,6 +1762,14 @@
 
 .ax-v2-lead-form.is-compact .ax-v2-field-message {
   grid-column: auto;
+}
+
+.ax-v2-lead-form.is-compact :is(.ax-v2-field-interests, .ax-v2-field-reason) {
+  grid-column: auto;
+}
+
+.ax-v2-lead-form.is-compact .ax-v2-interest-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .ax-v2-lead-form.is-compact .ax-v2-field-error:empty {
@@ -2255,6 +2332,10 @@ body:has(.ax-v2-hold-dialog[open]) {
 
   .ax-v2-field-message {
     grid-column: auto;
+  }
+
+  .ax-v2-lead-form.is-compact .ax-v2-interest-options {
+    grid-template-columns: 1fr;
   }
 
   .ax-v2-consent {

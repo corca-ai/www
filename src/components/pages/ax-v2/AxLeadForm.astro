@@ -10,12 +10,6 @@ interface Props {
 
 const { id, lang, compact = false } = Astro.props;
 const c = axV2ContentByLang[lang].contact;
-const phoneTitle = {
-  ko: '전화번호 숫자를 입력해 주세요. 하이픈은 자동으로 추가됩니다.',
-  en: 'Enter a phone number. Hyphens are added automatically.',
-  ja: '電話番号を入力してください。ハイフンは自動で追加されます。',
-  zh: '请输入电话号码，系统会自动添加连字符。',
-}[lang];
 const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
 const formId = `ax-lead-${id}`;
 ---
@@ -58,24 +52,6 @@ const formId = `ax-lead-${id}`;
     </div>
 
     <div class="ax-v2-field">
-      <label for={`${formId}-phone`}>{c.labels.phone}</label>
-      <input
-        id={`${formId}-phone`}
-        name="phone"
-        type="tel"
-        autocomplete="tel"
-        inputmode="numeric"
-        pattern="(?:02-[0-9]{3,8}-[0-9]{4}|[0-9]{3}-[0-9]{1,8}-[0-9]{4})"
-        maxlength="17"
-        placeholder={c.placeholders.phone}
-        title={phoneTitle}
-        aria-describedby={`${formId}-phone-error`}
-        required
-      />
-      <span class="ax-v2-field-error" id={`${formId}-phone-error`} data-field-error="phone"></span>
-    </div>
-
-    <div class="ax-v2-field">
       <label for={`${formId}-email`}>{c.labels.email}</label>
       <input
         id={`${formId}-email`}
@@ -85,22 +61,68 @@ const formId = `ax-lead-${id}`;
         maxlength="254"
         placeholder={c.placeholders.email}
         aria-describedby={`${formId}-email-error`}
+        required
       />
       <span class="ax-v2-field-error" id={`${formId}-email-error`} data-field-error="email"></span>
     </div>
 
-    <div class="ax-v2-field ax-v2-field-message">
-      <label for={`${formId}-message`}>{c.labels.message}</label>
+    <div class="ax-v2-field ax-v2-field-interests">
+      <span class="ax-v2-field-label">{c.labels.interests}</span>
+      <div
+        class="ax-v2-interest-options"
+        role="group"
+        aria-describedby={`${formId}-interests-error`}
+      >
+        {c.interestOptions.map((option) => (
+          <label class="ax-v2-interest-option">
+            <input
+              type="checkbox"
+              name="consulting_interests"
+              value={option.value}
+              data-interest-option={option.value}
+            />
+            <span>{option.label}</span>
+          </label>
+        ))}
+      </div>
+      <div class="ax-v2-other-interest" data-other-interest hidden>
+        <label for={`${formId}-other-interest`}>{c.labels.otherInterest}</label>
+        <input
+          id={`${formId}-other-interest`}
+          name="other_interest"
+          type="text"
+          maxlength="240"
+          placeholder={c.placeholders.otherInterest}
+          aria-describedby={`${formId}-other-interest-error`}
+          disabled
+          data-other-interest-input
+        />
+        <span
+          class="ax-v2-field-error"
+          id={`${formId}-other-interest-error`}
+          data-field-error="other_interest"
+        ></span>
+      </div>
+      <span
+        class="ax-v2-field-error"
+        id={`${formId}-interests-error`}
+        data-field-error="consulting_interests"
+      ></span>
+    </div>
+
+    <div class="ax-v2-field ax-v2-field-reason">
+      <label for={`${formId}-reason`}>{c.labels.reason}</label>
       <textarea
-        id={`${formId}-message`}
-        name="message"
+        id={`${formId}-reason`}
+        name="reason"
         rows="5"
         maxlength="2000"
-        placeholder={c.placeholders.message}
-        aria-describedby={`${formId}-message-error`}
+        data-autogrow
+        placeholder={c.placeholders.reason}
+        aria-describedby={`${formId}-reason-error`}
         required
       ></textarea>
-      <span class="ax-v2-field-error" id={`${formId}-message-error`} data-field-error="message"></span>
+      <span class="ax-v2-field-error" id={`${formId}-reason-error`} data-field-error="reason"></span>
     </div>
   </div>
 
@@ -108,19 +130,6 @@ const formId = `ax-lead-${id}`;
     <span>{websiteLabel}</span>
     <input name="website" tabindex="-1" autocomplete="off" />
   </label>
-
-  <label class="ax-v2-consent" for={`${formId}-privacy`}>
-    <input
-      id={`${formId}-privacy`}
-      name="privacy_consent"
-      type="checkbox"
-      value="true"
-      aria-describedby={`${formId}-privacy-error`}
-      required
-    />
-    <span>{c.consent}</span>
-  </label>
-  <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
 
   {lang === 'zh' && (
     <>
@@ -142,6 +151,7 @@ const formId = `ax-lead-${id}`;
   <button class="ax-v2-primary-button ax-v2-form-submit" type="submit" disabled>
     <span data-submit-label>{c.submit}</span>
   </button>
+  <p class="ax-v2-privacy-notice">{c.privacyNotice}</p>
   <p
     class="ax-v2-form-status"
     role="status"

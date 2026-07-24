@@ -26,10 +26,12 @@ const FORM_MESSAGES = {
     fields: {
       INVALID_NAME: '성함을 확인해 주세요.',
       INVALID_EMAIL: '이메일 주소를 확인해 주세요.',
-      INVALID_PHONE: '전화번호를 확인해 주세요.',
-      MESSAGE_REQUIRED: '문의내용을 입력해 주세요.',
-      MESSAGE_TOO_LONG: '문의내용은 2,000자 이내로 입력해 주세요.',
-      PRIVACY_CONSENT_REQUIRED: '개인정보처리방침 동의가 필요합니다.',
+      INTEREST_REQUIRED: '관심 있는 컨설팅 형태를 하나 이상 선택해 주세요.',
+      INVALID_INTEREST: '관심 있는 컨설팅 형태를 다시 확인해 주세요.',
+      OTHER_INTEREST_REQUIRED: '기타 관심 분야를 입력해 주세요.',
+      OTHER_INTEREST_TOO_LONG: '기타 관심 분야는 240자 이내로 입력해 주세요.',
+      REASON_REQUIRED: '선택한 이유를 입력해 주세요.',
+      REASON_TOO_LONG: '선택한 이유는 2,000자 이내로 입력해 주세요.',
       CROSS_BORDER_CONSENT_REQUIRED: '국외 이전에 대한 별도 동의가 필요합니다.',
     },
     fieldFallback: '입력 내용을 확인해 주세요.',
@@ -51,10 +53,12 @@ const FORM_MESSAGES = {
     fields: {
       INVALID_NAME: 'Please check your name.',
       INVALID_EMAIL: 'Please check your email address.',
-      INVALID_PHONE: 'Please check your phone number.',
-      MESSAGE_REQUIRED: 'Please enter a message.',
-      MESSAGE_TOO_LONG: 'Please keep your message under 2,000 characters.',
-      PRIVACY_CONSENT_REQUIRED: 'You must agree to the Privacy Policy.',
+      INTEREST_REQUIRED: 'Select at least one consulting area.',
+      INVALID_INTEREST: 'Please check the consulting areas selected.',
+      OTHER_INTEREST_REQUIRED: 'Please describe the other area of interest.',
+      OTHER_INTEREST_TOO_LONG: 'Please keep the other area under 240 characters.',
+      REASON_REQUIRED: 'Please tell us why you selected these areas.',
+      REASON_TOO_LONG: 'Please keep your reason under 2,000 characters.',
       CROSS_BORDER_CONSENT_REQUIRED: 'Separate consent is required for the international transfer.',
     },
     fieldFallback: 'Please review this field.',
@@ -76,10 +80,12 @@ const FORM_MESSAGES = {
     fields: {
       INVALID_NAME: 'お名前をご確認ください。',
       INVALID_EMAIL: 'メールアドレスをご確認ください。',
-      INVALID_PHONE: '電話番号をご確認ください。',
-      MESSAGE_REQUIRED: 'お問い合わせ内容を入力してください。',
-      MESSAGE_TOO_LONG: 'お問い合わせ内容は2,000文字以内で入力してください。',
-      PRIVACY_CONSENT_REQUIRED: 'プライバシーポリシーへの同意が必要です。',
+      INTEREST_REQUIRED: '関心のあるコンサルティング内容を1つ以上選択してください。',
+      INVALID_INTEREST: '選択したコンサルティング内容をご確認ください。',
+      OTHER_INTEREST_REQUIRED: 'その他の関心内容を入力してください。',
+      OTHER_INTEREST_TOO_LONG: 'その他の関心内容は240文字以内で入力してください。',
+      REASON_REQUIRED: '選択した理由を入力してください。',
+      REASON_TOO_LONG: '選択した理由は2,000文字以内で入力してください。',
       CROSS_BORDER_CONSENT_REQUIRED: '外国への移転について個別の同意が必要です。',
     },
     fieldFallback: '入力内容をご確認ください。',
@@ -101,10 +107,12 @@ const FORM_MESSAGES = {
     fields: {
       INVALID_NAME: '请检查姓名。',
       INVALID_EMAIL: '请检查电子邮箱地址。',
-      INVALID_PHONE: '请检查电话号码。',
-      MESSAGE_REQUIRED: '请输入咨询内容。',
-      MESSAGE_TOO_LONG: '咨询内容请控制在2,000字以内。',
-      PRIVACY_CONSENT_REQUIRED: '需要同意隐私政策。',
+      INTEREST_REQUIRED: '请至少选择一项咨询服务类型。',
+      INVALID_INTEREST: '请检查选择的咨询服务类型。',
+      OTHER_INTEREST_REQUIRED: '请填写其他感兴趣的服务类型。',
+      OTHER_INTEREST_TOO_LONG: '其他服务类型请控制在240字以内。',
+      REASON_REQUIRED: '请告诉我们您选择以上服务的原因。',
+      REASON_TOO_LONG: '选择原因请控制在2,000字以内。',
       CROSS_BORDER_CONSENT_REQUIRED: '需要单独同意个人信息跨境传输。',
     },
     fieldFallback: '请检查填写内容。',
@@ -609,21 +617,43 @@ function initializeLeadForm(form: HTMLFormElement) {
   let startedAt = Date.now();
   let submitting = false;
 
+  const interestOptions = Array.from(
+    form.querySelectorAll<HTMLInputElement>('[data-interest-option]'),
+  );
+  const syncInterestValidity = () => {
+    const firstInterest = interestOptions[0];
+    if (!firstInterest) return;
+    firstInterest.setCustomValidity(
+      interestOptions.some((option) => option.checked) ? '' : 'INTEREST_REQUIRED',
+    );
+  };
+
   const syncSubmitState = () => {
+    syncInterestValidity();
     const controls = Array.from(
       form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
     );
     const isReady = controls.every((field) => !field.willValidate || field.validity.valid);
-    submit.disabled = submitting || !isReady;
+    submit.disabled = submitting;
     submit.classList.toggle('is-ready', isReady && !submitting);
   };
 
+  const autoGrowTextareas = Array.from(
+    form.querySelectorAll<HTMLTextAreaElement>('textarea[data-autogrow]'),
+  );
+  const syncTextareaHeight = (textarea: HTMLTextAreaElement) => {
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  };
+  autoGrowTextareas.forEach((textarea) => {
+    textarea.addEventListener('input', () => syncTextareaHeight(textarea));
+    syncTextareaHeight(textarea);
+  });
+
   const clearErrors = () => {
-    form
-      .querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[aria-invalid="true"]')
-      .forEach((field) => {
-        field.removeAttribute('aria-invalid');
-      });
+    form.querySelectorAll<HTMLElement>('[aria-invalid="true"]').forEach((field) => {
+      field.removeAttribute('aria-invalid');
+    });
     form.querySelectorAll<HTMLElement>('[data-field-error]').forEach((element) => {
       element.textContent = '';
     });
@@ -643,9 +673,16 @@ function initializeLeadForm(form: HTMLFormElement) {
 
   const showFieldErrors = (fields: Record<string, string>) => {
     for (const [name, code] of Object.entries(fields)) {
-      const field = form.elements.namedItem(name);
-      if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
-        field.setAttribute('aria-invalid', 'true');
+      if (name === 'consulting_interests') {
+        form
+          .querySelector<HTMLElement>('.ax-v2-interest-options')
+          ?.setAttribute('aria-invalid', 'true');
+      } else {
+        form
+          .querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(`[name="${name}"]`)
+          .forEach((field) => {
+            field.setAttribute('aria-invalid', 'true');
+          });
       }
       const error = form.querySelector<HTMLElement>(`[data-field-error="${name}"]`);
       if (error) {
@@ -658,9 +695,9 @@ function initializeLeadForm(form: HTMLFormElement) {
   const fieldCode = (field: HTMLInputElement | HTMLTextAreaElement) => {
     if (field.name === 'name') return 'INVALID_NAME';
     if (field.name === 'email') return 'INVALID_EMAIL';
-    if (field.name === 'phone') return 'INVALID_PHONE';
-    if (field.name === 'message') return 'MESSAGE_REQUIRED';
-    if (field.name === 'privacy_consent') return 'PRIVACY_CONSENT_REQUIRED';
+    if (field.name === 'consulting_interests') return 'INTEREST_REQUIRED';
+    if (field.name === 'other_interest') return 'OTHER_INTEREST_REQUIRED';
+    if (field.name === 'reason') return 'REASON_REQUIRED';
     if (field.name === 'cross_border_consent') return 'CROSS_BORDER_CONSENT_REQUIRED';
     return 'INVALID_NAME';
   };
@@ -678,24 +715,6 @@ function initializeLeadForm(form: HTMLFormElement) {
     window.setTimeout(() => firstInvalid.focus({ preventScroll: true }), 320);
   };
 
-  const phoneInput = form.elements.namedItem('phone');
-  if (phoneInput instanceof HTMLInputElement) {
-    phoneInput.addEventListener('input', () => {
-      const digits = phoneInput.value.replace(/\D/g, '').slice(0, 15);
-      const prefixLength = digits.startsWith('02') ? 2 : 3;
-      const prefix = digits.slice(0, prefixLength);
-      const remainder = digits.slice(prefixLength);
-      let formatted = prefix;
-      if (remainder.length > 0) {
-        formatted +=
-          remainder.length <= 4
-            ? `-${remainder}`
-            : `-${remainder.slice(0, -4)}-${remainder.slice(-4)}`;
-      }
-      if (phoneInput.value !== formatted) phoneInput.value = formatted;
-    });
-  }
-
   form.addEventListener(
     'invalid',
     (event) => {
@@ -703,6 +722,37 @@ function initializeLeadForm(form: HTMLFormElement) {
     },
     true,
   );
+
+  form.addEventListener(
+    'blur',
+    (event) => {
+      const field = event.target;
+      if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+      if (!field.willValidate || field.validity.valid) return;
+      showFieldErrors({ [field.name]: fieldCode(field) });
+    },
+    true,
+  );
+
+  const otherInterestOption = form.querySelector<HTMLInputElement>(
+    '[data-interest-option="other"]',
+  );
+  const otherInterestField = form.querySelector<HTMLElement>('[data-other-interest]');
+  const otherInterestInput = form.querySelector<HTMLInputElement>('[data-other-interest-input]');
+  const syncOtherInterest = () => {
+    const enabled = Boolean(otherInterestOption?.checked);
+    if (otherInterestField) otherInterestField.hidden = !enabled;
+    if (otherInterestInput) {
+      otherInterestInput.disabled = !enabled;
+      otherInterestInput.required = enabled;
+      if (!enabled) {
+        otherInterestInput.value = '';
+        otherInterestInput.removeAttribute('aria-invalid');
+      }
+    }
+  };
+  otherInterestOption?.addEventListener('change', syncOtherInterest);
+  syncOtherInterest();
 
   form.addEventListener('input', (event) => {
     const field = event.target;
@@ -720,7 +770,14 @@ function initializeLeadForm(form: HTMLFormElement) {
     }
     syncSubmitState();
   });
-  form.addEventListener('change', syncSubmitState);
+  form.addEventListener('change', () => {
+    syncOtherInterest();
+    syncInterestValidity();
+    if (!interestOptions.some((option) => option.checked)) {
+      showFieldErrors({ consulting_interests: 'INTEREST_REQUIRED' });
+    }
+    syncSubmitState();
+  });
   syncSubmitState();
 
   form.addEventListener('submit', async (event) => {
@@ -747,14 +804,13 @@ function initializeLeadForm(form: HTMLFormElement) {
         .map((key) => [key, search.get(`utm_${key}`)] as const)
         .filter((entry): entry is readonly [string, string] => Boolean(entry[1])),
     );
-    const privacyConsent = form.elements.namedItem('privacy_consent');
     const crossBorderConsent = form.elements.namedItem('cross_border_consent');
     const payload = {
       name: String(data.get('name') ?? ''),
       email: String(data.get('email') ?? ''),
-      phone: String(data.get('phone') ?? ''),
-      message: String(data.get('message') ?? ''),
-      privacy_consent: privacyConsent instanceof HTMLInputElement && privacyConsent.checked,
+      consulting_interests: data.getAll('consulting_interests').map(String),
+      other_interest: String(data.get('other_interest') ?? ''),
+      reason: String(data.get('reason') ?? ''),
       cross_border_consent:
         crossBorderConsent instanceof HTMLInputElement && crossBorderConsent.checked,
       website: String(data.get('website') ?? ''),
@@ -787,6 +843,7 @@ function initializeLeadForm(form: HTMLFormElement) {
       }
 
       form.reset();
+      autoGrowTextareas.forEach(syncTextareaHeight);
       startedAt = Date.now();
       status.textContent = messages.sent;
       status.className = 'ax-v2-form-status is-success';

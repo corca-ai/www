@@ -26,6 +26,7 @@ const colleagues = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/colleagues' }),
   schema: z.object({
     order: z.number().int().positive(), // ascending display order
+    showOnPeoplePage: z.boolean().default(true),
     image: z.string().min(1),
     story: z.string().url(),
     role: i18n,

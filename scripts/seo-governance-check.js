@@ -18,6 +18,16 @@ const readDist = (path) => {
   return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(file));
 };
 
+const redirectRules = (source) =>
+  source
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .map((line) => {
+      const [from, to, status] = line.split(/\s+/);
+      return { from, to, status };
+    });
+
 const sitemapEntries = (xml) =>
   [...xml.matchAll(/<url>\s*([\s\S]*?)<\/url>/g)].map(
     (match) => match[1]?.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '',
@@ -74,6 +84,62 @@ assert(
   !entries.some(({ url }) => new URL(url).pathname === '/ax-backup'),
   'AX backup must stay out of public sitemaps',
 );
+
+const redirects = redirectRules(readDist('_redirects'));
+const expectedLegacyRedirects = new Map([
+  ['/272d67d7-5de7-4a39-8563-a87e0de46ed1', '/'],
+  ['/blank', '/'],
+  ['/blank-1-1', '/'],
+  ['/blank-2', '/'],
+  ['/en/blank', '/'],
+  ['/en/blank-1', '/'],
+  ['/en/blank-1-1', '/'],
+  ['/ja/blank-1', '/'],
+  ['/home-1', '/'],
+  ['/home-2', '/'],
+  ['/home-3', '/'],
+  ['/home-3-2', '/'],
+  ['/home-4', '/'],
+  ['/home-4-1-1', '/'],
+  ['/home-4-2', '/'],
+  ['/en/home-1', '/en'],
+  ['/en/home-2', '/'],
+  ['/en/home-4-1-1', '/'],
+  ['/ja/home-1', '/'],
+  ['/ja/home-2', '/ja'],
+  ['/zh/home-1', '/zh'],
+  ['/zh/home-2', '/zh'],
+  ['/ko', '/'],
+  ['/ko/about-us', '/'],
+  ['/en/colleagues-1', '/'],
+  ['/research-recsys', '/products'],
+  ['/en/research-recsys', '/products'],
+  ['/corca-ads', '/products'],
+  ['/ceal', '/products'],
+  ['/ko/trace', '/products'],
+  ['/research-llm', '/products'],
+  ['/en/research-llm', '/products'],
+  ['/memory-agent', '/products'],
+  ['/en/memory-agent', '/products'],
+  ['/ja/memory-agent', '/products'],
+  ['/en/aboutus', '/en/about/colleagues'],
+]);
+const legacyHomeRedirects = redirects.filter(({ from }) =>
+  /^\/(?:(?:en|ja|zh)\/)?home-/.test(from),
+);
+const expectedLegacyHomeRedirectCount = [...expectedLegacyRedirects.keys()].filter((from) =>
+  /^\/(?:(?:en|ja|zh)\/)?home-/.test(from),
+).length;
+assert(
+  legacyHomeRedirects.length === expectedLegacyHomeRedirectCount,
+  'legacy homepage redirects must cover only the known aliases',
+);
+for (const [from, to] of expectedLegacyRedirects) {
+  const matches = redirects.filter((redirect) => redirect.from === from);
+  assert(matches.length === 1, `${from} must have exactly one redirect rule`);
+  assert(matches[0].to === to, `${from} must redirect to ${to}`);
+  assert(matches[0].status === '301', `${from} must use a permanent redirect`);
+}
 
 for (const { url, kind } of entries) {
   const path = routeFile(url);

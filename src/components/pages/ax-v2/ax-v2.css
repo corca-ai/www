@@ -3655,18 +3655,7 @@ html:lang(ja) .ax-v2-partner-grid h3 {
   letter-spacing: 0.02em;
 }
 
-/* English card copy varies more in length. Anchor each card's cadence, title,
-   and lead copy to the same top edge instead of vertically centering them. */
-html:lang(en) .ax-v2-circle-card {
-  justify-content: flex-start;
-}
-
-/* Japanese card titles need more horizontal room, while all card content uses
-   one shared top baseline. */
-html:lang(ja) .ax-v2-circle-card {
-  justify-content: flex-start;
-}
-
+/* Japanese card titles need more horizontal room. */
 html:lang(ja) .ax-v2-circle-card h4 {
   font-size: clamp(23px, 1.7vw, 30px);
 }

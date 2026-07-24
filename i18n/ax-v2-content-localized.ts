@@ -444,7 +444,7 @@ export const axV2ContentOverrides = {
       cards: [
         {
           cadence: '毎月開催',
-          lead: ['非エンジニアから', 'AXチャンピオンへ'],
+          lead: 'AXチャンピオンへ',
           body: ['全社員がペアワークで新しい試みに挑み、', 'AI活用力を高めます。'],
         },
         {

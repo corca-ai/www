@@ -408,7 +408,11 @@ const uiCopy = {
         <div class="ax-v2-comparison">
           <article class="ax-v2-comparison-legacy">
             <h4><AxLines values={c.diagnosis.legacy.title} /></h4>
-            <p>{c.diagnosis.legacy.body}</p>
+            <p>
+              {Array.isArray(c.diagnosis.legacy.body)
+                ? <AxLines values={c.diagnosis.legacy.body} />
+                : c.diagnosis.legacy.body}
+            </p>
             <ul>{c.diagnosis.legacy.items.map((item) => {
               const [count, ...label] = item.split(' ');
               return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;

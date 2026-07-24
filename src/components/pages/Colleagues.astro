@@ -7,7 +7,10 @@ interface Props {
 }
 const { lang } = Astro.props;
 const P = '/images/pages/';
-const members = (await getCollection('colleagues')).map((e) => e.data).sort((a, b) => a.order - b.order);
+const members = (await getCollection('colleagues'))
+  .map((e) => e.data)
+  .filter((member) => member.showOnPeoplePage)
+  .sort((a, b) => a.order - b.order);
 
 const heading = {
   ko: { title: '코르카 사람들', sub: '능력있고 열정적인 코르카 팀 멤버들의 경험과 성장에 대한 생생한 이야기들을 만나보세요', newWindow: '(corca.team에서 열림)', portrait: (role: string) => `${role} 인터뷰 사진` },

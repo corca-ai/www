@@ -88,7 +88,7 @@ assert(
 const redirects = redirectRules(readDist('_redirects'));
 const expectedLegacyRedirects = new Map([
   ['/272d67d7-5de7-4a39-8563-a87e0de46ed1', '/'],
-  ['/blank', '/'],
+  ['/blank', '/privacy'],
   ['/blank-1-1', '/'],
   ['/blank-2', '/'],
   ['/en/blank', '/'],
@@ -140,6 +140,20 @@ for (const [from, to] of expectedLegacyRedirects) {
   assert(matches[0].to === to, `${from} must redirect to ${to}`);
   assert(matches[0].status === '301', `${from} must use a permanent redirect`);
 }
+
+const privacyHtml = readDist('privacy/index.html');
+const privacyRobots = metaContent(privacyHtml, 'name', 'robots')
+  .toLowerCase()
+  .split(',')
+  .map((token) => token.trim());
+assert(
+  privacyRobots.includes('noindex') && privacyRobots.includes('nofollow'),
+  'privacy must remain noindex, nofollow',
+);
+assert(
+  !entries.some(({ url }) => new URL(url).pathname === '/privacy'),
+  'privacy must stay out of public sitemaps',
+);
 
 for (const { url, kind } of entries) {
   const path = routeFile(url);

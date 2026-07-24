@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "corca-www",
   "compatibility_date": "2025-11-01",
-  // Corca account (beta domain borca.ai lives here).
+  // Corca account.
   "account_id": "b23e9b2e3a9159dd7eb3fa51f839c5c5",
   // Keep the workers.dev preview URL enabled alongside the custom domain.
   "workers_dev": true,
@@ -29,8 +29,10 @@
       "allowed_sender_addresses": ["ax@corca.ai"]
     }
   ],
-  // Beta site custom domain — provisions DNS + cert on the borca.ai zone. To also
-  // redirect the apex (borca.ai → www.borca.ai), add { "pattern": "borca.ai",
-  // "custom_domain": true } here; the Worker already canonicalizes the host.
-  "routes": [{ "pattern": "www.borca.ai", "custom_domain": true }]
+  // Production custom domains. Attaching both hosts lets the Worker canonicalize
+  // the apex (corca.ai → www.corca.ai) while serving the www host directly.
+  "routes": [
+    { "pattern": "www.corca.ai", "custom_domain": true },
+    { "pattern": "corca.ai", "custom_domain": true }
+  ]
 }

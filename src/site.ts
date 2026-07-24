@@ -7,4 +7,4 @@
 //
 // Rules (issue #13): https, a `www.` host, and no trailing slash. Keep it a
 // bare origin — protocol + host, no path, no trailing slash.
-export const SITE_ORIGIN = 'https://www.borca.ai';
+export const SITE_ORIGIN = 'https://www.corca.ai';

@@ -137,7 +137,7 @@ for (const [path, maximumBytes] of [
 
 const cached = (path, contentType = '') =>
   withStaticAssetCacheHeaders(
-    new Request(`https://www.borca.ai${path}`),
+    new Request(`https://www.corca.ai${path}`),
     new Response('fixture', { headers: { 'Content-Type': contentType } }),
   ).headers.get('Cache-Control');
 

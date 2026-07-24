@@ -205,6 +205,9 @@ When changing blog files, keep these invariants:
 - Localized post records inherit the resolved Korean cover when translation
   metadata contains the default cover; only a non-default localized cover may
   override it.
+- Markdown is retained only on the original post source for later editing.
+  Generated locale artifacts use their translated HTML as the reader-facing
+  source and must not retain source-language `sourceMarkdown` metadata.
 - Notion-driven post changes should be checked with `npm run notion:check` when
   changing the workflow or scripts.
 - Run the normal project gates from [development](development.md) before

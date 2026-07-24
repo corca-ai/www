@@ -417,12 +417,12 @@ async function writePostTranslations(post, articleHtml, slug) {
       await writeFile(
         translationPath,
         renderPostSource(
-          {
+          translationArtifactMetadata({
             ...post,
             language: locale,
             tags: localizePostTags(post.tags, locale),
             section: localizePostTopic(post.section || post.tags?.[0] || '', locale),
-          },
+          }),
           articleHtml,
         ),
       );
@@ -450,19 +450,28 @@ async function translatePostSource(post, articleHtml, targetLocale, sourceLocale
     translateArticleHtml(articleHtml, translator),
   ]);
 
+  const translatedPost = {
+    ...post,
+    title: title || post.title,
+    description: trimDescription(description || post.description),
+    tags: localizePostTags(post.tags || [], targetLocale),
+    language: targetLocale,
+    coverAlt: coverAlt || '',
+    section: localizePostTopic(post.section || post.tags?.[0] || '', targetLocale),
+    wordCount: estimateWordCount(translatedArticleHtml),
+  };
+
   return {
-    post: {
-      ...post,
-      title: title || post.title,
-      description: trimDescription(description || post.description),
-      tags: localizePostTags(post.tags || [], targetLocale),
-      language: targetLocale,
-      coverAlt: coverAlt || '',
-      section: localizePostTopic(post.section || post.tags?.[0] || '', targetLocale),
-      wordCount: estimateWordCount(translatedArticleHtml),
-    },
+    post: translationArtifactMetadata(translatedPost),
     articleHtml: translatedArticleHtml,
   };
+}
+
+function translationArtifactMetadata(post) {
+  const artifactPost = { ...post };
+  delete artifactPost.sourceFormat;
+  delete artifactPost.sourceMarkdown;
+  return artifactPost;
 }
 
 function createTranslator(sourceLocale, targetLocale) {
@@ -714,7 +723,7 @@ async function localizePostRecord(baseRecord, locale) {
   }
 
   const translationPath = join(translationsDir, locale, `${baseRecord.post.slug}.html`);
-  const source = await readFile(translationPath, 'utf8').catch(() => '');
+  let source = await readFile(translationPath, 'utf8').catch(() => '');
   if (!source.trim()) {
     return {
       ...baseRecord,
@@ -723,6 +732,10 @@ async function localizePostRecord(baseRecord, locale) {
   }
 
   const parsed = parsePostSource(source, relative(repoRoot, translationPath));
+  if (parsed.metadata.sourceFormat || parsed.metadata.sourceMarkdown) {
+    source = renderPostSource(translationArtifactMetadata(parsed.metadata), parsed.articleHtml);
+    await writeFile(translationPath, source);
+  }
   const title = requiredString(parsed.metadata.title || baseRecord.post.title, 'title');
   const description = trimDescription(
     requiredString(parsed.metadata.description || baseRecord.post.description, 'description'),
@@ -1635,8 +1648,11 @@ function parsePostSource(html, relativePath) {
   const source = String(html || '');
   const embeddedMetadata = parseEmbeddedPostMetadata(source, relativePath);
   const publicHtml = stripPostMetadata(source);
+  const isTranslationArtifact = /post-translations[\\/]/.test(String(relativePath || ''));
   const articleHtml =
-    embeddedMetadata?.sourceFormat === 'markdown' && embeddedMetadata.sourceMarkdown
+    !isTranslationArtifact &&
+    embeddedMetadata?.sourceFormat === 'markdown' &&
+    embeddedMetadata.sourceMarkdown
       ? markdownToHtml(embeddedMetadata.sourceMarkdown)
       : extractDocumentArticle(publicHtml) || publicHtml;
   return {

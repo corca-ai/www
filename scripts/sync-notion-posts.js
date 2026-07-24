@@ -850,23 +850,32 @@ function richTextMarkdown(value) {
     .map((item) => {
       const href = item.href || item.text?.link?.url || '';
       const annotations = item.annotations || {};
-      let text = String(item.plain_text || item.text?.content || '').replace(/\r\n?/g, '\n');
+      const text = String(item.plain_text || item.text?.content || '').replace(/\r\n?/g, '\n');
       if (!text) {
         return '';
       }
-      if (annotations.code) {
-        text = `\`${text.replaceAll('`', "'")}\``;
-      }
-      if (annotations.bold) {
-        text = `**${text}**`;
-      }
-      if (annotations.italic) {
-        text = `_${text}_`;
-      }
-      if (href && /^https?:\/\//i.test(href)) {
-        text = `[${text}](${href})`;
-      }
-      return text;
+      return text
+        .split(/(\n(?:[ \t]*\n)+)/)
+        .map((part) => {
+          if (!part || /^\n(?:[ \t]*\n)+$/.test(part)) {
+            return part;
+          }
+          let formatted = part;
+          if (annotations.code) {
+            formatted = `\`${formatted.replaceAll('`', "'")}\``;
+          }
+          if (annotations.bold) {
+            formatted = `**${formatted}**`;
+          }
+          if (annotations.italic) {
+            formatted = `_${formatted}_`;
+          }
+          if (href && /^https?:\/\//i.test(href)) {
+            formatted = `[${formatted}](${href})`;
+          }
+          return formatted;
+        })
+        .join('');
     })
     .join('')
     .trim();

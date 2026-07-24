@@ -88,6 +88,12 @@ second preserved code-like line</pre>
                 '본문에는 충분한 설명과 링크, 이미지가 포함되어 발행 스크립트와 정적 렌더러를 함께 검증합니다.',
               ),
             }),
+            block('quote', {
+              rich_text: text(
+                'First italic paragraph from Notion.\n\nSecond italic paragraph from Notion.',
+                { italic: true },
+              ),
+            }),
             {
               object: 'block',
               id: 'image-block',
@@ -191,17 +197,28 @@ second preserved code-like line</pre>
     enPosts.some((post) => post.slug === 'notion-html-fixture'),
     true,
   );
-  assert.match(
-    await readFile(
-      join(workDir, 'public/blog/admin/post-sources/notion-body-fixture.html'),
-      'utf8',
-    ),
-    /"sourceFormat": "markdown"/,
+  const notionBodySource = await readFile(
+    join(workDir, 'public/blog/admin/post-sources/notion-body-fixture.html'),
+    'utf8',
   );
+  assert.match(notionBodySource, /"sourceFormat": "markdown"/);
+  const notionBodyMetadataMatch = notionBodySource.match(/^\s*<!--\s*corca-post\s*([\s\S]*?)-->/i);
+  assert.ok(notionBodyMetadataMatch);
+  const notionBodyMetadata = JSON.parse(notionBodyMetadataMatch[1]);
   assert.match(
-    await readFile(join(workDir, 'public/blog/notion-body-fixture/index.html'), 'utf8'),
-    /노션 본문 발행 확인/,
+    notionBodyMetadata.sourceMarkdown,
+    /> _First italic paragraph from Notion\._\n>\n> _Second italic paragraph from Notion\._/,
   );
+  const notionBodyStaticPage = await readFile(
+    join(workDir, 'public/blog/notion-body-fixture/index.html'),
+    'utf8',
+  );
+  assert.match(notionBodyStaticPage, /노션 본문 발행 확인/);
+  assert.match(
+    notionBodyStaticPage,
+    /<blockquote>\s*<p><em>First italic paragraph from Notion\.<\/em><\/p>\s*<p><em>Second italic paragraph from Notion\.<\/em><\/p>\s*<\/blockquote>/,
+  );
+  assert.doesNotMatch(notionBodyStaticPage, /<p>_/);
   assert.match(
     await readFile(
       join(workDir, 'public/blog/admin/post-translations/en/notion-body-fixture.html'),
@@ -384,6 +401,6 @@ function block(type, value) {
   };
 }
 
-function text(value) {
-  return [{ type: 'text', plain_text: value, text: { content: value } }];
+function text(value, annotations = {}) {
+  return [{ type: 'text', plain_text: value, text: { content: value }, annotations }];
 }

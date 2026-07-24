@@ -7,9 +7,9 @@
 /blog/rss      /rss    302
 /blog/rss.xml  /rss    302
 
-# Former Wix homepage and blank aliases map to the current homepage.
+# Former Wix aliases map to their current destinations.
 /272d67d7-5de7-4a39-8563-a87e0de46ed1  /    301
-/blank         /    301
+/blank         /privacy  301
 /blank-1-1     /    301
 /blank-2       /    301
 /en/blank      /    301

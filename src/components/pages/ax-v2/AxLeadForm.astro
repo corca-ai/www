@@ -17,8 +17,6 @@ const phoneTitle = {
   zh: '请输入电话号码，系统会自动添加连字符。',
 }[lang];
 const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
-const localizedPrivacyUrl = lang === 'ko' ? '/privacy' : `/${lang}/privacy`;
-const privacyUrl = String(import.meta.env.PUBLIC_AX_PRIVACY_POLICY_URL || localizedPrivacyUrl).trim();
 const formId = `ax-lead-${id}`;
 ---
 
@@ -121,9 +119,6 @@ const formId = `ax-lead-${id}`;
       required
     />
     <span>{c.consent}</span>
-    {privacyUrl
-      ? <a href={privacyUrl} target="_blank" rel="noreferrer">{c.privacyDetail}</a>
-      : <span class="ax-v2-policy-pending" aria-disabled="true">{c.privacyDetail}</span>}
   </label>
   <span class="ax-v2-field-error" id={`${formId}-privacy-error`} data-field-error="privacy_consent"></span>
 

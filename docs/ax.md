@@ -93,8 +93,9 @@ oversized or suspicious submissions and sends the result through the
 Cloudflare Email Sending binding. It does not write submissions to an
 application database. Cloudflare Email Service and recipient mailboxes process
 and retain the message under Corca's configured retention practices and their
-own policies; every form links to Corca's published privacy policy at
-`/privacy`.
+own policies. The forms show a required, concise processing notice. The
+localized privacy pages remain published with `noindex` metadata but are not
+linked from the current AX lead form.
 
 The `AX_EMAIL` binding in `wrangler.jsonc` restricts delivery to the verified
 `contact+ax@corca.ai` destination and restricts the sender to `ax@corca.ai`.

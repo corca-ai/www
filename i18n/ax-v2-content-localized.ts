@@ -354,8 +354,8 @@ export const axV2ContentOverrides = {
         message:
           'Tell us about your current challenge so we can prepare a more useful consultation',
       },
-      consent: 'Required | I agree to the Privacy Policy',
-      privacyDetail: 'View details',
+      consent:
+        'Required | The personal information you provide will be used securely only to respond to your consultation request.',
       submit: 'Request a two-week diagnosis',
       sending: 'Sending your request.',
       success: 'Your request has been sent.',
@@ -365,8 +365,6 @@ export const axV2ContentOverrides = {
       directLead: 'Prefer to speak directly with the Corca AX Lead?',
       emailLabel: 'Email consultation',
       phoneLabel: 'Phone consultation',
-      brochureLead: 'For the full story, read',
-      brochureLabel: 'Corca AX Acceleration Consulting',
     },
   },
   ja: {
@@ -699,8 +697,7 @@ export const axV2ContentOverrides = {
         phone: '010-0000-0000',
         message: '現在の課題をご記入いただくと、より具体的にご相談できます',
       },
-      consent: '必須 | プライバシーポリシーに同意します',
-      privacyDetail: '全文を見る',
+      consent: '必須 | ご入力いただいた個人情報は、ご相談への対応のためにのみ安全に使用されます。',
       submit: '2週間診断を申し込む',
       sending: '相談申請を送信しています。',
       success: '相談申請を送信しました。',
@@ -710,8 +707,6 @@ export const axV2ContentOverrides = {
       directLead: 'Corca AX Leadへ直接相談する場合',
       emailLabel: 'メール相談',
       phoneLabel: '電話相談',
-      brochureLead: '詳しい内容はこちら',
-      brochureLabel: 'Corca AXアクセラレーション・コンサルティング',
     },
   },
   zh: {
@@ -1015,8 +1010,7 @@ export const axV2ContentOverrides = {
         phone: '010-0000-0000',
         message: '请描述当前课题，以便我们提供更有针对性的咨询',
       },
-      consent: '必填 | 我同意隐私政策',
-      privacyDetail: '查看全文',
+      consent: '必填 | 您填写的个人信息将仅用于安全地回复咨询。',
       submit: '申请2周诊断',
       sending: '正在发送咨询申请。',
       success: '咨询申请已发送。',
@@ -1026,8 +1020,6 @@ export const axV2ContentOverrides = {
       directLead: '希望直接联系Corca AX Lead？',
       emailLabel: '邮件咨询',
       phoneLabel: '电话咨询',
-      brochureLead: '了解更多详情',
-      brochureLabel: 'Corca AX加速咨询',
     },
   },
 } as const;

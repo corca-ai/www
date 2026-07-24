@@ -86,26 +86,39 @@ assert(
 );
 
 const redirects = redirectRules(readDist('_redirects'));
-const expectedLegacyHomeRedirects = new Map([
+const expectedLegacyRedirects = new Map([
+  ['/blank', '/'],
+  ['/blank-2', '/'],
+  ['/en/blank-1-1', '/'],
   ['/home-1', '/'],
   ['/home-2', '/'],
   ['/en/home-1', '/en'],
-  ['/en/home-2', '/en'],
-  ['/ja/home-1', '/ja'],
+  ['/en/home-2', '/'],
+  ['/ja/home-1', '/'],
   ['/ja/home-2', '/ja'],
   ['/zh/home-1', '/zh'],
   ['/zh/home-2', '/zh'],
+  ['/research-recsys', '/products'],
+  ['/en/research-recsys', '/products'],
+  ['/corca-ads', '/products'],
+  ['/research-llm', '/products'],
+  ['/en/research-llm', '/products'],
+  ['/memory-agent', '/products'],
+  ['/en/memory-agent', '/products'],
+  ['/ja/memory-agent', '/products'],
 ]);
 const legacyHomeRedirects = redirects.filter(({ from }) =>
   /^\/(?:(?:en|ja|zh)\/)?home-/.test(from),
 );
 assert(
-  legacyHomeRedirects.length === expectedLegacyHomeRedirects.size,
+  legacyHomeRedirects.length === 8,
   'legacy homepage redirects must cover only the eight known aliases',
 );
-for (const { from, to, status } of legacyHomeRedirects) {
-  assert(expectedLegacyHomeRedirects.get(from) === to, `${from} must preserve its locale homepage`);
-  assert(status === '301', `${from} must use a permanent redirect`);
+for (const [from, to] of expectedLegacyRedirects) {
+  const matches = redirects.filter((redirect) => redirect.from === from);
+  assert(matches.length === 1, `${from} must have exactly one redirect rule`);
+  assert(matches[0].to === to, `${from} must redirect to ${to}`);
+  assert(matches[0].status === '301', `${from} must use a permanent redirect`);
 }
 
 for (const { url, kind } of entries) {

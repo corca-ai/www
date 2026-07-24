@@ -55,6 +55,18 @@ try {
           `${sourceRoot}/${file} display topic must belong to its section`,
         );
       }
+      if (sourceRoot.includes('post-translations/')) {
+        assert.equal(
+          sourceMetadata.sourceFormat,
+          undefined,
+          `${sourceRoot}/${file} must use its localized HTML body`,
+        );
+        assert.equal(
+          sourceMetadata.sourceMarkdown,
+          undefined,
+          `${sourceRoot}/${file} must not retain source-language Markdown`,
+        );
+      }
     }
   }
   for (const removedSlug of removedSlugs) {
@@ -180,6 +192,17 @@ try {
       assert.equal(staticPost.includes('https://www.borca.ai'), false);
       assert.equal(staticPost.includes('https://www.corca.ai'), true);
     }
+  }
+  for (const locale of ['en', 'ja', 'zh']) {
+    const localizedAiColleaguePage = await readFile(
+      join(repoRoot, `public/${locale}/blog/we-make-ai-colleague/index.html`),
+      'utf8',
+    );
+    assert.doesNotMatch(
+      localizedAiColleaguePage,
+      /Moonlight는 새롭게 발표되는 논문을 더 빠르게 이해할 수 있도록/,
+      `${locale} AI Colleague page must not render the Korean Markdown source`,
+    );
   }
   for (const outputPath of [
     'public/blog/feed.json',
@@ -572,7 +595,18 @@ This adjacent fixture gives the generated static page a previous-post card so th
       join(workDir, `public/blog/admin/post-translations/${locale}/${slug}.html`),
       'utf8',
     );
+    const translationMetadata = embeddedMetadata(translationSource);
     assert.match(translationSource, new RegExp(`\\[${locale}\\] Admin Markdown Updated`));
+    assert.equal(
+      translationMetadata.sourceFormat,
+      undefined,
+      `${locale} translation must use its translated HTML body`,
+    );
+    assert.equal(
+      translationMetadata.sourceMarkdown,
+      undefined,
+      `${locale} translation must not retain the source-language Markdown`,
+    );
 
     const localeIndex = JSON.parse(
       await readFile(join(workDir, `public/${locale}/blog/posts/index.json`), 'utf8'),
@@ -604,6 +638,12 @@ This adjacent fixture gives the generated static page a previous-post card so th
     );
     const expectedExplicitCoverUrl = `https://www.corca.ai/blog/${expectedExplicitCover}`;
     assert.match(localeStaticPage, /Admin Markdown Updated/);
+    const localizedArticleContent = staticArticleContent(localeStaticPage);
+    assert.match(
+      localizedArticleContent,
+      new RegExp(`<h1>\\[${locale}\\] Admin Markdown Updated<\\/h1>`),
+      `${locale} static page must render the translated article body`,
+    );
     assert.ok(
       localeStaticPage.includes(`<meta property="og:image" content="${expectedExplicitCoverUrl}">`),
     );
@@ -684,6 +724,36 @@ Admin markdown body after deleting the inline image. This fixture intentionally 
     /ENOENT/,
   );
 
+  const sourceLocaleSlug = 'english-source-markdown-fixture';
+  runAdminChange({
+    action: 'upsert',
+    slug: sourceLocaleSlug,
+    format: 'markdown',
+    fileName: `${sourceLocaleSlug}.md`,
+    metadata: {
+      title: 'English Source Markdown Fixture',
+      description: 'An English-source Markdown post must still use HTML locale artifacts.',
+      date: '2026-02-04',
+      tags: 'Moonlight',
+      author: 'Fixture Author',
+      cover: 'assets/editorial-cover.jpg',
+      language: 'en',
+      section: 'Product',
+    },
+    contentBase64: toBase64(`# English Source Markdown Fixture
+
+This English-source Markdown fixture verifies the source-locale branch of translation artifact generation. The original Markdown remains editable in the base post source, while every generated locale artifact uses its reader-facing HTML body without copying source-language Markdown metadata.`),
+  });
+  const sourceLocaleTranslation = embeddedMetadata(
+    await readFile(
+      join(workDir, `public/blog/admin/post-translations/en/${sourceLocaleSlug}.html`),
+      'utf8',
+    ),
+  );
+  assert.equal(sourceLocaleTranslation.sourceFormat, undefined);
+  assert.equal(sourceLocaleTranslation.sourceMarkdown, undefined);
+  runAdminChange({ action: 'delete', slug: sourceLocaleSlug });
+
   console.log('Admin post change check passed.');
 } finally {
   await rm(fixtureRoot, { recursive: true, force: true });
@@ -706,6 +776,14 @@ function embeddedMetadata(source) {
   const match = String(source || '').match(/^\s*<!--\s*corca-post\s*([\s\S]*?)-->/i);
   assert.ok(match, 'post source should include embedded metadata');
   return JSON.parse(match[1]);
+}
+
+function staticArticleContent(source) {
+  const match = String(source || '').match(
+    /<div class="article-content">\s*([\s\S]*?)\s*<\/div>\s*<\/article>/,
+  );
+  assert.ok(match, 'static page should include article content');
+  return match[1];
 }
 
 function normalizeCategory(value) {

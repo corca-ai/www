@@ -7,6 +7,16 @@
 /blog/rss      /rss    302
 /blog/rss.xml  /rss    302
 
+# Former Wix homepage aliases map to the equivalent current locale homepage.
+/home-1     /      301
+/home-2     /      301
+/en/home-1  /en    301
+/en/home-2  /en    301
+/ja/home-1  /ja    301
+/ja/home-2  /ja    301
+/zh/home-1  /zh    301
+/zh/home-2  /zh    301
+
 # Legacy Corca Blog URLs now live inside the integrated /blog section.
 /posts/:slug.html     /blog/:slug       301
 /posts/:slug          /blog/:slug       301

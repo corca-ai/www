@@ -18,6 +18,16 @@ const readDist = (path) => {
   return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(file));
 };
 
+const redirectRules = (source) =>
+  source
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .map((line) => {
+      const [from, to, status] = line.split(/\s+/);
+      return { from, to, status };
+    });
+
 const sitemapEntries = (xml) =>
   [...xml.matchAll(/<url>\s*([\s\S]*?)<\/url>/g)].map(
     (match) => match[1]?.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '',
@@ -74,6 +84,29 @@ assert(
   !entries.some(({ url }) => new URL(url).pathname === '/ax-backup'),
   'AX backup must stay out of public sitemaps',
 );
+
+const redirects = redirectRules(readDist('_redirects'));
+const expectedLegacyHomeRedirects = new Map([
+  ['/home-1', '/'],
+  ['/home-2', '/'],
+  ['/en/home-1', '/en'],
+  ['/en/home-2', '/en'],
+  ['/ja/home-1', '/ja'],
+  ['/ja/home-2', '/ja'],
+  ['/zh/home-1', '/zh'],
+  ['/zh/home-2', '/zh'],
+]);
+const legacyHomeRedirects = redirects.filter(({ from }) =>
+  /^\/(?:(?:en|ja|zh)\/)?home-/.test(from),
+);
+assert(
+  legacyHomeRedirects.length === expectedLegacyHomeRedirects.size,
+  'legacy homepage redirects must cover only the eight known aliases',
+);
+for (const { from, to, status } of legacyHomeRedirects) {
+  assert(expectedLegacyHomeRedirects.get(from) === to, `${from} must preserve its locale homepage`);
+  assert(status === '301', `${from} must use a permanent redirect`);
+}
 
 for (const { url, kind } of entries) {
   const path = routeFile(url);

@@ -192,12 +192,14 @@ async function sendConsultationEmail(
   input: ValidConsultation,
   env: AxConsultationEnv,
 ): Promise<'failed' | 'sent'> {
+  const submittedDate = new Date();
   const submittedAt = new Intl.DateTimeFormat('ko-KR', {
     dateStyle: 'long',
     timeStyle: 'short',
     timeZone: 'Asia/Seoul',
-  }).format(new Date());
+  }).format(submittedDate);
   const topicLabel = input.topic ? topicLabels[input.topic] : '';
+  const consultationTimestamp = formatConsultationTimestamp(submittedDate);
   const text = [
     'Corca AX 상담 요청',
     '',
@@ -232,7 +234,7 @@ async function sendConsultationEmail(
       from: { email: consultationSender, name: 'Corca AX' },
       html,
       ...(input.email ? { replyTo: input.email } : {}),
-      subject: `[Corca AX 상담 요청] ${topicLabel || '새 상담 요청'}`,
+      subject: `[Corca AX 상담 요청 #${consultationTimestamp}] ${topicLabel || '새 상담 요청'}`,
       text,
       to: consultationRecipient,
     });
@@ -242,10 +244,29 @@ async function sendConsultationEmail(
       JSON.stringify({
         event: 'ax_consultation_email_failed',
         error: error instanceof Error ? error.message : 'Unknown error',
+        consultation_timestamp: consultationTimestamp,
       }),
     );
     return 'failed';
   }
+}
+
+function formatConsultationTimestamp(date: Date): string {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23',
+    minute: '2-digit',
+    month: '2-digit',
+    second: '2-digit',
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+  }).formatToParts(date);
+  const timestampParts = ['year', 'month', 'day', 'hour', 'minute', 'second'];
+
+  return timestampParts
+    .map((type) => parts.find((part) => part.type === type)?.value ?? '')
+    .join('');
 }
 
 async function readLimitedBody(

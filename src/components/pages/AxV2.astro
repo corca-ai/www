@@ -83,9 +83,6 @@ const uiCopy = {
   },
 }[lang];
 
-const brochureHref = import.meta.env.DEV
-  ? '/ax/corca-ax-brochure/index.html'
-  : '/ax/corca-ax-brochure/';
 ---
 
 <div class="ax-v2-page" data-ax-v2-page>
@@ -141,7 +138,7 @@ const brochureHref = import.meta.env.DEV
           </>
         ))}
       </h3>
-      <button class="ax-v2-primary-button" type="button" data-dialog-open>{c.hero.cta}</button>
+      <button class="ax-v2-primary-button" type="button" data-contact-jump>{c.hero.cta}</button>
     </div>
   </section>
 
@@ -628,7 +625,12 @@ const brochureHref = import.meta.env.DEV
     </div>
   </section>
 
-  <section class="ax-v2-section ax-v2-contact-section" id="ax-contact" aria-labelledby="ax-v2-contact-title">
+  <section
+    class="ax-v2-section ax-v2-contact-section"
+    id="ax-contact"
+    aria-labelledby="ax-v2-contact-title"
+    data-contact-section
+  >
     <div class="ax-v2-shell ax-v2-contact-grid">
       <div class="ax-v2-contact-copy" data-reveal>
         <h2 id="ax-v2-contact-title">
@@ -642,10 +644,6 @@ const brochureHref = import.meta.env.DEV
         <p>{c.contact.directLead}</p>
         <a href={`mailto:${c.contact.email}`}>{c.contact.emailLabel}<strong>{c.contact.email}</strong></a>
         <a href="tel:+82269256978">{c.contact.phoneLabel}<strong>{c.contact.phone}</strong></a>
-        <p>{c.contact.brochureLead}</p>
-        <a href={brochureHref} target="_blank" rel="nofollow noopener noreferrer" hreflang="ko" data-ax-brochure-link>
-          {c.contact.brochureLabel}<span aria-hidden="true"> ↗</span>
-        </a>
       </div>
       <div class="ax-v2-inline-form" data-reveal>
         <AxLeadForm id="inline" lang={lang} compact />
@@ -686,6 +684,32 @@ const brochureHref = import.meta.env.DEV
     </div>
   </dialog>
 </div>
+
+<script is:inline>
+  (() => {
+    const bindContactJump = () => {
+      const page = document.querySelector('[data-ax-v2-page]');
+      const button = page?.querySelector('[data-contact-jump]');
+      const contactSection = page?.querySelector('[data-contact-section]');
+      if (!(button instanceof HTMLButtonElement) || !(contactSection instanceof HTMLElement)) return;
+      if (button.dataset.contactJumpBound === 'true') return;
+
+      button.dataset.contactJumpBound = 'true';
+      button.addEventListener('click', () => {
+        const alignContactSection = () => {
+          const top = window.scrollY + contactSection.getBoundingClientRect().top;
+          window.scrollTo({ left: window.scrollX, top, behavior: 'instant' });
+        };
+
+        alignContactSection();
+        requestAnimationFrame(alignContactSection);
+      });
+    };
+
+    bindContactJump();
+    document.addEventListener('astro:page-load', bindContactJump);
+  })();
+</script>
 
 <script>
   import './ax-v2/ax-v2-client';

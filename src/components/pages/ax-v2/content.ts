@@ -31,7 +31,7 @@ export const axV2Content = {
       {
         id: 'kyowon',
         quote: [
-          '“Codex 엔터프라이즈 PoC 시작 후',
+          '“ChatGPT Enterprise PoC 시작 후',
           '모두가 우왕좌왕할 때 코르카를 만났습니다.',
           '함께 과제를 선정하고 AX 챔피언 육성 컨설팅을 진행하며',
           '참여자들의 집중도가 확 올라가고',
@@ -322,7 +322,7 @@ export const axV2Content = {
       },
     ],
     notes: [
-      '교육 비용, Ceal 비용, Codex 엔터프라이즈 계약 비용은 별도입니다. 솔루션 및 엔터프라이즈 계약을 함께 진행하는 경우, 중복되는 컨설팅 범위만큼 비용이 조정됩니다.',
+      '교육 비용, Ceal 비용, ChatGPT Enterprise 도입 지원 및 계약 비용은 별도입니다. 솔루션 및 엔터프라이즈 계약을 함께 진행하는 경우, 중복되는 컨설팅 범위만큼 비용이 조정됩니다.',
       '최종 가격은 참여 인원, 대상 사업부, 과제 수, 온사이트 세션 수에 따라 결정됩니다.',
     ],
   },
@@ -331,7 +331,7 @@ export const axV2Content = {
     heading: ['Corca가 2026년 7월', 'OpenAI Select Partner로 선정되었습니다.'],
     body: [
       'Corca는 OpenAI와 협력해 다양한 조직의 AX를 돕고 있습니다.',
-      'Corca를 통해 OpenAI 엔터프라이즈 계약을 체결하시는 조직에는',
+      'Corca를 통해 OpenAI의 ChatGPT Enterprise 계약을 체결하시는 조직에는',
       '중복되는 컨설팅 범위의 비용 조정을 비롯한 연계 혜택이 제공됩니다.',
     ],
     pressLabel: '언론보도 보기',
@@ -361,11 +361,10 @@ export const axV2Content = {
     placeholders: {
       name: '이름을 입력하세요',
       email: '이메일을 입력하세요 (선택)',
-      phone: '010-000-000',
+      phone: '전화번호를 입력하세요',
       message: '현재 고민 중인 상황을 적어주시면 더 자세한 상담이 가능합니다',
     },
-    consent: '필수 | 개인정보처리방침 내용에 동의합니다',
-    privacyDetail: '전문보기',
+    consent: '필수 | 작성해주신 개인정보는 상담 문의 응대를 위해서만 안전하게 사용됩니다.',
     submit: '2주 진단 상담 신청하기',
     sending: '상담 신청을 전송하고 있습니다.',
     success: '상담 신청이 잘 전송되었습니다.',
@@ -377,8 +376,6 @@ export const axV2Content = {
     email: 'bae.hwidong@corca.ai',
     phoneLabel: '전화 상담',
     phone: '02-6925-6978',
-    brochureLead: '더 길고 자세한 이야기를 읽고 싶으시면',
-    brochureLabel: 'Corca AX 가속화 컨설팅',
   },
 } as const;
 

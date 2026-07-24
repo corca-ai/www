@@ -843,18 +843,6 @@ function initializeDiagnosisSequence(root: HTMLElement) {
   observer.observe(root);
 }
 
-function initializeBrochureLinks(page: HTMLElement) {
-  page.querySelectorAll<HTMLAnchorElement>('[data-ax-brochure-link]').forEach((link) => {
-    link.addEventListener('click', () => {
-      emitAnalytics('ax_deck_click', {
-        deck_id: 'corca-ax-consulting',
-        link_url: link.href,
-        link_location: 'ax_contact',
-      });
-    });
-  });
-}
-
 type SpringParallaxOptions = {
   property: string;
   desktopRate: number;
@@ -989,7 +977,6 @@ function initialize() {
   page
     .querySelectorAll<HTMLElement>('[data-diagnosis-sequence]')
     .forEach(initializeDiagnosisSequence);
-  initializeBrochureLinks(page);
   initializeDialog(page);
   initializeSuccessDialog(page);
 }

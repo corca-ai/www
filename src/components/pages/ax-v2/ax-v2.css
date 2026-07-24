@@ -1262,12 +1262,12 @@
   display: grid;
   justify-items: end;
   justify-self: end;
-  width: min(100%, 300px);
+  width: min(100%, 375px);
   gap: clamp(30px, 3vw, 48px);
 }
 
 .ax-v2-partner-lockup {
-  width: min(100%, 240px);
+  width: 100%;
 }
 
 .ax-v2-partner-lockup img {
@@ -1276,7 +1276,7 @@
 }
 
 .ax-v2-partner-network {
-  width: min(100%, 280px);
+  width: 100%;
   height: auto;
   border-radius: 15px;
 }
@@ -2329,16 +2329,12 @@ body:has(.ax-v2-hold-dialog[open]) {
   }
 
   .ax-v2-partner-brand {
-    width: min(100%, 220px);
+    width: min(100%, 300px);
     gap: 28px;
   }
 
   .ax-v2-partner-lockup {
-    width: min(100%, 190px);
-  }
-
-  .ax-v2-partner-network {
-    width: min(100%, 220px);
+    width: 100%;
   }
 
   .ax-v2-contact-copy h2 {

@@ -19,11 +19,11 @@ nothing goes live without the [full gate set](code-quality.md) passing first.
 
 ## Domains
 
-The beta site is served at https://www.borca.ai, with the `workers.dev` preview
-URL kept enabled as a fallback. The canonical origin in code currently matches the
-beta host; when the site moves to a permanent Corca domain, use the
-[canonical domain runbook](runbook.md) to update both `SITE_ORIGIN` and
-`wrangler.jsonc` together.
+The production site is served at https://www.corca.ai, with https://corca.ai
+attached to the same Worker and redirected to the canonical `www.` host. The
+`workers.dev` preview URL remains enabled as a fallback. Keep `SITE_ORIGIN` and
+the custom-domain routes in `wrangler.jsonc` aligned; use the
+[canonical domain runbook](runbook.md) for future domain changes.
 
 ## After a merge
 

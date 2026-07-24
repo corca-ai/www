@@ -32,7 +32,7 @@ export const axV2Content = {
         id: 'kyowon',
         quote: [
           '“ChatGPT Enterprise PoC 시작 후',
-          '모두가 우왕좌왕할 때 코르카를 만났습니다.',
+          '모두가 우왕좌왕할 때 Corca를 만났습니다.',
           '함께 과제를 선정하고 AX 챔피언 육성 컨설팅을 진행하며',
           '참여자들의 몰입도가 높아지고',
           '챔피언 선별 기준이 잘 잡혔습니다.',
@@ -55,7 +55,7 @@ export const axV2Content = {
           '‘이렇게 하면 되는구나’를 경험하며',
           '0에서 0.1로 나아간 것이 아주 컸습니다.',
           '6개월 후인 지금 돌이켜볼 때,',
-          '코르카의 AX 가속화 컨설팅을 받지 않았다면',
+          'Corca의 AX 가속화 컨설팅을 받지 않았다면',
           '타이키의 AX가 어쩌면 지금까지도',
           '충분히 이뤄지지 않았을 것 같습니다."',
         ],
@@ -133,7 +133,7 @@ export const axV2Content = {
         id: 'champion',
         title: 'AX 챔피언 양성 코칭',
         subtitle: '실무자가 스스로 풀 수 있게 돕습니다.',
-        body: "향후 고객사의 AX를 이끌 '챔피언' 후보를 선정합니다. 고객사의 실제 문제를 챔피언 후보의 실제 환경에서 코르카의 AX 코치가 함께 풀며 개인 역량을 높입니다.",
+        body: "향후 고객사의 AX를 이끌 '챔피언' 후보를 선정합니다. 고객사의 실제 문제를 챔피언 후보의 실제 환경에서 Corca의 AX 코치가 함께 풀며 개인 역량을 높입니다.",
       },
       {
         id: 'environment',
@@ -453,7 +453,7 @@ export const axV2Assets = {
     width: 1586,
     height: 992,
   },
-  partnerNetwork: '/images/pages/ax/visuals/OAI_PartnerNetwork_SelectPartner_Portrait.svg',
+  partnerNetwork: '/images/pages/ax/visuals/OAI_PartnerNetwork_SelectPartner.svg',
   testimonials: {
     kyowon: {
       webp: '/images/pages/ax/logos/v1/high-logo02.webp',

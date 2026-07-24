@@ -570,17 +570,28 @@ const uiCopy = {
           {c.partner.pressLabel}<span aria-hidden="true"> ↗</span>
         </a>
       </div>
-      <picture class="ax-v2-partner-lockup" data-reveal>
-        <source type="image/webp" srcset={axV2Assets.openAiCorca.webp} />
+      <div class="ax-v2-partner-brand" data-reveal>
+        <picture class="ax-v2-partner-lockup">
+          <source type="image/webp" srcset={axV2Assets.openAiCorca.webp} />
+          <img
+            src={axV2Assets.openAiCorca.png}
+            width={axV2Assets.openAiCorca.width}
+            height={axV2Assets.openAiCorca.height}
+            alt={uiCopy.openAiCorcaAlt}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
         <img
-          src={axV2Assets.openAiCorca.png}
-          width={axV2Assets.openAiCorca.width}
-          height={axV2Assets.openAiCorca.height}
-          alt={uiCopy.openAiCorcaAlt}
+          class="ax-v2-partner-network"
+          src={axV2Assets.partnerNetwork}
+          width="375"
+          height="177"
+          alt="OpenAI Select Partner"
           loading="lazy"
           decoding="async"
         />
-      </picture>
+      </div>
     </div>
   </section>
 

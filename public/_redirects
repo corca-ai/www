@@ -8,27 +8,46 @@
 /blog/rss.xml  /rss    302
 
 # Former Wix homepage and blank aliases map to the current homepage.
+/272d67d7-5de7-4a39-8563-a87e0de46ed1  /    301
 /blank         /    301
+/blank-1-1     /    301
 /blank-2       /    301
+/en/blank      /    301
+/en/blank-1    /    301
 /en/blank-1-1  /    301
+/ja/blank-1    /    301
 /home-1        /    301
 /home-2        /    301
+/home-3        /    301
+/home-3-2      /    301
+/home-4        /    301
+/home-4-1-1    /    301
+/home-4-2      /    301
 /en/home-1     /en  301
 /en/home-2     /    301
+/en/home-4-1-1 /    301
 /ja/home-1     /    301
 /ja/home-2     /ja  301
 /zh/home-1     /zh  301
 /zh/home-2     /zh  301
+/ko            /    301
+/ko/about-us   /    301
+/en/colleagues-1  /  301
 
 # Retired product and research aliases map to the current products index.
 /research-recsys     /products  301
 /en/research-recsys  /products  301
 /corca-ads           /products  301
+/ceal                /products  301
+/ko/trace            /products  301
 /research-llm        /products  301
 /en/research-llm     /products  301
 /memory-agent        /products  301
 /en/memory-agent     /products  301
 /ja/memory-agent     /products  301
+
+# Retired English about alias maps to the current colleagues page.
+/en/aboutus  /en/about/colleagues  301
 
 # Legacy Corca Blog URLs now live inside the integrated /blog section.
 /posts/:slug.html     /blog/:slug       301

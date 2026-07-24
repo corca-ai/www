@@ -87,32 +87,52 @@ assert(
 
 const redirects = redirectRules(readDist('_redirects'));
 const expectedLegacyRedirects = new Map([
+  ['/272d67d7-5de7-4a39-8563-a87e0de46ed1', '/'],
   ['/blank', '/'],
+  ['/blank-1-1', '/'],
   ['/blank-2', '/'],
+  ['/en/blank', '/'],
+  ['/en/blank-1', '/'],
   ['/en/blank-1-1', '/'],
+  ['/ja/blank-1', '/'],
   ['/home-1', '/'],
   ['/home-2', '/'],
+  ['/home-3', '/'],
+  ['/home-3-2', '/'],
+  ['/home-4', '/'],
+  ['/home-4-1-1', '/'],
+  ['/home-4-2', '/'],
   ['/en/home-1', '/en'],
   ['/en/home-2', '/'],
+  ['/en/home-4-1-1', '/'],
   ['/ja/home-1', '/'],
   ['/ja/home-2', '/ja'],
   ['/zh/home-1', '/zh'],
   ['/zh/home-2', '/zh'],
+  ['/ko', '/'],
+  ['/ko/about-us', '/'],
+  ['/en/colleagues-1', '/'],
   ['/research-recsys', '/products'],
   ['/en/research-recsys', '/products'],
   ['/corca-ads', '/products'],
+  ['/ceal', '/products'],
+  ['/ko/trace', '/products'],
   ['/research-llm', '/products'],
   ['/en/research-llm', '/products'],
   ['/memory-agent', '/products'],
   ['/en/memory-agent', '/products'],
   ['/ja/memory-agent', '/products'],
+  ['/en/aboutus', '/en/about/colleagues'],
 ]);
 const legacyHomeRedirects = redirects.filter(({ from }) =>
   /^\/(?:(?:en|ja|zh)\/)?home-/.test(from),
 );
+const expectedLegacyHomeRedirectCount = [...expectedLegacyRedirects.keys()].filter((from) =>
+  /^\/(?:(?:en|ja|zh)\/)?home-/.test(from),
+).length;
 assert(
-  legacyHomeRedirects.length === 8,
-  'legacy homepage redirects must cover only the eight known aliases',
+  legacyHomeRedirects.length === expectedLegacyHomeRedirectCount,
+  'legacy homepage redirects must cover only the known aliases',
 );
 for (const [from, to] of expectedLegacyRedirects) {
   const matches = redirects.filter((redirect) => redirect.from === from);

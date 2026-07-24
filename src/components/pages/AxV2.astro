@@ -12,6 +12,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const c = axV2ContentByLang[lang];
+const slowdownGradientStart = lang === 'ja' ? 1 : 2;
 const uiCopy = {
   ko: {
     compoundAlt: '맑은 아침의 푸른 대서양을 활기차게 유영하는 열 마리 범고래 무리',
@@ -285,7 +286,7 @@ const uiCopy = {
           {c.slowdown.heading.map((segments, index) => (
             <>
               {index > 0 && <br />}
-              <span class:list={{ 'ax-v2-point-gradient': index >= 2 }}>
+              <span class:list={{ 'ax-v2-point-gradient': index >= slowdownGradientStart }}>
                 {segments.map((segment, segmentIndex) => (
                   <>
                     {segmentIndex > 0 && (
@@ -379,7 +380,7 @@ const uiCopy = {
         <div class="ax-v2-comparison">
           <article class="ax-v2-comparison-legacy">
             <h4><AxLines values={c.diagnosis.legacy.title} /></h4>
-            <p>{c.diagnosis.legacy.body}</p>
+            <p>{c.diagnosis.legacy.bodyLines.length > 0 ? <AxLines values={c.diagnosis.legacy.bodyLines} /> : c.diagnosis.legacy.body}</p>
             <ul>{c.diagnosis.legacy.items.map((item) => {
               const [count, ...label] = item.split(' ');
               return <li><strong>{count}</strong><span>{label.join(' ')}</span></li>;

@@ -1441,7 +1441,7 @@
   color: var(--ax-v2-ink);
   background: transparent;
   font-size: 14px !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
   line-height: 1.35;
   cursor: pointer;
   transition: color 160ms ease;
@@ -3627,5 +3627,87 @@ body:has(.ax-v2-hold-dialog[open]) {
     .ax-v2-ceal-diagrams.is-visible.is-sequence-visible
     > .ax-v2-ceal-transition {
     clip-path: inset(0);
+  }
+}
+
+/* Localized AX V2 copy uses deliberate line breaks. Keep long English and
+   Japanese labels inside their cards, and prevent CJK punctuation from being
+   pushed onto a line by itself. */
+html:lang(ja) .ax-v2-heading-block h3,
+html:lang(ja) .ax-v2-partner-grid h3 {
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 1.12;
+  letter-spacing: -0.065em;
+}
+
+/* Gradient-painted glyphs can extend beyond their inline box, especially
+   with tight tracking. Add a paint-safe gutter so ascenders, descenders, and
+   final CJK glyphs are never shaved by the background-clip boundary. */
+.ax-v2-heading-block h3 .ax-v2-point-gradient,
+.ax-v2-partner-grid h3 .ax-v2-point-gradient,
+.ax-v2-circle-card h4.ax-v2-point-gradient {
+  display: inline-block;
+  padding: 0.08em;
+  margin: 0 -0.08em;
+}
+
+.ax-v2-circle-card h4.ax-v2-point-gradient {
+  letter-spacing: 0.02em;
+}
+
+/* Japanese card titles need more horizontal room. */
+html:lang(ja) .ax-v2-circle-card h4 {
+  font-size: clamp(23px, 1.7vw, 30px);
+}
+
+/* Chinese card titles need a little more separation between CJK glyphs. */
+html:lang(zh) .ax-v2-circle-card h4.ax-v2-point-gradient {
+  letter-spacing: 0.04em;
+}
+
+/* The Japanese legacy summary is deliberately four lines. Reserve matching
+   space on the result card so both cards' first rules share a baseline. */
+html:lang(ja) .ax-v2-comparison-legacy p {
+  min-height: 104px;
+}
+
+html:lang(ja) .ax-v2-comparison-corca p {
+  min-height: 148px;
+}
+
+html:lang(ja) .ax-v2-feature-card strong {
+  font-size: clamp(21px, 1.85vw, 25px);
+}
+
+@media (min-width: 1000px) {
+  html:lang(en) .ax-v2-package-card,
+  html:lang(ja) .ax-v2-package-card,
+  html:lang(ko) .ax-v2-package-card {
+    padding-inline: 22px;
+  }
+
+  html:lang(en) .ax-v2-package-card h4,
+  html:lang(ja) .ax-v2-package-card h4 {
+    min-height: 0;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  html:lang(en) .ax-v2-package-card h4 {
+    font-size: clamp(20px, 1.75vw, 27px);
+    letter-spacing: -0.04em;
+  }
+
+  html:lang(ja) .ax-v2-package-card h4 {
+    font-size: clamp(20px, 1.9vw, 28px);
+    letter-spacing: -0.055em;
+  }
+}
+
+@media (max-width: 720px) {
+  html:lang(ja) .ax-v2-heading-block h3,
+  html:lang(ja) .ax-v2-partner-grid h3 {
+    font-size: clamp(34px, 10.1vw, 46px);
   }
 }

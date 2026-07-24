@@ -635,7 +635,12 @@ const uiCopy = {
       <div class="ax-v2-contact-copy" data-reveal>
         <h2 id="ax-v2-contact-title">
           {c.contact.heading.map((line, index) => (
-            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-gradient-text': index === 1 }}>{line}</span></>
+            <>
+              {index > 0 && <br />}
+              <span class:list={{ 'ax-v2-gradient-text': index >= Math.ceil(c.contact.heading.length / 2) }}>
+                {line}
+              </span>
+            </>
           ))}
         </h2>
         <p><AxLines values={c.contact.body} /></p>

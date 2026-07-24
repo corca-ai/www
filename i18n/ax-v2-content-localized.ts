@@ -114,7 +114,7 @@ export const axV2ContentOverrides = {
         {
           title: 'AX Champion Coaching',
           subtitle: 'Help practitioners solve problems themselves.',
-          body: 'We select future AX champion candidates and work together on real business problems in their actual environments, building lasting individual capability.',
+          body: 'We select future AX champion candidates, with Corca AX coaches working alongside them on real business problems in their actual environments to build lasting individual capability.',
         },
         {
           title: 'AX Environment & Operating Model',
@@ -483,7 +483,7 @@ export const axV2ContentOverrides = {
         {
           title: 'AXチャンピオン育成コーチング',
           subtitle: '現場が自ら解けるように支援します。',
-          body: '将来のAXを担うチャンピオン候補を選び、実際の環境で実務課題を一緒に解きながら、個人の能力を高めます。',
+          body: '将来のAXを担うチャンピオン候補を選び、実際の環境でCorcaのAXコーチと実務課題を一緒に解きながら、個人の能力を高めます。',
         },
         {
           title: 'AX環境・運営体制構築',
@@ -827,7 +827,7 @@ export const axV2ContentOverrides = {
         {
           title: 'AX推动者培养',
           subtitle: '帮助业务人员自主解决问题。',
-          body: '我们选拔未来AX推动者，并在真实环境中共同解决真实业务问题，建立可持续的个人能力。',
+          body: '我们选拔未来AX推动者，并由Corca AX教练在真实环境中共同解决真实业务问题，建立可持续的个人能力。',
         },
         {
           title: 'AX环境与运营体系',

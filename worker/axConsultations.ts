@@ -11,15 +11,27 @@ const topicLabels: Record<AxTopicId, string> = {
   openai_adoption: 'OpenAI 도입·활성화',
   other: '기타',
 };
+const consultingInterestLabels: Record<string, string> = {
+  strategy_diagnosis: 'AX 과제 진단',
+  champion_coaching: 'AX 챔피언 양성 코칭',
+  environment_solution: 'AX 환경 구축 솔루션 도입',
+  custom_ai_solution: '조직 맞춤 AI 솔루션 제작',
+  enterprise_adoption: 'ChatGPT Enterprise 도입 및 활용률 증대',
+  ai_native_team: 'AI 네이티브 팀 빌딩',
+  ai_capability_training: 'AI 역량 향상 교육',
+  other: '기타',
+};
+const consultingInterestIds = Object.keys(consultingInterestLabels);
 type Locale = (typeof locales)[number];
 type FieldErrors = Record<string, string>;
 
 interface ValidConsultation {
+  interests: string[];
   email: string;
   locale: Locale;
-  message: string;
   name: string;
-  phone: string;
+  otherInterest: string;
+  reason: string;
   topic: AxTopicId | '';
   utm: string;
 }
@@ -88,8 +100,14 @@ export async function handleAxConsultation(
 function validateConsultation(payload: Record<string, unknown>, now: number): ValidationResult {
   const name = stringValue(payload.name);
   const email = stringValue(payload.email).toLowerCase();
-  const phone = stringValue(payload.phone);
-  const message = stringValue(payload.message);
+  const isV2Form =
+    payload.consulting_interests !== undefined ||
+    payload.other_interest !== undefined ||
+    payload.reason !== undefined;
+  const interests = stringArray(payload.consulting_interests) ?? [];
+  const otherInterest = stringValue(payload.other_interest);
+  const reason = stringValue(payload.reason);
+  const legacyMessage = stringValue(payload.message);
   const topic = stringValue(payload.topic);
   const locale = stringValue(payload.locale);
   const startedAt = parseStartedAt(payload.started_at);
@@ -97,22 +115,31 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   const fields: FieldErrors = {};
 
   if (!name || name.length > 80) fields.name = 'INVALID_NAME';
-  if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email))) {
+  if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) {
     fields.email = 'INVALID_EMAIL';
   }
-
-  const phoneDigits = phone.replace(/\D/g, '');
-  if (
-    phone.length > 30 ||
-    phoneDigits.length < 8 ||
-    phoneDigits.length > 15 ||
-    !/^[+\d\s().-]+$/u.test(phone)
-  ) {
-    fields.phone = 'INVALID_PHONE';
+  if (isV2Form) {
+    if (
+      interests.length === 0 ||
+      interests.length > consultingInterestIds.length ||
+      new Set(interests).size !== interests.length ||
+      interests.some((interest) => !consultingInterestIds.includes(interest))
+    ) {
+      fields.consulting_interests = 'INTEREST_REQUIRED';
+    }
+    if (interests.includes('other') && !otherInterest) {
+      fields.other_interest = 'OTHER_INTEREST_REQUIRED';
+    } else if (otherInterest.length > 240) {
+      fields.other_interest = 'OTHER_INTEREST_TOO_LONG';
+    } else if (!interests.includes('other') && otherInterest) {
+      fields.other_interest = 'INVALID_INTEREST';
+    }
+    if (!reason) fields.reason = 'REASON_REQUIRED';
+    if (reason.length > 2_000) fields.reason = 'REASON_TOO_LONG';
+  } else {
+    if (topic && !isConsultationTopic(topic)) fields.topic = 'INVALID_TOPIC';
+    if (legacyMessage.length > 2_000) fields.message = 'MESSAGE_TOO_LONG';
   }
-  if (topic && !isConsultationTopic(topic)) fields.topic = 'INVALID_TOPIC';
-  if (message.length > 2_000) fields.message = 'MESSAGE_TOO_LONG';
-  if (payload.privacy_consent !== true) fields.privacy_consent = 'PRIVACY_CONSENT_REQUIRED';
   if (locale === 'zh' && payload.cross_border_consent !== true) {
     fields.cross_border_consent = 'CROSS_BORDER_CONSENT_REQUIRED';
   }
@@ -134,10 +161,11 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
     ok: true,
     value: {
       email,
+      interests,
       locale: locale as Locale,
-      message,
       name,
-      phone,
+      otherInterest,
+      reason: isV2Form ? reason : legacyMessage,
       topic: topic as AxTopicId | '',
       utm: utm.value,
     },
@@ -199,26 +227,35 @@ async function sendConsultationEmail(
     timeZone: 'Asia/Seoul',
   }).format(submittedDate);
   const topicLabel = input.topic ? topicLabels[input.topic] : '';
+  const interestLabels = input.interests.map(
+    (interest) => consultingInterestLabels[interest] ?? interest,
+  );
+  const interestSummary = interestLabels.join(', ');
   const consultationTimestamp = formatConsultationTimestamp(submittedDate);
   const text = [
     'Corca AX 상담 요청',
     '',
     `이름: ${input.name}`,
-    `이메일: ${input.email || '입력하지 않음'}`,
-    `연락처: ${input.phone}`,
+    `이메일: ${input.email}`,
+    ...(interestSummary ? [`관심 컨설팅: ${interestSummary}`] : []),
+    ...(input.otherInterest ? [`기타 관심 분야: ${input.otherInterest}`] : []),
     ...(input.topic ? [`문의 유형: ${topicLabel} (${input.topic})`] : []),
     `페이지 언어: ${input.locale}`,
-    `문의 내용: ${input.message || '입력하지 않음'}`,
+    `${interestSummary ? '선택 이유' : '문의 내용'}: ${input.reason || '입력하지 않음'}`,
     `유입 정보: ${input.utm || '없음'}`,
     `접수 시각: ${submittedAt}`,
   ].join('\n');
   const rows = [
     ['이름', escapeHtml(input.name)],
-    ['이메일', escapeHtml(input.email || '입력하지 않음')],
-    ['연락처', escapeHtml(input.phone)],
+    ['이메일', escapeHtml(input.email)],
+    ...(interestSummary ? [['관심 컨설팅', escapeHtml(interestSummary)]] : []),
+    ...(input.otherInterest ? [['기타 관심 분야', escapeHtml(input.otherInterest)]] : []),
     ...(input.topic ? [['문의 유형', escapeHtml(`${topicLabel} (${input.topic})`)]] : []),
     ['페이지 언어', escapeHtml(input.locale)],
-    ['문의 내용', escapeHtml(input.message || '입력하지 않음').replace(/\n/g, '<br />')],
+    [
+      interestSummary ? '선택 이유' : '문의 내용',
+      escapeHtml(input.reason || '입력하지 않음').replace(/\n/g, '<br />'),
+    ],
     ['유입 정보', escapeHtml(input.utm || '없음')],
     ['접수 시각', escapeHtml(submittedAt)],
   ]
@@ -234,7 +271,7 @@ async function sendConsultationEmail(
       from: { email: consultationSender, name: 'Corca AX' },
       html,
       ...(input.email ? { replyTo: input.email } : {}),
-      subject: `[Corca AX 상담 요청 #${consultationTimestamp}] ${topicLabel || '새 상담 요청'}`,
+      subject: `[Corca AX 상담 요청 #${consultationTimestamp}] ${interestSummary || topicLabel || '새 상담 요청'}`,
       text,
       to: consultationRecipient,
     });
@@ -339,6 +376,11 @@ function escapeHtml(value: string): string {
 
 function stringValue(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function stringArray(value: unknown): string[] | null {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) return null;
+  return value.map((item) => item.trim()).filter(Boolean);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

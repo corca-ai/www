@@ -13,10 +13,16 @@ const analyticsConfigPattern = /<script id="corca-analytics-config">.*?<\/script
 const blogAppScriptPattern = /<script type="module" src="\/blog\/app\.js[^"']*"><\/script>/;
 const commonHeadPattern = /<!-- corca-common-head:start -->[\s\S]*?<!-- corca-common-head:end -->/g;
 const localeConfigs = [
-  { locale: 'ko', root: 'blog', page: 'index.html', blogPath: '/blog', hreflang: 'ko-KR' },
-  { locale: 'en', root: 'en/blog', page: 'en/index.html', blogPath: '/en/blog', hreflang: 'en-US' },
-  { locale: 'ja', root: 'ja/blog', page: 'ja/index.html', blogPath: '/ja/blog', hreflang: 'ja-JP' },
-  { locale: 'zh', root: 'zh/blog', page: 'zh/index.html', blogPath: '/zh/blog', hreflang: 'zh-CN' },
+  { locale: 'ko', root: 'blog', page: 'index.html', blogPath: '/blog', hreflang: 'ko' },
+  { locale: 'en', root: 'en/blog', page: 'en/index.html', blogPath: '/en/blog', hreflang: 'en' },
+  { locale: 'ja', root: 'ja/blog', page: 'ja/index.html', blogPath: '/ja/blog', hreflang: 'ja' },
+  {
+    locale: 'zh',
+    root: 'zh/blog',
+    page: 'zh/index.html',
+    blogPath: '/zh/blog',
+    hreflang: 'zh-Hans',
+  },
 ];
 
 const rootHtml = await readFile(join(distRoot, 'index.html'), 'utf8');

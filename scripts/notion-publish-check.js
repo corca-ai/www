@@ -228,7 +228,7 @@ second preserved code-like line</pre>
   );
   assert.match(
     await readFile(join(workDir, 'public/en/blog/notion-html-fixture/index.html'), 'utf8'),
-    /href="\/en\/blog\/notion-html-fixture" hreflang="en-US"/,
+    /href="\/en\/blog\/notion-html-fixture" hreflang="en"/,
   );
   const htmlStaticPage = await readFile(
     join(workDir, 'public/en/blog/notion-html-fixture/index.html'),
@@ -240,7 +240,7 @@ second preserved code-like line</pre>
   );
   assert.match(
     htmlStaticPage,
-    /<link rel="alternate" hreflang="ko-KR" href="https:\/\/www\.corca\.ai\/blog\/notion-html-fixture">/,
+    /<link rel="alternate" hreflang="ko" href="https:\/\/www\.corca\.ai\/blog\/notion-html-fixture">/,
   );
   assert.match(
     htmlStaticPage,

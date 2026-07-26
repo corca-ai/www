@@ -22,7 +22,7 @@ const localePaths = {
 const localeLabels = {
   ko: {
     lang: 'ko',
-    hreflang: 'ko-KR',
+    hreflang: 'ko',
     ogLocale: 'ko_KR',
     blogPath: '/blog',
     imageAltSuffix: '대표 이미지',
@@ -36,7 +36,7 @@ const localeLabels = {
   },
   en: {
     lang: 'en',
-    hreflang: 'en-US',
+    hreflang: 'en',
     ogLocale: 'en_US',
     blogPath: '/en/blog',
     imageAltSuffix: 'representative image',
@@ -50,7 +50,7 @@ const localeLabels = {
   },
   ja: {
     lang: 'ja',
-    hreflang: 'ja-JP',
+    hreflang: 'ja',
     ogLocale: 'ja_JP',
     blogPath: '/ja/blog',
     imageAltSuffix: '代表画像',
@@ -64,7 +64,7 @@ const localeLabels = {
   },
   zh: {
     lang: 'zh-CN',
-    hreflang: 'zh-CN',
+    hreflang: 'zh-Hans',
     ogLocale: 'zh_CN',
     blogPath: '/zh/blog',
     imageAltSuffix: '代表图片',
@@ -76,6 +76,12 @@ const localeLabels = {
     postsBreadcrumb: '文章',
     dateLocale: 'zh-CN',
   },
+};
+const legacyHreflang = {
+  ko: 'ko-KR',
+  en: 'en-US',
+  ja: 'ja-JP',
+  zh: 'zh-CN',
 };
 const supportedLocales = Object.keys(localePaths);
 const translationTargetLocales = supportedLocales.filter((locale) => locale !== 'ko');
@@ -822,7 +828,8 @@ async function renderBlogIndexPages(postRecordsByLocale) {
     html = html
       .replace(/<html lang="[^"]*"/, `<html lang="${localeLabels[locale].lang}"`)
       .replace(/\n\s*<meta name="robots"[^>]*>/gi, '')
-      .replace(/\n\s*<link rel="canonical" href="[^"]+">/g, '')
+      .replace(/\n\s*<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/gi, '')
+      .replace(/\n\s*<link\b(?=[^>]*\brel=["']alternate["'])(?=[^>]*\bhreflang=["'])[^>]*>/gi, '')
       .replace(
         /<meta name="description" content="[^"]*">/,
         `<meta name="description" content="${escapeAttribute(labels.description)}">\n    <meta name="robots" content="index, follow">`,
@@ -948,6 +955,11 @@ async function renderBlogIndexPages(postRecordsByLocale) {
       )
       .replace(/<section id="about"[\s\S]*?<\/section>/, renderIndexAbout(labels));
 
+    html = localizeBlogIndexLanguageLinks(html);
+    html = html.replace(
+      '<meta name="robots" content="index, follow">',
+      `<meta name="robots" content="index, follow">\n${renderBlogIndexSeoLinks(locale)}`,
+    );
     await writeFile(file, html);
   }
 }
@@ -1336,6 +1348,21 @@ function renderStaticPostSeoLinks(post, locale, availableLocalesBySlug) {
   return lines.join('\n');
 }
 
+function renderBlogIndexSeoLinks(locale) {
+  const lines = [
+    `    <link rel="canonical" href="${escapeAttribute(absoluteSiteUrl(localeLabels[locale].blogPath))}">`,
+  ];
+  for (const code of supportedLocales) {
+    lines.push(
+      `    <link rel="alternate" hreflang="${localeLabels[code].hreflang}" href="${escapeAttribute(absoluteSiteUrl(localeLabels[code].blogPath))}">`,
+    );
+  }
+  lines.push(
+    `    <link rel="alternate" hreflang="x-default" href="${escapeAttribute(absoluteSiteUrl(localeLabels.ko.blogPath))}">`,
+  );
+  return lines.join('\n');
+}
+
 function renderStaticPostPage(
   post,
   articleHtml,
@@ -1455,12 +1482,25 @@ function localizeLanguageLinks(html, locale, slug, availableLocalesBySlug) {
     const path = availableLocales.has(code)
       ? staticPostPath({ slug }, code)
       : localeLabels[code].blogPath;
-    next = next.replace(
-      new RegExp(`href="[^"]+" hreflang="${localeLabels[code].hreflang}"`, 'g'),
-      `href="${path}" hreflang="${localeLabels[code].hreflang}"`,
-    );
+    next = replaceLanguageLink(next, code, path);
   }
   return next.replace(/<html lang="[^"]*">/, `<html lang="${localeLabels[locale].lang}">`);
+}
+
+function localizeBlogIndexLanguageLinks(html) {
+  let next = html;
+  for (const code of supportedLocales) {
+    next = replaceLanguageLink(next, code, localeLabels[code].blogPath);
+  }
+  return next;
+}
+
+function replaceLanguageLink(html, locale, path) {
+  const hreflangs = [localeLabels[locale].hreflang, legacyHreflang[locale]].join('|');
+  return html.replace(
+    new RegExp(`href="[^"]+" hreflang="(?:${hreflangs})"`, 'g'),
+    `href="${path}" hreflang="${localeLabels[locale].hreflang}"`,
+  );
 }
 
 function postStructuredData(post, coverUrl, canonical, section, locale) {

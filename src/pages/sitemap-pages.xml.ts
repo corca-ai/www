@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
-import { defaultLang, type Lang, locales, localeTag } from '../i18n/ui';
+import { defaultLang, locales, localeTag } from '../i18n/ui';
+import { absoluteUrl } from '../i18n/utils';
 import { products } from '../products/registry';
 import { SITE_ORIGIN } from '../site';
 import { pageLastModified } from '../sitemapMetadata';
@@ -12,12 +13,6 @@ const escapeXml = (value: string) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;');
-
-const localizedPath = (basePath: string, lang: Lang) => {
-  const prefix = lang === defaultLang ? '' : `/${lang}`;
-  if (basePath === '/') return prefix || '/';
-  return `${prefix}${basePath}`;
-};
 
 // Corporate/product routes are registry-backed. Blog landing pages are static
 // assets rendered by the publishing pipeline, so they are added explicitly.
@@ -35,14 +30,14 @@ export const GET: APIRoute = ({ site }) => {
   const urls = uniqueBasePaths.flatMap((basePath) => {
     const alternates = locales
       .map((lang) => {
-        const href = new URL(localizedPath(basePath, lang), origin).href;
+        const href = absoluteUrl(basePath, lang, origin.origin);
         return `    <xhtml:link rel="alternate" hreflang="${localeTag[lang]}" href="${escapeXml(href)}" />`;
       })
       .join('\n');
-    const defaultHref = new URL(localizedPath(basePath, defaultLang), origin).href;
+    const defaultHref = absoluteUrl(basePath, defaultLang, origin.origin);
 
     return locales.map((lang) => {
-      const loc = new URL(localizedPath(basePath, lang), origin).href;
+      const loc = absoluteUrl(basePath, lang, origin.origin);
       return `  <url>
     <loc>${escapeXml(loc)}</loc>
     <lastmod>${pageLastModified(basePath)}</lastmod>

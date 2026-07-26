@@ -52,8 +52,8 @@ export const pageMeta = {
       title: 'Corca AX 컨설팅 | OpenAI Select Partner의 8주 AX 프로그램',
       description:
         'OpenAI Select Partner로 선정된 AI 기업 Corca의 8주 AX 프로그램. AI 도입이 전사적 성과로 이어지지 않는다면, 실무 과제 해결부터 내부 AX 챔피언 육성과 조직 확산 체계 구축까지 함께하세요.',
-      ogTitle: 'Corca AX | OpenAI Select Partner',
-      ogDescription: 'AI 도입은 누구나 할 수 있습니다. 조직의 변화는 아무나 만들지 못합니다.',
+      ogTitle: 'Corca AX·OpenAI Select Partner',
+      ogDescription: 'AI 도입은 시작입니다. Corca는 조직의 변화를 만듭니다.',
       ogImage: '/images/og/og-ax-KO.png',
       ogImageAlt: 'OpenAI Select Partner 배지와 “Corca AX는 조직의 체질을 바꿉니다” 문구',
     },

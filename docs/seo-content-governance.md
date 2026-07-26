@@ -19,8 +19,12 @@ page redesign.
   pages keep their explicit `noindex` policy.
 - General marketing pages do not emit an author. A blog article may emit an
   author only when the source content identifies one explicitly.
-- Keep the existing canonical and `hreflang` implementation unless a separate
-  URL migration explicitly changes it.
+- Every indexable translation cluster uses `ko`, `en`, `ja` and `zh-Hans` for
+  the locale URLs that actually exist, plus `x-default` pointing to the Korean
+  URL. Each version lists itself and every other version, and the HTML set must
+  match `sitemap-pages.xml` when the URL is listed there.
+- A `noindex` page keeps its canonical and robots policy but emits no hreflang;
+  indexable pages and sitemaps must not reference it as an alternate.
 - Document languages are Korean `ko`, English `en`, Japanese `ja` and
   Simplified Chinese `zh-CN`. Locale-specific metadata and structured data must
   use the same language as the visible page.

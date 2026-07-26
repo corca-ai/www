@@ -57,23 +57,16 @@ const isAxPage = basePath === '/ax';
 // locale (Korean pages get "코르카" as the issue specifies).
 const robots = noindex ? 'noindex, nofollow' : 'index, follow';
 
-// hreflang alternates + x-default (points to the default locale).
-// AX targets each language globally; other localized routes retain their
-// existing region-specific hreflang contract.
-const axHreflang: Record<Lang, string> = {
-  ko: 'ko',
-  en: 'en',
-  ja: 'ja',
-  zh: 'zh-Hans',
-};
-const hreflang = isAxPage ? axHreflang : localeTag;
-const alternates = localized
+// Indexable localized pages emit the complete language cluster plus x-default.
+// A noindex URL is not eligible for hreflang and must not participate in a cluster.
+const emitsAlternates = localized && !noindex;
+const alternates = emitsAlternates
   ? locales.map((l) => ({
-      hreflang: hreflang[l],
+      hreflang: localeTag[l],
       href: absoluteUrl(basePath, l, origin),
     }))
   : [];
-const xDefault = localized ? absoluteUrl(basePath, defaultLang, origin) : '';
+const xDefault = emitsAlternates ? absoluteUrl(basePath, defaultLang, origin) : '';
 const feeds = [
   { title: 'Corca Blog RSS', type: 'application/rss+xml', href: '/rss' },
   ...extraFeeds,

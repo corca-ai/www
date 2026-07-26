@@ -459,10 +459,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
     /<link rel="canonical" href="https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture">/,
   );
   for (const [hreflang, path] of [
-    ['ko-KR', '/blog/admin-edit-fixture'],
-    ['en-US', '/en/blog/admin-edit-fixture'],
-    ['ja-JP', '/ja/blog/admin-edit-fixture'],
-    ['zh-CN', '/zh/blog/admin-edit-fixture'],
+    ['ko', '/blog/admin-edit-fixture'],
+    ['en', '/en/blog/admin-edit-fixture'],
+    ['ja', '/ja/blog/admin-edit-fixture'],
+    ['zh-Hans', '/zh/blog/admin-edit-fixture'],
   ]) {
     assert.match(
       staticPage,
@@ -475,6 +475,26 @@ This adjacent fixture gives the generated static page a previous-post card so th
     staticPage,
     /<link rel="alternate" hreflang="x-default" href="https:\/\/www\.corca\.ai\/blog\/admin-edit-fixture">/,
   );
+  const blogIndex = await readFile(join(workDir, 'public/blog/index.html'), 'utf8');
+  assert.match(blogIndex, /<link rel="canonical" href="https:\/\/www\.corca\.ai\/blog">/);
+  for (const [hreflang, path] of [
+    ['ko', '/blog'],
+    ['en', '/en/blog'],
+    ['ja', '/ja/blog'],
+    ['zh-Hans', '/zh/blog'],
+  ]) {
+    assert.match(
+      blogIndex,
+      new RegExp(
+        `<link rel="alternate" hreflang="${hreflang}" href="https:\\/\\/www\\.corca\\.ai${path}">`,
+      ),
+    );
+  }
+  assert.match(
+    blogIndex,
+    /<link rel="alternate" hreflang="x-default" href="https:\/\/www\.corca\.ai\/blog">/,
+  );
+  assert.doesNotMatch(blogIndex, /hreflang="(?:ko-KR|en-US|ja-JP|zh-CN)"/);
   assert.match(staticPage, /<h4>Deeper Markdown Heading<\/h4>/);
   assert.match(staticPage, /<strong>bold<\/strong>/);
   assert.match(staticPage, /<blockquote>/);

@@ -188,6 +188,9 @@ When changing blog files, keep these invariants:
 - Every generated article page should emit an absolute self-canonical URL,
   hreflang links for each available locale alias and an `x-default` link to the
   Korean article URL.
+- Each localized blog list page should emit an absolute self-canonical URL and
+  the same `ko`, `en`, `ja`, `zh-Hans` and Korean `x-default` hreflang set as
+  `sitemap-pages.xml`.
 - Tag sitemap links should use the same `q` search parameter consumed by the
   public blog client.
 - Generated source files under `/blog/admin/` must remain unavailable to direct

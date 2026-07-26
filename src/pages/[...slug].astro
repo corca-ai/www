@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Meta } from '../i18n/pageMeta';
 import { breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
 import { defaultLang, locales, ui } from '../i18n/ui';
 import { products } from '../products/registry';
@@ -32,7 +33,7 @@ const { lang, id, basePath } = Astro.props;
 // otherwise `id` is one of the static pages (guaranteed by getStaticPaths).
 const product = products.find((p) => `/products/${p.slug}` === basePath) ?? null;
 const staticPage = product ? null : staticPages[id as StaticId];
-const meta = product ? product.meta[lang] : staticPage!.meta(lang);
+const meta: Meta = product ? product.meta[lang] : staticPage!.meta(lang);
 const Component = product ? product.Page : staticPage!.Component;
 
 // Per-page schema.org nodes (merged into BaseLayout's @graph): a Home →
@@ -52,13 +53,17 @@ if (id !== 'home') {
 }
 if (product?.app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, product.app));
 if (staticPage?.jsonLd) jsonLd.push(...staticPage.jsonLd(site, lang, meta));
-const ogImage = staticPage?.ogImage;
-const ogImageAlt = staticPage?.ogImageAlt?.(lang);
+const ogImage = meta.ogImage ?? staticPage?.ogImage;
+const ogImageAlt = meta.ogImageAlt ?? staticPage?.ogImageAlt?.(lang);
 const noindex = staticPage?.noindex;
 const noindexProps = noindex === undefined ? {} : { noindex };
 const socialImageProps = ogImage
   ? { ogImage, ...(ogImageAlt ? { ogImageAlt } : {}) }
   : {};
+const socialCopyProps = {
+  ...(meta.ogTitle ? { ogTitle: meta.ogTitle } : {}),
+  ...(meta.ogDescription ? { ogDescription: meta.ogDescription } : {}),
+};
 ---
 
 <BaseLayout
@@ -69,6 +74,7 @@ const socialImageProps = ogImage
   jsonLd={jsonLd}
   {...noindexProps}
   {...socialImageProps}
+  {...socialCopyProps}
 >
   <Component lang={lang} />
 </BaseLayout>

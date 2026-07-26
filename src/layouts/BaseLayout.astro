@@ -17,6 +17,10 @@ interface Props {
   basePath: string;
   /** Set false for Korean-only sections such as the blog. */
   localized?: boolean;
+  /** Social-card title; defaults to the SEO title. */
+  ogTitle?: string;
+  /** Social-card description; defaults to the SEO description. */
+  ogDescription?: string;
   ogImage?: string;
   /** Alt text for the social share image; defaults to the page title. */
   ogImageAlt?: string;
@@ -33,6 +37,8 @@ const {
   description,
   basePath,
   localized = true,
+  ogTitle = title,
+  ogDescription = description,
   ogImage = '/og-default.png',
   ogImageAlt,
   noindex = false,
@@ -44,7 +50,7 @@ const site = Astro.site ?? new URL(SITE_ORIGIN);
 const origin = site.origin;
 const canonical = absoluteUrl(basePath, lang, origin);
 const ogImageUrl = new URL(ogImage, site).href;
-const imageAlt = ogImageAlt ?? title;
+const imageAlt = ogImageAlt ?? ogTitle;
 // Per the SEO meta policy (issue #15): indexable pages get plain "index, follow"
 // (no author on general pages); 404 stays out. Publisher is the brand name, per
 // locale (Korean pages get "코르카" as the issue specifies).
@@ -157,8 +163,8 @@ const graph = {
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Corca" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:type" content="image/png" />
@@ -172,8 +178,8 @@ const graph = {
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={imageAlt} />
 

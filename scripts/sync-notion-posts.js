@@ -764,7 +764,6 @@ function safeUrlPathname(url) {
 
 function _renderMarkdownDocument(markdown, metadata) {
   const language = normalizeLanguage(metadata.language || '');
-  const locale = ogLocaleForLanguage(language);
   const coverAlt = metadata.coverAlt || `${metadata.title} 대표 이미지`;
   const section = metadata.section || metadata.tags[0] || '';
   const postMetadata = {
@@ -798,7 +797,6 @@ ${JSON.stringify(postMetadata, null, 2)}
   <meta name="section" content="${escapeHtml(section)}">
   <meta property="og:title" content="${escapeHtml(metadata.title)}">
   <meta property="og:description" content="${escapeHtml(metadata.description)}">
-  <meta property="og:locale" content="${escapeHtml(locale)}">
   <meta property="og:image" content="${escapeHtml(metadata.cover)}">
   <meta property="og:image:alt" content="${escapeHtml(coverAlt)}">
   <meta property="article:section" content="${escapeHtml(section)}">
@@ -833,15 +831,6 @@ function blogPathForLanguage(language) {
     en: '/en/blog',
     ja: '/ja/blog',
     zh: '/zh/blog',
-  }[normalizeLanguage(language)];
-}
-
-function ogLocaleForLanguage(language) {
-  return {
-    ko: 'ko_KR',
-    en: 'en_US',
-    ja: 'ja_JP',
-    zh: 'zh_CN',
   }[normalizeLanguage(language)];
 }
 

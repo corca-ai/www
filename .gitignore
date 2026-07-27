@@ -26,3 +26,6 @@ lefthook-local.yml
 # os / logs
 .DS_Store
 *.log
+
+# local agent diagnostics and working notes
+/charness-artifacts/

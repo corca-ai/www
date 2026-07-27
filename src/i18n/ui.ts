@@ -66,6 +66,7 @@ type Nav = {
 
 type FooterT = {
   tagline: string;
+  orcaAlt: string;
   legalName: string;
   representative: string;
   tel: string;
@@ -118,6 +119,7 @@ export const ui = {
     },
     footer: {
       tagline: 'AI로 삶과 일의\n패러다임을 바꿉니다',
+      orcaAlt: 'Corca 오르카',
       legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
       representative: '대표 정영현',
       tel: '연락처 02-6925-6978',
@@ -165,6 +167,7 @@ export const ui = {
     },
     footer: {
       tagline: 'Changing the paradigm\nof life and work with AI',
+      orcaAlt: 'Corca orca',
       legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
       representative: 'Representative 정영현',
       tel: 'Tel. +82-2-6925-6978',
@@ -216,6 +219,7 @@ export const ui = {
     },
     footer: {
       tagline: 'AIで、人生と仕事の\nパラダイムを変えます',
+      orcaAlt: 'Corcaのシャチ',
       legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
       representative: '代表 정영현',
       tel: 'Tel. +82-2-6925-6978',
@@ -264,6 +268,7 @@ export const ui = {
     },
     footer: {
       tagline: '用 AI 改变生活与工作的\n范式',
+      orcaAlt: 'Corca 虎鲸',
       legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
       representative: '代表 정영현',
       tel: '电话 +82-2-6925-6978',

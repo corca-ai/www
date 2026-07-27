@@ -13,15 +13,45 @@ const analyticsConfigPattern = /<script id="corca-analytics-config">.*?<\/script
 const blogAppScriptPattern = /<script type="module" src="\/blog\/app\.js[^"']*"><\/script>/;
 const commonHeadPattern = /<!-- corca-common-head:start -->[\s\S]*?<!-- corca-common-head:end -->/g;
 const localeConfigs = [
-  { locale: 'ko', root: 'blog', page: 'index.html', blogPath: '/blog', hreflang: 'ko' },
-  { locale: 'en', root: 'en/blog', page: 'en/index.html', blogPath: '/en/blog', hreflang: 'en' },
-  { locale: 'ja', root: 'ja/blog', page: 'ja/index.html', blogPath: '/ja/blog', hreflang: 'ja' },
+  {
+    locale: 'ko',
+    root: 'blog',
+    page: 'index.html',
+    blogPath: '/blog',
+    hreflang: 'ko',
+    homeLabel: '홈',
+    blogLabel: '블로그',
+    breadcrumbLabel: '현재 위치',
+  },
+  {
+    locale: 'en',
+    root: 'en/blog',
+    page: 'en/index.html',
+    blogPath: '/en/blog',
+    hreflang: 'en',
+    homeLabel: 'Home',
+    blogLabel: 'Blog',
+    breadcrumbLabel: 'Breadcrumb',
+  },
+  {
+    locale: 'ja',
+    root: 'ja/blog',
+    page: 'ja/index.html',
+    blogPath: '/ja/blog',
+    hreflang: 'ja',
+    homeLabel: 'ホーム',
+    blogLabel: 'ブログ',
+    breadcrumbLabel: 'パンくずリスト',
+  },
   {
     locale: 'zh',
     root: 'zh/blog',
     page: 'zh/index.html',
     blogPath: '/zh/blog',
     hreflang: 'zh-Hans',
+    homeLabel: '首页',
+    blogLabel: '博客',
+    breadcrumbLabel: '面包屑导航',
   },
 ];
 
@@ -60,6 +90,7 @@ let headersSynced = 0;
 let headerTargets = 0;
 let footersSynced = 0;
 let commonHeadsSynced = 0;
+let breadcrumbsSynced = 0;
 let analyticsConfigured = 0;
 let analyticsTargets = 0;
 for (const config of localeConfigs) {
@@ -73,8 +104,9 @@ for (const config of localeConfigs) {
     const slug = blogSlug(root, file);
     const header = localizeBlogHeader(headerFragments.get(config.locale), config, slug);
     next = replaceBeforeMain(next, header, relative(repoRoot, file));
-    const footer = markBlogFooter(footerFragments.get(config.locale), config.locale);
+    const footer = markBlogFooter(footerFragments.get(config.locale), config, slug, next);
     next = replaceFooter(next, footer, relative(repoRoot, file));
+    next = syncBlogBreadcrumbLd(next, config, slug, relative(repoRoot, file));
     next = replaceCommonHead(
       next,
       commonHeadFragments.get(config.locale),
@@ -83,6 +115,7 @@ for (const config of localeConfigs) {
     headersSynced += 1;
     footersSynced += 1;
     commonHeadsSynced += 1;
+    breadcrumbsSynced += 1;
     if (next.includes('/blog/app.js')) {
       analyticsTargets += 1;
       if (!blogAppScriptPattern.test(next)) {
@@ -130,6 +163,7 @@ console.log(`Synced ${footersSynced} blog page footer(s) from src/components/Foo
 console.log(
   `Synced ${commonHeadsSynced} blog page common head(s) from src/components/CommonHead.astro.`,
 );
+console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
 console.log(
   measurementId
     ? `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`
@@ -166,17 +200,114 @@ function extractFooter(html, source) {
   return html.slice(footerStart, footerClose + '</footer>'.length);
 }
 
-function markBlogFooter(sourceFooter, locale) {
-  if (!sourceFooter) fail(`Missing shared footer for ${locale}.`);
+function markBlogFooter(sourceFooter, config, slug, document) {
+  if (!sourceFooter) fail(`Missing shared footer for ${config.locale}.`);
   const footer = sourceFooter.replace(/<footer class="([^"]*)"/, (_match, classes) => {
     const classNames = new Set(classes.split(/\s+/).filter(Boolean));
     classNames.add('corca-main-footer');
     return `<footer class="${[...classNames].join(' ')}"`;
   });
   if ((footer.match(/corca-main-footer/g) || []).length !== 1) {
-    fail(`Expected one blog footer marker in the ${locale} shared footer.`);
+    fail(`Expected one blog footer marker in the ${config.locale} shared footer.`);
   }
-  return footer;
+  const footerOpen = footer.match(/<footer\b[^>]*>/)?.[0];
+  if (!footerOpen) fail(`Could not locate the ${config.locale} shared footer opening tag.`);
+  return footer.replace(footerOpen, `${footerOpen}${renderBlogBreadcrumb(config, slug, document)}`);
+}
+
+function renderBlogBreadcrumb(config, slug, document) {
+  const homePath = config.locale === 'ko' ? '/' : `/${config.locale}`;
+  const currentName = slug ? blogPostTitle(document, config.blogLabel) : config.blogLabel;
+  const homeIcon =
+    '<svg aria-hidden="true" viewBox="0 0 16 16" fill="none" focusable="false"><path d="m2.25 7.03 5.1-4.35a1 1 0 0 1 1.3 0l5.1 4.35v6.22a.75.75 0 0 1-.75.75H3a.75.75 0 0 1-.75-.75V7.03Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.35"/><path d="M6.25 14V9.75h3.5V14" stroke="currentColor" stroke-linejoin="round" stroke-width="1.35"/></svg>';
+  const blogNode = slug
+    ? `<a href="${config.blogPath}">${escapeHtml(config.blogLabel)}</a>`
+    : `<span class="corca-breadcrumb-current" aria-current="page">${escapeHtml(config.blogLabel)}</span>`;
+  const currentNode = slug
+    ? `<li><span class="corca-breadcrumb-separator" aria-hidden="true">/</span><span class="corca-breadcrumb-current" aria-current="page">${escapeHtml(currentName)}</span></li>`
+    : '';
+  return `<div class="corca-footer-breadcrumb container-c"><nav class="corca-breadcrumb" aria-label="${escapeHtml(config.breadcrumbLabel)}"><ol><li><a href="${homePath}" aria-label="${escapeHtml(config.homeLabel)}">${homeIcon}<span>${escapeHtml(config.homeLabel)}</span></a></li><li><span class="corca-breadcrumb-separator" aria-hidden="true">/</span>${blogNode}</li>${currentNode}</ol></nav></div>`;
+}
+
+function blogPostTitle(document, fallback) {
+  const title = document.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || fallback;
+  return (
+    decodeEntities(title)
+      .replace(/\s*\|\s*Corca Blog\s*$/i, '')
+      .trim() || fallback
+  );
+}
+
+function syncBlogBreadcrumbLd(html, config, slug, source) {
+  const homePath = config.locale === 'ko' ? '/' : `/${config.locale}`;
+  const homeUrl = `https://www.corca.ai${homePath === '/' ? '' : homePath}`;
+  const blogUrl = `https://www.corca.ai${config.blogPath}`;
+  const structuredScript =
+    /<script type="application\/ld\+json" data-corca-managed="post-structured-data">([\s\S]*?)<\/script>/;
+  if (structuredScript.test(html)) {
+    return html.replace(structuredScript, (_match, json) => {
+      const data = parseJsonLd(json, source);
+      const graph = Array.isArray(data['@graph']) ? data['@graph'] : [];
+      const post = graph.find((node) => node?.['@type'] === 'BlogPosting');
+      if (!post) fail(`Could not locate BlogPosting schema in ${source}.`);
+      const currentName = post.headline || blogPostTitle(html, config.blogLabel);
+      const currentUrl = post.url || `${blogUrl}/${slug}`;
+      data['@graph'] = [
+        ...graph.filter((node) => node?.['@type'] !== 'BreadcrumbList'),
+        breadcrumbJsonLd(config, homeUrl, blogUrl, currentName, currentUrl),
+      ];
+      return `<script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(data)}</script>`;
+    });
+  }
+
+  const indexScript =
+    /<script id="structuredData" type="application\/ld\+json">([\s\S]*?)<\/script>/;
+  if (!indexScript.test(html)) return html;
+  return html.replace(indexScript, (_match, json) => {
+    const blog = parseJsonLd(json, source);
+    const data = {
+      '@context': 'https://schema.org',
+      '@graph': [blog, breadcrumbJsonLd(config, homeUrl, blogUrl, config.blogLabel, blogUrl)],
+    };
+    return `<script id="structuredData" type="application/ld+json">${JSON.stringify(data)}</script>`;
+  });
+}
+
+function breadcrumbJsonLd(config, homeUrl, blogUrl, currentName, currentUrl) {
+  const nodes = [
+    { '@type': 'ListItem', position: 1, name: config.homeLabel, item: homeUrl },
+    { '@type': 'ListItem', position: 2, name: config.blogLabel, item: blogUrl },
+  ];
+  if (currentUrl !== blogUrl) {
+    nodes.push({ '@type': 'ListItem', position: 3, name: currentName, item: currentUrl });
+  }
+  return { '@type': 'BreadcrumbList', itemListElement: nodes };
+}
+
+function parseJsonLd(value, source) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    fail(`Could not parse JSON-LD in ${source}.`);
+  }
+}
+
+function decodeEntities(value) {
+  return value
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function replaceFooter(html, footer, source) {

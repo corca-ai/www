@@ -24,6 +24,8 @@ const localeLabels = {
     lang: 'ko',
     hreflang: 'ko',
     blogPath: '/blog',
+    homeLabel: '홈',
+    blogLabel: '블로그',
     imageAltSuffix: '대표 이미지',
     toc: '목차',
     recommendations: '추천 글',
@@ -37,6 +39,8 @@ const localeLabels = {
     lang: 'en',
     hreflang: 'en',
     blogPath: '/en/blog',
+    homeLabel: 'Home',
+    blogLabel: 'Blog',
     imageAltSuffix: 'representative image',
     toc: 'Table of contents',
     recommendations: 'Recommended posts',
@@ -50,6 +54,8 @@ const localeLabels = {
     lang: 'ja',
     hreflang: 'ja',
     blogPath: '/ja/blog',
+    homeLabel: 'ホーム',
+    blogLabel: 'ブログ',
     imageAltSuffix: '代表画像',
     toc: '目次',
     recommendations: 'おすすめ記事',
@@ -63,6 +69,8 @@ const localeLabels = {
     lang: 'zh-CN',
     hreflang: 'zh-Hans',
     blogPath: '/zh/blog',
+    homeLabel: '首页',
+    blogLabel: '博客',
     imageAltSuffix: '代表图片',
     toc: '目录',
     recommendations: '推荐文章',
@@ -1495,8 +1503,9 @@ function replaceLanguageLink(html, locale, path) {
 }
 
 function postStructuredData(post, coverUrl, canonical, section, locale) {
-  const blogUrl = absoluteSiteUrl('/blog');
-  const postsUrl = absoluteSiteUrl('/blog/#posts');
+  const labels = localeLabels[locale];
+  const blogUrl = absoluteSiteUrl(labels.blogPath);
+  const homeUrl = absoluteSiteUrl(locale === 'ko' ? '/' : `/${locale}`);
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -1514,9 +1523,9 @@ function postStructuredData(post, coverUrl, canonical, section, locale) {
         dateModified: post.date,
         ...(post.author ? { author: { '@type': 'Organization', name: post.author } } : {}),
         publisher: { '@type': 'Organization', name: 'Corca' },
-        inLanguage: localeLabels[locale].lang,
+        inLanguage: labels.lang,
         timeRequired: `PT${Math.max(1, Math.ceil(post.wordCount / 500))}M`,
-        isPartOf: { '@type': 'Blog', name: 'Corca Blog', url: blogUrl },
+        isPartOf: { '@type': 'Blog', name: labels.blogLabel, url: blogUrl },
         mainEntityOfPage: canonical,
       },
       {
@@ -1525,16 +1534,16 @@ function postStructuredData(post, coverUrl, canonical, section, locale) {
           {
             '@type': 'ListItem',
             position: 1,
-            name: 'Corca Blog',
-            item: blogUrl,
+            name: labels.homeLabel,
+            item: homeUrl,
           },
           {
             '@type': 'ListItem',
             position: 2,
-            name: localeLabels[locale].postsBreadcrumb,
-            item: postsUrl,
+            name: labels.blogLabel,
+            item: blogUrl,
           },
-          { '@type': 'ListItem', position: 3, name: post.title },
+          { '@type': 'ListItem', position: 3, name: post.title, item: canonical },
         ],
       },
     ],

@@ -1,3 +1,4 @@
+import { type Crumb, homeLabel } from './breadcrumbs';
 import { documentLanguage, type Lang } from './ui';
 import { absoluteUrl } from './utils';
 
@@ -9,10 +10,7 @@ import { absoluteUrl } from './utils';
 /** Reference to the site-wide Organization node emitted by BaseLayout. */
 const orgRef = (site: URL) => ({ '@id': `${site.href}#organization` });
 
-const homeLabel: Record<Lang, string> = { ko: '홈', en: 'Home', ja: 'ホーム', zh: '首页' };
-
-/** A single breadcrumb node: display name + locale-agnostic base path. */
-export type Crumb = { name: string; path: string };
+export type { Crumb } from './breadcrumbs';
 
 /**
  * Home → …category… → current-page trail so pages show a breadcrumb in search

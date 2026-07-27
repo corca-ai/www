@@ -47,7 +47,7 @@
   --color-heading: #1a2352;        /* navy section headings — matches corca.ai */
   --color-ink: #1a1a1a;            /* body text */
   --color-ink-soft: #4a4a4a;       /* secondary text */
-  --color-footer: #000000;         /* footer background — matches corca.ai */
+  --color-footer: #163272;         /* Figma footer background */
 
   --font-sans: "Pretendard Variable", Pretendard, -apple-system,
     BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
@@ -200,6 +200,254 @@ h1, h2, h3, .font-head {
      take the min of the two; the 50%−560 term then caps content at 1120px on
      wide screens; 20px floor. */
   padding-inline: max(20px, min(9.8vw - 15px, 3.9vw + 30px), 50% - 560px);
+}
+
+/* ---------------------------------------------------------------------------
+   Global breadcrumb + footer — shared by Astro pages and the static blog shell.
+   The breadcrumb deliberately lives inside the footer field, as in Figma 40:21:
+   it creates a clear transition after the page while keeping the site context
+   available in the same visual system as the legal information.
+--------------------------------------------------------------------------- */
+.corca-site-footer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--color-footer);
+  color: #b7d7ff;
+}
+
+.corca-footer-breadcrumb {
+  padding-top: 100px;
+}
+
+.corca-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.corca-breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.corca-breadcrumb a,
+.corca-breadcrumb-current {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #b7d7ff;
+  text-decoration: none;
+}
+
+.corca-breadcrumb a {
+  border-radius: 4px;
+  transition: color 160ms ease, opacity 160ms ease;
+}
+
+.corca-breadcrumb a:hover,
+.corca-breadcrumb a:focus-visible {
+  color: #ffffff;
+  outline: none;
+}
+
+.corca-breadcrumb a:focus-visible,
+.corca-footer-legal a:focus-visible,
+.corca-footer-logo:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}
+
+.corca-breadcrumb svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+
+.corca-breadcrumb-separator {
+  display: inline-block;
+  margin-inline: 10px;
+  color: rgb(183 215 255 / 0.68);
+}
+
+.corca-breadcrumb-current {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.corca-footer-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 0.8fr);
+  gap: 48px;
+  min-height: 351px;
+  padding-top: 54px;
+}
+
+.corca-footer-content-home {
+  padding-top: 100px;
+}
+
+.corca-footer-copy {
+  position: relative;
+  z-index: 2;
+  padding-bottom: 64px;
+}
+
+.corca-footer-logo {
+  display: inline-flex;
+  width: 130px;
+  height: 38px;
+  border-radius: 3px;
+}
+
+.corca-footer-logo span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  -webkit-mask: url('/corca-logo.svg') no-repeat center / contain;
+  mask: url('/corca-logo.svg') no-repeat center / contain;
+}
+
+.corca-footer-tagline {
+  margin: 16px 0 0;
+  color: #b7d7ff;
+  font-size: clamp(25px, 2.2vw, 32px);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.045em;
+}
+
+.corca-footer-legal {
+  margin-top: 42px;
+  color: #b7d7ff;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.55;
+}
+
+.corca-footer-legal p {
+  margin: 0;
+  word-break: keep-all;
+}
+
+.corca-footer-legal a {
+  border-radius: 3px;
+  color: inherit;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.corca-footer-legal a:hover,
+.corca-footer-legal a:focus-visible {
+  color: #ffffff;
+  text-decoration-color: currentColor;
+  outline: none;
+}
+
+.corca-footer-visual {
+  position: relative;
+  min-height: 300px;
+}
+
+.corca-footer-partner {
+  position: absolute;
+  z-index: 2;
+  top: -12px;
+  right: 4px;
+  width: 156px;
+  height: auto;
+}
+
+.corca-footer-orca {
+  position: absolute;
+  z-index: 1;
+  right: -12px;
+  bottom: 0;
+  width: min(328px, 100%);
+  height: auto;
+  transform: scaleX(-1);
+  /* Mirror the source so the orca faces into the layout without moving the
+     absolutely positioned box outside of its responsive grid column. */
+  transform-origin: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 899px) {
+  .corca-footer-breadcrumb {
+    padding-top: 48px;
+  }
+
+  .corca-footer-content,
+  .corca-footer-content-home {
+    grid-template-columns: 1fr;
+    gap: 0;
+    min-height: 0;
+    padding-top: 40px;
+  }
+
+  .corca-footer-copy {
+    min-height: 420px;
+    padding-bottom: 42px;
+  }
+
+  .corca-footer-tagline {
+    max-width: 12em;
+    font-size: 27px;
+  }
+
+  .corca-footer-legal {
+    max-width: min(100%, 430px);
+    margin-top: 34px;
+    font-size: 11px;
+  }
+
+  .corca-footer-visual {
+    position: absolute;
+    inset: auto 0 0;
+    min-height: 0;
+    height: 260px;
+    pointer-events: none;
+  }
+
+  .corca-footer-partner {
+    top: auto;
+    right: max(20px, 7vw);
+    bottom: 184px;
+    width: 122px;
+  }
+
+  .corca-footer-orca {
+    right: -38px;
+    width: min(72vw, 340px);
+  }
+}
+
+@media (max-width: 479px) {
+  .corca-breadcrumb ol {
+    font-size: 13px;
+  }
+
+  .corca-breadcrumb-separator {
+    margin-inline: 7px;
+  }
+
+  .corca-footer-copy {
+    min-height: 390px;
+  }
+
+  .corca-footer-legal p + p {
+    margin-top: 2px;
+  }
 }
 
 /* Pill button used across the site (자세히 보기 / 기사 보기 / Read more …) */

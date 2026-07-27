@@ -1,0 +1,40 @@
+---
+import { breadcrumbAriaLabel, homeLabel, type Crumb } from '../i18n/breadcrumbs';
+import type { Lang } from '../i18n/ui';
+import { localizePath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** The route nodes after Home. The final node is the current page. */
+  items: Crumb[];
+}
+
+const { lang, items } = Astro.props;
+---
+
+<nav class="corca-breadcrumb" aria-label={breadcrumbAriaLabel[lang]}>
+  <ol>
+    <li>
+      <a href={localizePath('/', lang)} aria-label={homeLabel[lang]}>
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" focusable="false">
+          <path d="m2.25 7.03 5.1-4.35a1 1 0 0 1 1.3 0l5.1 4.35v6.22a.75.75 0 0 1-.75.75H3a.75.75 0 0 1-.75-.75V7.03Z" stroke="currentColor" stroke-linejoin="round" stroke-width="1.35" />
+          <path d="M6.25 14V9.75h3.5V14" stroke="currentColor" stroke-linejoin="round" stroke-width="1.35" />
+        </svg>
+        <span>{homeLabel[lang]}</span>
+      </a>
+    </li>
+    {items.map((item, index) => {
+      const isCurrent = index === items.length - 1;
+      return (
+        <li>
+          <span class="corca-breadcrumb-separator" aria-hidden="true">/</span>
+          {isCurrent ? (
+            <span class="corca-breadcrumb-current" aria-current="page">{item.name}</span>
+          ) : (
+            <a href={localizePath(item.path, lang)}>{item.name}</a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

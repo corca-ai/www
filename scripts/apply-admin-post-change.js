@@ -23,7 +23,6 @@ const localeLabels = {
   ko: {
     lang: 'ko',
     hreflang: 'ko',
-    ogLocale: 'ko_KR',
     blogPath: '/blog',
     imageAltSuffix: '대표 이미지',
     toc: '목차',
@@ -37,7 +36,6 @@ const localeLabels = {
   en: {
     lang: 'en',
     hreflang: 'en',
-    ogLocale: 'en_US',
     blogPath: '/en/blog',
     imageAltSuffix: 'representative image',
     toc: 'Table of contents',
@@ -51,7 +49,6 @@ const localeLabels = {
   ja: {
     lang: 'ja',
     hreflang: 'ja',
-    ogLocale: 'ja_JP',
     blogPath: '/ja/blog',
     imageAltSuffix: '代表画像',
     toc: '目次',
@@ -65,7 +62,6 @@ const localeLabels = {
   zh: {
     lang: 'zh-CN',
     hreflang: 'zh-Hans',
-    ogLocale: 'zh_CN',
     blogPath: '/zh/blog',
     imageAltSuffix: '代表图片',
     toc: '目录',
@@ -839,10 +835,6 @@ async function renderBlogIndexPages(postRecordsByLocale) {
         `<meta property="og:description" content="${escapeAttribute(labels.description)}">`,
       )
       .replace(
-        /<meta property="og:locale" content="[^"]*">/,
-        `<meta property="og:locale" content="${localeLabels[locale].ogLocale}">`,
-      )
-      .replace(
         /<meta name="twitter:description" content="[^"]*">/,
         `<meta name="twitter:description" content="${escapeAttribute(labels.description)}">`,
       )
@@ -1400,7 +1392,6 @@ ${renderStaticPostSeoLinks(post, locale, availableLocalesBySlug)}
     <meta property="og:title" content="${escapeAttribute(post.title)}">
     <meta property="og:description" content="${escapeAttribute(post.description)}">
     <meta property="og:site_name" content="Corca Blog">
-    <meta property="og:locale" content="${localeLabels[locale].ogLocale}">
     <meta property="og:type" content="article">
     <meta property="og:image" content="${coverUrl}">
     <meta property="og:image:secure_url" content="${coverUrl}">

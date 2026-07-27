@@ -38,13 +38,6 @@ export const documentLanguage: Record<Lang, string> = {
   zh: 'zh-CN',
 };
 
-export const ogLocale: Record<Lang, string> = {
-  ko: 'ko_KR',
-  en: 'en_US',
-  ja: 'ja_JP',
-  zh: 'zh_CN',
-};
-
 // External destinations (shared across locales).
 export const externalLinks = {
   careers: 'https://corca.team/recruit',

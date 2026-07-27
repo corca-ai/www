@@ -217,7 +217,7 @@ h1, h2, h3, .font-head {
 }
 
 .corca-footer-breadcrumb {
-  padding-top: 100px;
+  padding-top: 12px;
 }
 
 .corca-breadcrumb ol {
@@ -286,12 +286,12 @@ h1, h2, h3, .font-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(290px, 0.8fr);
   gap: 48px;
-  min-height: 351px;
-  padding-top: 54px;
+  min-height: 292px;
+  padding-top: 36px;
 }
 
 .corca-footer-content-home {
-  padding-top: 100px;
+  padding-top: 68px;
 }
 
 .corca-footer-copy {
@@ -326,7 +326,7 @@ h1, h2, h3, .font-head {
 }
 
 .corca-footer-legal {
-  margin-top: 42px;
+  margin-top: 31px;
   color: #b7d7ff;
   font-size: 12px;
   font-style: normal;
@@ -336,6 +336,10 @@ h1, h2, h3, .font-head {
 .corca-footer-legal p {
   margin: 0;
   word-break: keep-all;
+}
+
+.corca-footer-legal .corca-footer-rights {
+  margin-top: 8px;
 }
 
 .corca-footer-legal a {
@@ -361,23 +365,20 @@ h1, h2, h3, .font-head {
 .corca-footer-partner {
   position: absolute;
   z-index: 2;
-  top: -12px;
-  right: 4px;
-  width: 156px;
+  top: -49px;
+  right: 74px;
+  width: 140px;
   height: auto;
 }
 
 .corca-footer-orca {
   position: absolute;
   z-index: 1;
-  right: -12px;
-  bottom: 0;
-  width: min(328px, 100%);
+  right: 0;
+  bottom: -44px;
+  width: 353px;
+  max-width: none;
   height: auto;
-  transform: scaleX(-1);
-  /* Mirror the source so the orca faces into the layout without moving the
-     absolutely positioned box outside of its responsive grid column. */
-  transform-origin: center;
   pointer-events: none;
   user-select: none;
 }
@@ -427,8 +428,9 @@ h1, h2, h3, .font-head {
   }
 
   .corca-footer-orca {
-    right: -38px;
-    width: min(72vw, 340px);
+    right: -102px;
+    bottom: -118px;
+    width: min(128vw, 540px);
   }
 }
 
@@ -445,8 +447,8 @@ h1, h2, h3, .font-head {
     min-height: 390px;
   }
 
-  .corca-footer-legal p + p {
-    margin-top: 2px;
+  .corca-footer-legal .corca-footer-rights {
+    margin-top: 14px;
   }
 }
 

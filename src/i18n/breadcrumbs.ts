@@ -16,11 +16,3 @@ export const breadcrumbAriaLabel: Record<Lang, string> = {
   ja: 'パンくずリスト',
   zh: '面包屑导航',
 };
-
-/** Labels used by the legacy static blog shell during the build-time sync. */
-export const blogLabel: Record<Lang, string> = {
-  ko: '블로그',
-  en: 'Blog',
-  ja: 'ブログ',
-  zh: '博客',
-};

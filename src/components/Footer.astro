@@ -36,7 +36,7 @@ const t = useTranslations(lang);
           <span aria-hidden="true"> | </span>
           <a href={`mailto:${contact.email}`}>{t.footer.emailLabel} {contact.email}</a>
         </p>
-        <p>{t.footer.rights}</p>
+        <p class="corca-footer-rights">{t.footer.rights}</p>
       </address>
     </div>
     <div class="corca-footer-visual" aria-hidden="true">
@@ -44,8 +44,8 @@ const t = useTranslations(lang);
       <Image
         src={orcaFooter}
         alt=""
-        widths={[420, 640, 840]}
-        sizes="(min-width: 900px) 328px, 58vw"
+        widths={[240, 353]}
+        sizes="(min-width: 900px) 353px, 80vw"
         class="corca-footer-orca"
         loading="lazy"
       />

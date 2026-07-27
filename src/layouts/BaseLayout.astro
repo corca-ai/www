@@ -3,6 +3,7 @@ import '../styles/global.css';
 import CommonHead from '../components/CommonHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import type { Crumb } from '../i18n/breadcrumbs';
 import { documentLanguage, localeTag, locales, defaultLang, contact, type Lang } from '../i18n/ui';
 import { absoluteUrl } from '../i18n/utils';
 import { SITE_ORIGIN } from '../site';
@@ -28,6 +29,8 @@ interface Props {
   noindex?: boolean;
   /** Extra schema.org nodes merged into the JSON-LD @graph (see structuredData.ts). */
   jsonLd?: Record<string, unknown>[];
+  /** Visible breadcrumb nodes after Home. Home pages omit this prop. */
+  breadcrumbs?: Crumb[] | undefined;
   extraFeeds?: { title: string; type: string; href: string }[];
 }
 
@@ -43,6 +46,7 @@ const {
   ogImageAlt,
   noindex = false,
   jsonLd = [],
+  breadcrumbs,
   extraFeeds = [],
 } = Astro.props;
 
@@ -198,7 +202,7 @@ const graph = {
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer lang={lang} />
+    <Footer lang={lang} breadcrumbs={breadcrumbs} />
 
     <script>
       // Scroll-triggered reveal for [data-reveal] elements (see global.css).

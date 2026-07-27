@@ -105,7 +105,8 @@ const UI_TEXT = {
     readingPercent: (percent) => `${percent}% 읽음`,
     readingProgress: (title) => `${title} 읽기 진행률`,
     optionLabels: { normal: "보통", wide: "넓게", compact: "좁게", narrow: "좁게", sans: "산세", serif: "세리프" },
-    breadcrumbPosts: "글",
+    breadcrumbHome: "홈",
+    breadcrumbBlog: "블로그",
     metaImageAlt: "Corca 블로그 글쓰기와 제품 리서치를 위한 작업 공간",
     dateLocale: "ko-KR"
   },
@@ -184,7 +185,8 @@ const UI_TEXT = {
     readingPercent: (percent) => `${percent}% read`,
     readingProgress: (title) => `${title} reading progress`,
     optionLabels: { normal: "Normal", wide: "Wide", compact: "Compact", narrow: "Narrow", sans: "Sans", serif: "Serif" },
-    breadcrumbPosts: "Posts",
+    breadcrumbHome: "Home",
+    breadcrumbBlog: "Blog",
     metaImageAlt: "Corca Blog workspace for writing and product research",
     dateLocale: "en-US"
   },
@@ -263,7 +265,8 @@ const UI_TEXT = {
     readingPercent: (percent) => `${percent}%読了`,
     readingProgress: (title) => `${title}の読書進捗`,
     optionLabels: { normal: "標準", wide: "広め", compact: "狭め", narrow: "狭め", sans: "サンセリフ", serif: "セリフ" },
-    breadcrumbPosts: "記事",
+    breadcrumbHome: "ホーム",
+    breadcrumbBlog: "ブログ",
     metaImageAlt: "Corca Blogの記事執筆とプロダクトリサーチの作業空間",
     dateLocale: "ja-JP"
   },
@@ -342,7 +345,8 @@ const UI_TEXT = {
     readingPercent: (percent) => `已读 ${percent}%`,
     readingProgress: (title) => `${title} 阅读进度`,
     optionLabels: { normal: "标准", wide: "较宽", compact: "紧凑", narrow: "较窄", sans: "无衬线", serif: "衬线" },
-    breadcrumbPosts: "文章",
+    breadcrumbHome: "首页",
+    breadcrumbBlog: "博客",
     metaImageAlt: "用于 Corca Blog 写作和产品研究的工作空间",
     dateLocale: "zh-CN"
   }
@@ -1626,15 +1630,6 @@ function getPostLanguage(post) {
   return CURRENT_LOCALE;
 }
 
-function getPostLocale(post) {
-  return {
-    en: "en_US",
-    ja: "ja_JP",
-    zh: "zh_CN",
-    ko: "ko_KR"
-  }[getPostLanguage(post)] || "ko_KR";
-}
-
 function getPostInLanguage(post) {
   return {
     en: "en-US",
@@ -1642,15 +1637,6 @@ function getPostInLanguage(post) {
     zh: "zh-CN",
     ko: "ko-KR"
   }[getPostLanguage(post)] || "ko-KR";
-}
-
-function getCurrentOgLocale() {
-  return {
-    en: "en_US",
-    ja: "ja_JP",
-    zh: "zh_CN",
-    ko: "ko_KR"
-  }[CURRENT_LOCALE] || "ko_KR";
 }
 
 function getCurrentInLanguage() {
@@ -2290,7 +2276,6 @@ function updateDocumentMeta(post) {
   setMeta("property", "og:title", post.title);
   setMeta("property", "og:description", post.description);
   setMeta("property", "og:site_name", "Corca Blog");
-  setMeta("property", "og:locale", getPostLocale(post));
   setMeta("property", "og:type", "article");
   setMeta("property", "og:image", image);
   setMeta("property", "og:image:secure_url", image);
@@ -2340,7 +2325,7 @@ function makePostStructuredData(post) {
         inLanguage: getPostInLanguage(post),
         isPartOf: {
           "@type": "Blog",
-          name: "Corca Blog",
+          name: localeText().breadcrumbBlog,
           url: new URL(appPath("/"), window.location.origin).href
         },
         mainEntityOfPage: url
@@ -2351,14 +2336,14 @@ function makePostStructuredData(post) {
           {
             "@type": "ListItem",
             position: 1,
-            name: "Corca Blog",
-            item: new URL(appPath("/"), window.location.origin).href
+            name: localeText().breadcrumbHome,
+            item: new URL(siteHomePath(), window.location.origin).href
           },
           {
             "@type": "ListItem",
             position: 2,
-            name: localeText().breadcrumbPosts,
-            item: new URL(appPath("/#posts"), window.location.origin).href
+            name: localeText().breadcrumbBlog,
+            item: new URL(appPath("/"), window.location.origin).href
           },
           {
             "@type": "ListItem",
@@ -2475,6 +2460,11 @@ function homePath(hash = "") {
   return `${appPath("/")}${hash}`;
 }
 
+function siteHomePath() {
+  const rootPath = BASE_PATH.replace(/\/blog$/, "");
+  return rootPath || "/";
+}
+
 function stripBasePath(pathname) {
   const cleanPath = pathname || "/";
   if (!BASE_PATH) {
@@ -2500,7 +2490,6 @@ function resetDocumentMeta() {
   setMeta("property", "og:title", "Corca Blog");
   setMeta("property", "og:description", defaultDocumentMeta.description);
   setMeta("property", "og:site_name", "Corca Blog");
-  setMeta("property", "og:locale", getCurrentOgLocale());
   setMeta("property", "og:type", "website");
   setMeta("property", "og:image", defaultDocumentMeta.image);
   setMeta("property", "og:image:secure_url", defaultDocumentMeta.image);

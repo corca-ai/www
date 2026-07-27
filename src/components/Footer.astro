@@ -1,32 +1,54 @@
 ---
+import { Image } from 'astro:assets';
+import Breadcrumb from './Breadcrumb.astro';
+import type { Crumb } from '../i18n/breadcrumbs';
 import { useTranslations } from '../i18n/utils';
 import { contact, type Lang } from '../i18n/ui';
+import orcaFooter from '../assets/images/footer/orca-footer.png';
 
 interface Props {
   lang: Lang;
+  /** Page nodes after Home. Omitted for home. */
+  breadcrumbs?: Crumb[] | undefined;
 }
-const { lang } = Astro.props;
+const { lang, breadcrumbs } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<footer class="bg-footer text-white/70">
-  <div class="container-c flex flex-col items-center gap-5 py-14 text-center max-md:items-start max-md:text-left">
-    <!-- Same corca-logo.svg as the header, recolored via CSS mask (an <img> can't
-         restyle an external SVG's fill; the mask paints the logo shape in #666). -->
-    <span
-      role="img"
-      aria-label="Corca"
-      class="block h-[24px] w-[86px]"
-      style="background-color:#666666; -webkit-mask:url('/corca-logo.svg') no-repeat center / contain; mask:url('/corca-logo.svg') no-repeat center / contain;"
-    ></span>
-    <address class="text-[13px] not-italic leading-[1.5] text-[#bbbbbb]">
-      <p>{t.footer.address}</p>
-      <p>
-        <a href="tel:+82-2-6925-6978">{t.footer.tel}</a>
-        <span class="inline-block w-3"></span>
-        <a href={`mailto:${contact.email}`}>{contact.email}</a>
-      </p>
-    </address>
-    <p class="text-[12px] text-[#bbbbbb]">{t.footer.rights}</p>
+<footer class="corca-site-footer">
+  {breadcrumbs?.length ? (
+    <div class="corca-footer-breadcrumb container-c">
+      <Breadcrumb lang={lang} items={breadcrumbs} />
+    </div>
+  ) : null}
+  <div class:list={['corca-footer-content container-c', !breadcrumbs?.length && 'corca-footer-content-home']}>
+    <div class="corca-footer-copy">
+      <a href={lang === 'ko' ? '/' : `/${lang}`} class="corca-footer-logo" aria-label="Corca">
+        <span></span>
+      </a>
+      <p class="corca-footer-tagline">{t.footer.tagline.split('\n').map((line, index) => <Fragment>{index > 0 ? <br /> : null}{line}</Fragment>)}</p>
+      <address class="corca-footer-legal">
+        <p>{t.footer.legalName}</p>
+        <p>
+          {t.footer.representative}
+          <span aria-hidden="true"> | </span>
+          <a href="tel:+82-2-6925-6978">{t.footer.tel}</a>
+          <span aria-hidden="true"> | </span>
+          <a href={`mailto:${contact.email}`}>{t.footer.emailLabel} {contact.email}</a>
+        </p>
+        <p class="corca-footer-rights">{t.footer.rights}</p>
+      </address>
+    </div>
+    <div class="corca-footer-visual" aria-hidden="true">
+      <img class="corca-footer-partner" src="/images/brand/openai-select-partner.svg" alt="" width="156" height="74" loading="lazy" decoding="async" />
+      <Image
+        src={orcaFooter}
+        alt={t.footer.orcaAlt}
+        widths={[240, 353]}
+        sizes="(min-width: 900px) 353px, 80vw"
+        class="corca-footer-orca"
+        loading="lazy"
+      />
+    </div>
   </div>
 </footer>

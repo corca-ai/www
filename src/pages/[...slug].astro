@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import type { Meta } from '../i18n/pageMeta';
-import { breadcrumbLd, type Crumb, softwareAppLd } from '../i18n/structuredData';
+import { type Crumb } from '../i18n/breadcrumbs';
+import { breadcrumbLd, softwareAppLd } from '../i18n/structuredData';
 import { defaultLang, locales, ui } from '../i18n/ui';
 import { products } from '../products/registry';
 import { SITE_ORIGIN } from '../site';
@@ -42,13 +43,20 @@ const site = Astro.site ?? new URL(SITE_ORIGIN);
 // Titles read "PageName | descriptor"; the breadcrumb/app name is the part
 // before the first pipe (e.g. "문라이트(Moonlight)", "비전과 미션").
 const pageName = (meta.title.split('|')[0] ?? meta.title).trim();
+const nav = ui[lang].nav;
+const currentNavName =
+  basePath === '/ax' ? nav.ax
+  : basePath === '/products' ? nav.products
+  : basePath === '/about' ? nav.about
+  : pageName;
 const jsonLd: Record<string, unknown>[] = [];
+let breadcrumbs: Crumb[] | undefined;
 if (id !== 'home') {
-  const nav = ui[lang].nav;
   const crumbs: Crumb[] = [];
   if (basePath.startsWith('/products/')) crumbs.push({ name: nav.products, path: '/products' });
   else if (basePath.startsWith('/about/')) crumbs.push({ name: nav.about, path: '/about' });
-  crumbs.push({ name: pageName, path: basePath });
+  crumbs.push({ name: currentNavName, path: basePath });
+  breadcrumbs = crumbs;
   jsonLd.push(breadcrumbLd(site, lang, crumbs));
 }
 if (product?.app) jsonLd.push(softwareAppLd(site, lang, basePath, pageName, meta.description, product.app));
@@ -72,6 +80,7 @@ const socialCopyProps = {
   description={meta.description}
   basePath={basePath}
   jsonLd={jsonLd}
+  breadcrumbs={breadcrumbs}
   {...noindexProps}
   {...socialImageProps}
   {...socialCopyProps}

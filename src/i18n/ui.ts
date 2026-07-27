@@ -65,8 +65,12 @@ type Nav = {
 };
 
 type FooterT = {
-  address: string;
+  tagline: string;
+  orcaAlt: string;
+  legalName: string;
+  representative: string;
   tel: string;
+  emailLabel: string;
   rights: string;
 };
 
@@ -114,9 +118,13 @@ export const ui = {
       colleagues: '코르카 사람들',
     },
     footer: {
-      address: '서울특별시 강남구 테헤란로77길 11-8, 6층 주식회사 코르카',
-      tel: 'Tel: 02-6925-6978',
-      rights: '© 2026 Corca, Inc.',
+      tagline: 'AI로 삶과 일의\n패러다임을 바꿉니다',
+      orcaAlt: 'Corca 오르카',
+      legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
+      representative: '대표 정영현',
+      tel: '연락처 02-6925-6978',
+      emailLabel: '이메일',
+      rights: 'Copyright © 2026 Corca, Inc. All rights reserved.',
     },
     home: {
       metaTitle: '코르카(Corca) | 기업 AI 전환(AX) 컨설팅·AI 교육·AI 솔루션 전문 기업',
@@ -158,9 +166,13 @@ export const ui = {
       colleagues: 'Our People',
     },
     footer: {
-      address: '6F, 11-8, Teheran-ro 77-gil, Gangnam-gu, Seoul, Republic of Korea · Corca, Inc.',
-      tel: 'Tel: +82-2-6925-6978',
-      rights: '© 2026 Corca, Inc.',
+      tagline: 'Changing the paradigm\nof life and work with AI',
+      orcaAlt: 'Corca orca',
+      legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
+      representative: 'Representative 정영현',
+      tel: 'Tel. +82-2-6925-6978',
+      emailLabel: 'Email',
+      rights: 'Copyright © 2026 Corca, Inc. All rights reserved.',
     },
     home: {
       metaTitle:
@@ -206,9 +218,13 @@ export const ui = {
       colleagues: 'コルカの人々',
     },
     footer: {
-      address: 'ソウル特別市 江南区 テヘラン路77ギル 11-8, 6階 株式会社コルカ',
-      tel: 'Tel: +82-2-6925-6978',
-      rights: '© 2026 Corca, Inc.',
+      tagline: 'AIで、人生と仕事の\nパラダイムを変えます',
+      orcaAlt: 'Corcaのシャチ',
+      legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
+      representative: '代表 정영현',
+      tel: 'Tel. +82-2-6925-6978',
+      emailLabel: 'メール',
+      rights: 'Copyright © 2026 Corca, Inc. All rights reserved.',
     },
     home: {
       metaTitle:
@@ -251,9 +267,13 @@ export const ui = {
       colleagues: 'Corca 的伙伴们',
     },
     footer: {
-      address: '韩国首尔特别市江南区德黑兰路77街11-8, 6层 Corca株式会社',
-      tel: 'Tel: +82-2-6925-6978',
-      rights: '© 2026 Corca, Inc.',
+      tagline: '用 AI 改变生活与工作的\n范式',
+      orcaAlt: 'Corca 虎鲸',
+      legalName: '주식회사 코르카 | 사업자등록번호 : 271-86-02206',
+      representative: '代表 정영현',
+      tel: '电话 +82-2-6925-6978',
+      emailLabel: '邮箱',
+      rights: 'Copyright © 2026 Corca, Inc. All rights reserved.',
     },
     home: {
       metaTitle: 'Corca | 企业AI转型（AX）咨询·AI培训·AI解决方案专业企业',

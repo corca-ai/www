@@ -16,3 +16,22 @@ All project documentation lives in `docs/`; start at the hub in
   to a new task.
 - At 80% context, do not start new implementation, full checks, pushes, pull
   requests, or deployments.
+
+## Continuation contract
+
+- Keep the copy-ready new-conversation prompts in the canonical handoff stable
+  for routine site work. Change them only when the start procedure, safety
+  requirements, or required local tooling genuinely changes.
+- Treat Git commits and diffs as the exact record of each change. A new task
+  fetches `origin`, verifies the handoff anchor, and summarizes later relevant
+  diffs instead of rewriting its starting prompt for every merged pull request.
+- For every pull request, decide whether it changes durable route ownership,
+  shared components, design/SEO/i18n policy, deployment behavior, local setup,
+  or a known regression risk. If it does, update the nearest canonical `docs/`
+  page and the site handoff when the fact matters to future tasks.
+- Document the decision, affected paths, validation, and remaining regression
+  risk in the pull request. If no documentation update is needed, say so and
+  explain why in the pull request summary.
+- Whenever the canonical handoff Markdown changes, regenerate its companion
+  HTML with `pnpm handoff:render`. The Markdown and Git history are the source
+  of truth; the HTML is a review aid and full patches remain local audit data.

@@ -1,6 +1,6 @@
 ---
 title: Corca site and AX V2 handoff — 2026-07-28
-generated_at: 2026-07-28T15:00:26+09:00
+generated_at: 2026-07-28T15:24:41+09:00
 baseline_commit: c55807bc611984299e5306c7a5343beb7edfa35f
 snapshot_commit: 22b8e37f32d526188c344a49ef7dc25af1d17dae
 ---
@@ -585,3 +585,27 @@ AX V2의 공통 디자인 언어와 SEO 정책을 어떻게 적용할지 설명�
   스냅샷 이후 diff로 확인한다.
 - Git clone과 문서가 작업 연속성을 담당한다. 로컬 patch는 감사
   자료일 뿐 새 작업의 필수 입력이 아니다.
+
+### 지속 갱신 계약
+
+이 문서의 “새 대화 시작” 지시문은 매번 새 release SHA나 개별 UI 수정에
+맞춰 바꾸지 않는다. 시작문은 저장소를 안전하게 읽는 방법을 고정하고,
+Git의 최신 `origin/main`과 스냅샷 이후 diff가 실제 변경을 전달한다.
+
+앞으로 각 pull request는 다음을 판단한다.
+
+- 경로·소유권·공통 컴포넌트·디자인 시스템·SEO·i18n·배포·로컬 환경 또는
+  회귀 위험처럼 다음 작업에 영향을 주는 지속 사실이 바뀌었는가.
+- 바뀌었다면 가장 가까운 정본 `docs/` 문서와, 사이트 전반의 시작·계속
+  작업에 영향이 있을 때 이 handoff를 갱신했는가.
+- 바뀌지 않았다면 PR 설명에 문서 갱신이 불필요한 이유를 적었는가.
+
+handoff Markdown을 변경하면 항상 HTML을 다시 생성한다.
+
+```sh
+pnpm handoff:render docs/handoffs/2026-07-28-corca-site-handoff.md
+```
+
+문서가 특정 변경의 세부와 충돌하거나 오래되면 저장소 파일과 Git diff가
+우선이다. 전체 patch는 공개 저장소에 넣지 않고, 필요한 경우만 로컬 감사
+자료 또는 같은 두 Git 커밋의 재생성 결과로 검증한다.

@@ -1,14 +1,15 @@
-export {};
+import { readOrCaptureAxAcquisition } from '../../../analytics/axAcquisition';
+import { emitGtagEvent } from '../../../analytics/gtag';
 
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
 function emitAnalytics(event: string, parameters: Record<string, unknown> = {}) {
-  if (!Array.isArray(window.dataLayer)) window.dataLayer = [];
-  window.dataLayer.push({ event, ...parameters });
+  emitGtagEvent(window.gtag, event, parameters);
 }
 
 const FORM_MESSAGES = {
@@ -798,11 +799,16 @@ function initializeLeadForm(form: HTMLFormElement) {
     status.textContent = messages.sending;
     status.className = 'ax-v2-form-status';
     const data = new FormData(form);
-    const search = new URLSearchParams(window.location.search);
-    const utm = Object.fromEntries(
-      ['source', 'medium', 'campaign', 'content', 'term']
-        .map((key) => [key, search.get(`utm_${key}`)] as const)
-        .filter((entry): entry is readonly [string, string] => Boolean(entry[1])),
+    let acquisitionStorage: Storage | undefined;
+    try {
+      acquisitionStorage = window.sessionStorage;
+    } catch {
+      acquisitionStorage = undefined;
+    }
+    const acquisition = readOrCaptureAxAcquisition(
+      acquisitionStorage,
+      window.location.href,
+      document.referrer,
     );
     const crossBorderConsent = form.elements.namedItem('cross_border_consent');
     const payload = {
@@ -815,7 +821,11 @@ function initializeLeadForm(form: HTMLFormElement) {
         crossBorderConsent instanceof HTMLInputElement && crossBorderConsent.checked,
       website: String(data.get('website') ?? ''),
       started_at: startedAt,
-      utm,
+      utm: acquisition.utm,
+      attribution: {
+        initial_referrer_host: acquisition.initial_referrer_host,
+        landing_path: acquisition.landing_path,
+      },
       locale,
     };
     const requestController = new AbortController();

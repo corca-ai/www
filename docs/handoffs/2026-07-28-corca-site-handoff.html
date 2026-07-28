@@ -345,8 +345,18 @@ grid, 반응형, 모바일 구성에 맞게 배치했다.</li>
 <code>contact+ax@corca.ai</code>로 발송한다. sender는 <code>ax@corca.ai</code>로 제한되고
 방문자 이메일은 <code>Reply-To</code>로만 사용한다.</li>
 <li>사이트 데이터베이스에는 리드를 저장하지 않는다.</li>
-<li>UTM과 비식별 전환 이벤트만 분석 도구에 전달하며 이름·이메일·상담
-내용은 Google Analytics 또는 <code>dataLayer</code>로 보내지 않는다.</li>
+<li>공통 레이아웃은 탭 세션의 첫 랜딩 경로, 외부 리퍼러 hostname,
+첫 랜딩 UTM을 <code>sessionStorage</code>에 보존한다. 전체 리퍼러 URL과 query,
+hash는 저장하지 않는다.</li>
+<li>상담 메일은 이 값을 해석하지 않고 <code>이전 사이트</code>, <code>최초 방문 페이지</code>,
+UTM으로 표시한다. 도메인을 채널로 변환하거나 referrer가 없다는
+이유만으로 direct라고 추측하지 않는다.</li>
+<li>사이트는 GTM 없이 직접 <code>gtag.js</code>를 사용한다. <code>form_submit</code>과 메일
+성공 뒤 <code>generate_lead</code>만 비식별 전환 이벤트로 보내며 이름·이메일·
+상담 내용·메일 attribution 값은 Google Analytics로 보내지 않는다.</li>
+<li>source, medium, 기본 채널 그룹의 정본은 GA4 Traffic acquisition
+보고서다. 이 흐름에는 GA Data API나 별도 Property ID 자격증명이
+필요하지 않다.</li>
 <li>실제 웹사이트 발송과 수신이 정상 동작함을 사용자가 확인했다.</li>
 </ul>
 <h3 id="seo-발견성">SEO·발견성</h3>

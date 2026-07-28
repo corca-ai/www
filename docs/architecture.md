@@ -23,7 +23,7 @@ the same GA4 property.
   `sitemap.xml` and `rss.xml` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`. The Footer keeps its breadcrumb row on the
-  home route as an accessible icon-only home link so its shared Partner badge
+  home route as an accessible icon-only current-page marker so its shared Partner badge
   alignment and top spacing match the rest of the site.
 - `src/products/` — one self-contained folder per product (Moonlight, Trace, …),
   auto-discovered by the shared shell; see [products](products.md).

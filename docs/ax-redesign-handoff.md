@@ -5,9 +5,10 @@ title: AX redesign handoff
 # AX redesign handoff
 
 > Historical note: this document describes the planning boundary used before
-> the current AX V2 launch. For the current implementation, completed PR ledger,
-> ownership map, and next-task starting instruction, use the
-> [2026-07-28 site and AX V2 handoff](handoffs/2026-07-28-corca-site-handoff.md).
+> the current AX V2 launch. Read the [2026-07-28 site and AX V2
+> handoff](handoffs/2026-07-28-corca-site-handoff.md) for the current
+> implementation, completed PR ledger, ownership map, and next-task starting
+> instruction.
 > Keep this file as historical context; do not treat its “next redesign” wording
 > as evidence that a V3 has been approved.
 

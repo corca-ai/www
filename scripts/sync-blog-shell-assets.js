@@ -366,8 +366,16 @@ function validateCommonHead(html, source) {
     ['common head start marker', /<!-- corca-common-head:start -->/g],
     ['common head end marker', /<!-- corca-common-head:end -->/g],
     [
-      'site favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicon\.png["'])[^>]*>/gi,
+      '16px favicon',
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-16\.png["'])[^>]*>/gi,
+    ],
+    [
+      '32px favicon',
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-32\.png["'])[^>]*>/gi,
+    ],
+    [
+      '48px favicon',
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-48\.png["'])[^>]*>/gi,
     ],
     ['apple touch icon', /<link\b(?=[^>]*\brel=["']apple-touch-icon["'])[^>]*>/gi],
     [

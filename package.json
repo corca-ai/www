@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.22.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/sync-blog-shell-assets.js",
+    "build": "pnpm favicon:build && astro build && node scripts/sync-blog-shell-assets.js",
     "preview": "astro preview",
     "cf:preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
@@ -23,6 +23,7 @@
     "blog:content:apply": "node scripts/apply-admin-post-change.js",
     "blog:content:check": "node scripts/admin-post-change-check.js",
     "blog:shell:sync": "node scripts/sync-blog-shell-assets.js",
+    "favicon:build": "node scripts/build-favicon-assets.js",
     "notion:publish": "node scripts/sync-notion-posts.js",
     "notion:check": "node scripts/notion-publish-check.js",
     "check": "pnpm check:biome && pnpm check:astro && pnpm check:knip && pnpm check:dup && pnpm check:docs",

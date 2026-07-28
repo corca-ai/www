@@ -253,3 +253,57 @@
 - [x] Keep live cutover disabled until privacy and Cloudflare email approvals.
 
 final result: passed
+
+---
+
+# Footer desktop grid alignment — design QA
+
+**Source visual truth**
+
+- `/var/folders/7h/y3scb0kd5kgbsx6hy5ltzz580000gn/T/codex-clipboard-98547516-ed73-4277-b882-96c7653b46be.png`
+- Source dimensions: 1465 × 1121 px.
+- The annotated desktop captures define two objective targets: the badge right edge shares the content grid's right boundary, and the badge top edge shares the breadcrumb's top boundary.
+
+**Implementation evidence**
+
+- Local route: `http://127.0.0.1:4324/ax`
+- Implementation screenshot: `/private/tmp/corca-footer-desktop-after.png`
+- Combined source/implementation comparison: `/private/tmp/corca-footer-desktop-comparison.png`
+- CSS viewport: 1440 × 1000 at device scale factor 1.
+- Browser capture: 1425 × 990 px after the scrollbar/browser viewport subtraction.
+- State: Korean AX page, desktop footer, no interaction state.
+
+## Full-view and focused comparison evidence
+
+- The combined comparison places the full annotated reference and the rendered desktop implementation in one image.
+- A separate focused crop was not needed because the badge, breadcrumb, both container edges, and the complete footer composition remain clearly readable in the full-view comparison.
+- The implementation retains the supplied SVG badge, Corca logo, orca image, typography, colors, copy, and responsive structure. Only the desktop badge coordinates changed.
+
+## Required fidelity surfaces
+
+- Fonts and typography: unchanged; breadcrumb, logo, tagline, and legal copy preserve the existing family, weight, size, line height, wrapping, and antialiasing.
+- Spacing and layout rhythm: passed. The breadcrumb begins 152.5 px from the left viewport edge, while the badge ends 152.52 px from the right edge. The remaining 0.02 px difference is subpixel rounding. Badge and breadcrumb top edges differ by 0.41 px, also subpixel rounding.
+- Colors and visual tokens: unchanged; the established footer navy, white badge, and light-blue copy tokens are preserved.
+- Image quality and asset fidelity: unchanged; the original OpenAI Select Partner SVG and optimized orca raster remain intact and undistorted.
+- Copy and content: unchanged.
+
+## Comparison history
+
+1. Initial desktop measurement found a 74.02 px inward drift on the badge's right edge and a 6.59 px vertical offset below the breadcrumb top edge.
+   - Severity: P2.
+   - Fix: changed the desktop badge offset from `right: 74px` to `right: 0` and from `top: -49px` to `top: -56px`.
+   - Post-fix evidence: right-edge delta is 0.02 px and top-edge delta is -0.41 px at the 1440 × 1000 CSS viewport.
+2. Responsive regression check:
+   - Tablet 768 px: its existing `top: -20px` and responsive right gutter remain active; desktop coordinates do not leak into the breakpoint.
+   - Mobile 390 px: the desktop badge remains hidden and the existing 122 px inline mobile badge remains active.
+   - Browser console warnings/errors: none.
+
+## Findings
+
+- No actionable P0, P1, or P2 mismatch remains.
+
+## Follow-up polish
+
+- None required for the requested desktop-only badge alignment.
+
+final result: passed

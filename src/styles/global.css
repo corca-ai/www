@@ -367,8 +367,9 @@ h1, h2, h3, .font-head {
 .corca-footer-partner {
   position: absolute;
   z-index: 2;
-  top: -49px;
-  right: 74px;
+  /* Desktop: share the breadcrumb's top edge and the container's right grid. */
+  top: -56px;
+  right: 0;
   width: 140px;
   height: auto;
 }

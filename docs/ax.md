@@ -14,27 +14,27 @@ Any content or visual redesign must also satisfy the shared
 [SEO and performance governance](seo-content-governance.md), including the AX
 mobile critical-path and production measurement gates.
 
-The Korean page that existed before the next content redesign is preserved at
+The Korean page that existed before AX V2 is preserved at
 `/ax-backup`. It is intentionally `noindex, nofollow`, is absent from every
 sitemap and canonicalizes to `/ax`. Its implementation lives in
 `AxLegacy.astro` and `components/pages/ax/`; do not edit those files for the new
-design. Start the redesign from the [AX redesign handoff](ax-redesign-handoff.md)
-and add a new component and versioned asset paths instead.
+design. The current implementation and verified Git history are recorded in the
+[2026-07-28 site and AX V2 handoff](handoffs/2026-07-28-corca-site-handoff.md).
 
 ## Ownership map
 
 | Concern | Source |
 | --- | --- |
-| Active route wrapper | `src/components/pages/Ax.astro` |
+| Active route wrapper | `src/components/pages/Ax.astro` → `src/components/pages/AxV2.astro` |
+| AX V2 Korean base copy and locale merge | `src/components/pages/ax-v2/content.ts` |
+| AX V2 EN, JA and ZH overrides | `i18n/ax-v2-content-localized.ts` |
+| AX V2 lead form | `src/components/pages/ax-v2/AxLeadForm.astro` |
+| AX V2 client behavior and form submission | `src/components/pages/ax-v2/ax-v2-client.ts` |
+| AX V2 page-scoped styles | `src/components/pages/ax-v2/ax-v2.css` |
 | Frozen 2026-07-22 page composition | `src/components/pages/AxLegacy.astro` |
 | Frozen Korean backup wrapper | `src/components/pages/AxBackup.astro` and `src/pages/ax-backup.astro` |
-| Localized page copy and form strings | `src/components/pages/ax/content.ts` |
-| Stable consultation topic IDs | `src/components/pages/ax/contract.ts` |
-| Carousel, consultation form and client behavior | `src/components/pages/ax/` |
-| Page-scoped styles | `src/components/pages/ax/ax.css` |
-| Image and video path registry | `src/components/pages/ax/assetPaths.ts` |
-| Images and logos | `public/images/pages/ax/` |
-| Hero video | `public/video/ax/` |
+| Frozen legacy copy, contract, behavior and styles | `src/components/pages/ax/` |
+| AX assets | `public/images/pages/ax/`, `public/video/ax/` and imports owned by AX V2 |
 | Mobile Pretendard subsets | `public/fonts/ax-mobile/v1/` |
 | SEO metadata and route registration | `src/i18n/pageMeta.ts` and `src/staticPages.ts` |
 | Service structured data | `src/i18n/structuredData.ts` |
@@ -73,21 +73,23 @@ The mobile layout remains independent of this height rule.
 
 ## Update copy or assets
 
-The frozen multilingual page keeps its visible copy in `content.ts`. The Korean
-redesign keeps its approved Notion copy in `ax-v2/content.ts` and the durable
-source ledger in `docs/ax-content-plan-v2.md`. Do not edit the frozen content
-to change the redesign, and do not duplicate copy inside presentational
-components.
+AX V2 keeps its Korean base copy in `ax-v2/content.ts` and merges English,
+Japanese and Simplified Chinese overrides from
+`i18n/ax-v2-content-localized.ts`. The durable Korean source ledger is
+`docs/ax-content-plan-v2.md`. Do not edit the frozen `ax/content.ts` to change
+AX V2, and do not duplicate copy inside presentational components.
 
-For an asset replacement, keep the public URL in `assetPaths.ts` and replace the
-corresponding file. Responsive scene images have desktop and mobile variants;
-preserve both so `<picture>` sources do not fall back to the wrong crop. Use
-descriptive localized alternative text in `content.ts` rather than encoding it
-in the asset registry.
+AX V2 keeps its asset URL registry in the `axV2Assets` export from
+`ax-v2/content.ts`. Replace or version the corresponding public asset and update
+that registry; do not route new AX V2 assets through the frozen
+`ax/assetPaths.ts`. Responsive scene images have desktop and mobile variants;
+preserve both so `<picture>` sources do not fall back to the wrong crop. Keep
+descriptive localized alternative text with the visible content rather than
+encoding it in the asset registry.
 
 ## Consultation form
 
-The Korean redesign and the three localized legacy forms post JSON to
+The four localized AX V2 forms post JSON to
 `POST /api/ax/consultations`. The Worker validates the payload, rejects
 oversized or suspicious submissions and sends the result through the
 Cloudflare Email Sending binding. It does not write submissions to an

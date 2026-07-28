@@ -1,6 +1,6 @@
 ---
 title: Corca site and AX V2 handoff — 2026-07-28
-generated_at: 2026-07-28T14:02:32+09:00
+generated_at: 2026-07-28T15:00:26+09:00
 baseline_commit: c55807bc611984299e5306c7a5343beb7edfa35f
 snapshot_commit: 22b8e37f32d526188c344a49ef7dc25af1d17dae
 ---
@@ -268,57 +268,320 @@ git diff --binary --full-index --find-renames \
 shasum -a 256 c55807-to-22b8e37.full.patch
 ```
 
-## 새 대화 시작문
+## 새 대화 시작 가이드
 
-새 컴퓨터에서는 먼저 저장소를 clone하고 `main`을 최신 상태로 만든다.
+새 대화의 작업 연속성은 Git 저장소와 이 Markdown이 담당한다. HTML은
+사람이 검토하기 위한 파생물이며 전체 patch는 감사 자료일 뿐 새 작업의
+필수 입력이 아니다.
 
-```sh
-git clone https://github.com/corca-ai/www.git
-cd www
-git switch main
-git pull --ff-only origin main
-```
+이 문서의 스냅샷 커밋은 `22b8e37`로 고정한다. 새 대화는 이 커밋이
+현재 `HEAD`의 조상인지 확인하고, 이후 변경만 별도로 읽어야 한다.
+문서 작성 뒤에도 `main`은 계속 갱신되므로 특정 최신 SHA를 지시문에
+영구적으로 고정하지 않는다.
 
-그다음 아래 블록을 새 대화의 첫 입력으로 사용한다. 첫 줄의 경로만 해당
-컴퓨터에서 clone한 저장소의 절대 경로로 바꾼다.
+### 현재 노트북에서 시작
+
+저장소가 이미 있는 현재 노트북에서는 파일을 대화에 첨부하지 않고 아래
+블록을 첫 입력으로 사용한다.
 
 ```text
-실제 Git 저장소는 <이 컴퓨터에서 corca-ai/www를 clone한 절대 경로>이다.
-이전 대화를 복구하거나 추측하지 말고 저장소 파일과 Git 이력만 기준으로 사용해라.
+실제 Git 저장소는 /Users/tommy/Documents/XT/corca-www 이다.
 
-다음 순서로 읽고 확인해라.
+이전 대화 내용을 복구하거나 추측하지 말고, 저장소 파일과 Git 이력만
+사실의 근거로 사용해라. 작업 대상은 corca-www로 한정하고 XT/output이나
+다른 프로젝트는 검색하지 마라.
+
+먼저 다음 파일을 순서대로 읽어라.
 
 1. AGENTS.md
 2. docs/index.md
 3. docs/handoffs/2026-07-28-corca-site-handoff.md
+4. docs/architecture.md
+5. docs/ax.md
+6. docs/i18n.md
+7. docs/seo-content-governance.md
+8. docs/contributing.md
+9. docs/deployment.md
 
-먼저 아래 명령에 해당하는 읽기 전용 확인만 수행해라.
+그다음 아래 상태를 확인해라.
 
 - git status --short
 - git branch --show-current
+- git fetch origin
 - git log -1 --oneline
 - git merge-base --is-ancestor 22b8e37f32d526188c344a49ef7dc25af1d17dae HEAD
 
-작업 트리가 clean인지 확인하고, 현재 HEAD가 위 스냅샷보다 최신이면
-22b8e37f32d526188c344a49ef7dc25af1d17dae 이후의 커밋과 diff만 별도로
-요약해라. 문서와 코드가 충돌하면 저장소 파일과 Git diff를 우선해라.
+미커밋 작업이 있으면 아무것도 덮어쓰거나 삭제하거나 stash하지 말고
+변경 파일과 현재 상태를 먼저 보고해라.
 
+작업 트리가 clean이면 main으로 전환하고
+git pull --ff-only origin main으로 최신 상태를 반영해라.
+현재 HEAD가 인수인계 기준점 22b8e37보다 최신이면, 그 이후 커밋과
+사이트 구조에 영향을 주는 diff만 요약해라.
+
+문서와 코드가 충돌하면 저장소 파일과 Git diff를 우선해라.
 현재 실서비스 /ax의 공식 명칭은 AX V2다.
-다음은 보호 대상이며 명시적 요청 없이 수정하지 마라.
+
+다음 경로는 보호 대상이며 명시적 요청 없이 수정하지 마라.
 
 - /ax-backup
 - src/components/pages/AxLegacy.astro
 - src/components/pages/ax/
 
-완료된 작업과 미착수 계획을 섞지 마라.
-다음 작업 후보는 아직 미착수 상태다.
+앞으로 만들 사이트의 큰 목표는 다음과 같다.
 
-- AX 카테고리 아래 신규 페이지 기획 및 신설
-- 메인 화면 리뉴얼
-- 회사소개 카테고리 리뉴얼
+1. 기존 /ax를 계속 고도화한다.
+2. /ax 카테고리 아래에 새로운 페이지를 다수 기획하고 신설한다.
+3. /about과 그 하위 페이지 전체를 리뉴얼한다.
+4. www.corca.ai의 메인 화면을 새로 만든다.
 
-이번 단계에서는 현재 구조, GNB, 다국어 체계, 공통 컴포넌트,
-SEO·Breadcrumb·Footer 정책을 확인하고 구현 계획만 작성해라.
-URL 구조, 페이지 수, 다국어 범위, 디자인 방향을 임의로 확정하지 말고
-코드 수정, commit, push, PR, merge, 배포를 시작하지 마라.
+새 페이지는 현재 AX V2를 기준 디자인으로 삼는다.
+
+- 동일한 브랜드와 디자인 언어
+- 동일한 반응형 품질 기준
+- 한국어·영어·일본어·중국어 체계
+- hreflang, canonical, title, description, OG, JSON-LD, Breadcrumb
+- 이미지 최적화와 성능 계약
+- Footer, Header, GNB 등 공통 컴포넌트 정책
+- 사실에 근거한 카피와 언어별 자연스러운 줄바꿈
+- 데스크톱·태블릿·모바일 시각 검증
+- 접근성 및 Technical SEO 품질 계약
+
+단, 기존 AX 페이지의 구조와 콘텐츠를 새 페이지에 기계적으로 복제하지
+말고 AX V2의 토큰, 타이포그래피, 그리드, 모션, SEO 및 품질 원칙을
+공통 디자인 시스템으로 추출해 사용할 방법을 검토해라.
+
+첫 단계에서는 코드를 수정하지 마라.
+branch, commit, push, PR, merge, 배포도 시작하지 마라.
+
+다음을 저장소 근거와 함께 계획해라.
+
+1. 현재 라우트·GNB·다국어·공통 컴포넌트 구조
+2. AX 하위 신규 페이지에 적합한 정보구조와 URL 원칙
+3. /about 전체 리뉴얼 범위와 공통 템플릿 후보
+4. 메인 화면 리뉴얼 시 재사용할 AX V2 디자인 시스템
+5. 공통 SEO·JSON-LD·Breadcrumb·OG 정책
+6. 페이지별 콘텐츠와 Figma 입력 자료 목록
+7. 여러 PR로 나누는 구현 순서와 각 단계의 검증·배포 기준
+
+URL, 페이지 수, 메뉴명, 다국어 출시 범위와 카피는 임의로 확정하지 말고
+확인이 필요한 제품 결정을 분리해서 질문해라.
+
+권장 작업 순서는 다음과 같다.
+
+1. 공통 디자인 시스템과 사이트 구조 정리
+2. AX 하위 신규 페이지
+3. About 카테고리 리뉴얼
+4. 메인 화면 리뉴얼
+
+먼저 현재 상태를 10줄 이내로 보고한 뒤, 결정이 필요한 질문과
+구현 가능한 상세 계획을 작성해라.
 ```
+
+### 새 노트북 환경 준비
+
+완전히 새로운 macOS 노트북에서는 먼저 개발 도구와 저장소를 준비한다.
+GitHub 토큰을 명령이나 대화에 직접 붙여넣지 않고 브라우저 인증을
+사용한다.
+
+```sh
+brew install git gh node
+npm install -g pnpm@10.22.0
+brew install corca-ai/tap/nose corca-ai/tap/awiki
+
+gh auth login -h github.com -p https -w
+gh auth status
+
+mkdir -p ~/Documents/XT
+cd ~/Documents/XT
+git clone https://github.com/corca-ai/www.git corca-www
+cd corca-www
+
+git switch main
+git pull --ff-only origin main
+pnpm install --frozen-lockfile
+pnpm check
+pnpm build
+```
+
+로컬 미리보기:
+
+```sh
+pnpm dev --host 127.0.0.1 --port 4323
+```
+
+`nose`나 `awiki`를 설치할 수 없는 환경에서는 아래 검사를 실행하고,
+누락된 두 gate는 GitHub CI에서 최종 확인한다.
+
+```sh
+pnpm check:biome
+pnpm check:astro
+pnpm check:knip
+pnpm build
+```
+
+`.dev.vars`는 Git에 포함되지 않는다. 일반 페이지와 정적 빌드에는
+필요하지 않으며, 상담 API까지 로컬에서 검증할 때만 기존 노트북 또는
+팀의 보안 채널로 전달한다.
+
+### 새 노트북에서 시작
+
+환경 준비 뒤 아래 블록을 새 대화의 첫 입력으로 사용한다.
+`<절대 경로>`만 실제 clone 경로로 교체한다.
+
+```text
+실제 Git 저장소는 <새 노트북의 corca-www 절대 경로>이다.
+
+이 저장소는 기존 Corca 실서비스를 이어서 개발하기 위해 새로 clone했다.
+이전 대화를 복구하거나 추측하지 말고 저장소 파일과 Git 이력만 근거로
+사용해라. 비밀키, .dev.vars, GitHub 토큰을 출력하거나 Git에 포함하지 마라.
+
+다음 순서로 읽어라.
+
+1. AGENTS.md
+2. docs/index.md
+3. docs/handoffs/2026-07-28-corca-site-handoff.md
+4. docs/development.md
+5. docs/architecture.md
+6. docs/ax.md
+7. docs/i18n.md
+8. docs/seo-content-governance.md
+9. docs/contributing.md
+10. docs/deployment.md
+
+다음 상태를 확인해라.
+
+- git status --short
+- git branch --show-current
+- git remote -v
+- git log -1 --oneline
+- git merge-base --is-ancestor 22b8e37f32d526188c344a49ef7dc25af1d17dae HEAD
+- node --version
+- pnpm --version
+- gh auth status
+
+작업 트리가 clean인지, main이 최신 origin/main과 일치하는지,
+pnpm install과 build가 가능한 환경인지 확인해라.
+
+인수인계 기준점보다 현재 HEAD가 최신이면
+22b8e37f32d526188c344a49ef7dc25af1d17dae 이후의 커밋과 diff만
+사이트 구조 관점에서 요약해라.
+
+현재 실서비스 /ax의 공식 명칭은 AX V2다.
+아래 보호 파일은 명시적 요청 없이 수정하지 마라.
+
+- /ax-backup
+- src/components/pages/AxLegacy.astro
+- src/components/pages/ax/
+
+앞으로 진행할 큰 작업은 다음 세 가지다.
+
+1. /ax 고도화와 /ax 하위 신규 페이지 다수 신설
+2. /about 및 하위 페이지 전체 리뉴얼
+3. www.corca.ai 메인 화면 리뉴얼
+
+모든 신규·리뉴얼 페이지는 AX V2의 디자인 언어, 반응형 그리드,
+타이포그래피, 모션 품질, 다국어 정책, Technical SEO, JSON-LD,
+Breadcrumb, OG 이미지, 이미지 최적화와 검증 기준을 계승한다.
+
+첫 단계에서는 코드를 수정하거나 branch, commit, push, PR, merge,
+배포를 시작하지 마라.
+
+현재 사이트 구조를 검증한 뒤 다음을 포함한 상세 계획만 작성해라.
+
+- 공통 디자인 시스템으로 추출할 AX V2 요소
+- 신규 AX 페이지의 정보구조와 URL 후보
+- About 리뉴얼의 페이지·템플릿 구조
+- 메인 화면의 콘텐츠 역할과 재사용 컴포넌트
+- 4개 언어 출시와 번역 관리 방법
+- 공통 SEO·JSON-LD 모델
+- 필요한 Figma·카피·이미지 입력 자료
+- 단계별 branch, PR, 검증, 실서비스 배포 순서
+
+URL, 페이지 수, GNB 명칭, 카피와 출시 언어를 임의로 확정하지 말고
+제품 결정이 필요한 항목을 질문으로 분리해라.
+먼저 저장소와 환경 상태를 10줄 이내로 보고해라.
+```
+
+### 첨부 자료
+
+저장소를 정상적으로 열었다면 새 대화 시작 시 첨부 파일은 없다.
+Codex가 `AGENTS.md`, `docs/index.md`, 이 Markdown과 관련 주제 문서를
+저장소에서 직접 읽게 한다. HTML과 전체 patch는 첨부하지 않는다.
+
+실제 페이지 설계 단계에서는 한 번에 작업할 페이지와 직접 관련된 최신
+자료만 제공한다.
+
+- 해당 페이지의 Figma URL과 정확한 `node-id`
+- 확정된 한국어 카피 또는 콘텐츠 원문
+- 참고할 실서비스 URL
+- 데스크톱·태블릿·모바일 기준 화면
+- 저장소 밖에 있는 실제 SVG·PNG·WebP 원본
+- 반드시 유지하거나 제거할 요소의 화면 주석
+
+다음 자료는 첨부하지 않는다.
+
+- `.dev.vars`
+- GitHub·Cloudflare·OpenAI 토큰
+- 전체 patch
+- `node_modules`와 `dist`
+- 최신 여부를 구분하지 않은 과거 시안 묶음
+
+Git 접근이 불가능한 상황에서 단순 검토만 요청할 때는 이 Markdown을
+첨부할 수 있지만, 실제 구현에는 전체 저장소 clone이 필요하다.
+
+### 페이지별 후속 지시문
+
+첫 감사와 계획이 승인된 뒤에는 아래 템플릿으로 한 페이지 또는 한
+페이지 묶음만 시작한다.
+
+```text
+이제 <작업 대상 페이지 또는 카테고리>를 진행한다.
+
+작업 대상:
+- 현재 URL:
+- 새 URL 후보:
+- 대상 언어:
+- Figma URL과 node-id:
+- 콘텐츠 원문:
+- 제공한 이미지·SVG 원본:
+- 반드시 유지할 요소:
+- 변경 가능한 요소:
+- 이번 PR에서 제외할 요소:
+
+현재 main을 최신 origin/main과 맞추고 clean 상태를 확인한 뒤
+codex/<구체적인 작업명> 브랜치를 만들어라.
+
+먼저 Figma와 현재 실서비스를 같은 viewport로 비교하고,
+AX V2의 공통 디자인 언어와 SEO 정책을 어떻게 적용할지 설명해라.
+승인된 계획의 범위 안에서만 구현해라.
+
+구현 후 다음을 수행해라.
+
+1. 데스크톱·태블릿·모바일 시각 비교
+2. 한국어와 대상 다국어 줄바꿈·CJK 문장부호 검증
+3. title, description, canonical, hreflang, OG, JSON-LD 검증
+4. git diff --check
+5. pnpm check
+6. pnpm build
+7. 변경 diff와 검증 결과 정리
+8. focused commit 및 push
+9. PR 생성
+10. CI와 Cloudflare Workers build 통과 확인
+11. squash merge
+12. www.corca.ai 실서비스에서 최종 검증
+
+기존 미커밋 작업을 덮어쓰거나 삭제하지 말고,
+보호 대상 AX legacy 파일을 수정하지 마라.
+상담 폼의 실서비스 메일 발송은 별도 요청 없이 반복 테스트하지 마라.
+```
+
+### 차기 작업 운영 원칙
+
+- 전체 사이트를 한 대화에서 한꺼번에 구현하지 않는다.
+- `공통 기반 → AX 신규 페이지 → About → 메인` 순서로 진행한다.
+- 각 페이지 묶음은 별도 브랜치와 PR로 검증하고 배포한다.
+- 이 Markdown은 검증 기준점이며 최신 상태는 항상 `origin/main`과
+  스냅샷 이후 diff로 확인한다.
+- Git clone과 문서가 작업 연속성을 담당한다. 로컬 patch는 감사
+  자료일 뿐 새 작업의 필수 입력이 아니다.

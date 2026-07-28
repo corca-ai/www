@@ -19,6 +19,15 @@ const t = useTranslations(lang);
   {breadcrumbs?.length ? (
     <div class="corca-footer-breadcrumb container-c">
       <Breadcrumb lang={lang} items={breadcrumbs} />
+      <img
+        class="corca-footer-partner-desktop"
+        src="/images/brand/openai-select-partner.svg"
+        alt=""
+        width="156"
+        height="74"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   ) : null}
   <div class:list={['corca-footer-content container-c', !breadcrumbs?.length && 'corca-footer-content-home']}>
@@ -49,7 +58,15 @@ const t = useTranslations(lang);
       </address>
     </div>
     <div class="corca-footer-visual" aria-hidden="true">
-      <img class="corca-footer-partner" src="/images/brand/openai-select-partner.svg" alt="" width="156" height="74" loading="lazy" decoding="async" />
+      <img
+        class:list={['corca-footer-partner', breadcrumbs?.length && 'corca-footer-partner-with-breadcrumb']}
+        src="/images/brand/openai-select-partner.svg"
+        alt=""
+        width="156"
+        height="74"
+        loading="lazy"
+        decoding="async"
+      />
       <Image
         src={orcaFooter}
         alt={t.footer.orcaAlt}

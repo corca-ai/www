@@ -202,17 +202,33 @@ function extractFooter(html, source) {
 
 function markBlogFooter(sourceFooter, config, slug, document) {
   if (!sourceFooter) fail(`Missing shared footer for ${config.locale}.`);
-  const footer = sourceFooter.replace(/<footer class="([^"]*)"/, (_match, classes) => {
+  const footerWithMarker = sourceFooter.replace(/<footer class="([^"]*)"/, (_match, classes) => {
     const classNames = new Set(classes.split(/\s+/).filter(Boolean));
     classNames.add('corca-main-footer');
     return `<footer class="${[...classNames].join(' ')}"`;
   });
-  if ((footer.match(/corca-main-footer/g) || []).length !== 1) {
+  if ((footerWithMarker.match(/corca-main-footer/g) || []).length !== 1) {
     fail(`Expected one blog footer marker in the ${config.locale} shared footer.`);
   }
+  const footer = markBlogFooterVisualPartner(footerWithMarker, config.locale);
   const footerOpen = footer.match(/<footer\b[^>]*>/)?.[0];
   if (!footerOpen) fail(`Could not locate the ${config.locale} shared footer opening tag.`);
   return footer.replace(footerOpen, `${footerOpen}${renderBlogBreadcrumb(config, slug, document)}`);
+}
+
+function markBlogFooterVisualPartner(footer, locale) {
+  let partnerCount = 0;
+  const next = footer.replace(/<img\b[^>]*\bclass="([^"]*)"[^>]*>/g, (image, classes) => {
+    const classNames = new Set(classes.split(/\s+/).filter(Boolean));
+    if (!classNames.has('corca-footer-partner')) return image;
+    partnerCount += 1;
+    classNames.add('corca-footer-partner-with-breadcrumb');
+    return image.replace(`class="${classes}"`, `class="${[...classNames].join(' ')}"`);
+  });
+  if (partnerCount !== 1) {
+    fail(`Expected one visual partner badge in the ${locale} shared footer.`);
+  }
+  return next;
 }
 
 function renderBlogBreadcrumb(config, slug, document) {
@@ -226,7 +242,9 @@ function renderBlogBreadcrumb(config, slug, document) {
   const currentNode = slug
     ? `<li><span class="corca-breadcrumb-separator" aria-hidden="true">/</span><span class="corca-breadcrumb-current" aria-current="page">${escapeHtml(currentName)}</span></li>`
     : '';
-  return `<div class="corca-footer-breadcrumb container-c"><nav class="corca-breadcrumb" aria-label="${escapeHtml(config.breadcrumbLabel)}"><ol><li><a href="${homePath}" aria-label="${escapeHtml(config.homeLabel)}">${homeIcon}<span>${escapeHtml(config.homeLabel)}</span></a></li><li><span class="corca-breadcrumb-separator" aria-hidden="true">/</span>${blogNode}</li>${currentNode}</ol></nav></div>`;
+  const partnerBadge =
+    '<img class="corca-footer-partner-desktop" src="/images/brand/openai-select-partner.svg" alt="" width="156" height="74" loading="lazy" decoding="async">';
+  return `<div class="corca-footer-breadcrumb container-c"><nav class="corca-breadcrumb" aria-label="${escapeHtml(config.breadcrumbLabel)}"><ol><li><a href="${homePath}" aria-label="${escapeHtml(config.homeLabel)}">${homeIcon}<span>${escapeHtml(config.homeLabel)}</span></a></li><li><span class="corca-breadcrumb-separator" aria-hidden="true">/</span>${blogNode}</li>${currentNode}</ol></nav>${partnerBadge}</div>`;
 }
 
 function blogPostTitle(document, fallback) {

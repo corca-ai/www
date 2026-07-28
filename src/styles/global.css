@@ -221,6 +221,10 @@ h1, h2, h3, .font-head {
   padding-top: 55px;
 }
 
+.corca-footer-partner-desktop {
+  display: none;
+}
+
 .corca-breadcrumb ol {
   display: flex;
   flex-wrap: wrap;
@@ -376,6 +380,26 @@ h1, h2, h3, .font-head {
 
 .corca-footer-partner-mobile {
   display: none;
+}
+
+@media (min-width: 900px) {
+  .corca-footer-breadcrumb {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .corca-footer-partner-desktop {
+    display: block;
+    flex: 0 0 auto;
+    width: 140px;
+    height: auto;
+  }
+
+  .corca-footer-partner-with-breadcrumb {
+    display: none;
+  }
 }
 
 .corca-footer-orca {

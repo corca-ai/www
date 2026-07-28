@@ -47,7 +47,9 @@ page-specific blog SEO and feed metadata stays in the static blog pages. The
 public source HTML intentionally remains a static content-generation shell with
 no measurement ID; the production shell, common head, CSS and analytics
 configuration are single-sourced in the Astro site and applied to generated
-build output.
+build output. For pages with a breadcrumb, the generated footer also places the
+desktop OpenAI Select Partner badge in the same breadcrumb row as the Astro
+Footer so their shared container and top alignment remain consistent.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with

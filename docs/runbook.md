@@ -119,11 +119,14 @@ dimensions such as source and medium. The form separately preserves the first
 external referrer hostname and landing UTM values for the consultation email;
 it does not query GA while sending a lead or classify that evidence itself.
 
-Use GA4's Traffic acquisition report as the authority for Session source /
-medium and Session default channel group. The consultation email deliberately
-shows only `이전 사이트`, `최초 방문 페이지` and UTM evidence. In particular,
-do not infer `direct` from a missing browser referrer: a browser or app may have
-withheld it. No Data API credential or numeric property ID is needed for this
+The consultation email shows an immediate `유입 경로` source/medium summary
+beside `이전 사이트`, `최초 방문 페이지` and UTM evidence. It uses UTM
+source/medium first, maps a Google search referrer to `google / organic`, maps
+another external hostname to `host / referral`, and otherwise shows
+`(direct) / (none)`. This is form-time evidence rather than a readback of GA4's
+processed report; use GA4's Traffic acquisition report as the authority for
+Session source / medium and Session default channel group when the distinction
+matters. No Data API credential or numeric property ID is needed for the email
 flow.
 
 ## Change the canonical domain

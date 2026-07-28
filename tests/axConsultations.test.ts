@@ -51,16 +51,18 @@ function emailContent(message: unknown): { html: string; text: string } {
   return { html: candidate.html as string, text: candidate.text as string };
 }
 
-test('renders raw Google referrer evidence without inventing a channel', async () => {
+test('renders Google search source/medium beside the raw referrer evidence', async () => {
   const messages: unknown[] = [];
   const response = await submit(validPayload(), messages);
 
   assert.equal(response.status, 200);
   assert.equal(messages.length, 1);
   const email = emailContent(messages[0]);
+  assert.match(email.text, /유입 경로: google \/ organic/u);
   assert.match(email.text, /이전 사이트: www\.google\.com/u);
   assert.match(email.text, /최초 방문 페이지: \/ax/u);
-  assert.doesNotMatch(email.text, /Organic Search|referral|direct/u);
+  assert.doesNotMatch(email.text, /Organic Search/u);
+  assert.match(email.html, />유입 경로<\/th><td[^>]*>google \/ organic</u);
   assert.match(email.html, />이전 사이트<\/th><td[^>]*>www\.google\.com</u);
 });
 
@@ -78,6 +80,7 @@ test('shows UTM and browser referrer as separate evidence', async () => {
 
   assert.equal(response.status, 200);
   const email = emailContent(messages[0]);
+  assert.match(email.text, /유입 경로: linkedin-campaign \/ paid-social/u);
   assert.match(
     email.text,
     /UTM: source=linkedin-campaign · medium=paid-social · campaign=enterprise/u,
@@ -106,11 +109,12 @@ test('renders every customer-visible form value, including conditional other int
     /선택 이유: 여러 국가의 실무자가 함께 쓸 수 있는 운영 체계가 필요합니다\./u,
   );
   assert.match(email.text, /페이지 언어: ko/u);
+  assert.match(email.text, /유입 경로: google \/ organic/u);
   assert.match(email.text, /이전 사이트: www\.google\.com/u);
   assert.match(email.text, /최초 방문 페이지: \/ax/u);
 });
 
-test('does not label a missing referrer as direct traffic', async () => {
+test('uses GA direct source/medium when no campaign or referrer is available', async () => {
   const messages: unknown[] = [];
   const payload = {
     ...validPayload(),
@@ -120,8 +124,8 @@ test('does not label a missing referrer as direct traffic', async () => {
 
   assert.equal(response.status, 200);
   const email = emailContent(messages[0]);
+  assert.match(email.text, /유입 경로: \(direct\) \/ \(none\)/u);
   assert.match(email.text, /이전 사이트: 확인되지 않음/u);
-  assert.doesNotMatch(email.text, /direct \/ none/u);
 });
 
 test('keeps attribution optional for older clients', async () => {
@@ -131,8 +135,48 @@ test('keeps attribution optional for older clients', async () => {
 
   assert.equal(response.status, 200);
   const email = emailContent(messages[0]);
+  assert.match(email.text, /유입 경로: \(direct\) \/ \(none\)/u);
   assert.match(email.text, /이전 사이트: 확인되지 않음/u);
   assert.doesNotMatch(email.text, /최초 방문 페이지:/u);
+});
+
+test('renders a non-search external referrer with referral medium', async () => {
+  const messages: unknown[] = [];
+  const payload = {
+    ...validPayload(),
+    attribution: { initial_referrer_host: 'www.example.com', landing_path: '/ax' },
+  };
+  const response = await submit(payload, messages);
+
+  assert.equal(response.status, 200);
+  const email = emailContent(messages[0]);
+  assert.match(email.text, /유입 경로: example\.com \/ referral/u);
+  assert.match(email.text, /이전 사이트: www\.example\.com/u);
+});
+
+test('recognizes a country-specific Google search host without trusting lookalike domains', async () => {
+  const countryMessages: unknown[] = [];
+  const countryPayload = {
+    ...validPayload(),
+    attribution: { initial_referrer_host: 'www.google.co.kr', landing_path: '/ax' },
+  };
+  const countryResponse = await submit(countryPayload, countryMessages);
+
+  assert.equal(countryResponse.status, 200);
+  assert.match(emailContent(countryMessages[0]).text, /유입 경로: google \/ organic/u);
+
+  const lookalikeMessages: unknown[] = [];
+  const lookalikePayload = {
+    ...validPayload(),
+    attribution: { initial_referrer_host: 'google.example.com', landing_path: '/ax' },
+  };
+  const lookalikeResponse = await submit(lookalikePayload, lookalikeMessages);
+
+  assert.equal(lookalikeResponse.status, 200);
+  assert.match(
+    emailContent(lookalikeMessages[0]).text,
+    /유입 경로: google\.example\.com \/ referral/u,
+  );
 });
 
 for (const [name, attribution] of [

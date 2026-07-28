@@ -127,9 +127,11 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 공통 레이아웃은 탭 세션의 첫 랜딩 경로, 외부 리퍼러 hostname,
   첫 랜딩 UTM을 `sessionStorage`에 보존한다. 전체 리퍼러 URL과 query,
   hash는 저장하지 않는다.
-- 상담 메일은 이 값을 해석하지 않고 `이전 사이트`, `최초 방문 페이지`,
-  UTM으로 표시한다. 도메인을 채널로 변환하거나 referrer가 없다는
-  이유만으로 direct라고 추측하지 않는다.
+- 상담 메일은 UTM, Google 검색 referrer, 일반 외부 referrer, 정보 없음
+  순으로 폼 시점의 `source / medium`을 만들어 `유입 경로`로 표시하고,
+  원본 근거인 `이전 사이트`, `최초 방문 페이지`, UTM도 함께 표시한다.
+  이 값은 GA4 처리 결과를 다시 읽은 값이 아니므로 GA의 세션 채널 정본을
+  대체하지 않는다.
 - 사이트는 GTM 없이 직접 `gtag.js`를 사용한다. `form_submit`과 메일
   성공 뒤 `generate_lead`만 비식별 전환 이벤트로 보내며 이름·이메일·
   상담 내용·메일 attribution 값은 Google Analytics로 보내지 않는다.

@@ -10,9 +10,18 @@
     <atom:link href="https://www.corca.ai/rss" rel="self" type="application/rss+xml" />
     <description><![CDATA[Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.]]></description>
     <language>ko-KR</language>
-    <lastBuildDate>Tue, 28 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 29 Jul 2026 00:00:00 GMT</lastBuildDate>
     <generator>Astro</generator>
     <ttl>60</ttl>
+    <item>
+      <title><![CDATA[씰터뷰 - 인터뷰를 팀의 스킬로 만들기]]></title>
+      <link>https://www.corca.ai/blog/ceal-survey-interview-team-skill</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/ceal-survey-interview-team-skill</guid>
+      <pubDate>Wed, 29 Jul 2026 00:00:00 GMT</pubDate>
+      <description><![CDATA[개인 설문·인터뷰 매뉴얼을 팀이 반복 활용하는 에이전트 스킬로 옮겨, 사용자 탐색의 시작 비용을 낮춘 문라이트 팀의 경험.]]></description>
+      <category><![CDATA[AX]]></category>
+      <dc:creator><![CDATA[홍영기(Head of Products)]]></dc:creator>
+    </item>
     <item>
       <title><![CDATA[문라이트 랩실 교류 프로젝트📍세 번째 행선지: 한국생산기술연구원(KITECH)]]></title>
       <link>https://www.corca.ai/blog/beyond-the-desk-to-researchers-kitech</link>
@@ -21,15 +30,6 @@
       <description><![CDATA[대학이 아닌 연구원으로! with 한국생산기술연구원(KITECH) 에이프릴 랩]]></description>
       <category><![CDATA[제품 · 문라이트]]></category>
       <dc:creator><![CDATA[장은솔(UX Engineer)]]></dc:creator>
-    </item>
-    <item>
-      <title><![CDATA[씰터뷰 - 인터뷰를 팀의 스킬로 만들기]]></title>
-      <link>https://www.corca.ai/blog/ceal-survey-interview-team-skill</link>
-      <guid isPermaLink="true">https://www.corca.ai/blog/ceal-survey-interview-team-skill</guid>
-      <pubDate>Tue, 28 Jul 2026 00:00:00 GMT</pubDate>
-      <description><![CDATA[개인 설문·인터뷰 매뉴얼을 팀이 반복 활용하는 에이전트 스킬로 옮겨, 사용자 탐색의 시작 비용을 낮춘 문라이트 팀의 경험.]]></description>
-      <category><![CDATA[AX]]></category>
-      <dc:creator><![CDATA[홍영기(Head of Products)]]></dc:creator>
     </item>
     <item>
       <title><![CDATA[Corca, OpenAI Select Partner로 선정됐습니다]]></title>

@@ -4,6 +4,7 @@ import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { browserImageExtension } from './lib/browser-image-format.js';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const fixtureRoot = await mkdtemp(join(tmpdir(), 'corca-www-notion-publish-'));
@@ -21,6 +22,7 @@ const tinyPng =
 
 try {
   await mkdir(join(workDir, 'scripts'), { recursive: true });
+  await mkdir(join(workDir, 'scripts/lib'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/posts'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/admin/post-sources'), { recursive: true });
   await mkdir(join(workDir, 'public/blog/assets'), { recursive: true });
@@ -30,6 +32,7 @@ try {
 
   for (const file of [
     'scripts/apply-admin-post-change.js',
+    'scripts/lib/browser-image-format.js',
     'scripts/sync-notion-posts.js',
     'public/blog/index.html',
     'public/en/blog/index.html',
@@ -87,6 +90,24 @@ second preserved code-like line</pre>
               rich_text: text(
                 '본문에는 충분한 설명과 링크, 이미지가 포함되어 발행 스크립트와 정적 렌더러를 함께 검증합니다.',
               ),
+            }),
+            block('paragraph', {
+              rich_text: [
+                ...text('문라이트 팀은 앞서 '),
+                ...linkedText('숭실대학교', 'https://example.com/soongsil', { bold: true }),
+                ...text('와'),
+                ...text(' ', { bold: true }),
+                ...linkedText('건국대학교', 'https://example.com/konkuk', { bold: true }),
+                ...text(' ', { bold: true }),
+                ...text('연구자분들을 만났습니다.'),
+              ],
+            }),
+            block('paragraph', {
+              rich_text: [
+                ...text('한 연구실 안에 '),
+                ...text('물성, 소자, 기계공학 등 ', { bold: true }),
+                ...text('다양한 전공의 연구자들이 모여 있습니다.'),
+              ],
             }),
             block('quote', {
               rich_text: text(
@@ -209,6 +230,7 @@ second preserved code-like line</pre>
     notionBodyMetadata.sourceMarkdown,
     /> _First italic paragraph from Notion\._\n>\n> _Second italic paragraph from Notion\._/,
   );
+  assert.doesNotMatch(notionBodyMetadata.sourceMarkdown, /\*\*\s+\*\*/);
   const notionBodyStaticPage = await readFile(
     join(workDir, 'public/blog/notion-body-fixture/index.html'),
     'utf8',
@@ -219,6 +241,24 @@ second preserved code-like line</pre>
     /<blockquote>\s*<p><em>First italic paragraph from Notion\.<\/em><\/p>\s*<p><em>Second italic paragraph from Notion\.<\/em><\/p>\s*<\/blockquote>/,
   );
   assert.doesNotMatch(notionBodyStaticPage, /<p>_/);
+  assert.doesNotMatch(notionBodyStaticPage, /\*\*/);
+  assert.match(
+    notionBodyStaticPage,
+    /<a href="https:\/\/example\.com\/soongsil"><strong>숭실대학교<\/strong><\/a>와 <a href="https:\/\/example\.com\/konkuk"><strong>건국대학교<\/strong><\/a> 연구자분들을 만났습니다\./,
+  );
+  assert.match(
+    notionBodyStaticPage,
+    /한 연구실 안에 <strong>물성, 소자, 기계공학 등<\/strong> 다양한 전공의 연구자들이 모여 있습니다\./,
+  );
+  assert.equal(browserImageExtension(Buffer.from(tinyPng, 'base64'), '.jpg'), '.png');
+  assert.throws(
+    () =>
+      browserImageExtension(
+        Buffer.from('0000001c667479706865696300000000746d6170686569636d696631', 'hex'),
+        '.jpg',
+      ),
+    /HEIF\/HEIC/,
+  );
   assert.match(
     await readFile(
       join(workDir, 'public/blog/admin/post-translations/en/notion-body-fixture.html'),
@@ -403,4 +443,16 @@ function block(type, value) {
 
 function text(value, annotations = {}) {
   return [{ type: 'text', plain_text: value, text: { content: value }, annotations }];
+}
+
+function linkedText(value, url, annotations = {}) {
+  return [
+    {
+      type: 'text',
+      plain_text: value,
+      href: url,
+      text: { content: value, link: { url } },
+      annotations,
+    },
+  ];
 }

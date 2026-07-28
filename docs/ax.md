@@ -115,11 +115,12 @@ means a visitor who enters on `/` and later opens `/ax` keeps the original
 session acquisition evidence.
 
 The AX client adds the saved hostname and landing path to the consultation
-payload. The Worker validates both fields and adds the browser evidence to the
-email as `이전 사이트`, `최초 방문 페이지` and any UTM values. It does not
-translate a hostname into a channel or label missing referrer evidence as
-direct traffic. Referrer suppression by an app or browser is not guessed
-around.
+payload. The Worker validates both fields and adds a form-time source/medium
+summary plus the browser evidence to the email as `유입 경로`, `이전 사이트`,
+`최초 방문 페이지` and any UTM values. UTM source/medium takes priority; a
+Google search referrer is shown as `google / organic`, another external host as
+`host / referral`, and missing campaign/referrer evidence as
+`(direct) / (none)`.
 
 The clients emit only non-PII AX conversion events through the site's direct
 Google tag (`gtag.js`); Google Tag Manager is not part of this flow.
@@ -130,13 +131,12 @@ fields must never be sent to Google Analytics. Delivery failures return a
 generic localized message to visitors; detailed API error codes remain
 available in the network response for diagnosis.
 
-Google Analytics remains the single authority for source, medium and default
-channel group classification. For example, a click from an unpaid Google search
-result is normally reported as `google / organic` and Organic Search, while a
-visit without available campaign or referrer information can be reported as
-`(direct) / (none)`. The consultation email intentionally shows only the
-browser evidence and may say `이전 사이트: 확인되지 않음` when a browser or
-app withholds referrer information.
+The email value is an immediate form-time interpretation, not a readback of
+GA4's processed report. Google Analytics remains the authority for its
+source/medium and default channel group dimensions because its processing can
+also account for advertising integrations and attribution settings. The raw
+`이전 사이트` row stays beside the interpretation so missing or suppressed
+referrer evidence remains visible.
 
 Run `pnpm test:ax-attribution` for the pure acquisition and fake-email tests.
 `pnpm cf:preview` uses Wrangler's local email simulation because the email

@@ -24,6 +24,7 @@ const consultingInterestLabels: Record<string, string> = {
 const consultingInterestIds = Object.keys(consultingInterestLabels);
 type Locale = (typeof locales)[number];
 type FieldErrors = Record<string, string>;
+type UtmParameters = Partial<Record<'source' | 'medium' | 'campaign' | 'term' | 'content', string>>;
 
 interface ValidAttribution {
   initialReferrerHost: string;
@@ -40,6 +41,7 @@ interface ValidConsultation {
   reason: string;
   topic: AxTopicId | '';
   utm: string;
+  utmParameters: UtmParameters;
 }
 
 type ValidationResult =
@@ -177,6 +179,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
       reason: isV2Form ? reason : legacyMessage,
       topic: topic as AxTopicId | '',
       utm: utm.value,
+      utmParameters: utm.parameters,
     },
   };
 }
@@ -204,29 +207,36 @@ function parseStartedAt(value: unknown): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-function normalizeUtm(value: unknown): { valid: boolean; value: string } {
+function normalizeUtm(value: unknown): {
+  parameters: UtmParameters;
+  valid: boolean;
+  value: string;
+} {
   if (value === undefined || value === null || value === '') {
-    return { valid: true, value: '' };
+    return { parameters: {}, valid: true, value: '' };
   }
   if (typeof value === 'string') {
     const text = value.trim();
-    return { valid: text.length <= 1_000, value: text.slice(0, 1_000) };
+    return { parameters: {}, valid: text.length <= 1_000, value: text.slice(0, 1_000) };
   }
-  if (!isRecord(value)) return { valid: false, value: '' };
+  if (!isRecord(value)) return { parameters: {}, valid: false, value: '' };
 
   const entries: string[] = [];
+  const parameters: UtmParameters = {};
   for (const key of ['source', 'medium', 'campaign', 'term', 'content']) {
     const entry = value[key];
     if (entry === undefined || entry === null || entry === '') continue;
     if (typeof entry !== 'string' || entry.length > 200) {
-      return { valid: false, value: '' };
+      return { parameters: {}, valid: false, value: '' };
     }
     const normalized = entry.trim();
     if (!normalized) continue;
+    parameters[key as keyof UtmParameters] = normalized;
     entries.push(`${key}=${normalized}`);
   }
   const text = entries.join(' · ');
   return {
+    parameters,
     valid: text.length <= 1_000,
     value: text.slice(0, 1_000),
   };
@@ -264,6 +274,21 @@ function normalizeAttribution(value: unknown): {
   };
 }
 
+function formSourceMedium(input: ValidConsultation): string {
+  if (Object.keys(input.utmParameters).length > 0) {
+    return `${input.utmParameters.source || '(not set)'} / ${
+      input.utmParameters.medium || '(not set)'
+    }`;
+  }
+
+  const host = input.attribution.initialReferrerHost;
+  if (!host) return '(direct) / (none)';
+  if (/^(?:www\.)?google\.(?:[a-z]{2,3}|(?:co|com)\.[a-z]{2})$/u.test(host)) {
+    return 'google / organic';
+  }
+  return `${host.replace(/^www\./u, '')} / referral`;
+}
+
 async function sendConsultationEmail(
   input: ValidConsultation,
   env: AxConsultationEnv,
@@ -280,6 +305,7 @@ async function sendConsultationEmail(
   );
   const interestSummary = interestLabels.join(', ');
   const consultationTimestamp = formatConsultationTimestamp(submittedDate);
+  const sourceMedium = formSourceMedium(input);
   const previousSite = input.attribution.initialReferrerHost || '확인되지 않음';
   const text = [
     'Corca AX 상담 요청',
@@ -291,6 +317,7 @@ async function sendConsultationEmail(
     ...(input.topic ? [`문의 유형: ${topicLabel} (${input.topic})`] : []),
     `페이지 언어: ${input.locale}`,
     `${interestSummary ? '선택 이유' : '문의 내용'}: ${input.reason || '입력하지 않음'}`,
+    `유입 경로: ${sourceMedium}`,
     `이전 사이트: ${previousSite}`,
     ...(input.attribution.landingPath
       ? [`최초 방문 페이지: ${input.attribution.landingPath}`]
@@ -309,6 +336,7 @@ async function sendConsultationEmail(
       interestSummary ? '선택 이유' : '문의 내용',
       escapeHtml(input.reason || '입력하지 않음').replace(/\n/g, '<br />'),
     ],
+    ['유입 경로', escapeHtml(sourceMedium)],
     ['이전 사이트', escapeHtml(previousSite)],
     ...(input.attribution.landingPath
       ? [['최초 방문 페이지', escapeHtml(input.attribution.landingPath)]]

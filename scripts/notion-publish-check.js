@@ -12,6 +12,7 @@ const workDir = join(fixtureRoot, 'www');
 const bodyPageId = '11111111-2222-3333-4444-555555555555';
 const htmlPageId = '66666666-7777-8888-9999-000000000000';
 const publishedPageId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+const legacyCompletedPageId = 'ffffffff-1111-2222-3333-444444444444';
 const pagesPath = join(fixtureRoot, 'pages.json');
 const blocksPath = join(fixtureRoot, 'blocks.json');
 const updatesPath = join(fixtureRoot, 'updates.jsonl');
@@ -153,7 +154,7 @@ second preserved code-like line</pre>
             slug: 'notion-html-fixture',
             description: 'Checks that a Notion HTML upload becomes a Corca blog post.',
             language: 'en',
-            status: '배포 완료',
+            status: '배포 신청',
             fileUrl: pathToFileURL(htmlPath).href,
           }),
           page({
@@ -162,8 +163,16 @@ second preserved code-like line</pre>
             slug: 'already-published-fixture',
             description: 'Already published posts with a public URL should not resync.',
             language: 'ko',
-            status: '배포 완료',
+            status: '배포 신청',
             publicUrl: 'https://www.corca.ai/blog/already-published-fixture',
+          }),
+          page({
+            id: legacyCompletedPageId,
+            title: 'Legacy completed fixture',
+            slug: 'legacy-completed-fixture',
+            description: 'The old completed status must not request a new deployment.',
+            language: 'ko',
+            status: '배포 완료',
           }),
         ],
       },
@@ -183,8 +192,10 @@ second preserved code-like line</pre>
       NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
       NOTION_FIXTURE_UPDATES_FILE: updatesPath,
       NOTION_ALLOW_FILE_URLS: '1',
-      NOTION_POST_READY_STATUS: '배포 완료',
+      NOTION_POST_READY_STATUS: '',
       NOTION_POST_UPDATE_STATUS: '수정 요청',
+      NOTION_POST_PUBLISHING_STATUS: '배포 완료',
+      NOTION_POST_PUBLISHED_STATUS: '배포 완료',
       NOTION_SKIP_UPDATES: '0',
       CORCA_SITE_URL: 'https://www.corca.ai',
       BLOG_TRANSLATION_PROVIDER: 'fixture',
@@ -212,6 +223,10 @@ second preserved code-like line</pre>
   );
   assert.equal(
     posts.some((post) => post.slug === 'already-published-fixture'),
+    false,
+  );
+  assert.equal(
+    posts.some((post) => post.slug === 'legacy-completed-fixture'),
     false,
   );
   assert.equal(
@@ -302,10 +317,20 @@ second preserved code-like line</pre>
     await readFile(updatesPath, 'utf8'),
     /https:\/\/www\.corca\.ai\/blog\/notion-body-fixture/,
   );
-  assert.match(
-    await readFile(updatesPath, 'utf8'),
+  const notionUpdates = (await readFile(updatesPath, 'utf8'))
+    .trim()
+    .split('\n')
+    .map((line) => JSON.parse(line));
+  const deploymentRequestUpdates = JSON.stringify(
+    notionUpdates.filter((update) => update.page_id === htmlPageId),
+  );
+  assert.doesNotMatch(
+    deploymentRequestUpdates,
     /https:\/\/www\.corca\.ai\/en\/blog\/notion-html-fixture/,
   );
+  assert.match(deploymentRequestUpdates, /배포 신청/);
+  assert.doesNotMatch(deploymentRequestUpdates, /배포 완료/);
+  assert.match(deploymentRequestUpdates, /Prepared notion-html-fixture for deployment/);
   assert.match(
     await readFile(join(workDir, 'public/sitemap-posts.xml'), 'utf8'),
     /https:\/\/www\.corca\.ai\/en\/blog\/notion-html-fixture/,
@@ -354,7 +379,7 @@ second preserved code-like line</pre>
       NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
       NOTION_FIXTURE_UPDATES_FILE: updatesPath,
       NOTION_ALLOW_FILE_URLS: '1',
-      NOTION_POST_READY_STATUS: '배포 완료',
+      NOTION_POST_READY_STATUS: '',
       NOTION_POST_UPDATE_STATUS: '수정 요청',
       NOTION_POST_DELETE_STATUS: '삭제 요청',
       NOTION_POST_DELETED_STATUS: '삭제 완료',
@@ -398,7 +423,7 @@ function page({
   slug,
   description,
   language,
-  status = '배포 완료',
+  status = '배포 신청',
   fileUrl = '',
   publicUrl = '',
 }) {

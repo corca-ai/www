@@ -10,9 +10,18 @@
     <atom:link href="https://www.corca.ai/rss" rel="self" type="application/rss+xml" />
     <description><![CDATA[Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.]]></description>
     <language>ko-KR</language>
-    <lastBuildDate>Tue, 07 Jul 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 28 Jul 2026 00:00:00 GMT</lastBuildDate>
     <generator>Astro</generator>
     <ttl>60</ttl>
+    <item>
+      <title><![CDATA[문라이트 랩실 교류 프로젝트📍세 번째 행선지: 한국생산기술연구원(KITECH)]]></title>
+      <link>https://www.corca.ai/blog/beyond-the-desk-to-researchers-kitech</link>
+      <guid isPermaLink="true">https://www.corca.ai/blog/beyond-the-desk-to-researchers-kitech</guid>
+      <pubDate>Tue, 28 Jul 2026 00:00:00 GMT</pubDate>
+      <description><![CDATA[대학이 아닌 연구원으로! with 한국생산기술연구원(KITECH) 에이프릴 랩]]></description>
+      <category><![CDATA[제품 · 문라이트]]></category>
+      <dc:creator><![CDATA[장은솔(UX Engineer)]]></dc:creator>
+    </item>
     <item>
       <title><![CDATA[우리가 만들고 싶은 AI Colleague]]></title>
       <link>https://www.corca.ai/blog/we-make-ai-colleague</link>

@@ -3858,8 +3858,9 @@ main:has(.static-post-view) {
 .featured-card img[src$="corca-openai-partner-cover.png"],
 .post-card img[src$="corca-openai-partner-cover.png"] {
   aspect-ratio: 16 / 9;
-  background: #000000;
-  object-fit: contain;
+  background: #ffffff;
+  object-fit: cover;
+  object-position: 18% center;
   outline: none;
 }
 

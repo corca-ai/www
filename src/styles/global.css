@@ -218,7 +218,7 @@ h1, h2, h3, .font-head {
 }
 
 .corca-footer-breadcrumb {
-  padding-top: 110px;
+  padding-top: 55px;
 }
 
 .corca-breadcrumb ol {
@@ -390,10 +390,6 @@ h1, h2, h3, .font-head {
 }
 
 @media (max-width: 899px) {
-  .corca-footer-breadcrumb {
-    padding-top: 110px;
-  }
-
   .corca-footer-content,
   .corca-footer-content-home {
     grid-template-columns: 1fr;
@@ -445,10 +441,6 @@ h1, h2, h3, .font-head {
 }
 
 @media (min-width: 600px) and (max-width: 899px) {
-  .corca-footer-breadcrumb {
-    padding-top: 55px;
-  }
-
   .corca-footer-content {
     position: relative;
   }

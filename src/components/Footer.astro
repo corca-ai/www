@@ -27,6 +27,15 @@ const t = useTranslations(lang);
         <span></span>
       </a>
       <p class="corca-footer-tagline">{t.footer.tagline.split('\n').map((line, index) => <Fragment>{index > 0 ? <br /> : null}{line}</Fragment>)}</p>
+      <img
+        class="corca-footer-partner-mobile"
+        src="/images/brand/openai-select-partner.svg"
+        alt=""
+        width="156"
+        height="74"
+        loading="lazy"
+        decoding="async"
+      />
       <address class="corca-footer-legal">
         <p>{t.footer.legalName}</p>
         <p>

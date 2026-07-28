@@ -1,5 +1,21 @@
 [
   {
+    "slug": "corca-openai-partner",
+    "title": "CorcaがOpenAI Select Partnerに選ばれました",
+    "description": "CorcaがOpenAI Select Partnerに選ばれ、Partner Partner Networkに正式に登録されました。 MoonlightとAXシーンで積み重ねたCorcaのAI旅程を紹介します。",
+    "date": "2026-07-28",
+    "tags": [
+      "Corca"
+    ],
+    "author": "문정민(AX Consultant)",
+    "cover": "assets/notion-posts/corca-openai-partner-cover.png",
+    "wordCount": 1876,
+    "language": "ja",
+    "coverAlt": "",
+    "section": "Corca",
+    "searchText": "OpenAI Partner Network Select Partner バッジ CorcaがOpenAI Select Partnerに選ばれました CorcaがOpenAI Select Partnerに選ばれました。 2月にOpenAI Services Partner契約を締結したCorcaは、7月14日にOpenAI Partner Networkの発足とともにOpenAI Select Partnerに案内されました。今 OpenAI Partner NetworkのCorca公式プロフィール でもコルカを確認できます。 今回の選定は、コルカが製品と顧客の現場で積み重ねてきた経験が公式パートナー活動につながった結果です。 Corcaは研究者のためのAI製品を直接作成して運営し、企業がAIを実際の業務に活用できるように現場で共同してきました。 OpenAIとCorcaのパートナーシップイメージ コルカはAI製品を自分で作り、直接運営してきました CorcaはAI製品を作り、運営してきたチームです。そのうちの一つ Moonlight は、研究者が論文をより迅速かつ深く読んで理解するのを助ける AI研究仲間 です。論文を読んで詰まる概念を解き、コアをハイライトし、引用とメモをつなぐ経験を製品の中に盛り込んできました。 製品を運営するというのは、モデルの性能だけを見ることではありませんでした。ユーザーが何を信頼するのか、どんな瞬間に役立つのか、良い機能が日常的な習慣になるために何が必要かを学び続けました。 Moonlightは、CorcaがAIを扱う方法の1つの出発点です。 Moonlight製品画面。研究者が論文を読んで理解するプロセスを支援するAI研究の同僚です。 製品体験をAXシーンに広げてきました Corcaは、製品で得た経験をもとに、企業のAI転換（AX）も共にしてきました。金融・プロテック・教育など、さまざまな産業のチームと出会い、AIが各会社の働き方の中で定着する過程を悩みました。 企業のAIの導入は、1つの答えにまとめられていません。そのため、Corcaは教育、社内AIチャンピオンの育成、ChatGPT Enterpriseの導入、カスタムAIソリューション、AIネイティブチームの構築まで、各組織の状況に合わせた経験を積んできました。 OpenAI Partner NetworkのCorcaプロファイルにもこのような提供範囲が紹介されています。 OpenAI Partner LocatorでCorcaを見つける OpenAI Partner Locatorは、AIソリューションを構築、導入、拡張する際に一緒にするパートナーを探す公式ページです。 Corcaは、韓国をサービス地域とするOpenAI Select Partnerとして登録されています。 今回の登録は、Corcaが製品や顧客の現場で積み重ねた経験が、公式パートナー活動につながった結果です。 Corcaは今後も製品を運営し、学んだこととお客様の現場で出会った問題をつなげていきます。 Moonlightで始まったAIの経験が研究者に届いたように、より多くのチームが自分のやり方でAIを書くのを助けます。 Corcaは今後も製品を運営し、学んだこととお客様の現場で出会った問題をつなげていきます。 Moonlightで始まったAIの経験が研究者に届いたように、より多くのチームが自分のやり方でAIを書くのを助けます。 詳しくは OpenAI Partner NetworkのCorca公式プロフィール で確認できます。 参考資料 OpenAI Partner Network — Corca 公式プロフィール OpenAI、「OpenAI Partner Networkについて」（2026.6.14） Moonlightのホームページ Corca AX 毎日経済、「スタートアップコルカ、オープンAIセレクトパートナーに選定…」企業AX攻略」(2026.7.20) 電子新聞、「コルカ、オープンAIサービスパートナーになった」（2026.2.4） イトデー、「オープンAI・アンスロピック・ミストラルまで…」グローバルAI企業集結された韓国」(2026.6.18) ジャパンコリアデイリー、「OpenAIサービスパートナーコルカ、独歩的な技術力と「Thick Wrapper」戦略で日本リサーチ市場攻略」（2026.2.24）"
+  },
+  {
     "slug": "beyond-the-desk-to-researchers-kitech",
     "title": "ムーンライトラプシル交流プロジェクト📍3番目の目的地：韓国生産技術研究院（KITECH）",
     "description": "大学ではなく研究者として！ with 韓国生産技術研究院(KITECH) April Lab",

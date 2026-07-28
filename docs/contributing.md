@@ -38,6 +38,32 @@ give the page frontmatter with a `title` and link it from this hub, the docs
 index, or the nearest topic page so `awiki` keeps the documentation graph
 connected.
 
+## Continuity documentation
+
+The copy-ready new-task prompts in the [site and AX V2 handoff](handoffs/2026-07-28-corca-site-handoff.md)
+are a stable entry procedure, not a release log. Do not rewrite them for every
+routine pull request. Each new task fetches `origin`, verifies the handoff
+anchor and reads the relevant later Git diff instead.
+
+Before opening a pull request, decide whether its change creates a durable
+fact future work needs: route or component ownership, design-system behavior,
+SEO or i18n policy, local setup, deployment behavior, or a regression risk.
+Update the nearest canonical `docs/` page when it does; update the site handoff
+when the fact affects starting or continuing site-wide work. Record the
+documentation decision, changed paths, validation and any remaining risk in
+the pull request summary. A pull request with no durable documentation impact
+should explicitly say why no documentation update is needed.
+
+When editing the canonical handoff Markdown, regenerate its adjacent HTML:
+
+```sh
+pnpm handoff:render docs/handoffs/2026-07-28-corca-site-handoff.md
+```
+
+Markdown and Git history remain authoritative. The generated HTML is for human
+review, and full repository patches are local audit material rather than files
+to commit.
+
 ## Run the gates
 
 Before opening a pull request, run:

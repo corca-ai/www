@@ -127,9 +127,9 @@ requests. The GitHub Action still creates a pull request; the public site only
 changes after that pull request is merged and the normal Cloudflare deployment
 finishes.
 
-- Publish a new post by leaving `공개 URL` empty and setting the Notion status
-  to `배포 완료`. Rows that already have `공개 URL` are treated as already
-  published and are skipped while they remain `배포 완료`.
+- Request a new deployment by leaving `공개 URL` empty and setting the Notion
+  status to `배포 신청`. Rows that already have `공개 URL` are treated as
+  already published and are skipped while they remain `배포 신청`.
 - Edit an existing post by keeping the same `Slug`/`슬러그`, changing the Notion
   page body or metadata, then setting the status to `수정 요청`. The sync script
   treats this as an upsert and regenerates the static files for that slug.
@@ -143,7 +143,7 @@ finishes.
 
 Minimal status options:
 
-- `배포 완료`
+- `배포 신청`
 - `수정 요청`
 - `삭제 요청`
 
@@ -160,6 +160,12 @@ when the Notion database uses different labels:
 - `NOTION_POST_READY_STATUS`
 - `NOTION_POST_UPDATE_STATUS`
 - `NOTION_POST_DELETE_STATUS`
+
+If `NOTION_POST_READY_STATUS` is explicitly set to the former `배포 완료`
+label, change it to `배포 신청` or remove the variable so the default applies.
+For a `배포 신청` row, publishing-status overrides cannot mark the row complete
+or fill `공개 URL`; the sync only prepares a pull request. Fill the live URL
+after that pull request is merged and Cloudflare deployment succeeds.
 
 When `NOTION_SKIP_UPDATES=1`, the workflow will not write status or result fields
 back to Notion. In that mode, editors should use the generated pull request as

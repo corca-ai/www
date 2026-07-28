@@ -99,11 +99,21 @@ try {
           message: `Deleted ${item.slug}.`,
         });
       } else {
-        await updateNotionResult(item.page, config, {
-          status: statusFor(item.context.statusName, 'published', config),
-          publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
-          message: `Published ${item.slug}.`,
-        });
+        const isDeploymentRequest = /배포/.test(item.context.statusName || '');
+        await updateNotionResult(
+          item.page,
+          config,
+          isDeploymentRequest
+            ? {
+                status: item.context.statusName || '배포 신청',
+                message: `Prepared ${item.slug} for deployment.`,
+              }
+            : {
+                status: statusFor(item.context.statusName, 'published', config),
+                publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
+                message: `Published ${item.slug}.`,
+              },
+        );
       }
     }
   }
@@ -461,12 +471,15 @@ function statusFor(currentStatus, target, config) {
   }
   if (/배포/.test(currentStatus || '')) {
     const deployDefaults = {
-      publishing: currentStatus || '배포 완료',
-      published: '배포 완료',
+      publishing: currentStatus || '배포 신청',
+      published: '배포 신청',
       deleting: '삭제 중',
       deleted: '삭제 완료',
       error: '배포 전',
     };
+    if (target === 'publishing' || target === 'published') {
+      return deployDefaults[target];
+    }
     return config.statusTargets[target] || deployDefaults[target];
   }
   const defaults = {
@@ -1307,7 +1320,7 @@ function loadConfig() {
       'Publish requested',
       '발행 요청',
       '발행 준비',
-      '배포 완료',
+      '배포 신청',
       '업로드 요청',
       '게시 요청',
     ]),

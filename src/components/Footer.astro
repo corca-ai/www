@@ -10,15 +10,18 @@ interface Props {
   lang: Lang;
   /** Page nodes after Home. Omitted for home. */
   breadcrumbs?: Crumb[] | undefined;
+  /** The home route keeps the footer's breadcrumb row as an icon-only home link. */
+  homeBreadcrumb?: boolean;
 }
-const { lang, breadcrumbs } = Astro.props;
+const { lang, breadcrumbs, homeBreadcrumb = false } = Astro.props;
 const t = useTranslations(lang);
+const hasBreadcrumb = homeBreadcrumb || Boolean(breadcrumbs?.length);
 ---
 
 <footer class="corca-site-footer">
-  {breadcrumbs?.length ? (
+  {hasBreadcrumb ? (
     <div class="corca-footer-breadcrumb container-c">
-      <Breadcrumb lang={lang} items={breadcrumbs} />
+      <Breadcrumb lang={lang} items={breadcrumbs ?? []} iconOnlyHome={homeBreadcrumb} />
       <img
         class="corca-footer-partner-desktop"
         src="/images/brand/openai-select-partner.svg"
@@ -30,7 +33,7 @@ const t = useTranslations(lang);
       />
     </div>
   ) : null}
-  <div class:list={['corca-footer-content container-c', !breadcrumbs?.length && 'corca-footer-content-home']}>
+  <div class:list={['corca-footer-content container-c', !hasBreadcrumb && 'corca-footer-content-home']}>
     <div class="corca-footer-copy">
       <a href={lang === 'ko' ? '/' : `/${lang}`} class="corca-footer-logo" aria-label="Corca">
         <span></span>
@@ -59,7 +62,7 @@ const t = useTranslations(lang);
     </div>
     <div class="corca-footer-visual" aria-hidden="true">
       <img
-        class:list={['corca-footer-partner', breadcrumbs?.length && 'corca-footer-partner-with-breadcrumb']}
+        class:list={['corca-footer-partner', hasBreadcrumb && 'corca-footer-partner-with-breadcrumb']}
         src="/images/brand/openai-select-partner.svg"
         alt=""
         width="156"

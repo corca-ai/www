@@ -22,7 +22,9 @@ the same GA4 property.
   [products](products.md)) — alongside `404.astro` and the `robots.txt`,
   `sitemap.xml` and `rss.xml` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
-  page under `components/pages/`.
+  page under `components/pages/`. The Footer keeps its breadcrumb row on the
+  home route as an accessible icon-only home link so its shared Partner badge
+  alignment and top spacing match the rest of the site.
 - `src/products/` — one self-contained folder per product (Moonlight, Trace, …),
   auto-discovered by the shared shell; see [products](products.md).
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
@@ -37,7 +39,10 @@ the same GA4 property.
 - `src/i18n/` — locale config, UI strings, per-page SEO metadata and the
   structured-data (schema.org) builders.
 - `src/assets/` and `public/` — optimized images, the font, the OG image, the
-  web app manifest, blog assets, and feed/static files. `public/_redirects`
+  web app manifest, blog assets, and feed/static files. Favicon PNG variants
+  are generated from the branded symbol image with a rounded-square alpha mask
+  so browser and search result icons retain the navy background and white mark.
+  `public/_redirects`
   holds the per-path relocation rules (old flat URLs → the `/products` and
   `/about` structure, `/rss` → `/rss.xml`, and legacy blog post redirects).
 - `worker/index.ts` — edge canonicalization and API dispatch. AX consultation

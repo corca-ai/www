@@ -314,6 +314,14 @@ second preserved code-like line</pre>
   assert.match(blogStyles, /\.article-content \.note/);
   assert.match(blogStyles, /\.article-content pre code/);
   assert.match(
+    blogStyles,
+    /\.article-content img\s*\{[^}]*box-shadow:\s*none;[^}]*outline:\s*none;/s,
+  );
+  assert.match(
+    blogStyles,
+    /\.post-card img\[src\$="corca-openai-partner-cover\.png"\]\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9;[^}]*background:\s*#ffffff;[^}]*border-inline:\s*4px\s+solid\s+#000000;[^}]*box-sizing:\s*border-box;[^}]*object-fit:\s*cover;[^}]*object-position:\s*18%\s+center;[^}]*outline:\s*none;/s,
+  );
+  assert.match(
     await readFile(updatesPath, 'utf8'),
     /https:\/\/www\.corca\.ai\/blog\/notion-body-fixture/,
   );

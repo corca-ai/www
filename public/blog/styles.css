@@ -2065,8 +2065,9 @@ body {
 }
 
 .article-content img {
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-border);
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
 }
 
 .article-content p > img:only-child {
@@ -3852,6 +3853,17 @@ main:has(.static-post-view) {
   aspect-ratio: 16 / 9;
   border-radius: 8px;
   background: #f3f4f6;
+}
+
+.featured-card img[src$="corca-openai-partner-cover.png"],
+.post-card img[src$="corca-openai-partner-cover.png"] {
+  aspect-ratio: 16 / 9;
+  background: #ffffff;
+  border-inline: 4px solid #000000;
+  box-sizing: border-box;
+  object-fit: cover;
+  object-position: 18% center;
+  outline: none;
 }
 
 .post-card:hover img,

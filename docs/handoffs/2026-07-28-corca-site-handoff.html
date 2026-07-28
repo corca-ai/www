@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Corca site and AX V2 handoff — 2026-07-28</title>
+  <link rel="icon" type="image/png" href="../../assets/brand/favicon-shine.png">
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Pretendard, "Noto Sans KR", system-ui, sans-serif;
+      color: #101828;
+      background: #eef3fb;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #075cd8; }
+    code, pre { font-family: "SFMono-Regular", Consolas, monospace; }
+    code { overflow-wrap: anywhere; }
+    pre {
+      overflow-x: auto;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      color: #eef5ff;
+      background: #0a1d3b;
+    }
+    table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #d6deeb;
+      vertical-align: top;
+      text-align: left;
+    }
+    th { background: #edf4ff; }
+    .page {
+      width: min(1120px, calc(100% - 2rem));
+      margin: 2rem auto 5rem;
+    }
+    .meta, .toolbar, .toc, .handoff-section {
+      border: 1px solid #d6deeb;
+      border-radius: 1rem;
+      background: #fff;
+      box-shadow: 0 12px 36px rgb(31 56 94 / 7%);
+    }
+    .meta { padding: 1.25rem 1.5rem; }
+    .meta p { margin: 0.35rem 0; }
+    .notice {
+      padding: 0.8rem 1rem;
+      border-left: 4px solid #0a66e8;
+      background: #edf5ff;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0.75rem;
+      z-index: 2;
+      display: flex;
+      gap: 0.75rem;
+      margin: 1rem 0;
+      padding: 0.75rem;
+    }
+    .toolbar input {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid #aebbd0;
+      border-radius: 0.65rem;
+      font: inherit;
+    }
+    .toolbar button {
+      padding: 0.75rem 1rem;
+      border: 0;
+      border-radius: 0.65rem;
+      color: #fff;
+      background: #0a66e8;
+      cursor: pointer;
+    }
+    .toc { padding: 1rem 1.5rem; }
+    .toc h2 { margin-top: 0; }
+    .toc ol { columns: 2; }
+    .handoff-section { margin-top: 1rem; overflow: clip; }
+    .handoff-section > summary {
+      padding: 1rem 1.25rem;
+      font-size: 1.2rem;
+      font-weight: 750;
+      cursor: pointer;
+      background: #f8faff;
+    }
+    .handoff-section__body { padding: 0.25rem 1.25rem 1.5rem; }
+    .is-hidden { display: none; }
+    @media (max-width: 720px) {
+      .page { width: min(100% - 1rem, 1120px); margin-top: 0.5rem; }
+      .toolbar { top: 0.25rem; }
+      .toc ol { columns: 1; }
+      .handoff-section__body { padding-inline: 0.8rem; }
+    }
+    @media print {
+      :root { background: #fff; }
+      .toolbar { display: none; }
+      .page { width: 100%; margin: 0; }
+      .meta, .toc, .handoff-section { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Generated from docs/handoffs/2026-07-28-corca-site-handoff.md. Edit the Markdown source only. -->
+  <main class="page">
+    <section class="meta" aria-label="Snapshot metadata">
+      <p class="notice"><strong>수정은 Markdown에서만:</strong> 이 HTML은 로컬 검토용 파생물이며 공개 라우트가 아닙니다.</p>
+      <p><strong>원본:</strong> <code>docs/handoffs/2026-07-28-corca-site-handoff.md</code></p>
+      <p><strong>기준 커밋:</strong> <code>c55807bc611984299e5306c7a5343beb7edfa35f</code></p>
+      <p><strong>현재 완성본:</strong> <code>22b8e37f32d526188c344a49ef7dc25af1d17dae</code></p>
+      <p><strong>생성 시각:</strong> <time>2026-07-28T14:02:32+09:00</time></p>
+    </section>
+    <div class="toolbar">
+      <input id="handoff-search" type="search" placeholder="인수인계 내용 검색" aria-label="인수인계 내용 검색">
+      <button id="toggle-sections" type="button">모두 접기</button>
+    </div>
+    <nav class="toc" aria-label="문서 목차">
+      <h2>목차</h2>
+      <ol><li><a href="#스냅샷과-증거">스냅샷과 증거</a></li><li><a href="#운영-url과-공개-상태">운영 URL과 공개 상태</a></li><li><a href="#현재-ax-v2-구조와-소유권">현재 AX V2 구조와 소유권</a></li><li><a href="#ax-v2에서-완료된-제품-작업">AX V2에서 완료된 제품 작업</a></li><li><a href="#pr-140-165-시간순-원장">PR #140–#165 시간순 원장</a></li><li><a href="#현재-구조를-바꿀-때의-회귀-위험">현재 구조를 바꿀 때의 회귀 위험</a></li><li><a href="#검증된-품질-계약">검증된 품질 계약</a></li><li><a href="#완료된-작업과-미착수-계획의-경계">완료된 작업과 미착수 계획의 경계</a></li><li><a href="#문서-재현과-감사-절차">문서 재현과 감사 절차</a></li><li><a href="#새-대화-시작문">새 대화 시작문</a></li></ol>
+    </nav>
+    <article>
+      <h1 id="corca-웹사이트-ax-v2-인수인계">Corca 웹사이트·AX V2 인수인계</h1>
+<blockquote>
+<p>저장소 파일과 Git diff가 이 문서 또는 대화 기억과 충돌하면 저장소와
+Git을 우선한다. 이 문서는 2026-07-28 시점의 검증 가능한 스냅샷이며,
+이후 변경은 별도 diff로 확인해야 한다.</p>
+</blockquote>
+<p>이 문서는 <code>/Users/tommy/Documents/XT/corca-www</code>에서 이어질 Corca 웹사이트
+작업의 정본 인수인계다. 현재 실서비스 <code>/ax</code>의 공식 명칭은 <strong>AX V2</strong>다.
+과거 대화에서 “V3”라고 부른 적이 있어도 현재 코드와 실서비스를 지칭할
+때는 AX V2로 통일한다.</p>
+
+      <details class="handoff-section" open data-section>
+  <summary id="스냅샷과-증거">스냅샷과 증거</summary>
+  <div class="handoff-section__body"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>저장소</td>
+<td><code>corca-ai/www</code></td>
+</tr>
+<tr>
+<td>기준 커밋</td>
+<td><code>c55807bc611984299e5306c7a5343beb7edfa35f</code> — PR #139</td>
+</tr>
+<tr>
+<td>현재 완성본</td>
+<td><code>22b8e37f32d526188c344a49ef7dc25af1d17dae</code> — PR #165</td>
+</tr>
+<tr>
+<td>완성본 브랜치 상태</td>
+<td><code>main</code>, clean</td>
+</tr>
+<tr>
+<td>문서 작성 브랜치</td>
+<td><code>codex/site-renewal-handoff-safe-2026-07-28</code></td>
+</tr>
+<tr>
+<td>운영 도메인</td>
+<td><code>https://www.corca.ai</code></td>
+</tr>
+<tr>
+<td>전체 diff</td>
+<td>공개 저장소에 포함하지 않는 로컬 감사 자료</td>
+</tr>
+<tr>
+<td>로컬 patch 크기</td>
+<td>1,999,648 bytes</td>
+</tr>
+<tr>
+<td>로컬 patch SHA-256</td>
+<td><code>a18ee7256797ad33996932ba2ad977970efa151b075428020b8989cf8a9e9634</code></td>
+</tr>
+</tbody>
+</table>
+<p>전체 patch는 아래 명령으로 재현한다.</p>
+<pre><code class="language-sh">git diff --binary --full-index --find-renames \
+  c55807bc611984299e5306c7a5343beb7edfa35f..\
+22b8e37f32d526188c344a49ef7dc25af1d17dae \
+  --output=c55807-to-22b8e37.full.patch
+shasum -a 256 c55807-to-22b8e37.full.patch
+</code></pre>
+<p>이 patch는 감사와 검증을 위한 증거이며 적용용 배포 산출물이 아니다.
+공개 저장소에는 저장하지 않는다. 현재 컴퓨터의 로컬 감사본은
+<code>/Users/tommy/Documents/XT/corca-www-local-evidence/2026-07-28/</code>에
+보관한다. 다른 컴퓨터에서는 같은 두 커밋으로 patch를 재생성하고 위
+체크섬과 비교할 수 있다. 범위 안에서 다른 작업자가 병합한 변경도
+포함하므로 새 대화에서 처음부터 전부 읽지 말고, 특정 변경의 기원을
+검증해야 할 때만 관련 hunk를 조회한다.</p>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="운영-url과-공개-상태">운영 URL과 공개 상태</summary>
+  <div class="handoff-section__body"><table>
+<thead>
+<tr>
+<th>언어</th>
+<th>AX V2</th>
+<th>Privacy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>한국어</td>
+<td><code>https://www.corca.ai/ax</code></td>
+<td><code>https://www.corca.ai/privacy</code></td>
+</tr>
+<tr>
+<td>영어</td>
+<td><code>https://www.corca.ai/en/ax</code></td>
+<td><code>https://www.corca.ai/en/privacy</code></td>
+</tr>
+<tr>
+<td>일본어</td>
+<td><code>https://www.corca.ai/ja/ax</code></td>
+<td><code>https://www.corca.ai/ja/privacy</code></td>
+</tr>
+<tr>
+<td>중국어 간체</td>
+<td><code>https://www.corca.ai/zh/ax</code></td>
+<td><code>https://www.corca.ai/zh/privacy</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>www.corca.ai</code>가 정식 canonical 도메인이다. apex 요청은 canonical
+호스트로 정리된다.</li>
+<li>AX V2 네 언어는 공개·index 대상이다.</li>
+<li>네 언어 Privacy는 웹사이트에 배치되어 있지만 현재 정책상 <code>noindex</code>다.</li>
+<li><code>/ax-backup</code>은 과거 한국어 AX 비교본이며 <code>noindex, nofollow</code>,
+sitemap 제외, canonical <code>/ax</code>다.</li>
+<li>일반 merge가 Cloudflare Workers GitHub 연동을 통해 실서비스로
+배포된다. 수동 배포는 저장소의 배포 문서를 먼저 확인한다.</li>
+</ul>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="현재-ax-v2-구조와-소유권">현재 AX V2 구조와 소유권</summary>
+  <div class="handoff-section__body"><p><code>src/components/pages/Ax.astro</code>는 locale을 받은 뒤
+<code>src/components/pages/AxV2.astro</code>를 렌더링한다. 이것이 현재 네 언어
+공식 AX V2의 진입점이다.</p>
+<table>
+<thead>
+<tr>
+<th>책임</th>
+<th>현재 소유 파일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>route wrapper</td>
+<td><code>src/components/pages/Ax.astro</code></td>
+</tr>
+<tr>
+<td>AX V2 composition</td>
+<td><code>src/components/pages/AxV2.astro</code></td>
+</tr>
+<tr>
+<td>한국어 기준 콘텐츠와 언어 병합</td>
+<td><code>src/components/pages/ax-v2/content.ts</code></td>
+</tr>
+<tr>
+<td>EN·JA·ZH override</td>
+<td><code>i18n/ax-v2-content-localized.ts</code></td>
+</tr>
+<tr>
+<td>리드 폼 UI</td>
+<td><code>src/components/pages/ax-v2/AxLeadForm.astro</code></td>
+</tr>
+<tr>
+<td>동작·모션·폼 전송</td>
+<td><code>src/components/pages/ax-v2/ax-v2-client.ts</code></td>
+</tr>
+<tr>
+<td>페이지 스타일·반응형</td>
+<td><code>src/components/pages/ax-v2/ax-v2.css</code></td>
+</tr>
+<tr>
+<td>메타데이터·OG·hreflang</td>
+<td><code>src/i18n/pageMeta.ts</code>, <code>src/staticPages.ts</code></td>
+</tr>
+<tr>
+<td>Service·Breadcrumb JSON-LD</td>
+<td><code>src/i18n/structuredData.ts</code></td>
+</tr>
+<tr>
+<td>상담 API·메일</td>
+<td><code>worker/axConsultations.ts</code>, <code>wrangler.jsonc</code></td>
+</tr>
+<tr>
+<td>전역 Breadcrumb·Footer</td>
+<td><code>src/components/Breadcrumb.astro</code>, <code>src/components/Footer.astro</code></td>
+</tr>
+<tr>
+<td>블로그 셸 동기화</td>
+<td><code>scripts/sync-blog-shell-assets.js</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="보호-대상">보호 대상</h3>
+<p>다음은 AX V2를 수정하면서 손대지 않는 동결 자산이다.</p>
+<ul>
+<li>공개 비교 라우트 <code>/ax-backup</code></li>
+<li><code>src/components/pages/AxLegacy.astro</code></li>
+<li><code>src/components/pages/ax/</code></li>
+</ul>
+<p>공유 Header·Footer·보안 헤더 같은 전역 수정이 결과적으로 backup에도
+적용되는 것은 허용되지만, 동결된 페이지 구현과 자산을 새 작업의
+출발점으로 덮어쓰지 않는다.</p>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="ax-v2에서-완료된-제품-작업">AX V2에서 완료된 제품 작업</summary>
+  <div class="handoff-section__body"><h3 id="콘텐츠-레이아웃">콘텐츠·레이아웃</h3>
+<ul>
+<li>한국어 AX의 메시지, 패키지, 사례, OpenAI Select Partner, CTA를
+정리하고 영어·일본어·중국어 간체에 반영했다.</li>
+<li>언어별 줄바꿈, CJK 문장부호 고립, 그라데이션 글리프 잘림, 원형 카드
+제목과 설명의 위 정렬을 언어별로 보정했다.</li>
+<li>제품명은 필요한 문맥에서 <code>ChatGPT Enterprise</code>로 통일했다.</li>
+<li>승인된 배경 모션은 감쇠형 스프링 패럴랙스이며 전경은 정상 속도,
+배경만 부드럽게 이동한다.</li>
+<li>Hero CTA는 URL hash를 만들지 않고 Footer 직전 상담 섹션으로 즉시
+이동한다.</li>
+<li>OpenAI Select Partner 원본 SVG와 OpenAI–Corca 조합 로고를 실제
+grid, 반응형, 모바일 구성에 맞게 배치했다.</li>
+</ul>
+<h3 id="리드-폼-메일">리드 폼·메일</h3>
+<ul>
+<li>현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
+중국어에는 별도의 국외이전 동의가 포함된다.</li>
+<li>클라이언트는 <code>POST /api/ax/consultations</code>로 JSON을 보낸다.</li>
+<li>Worker가 검증한 뒤 Cloudflare Email Sending binding을 통해
+<code>contact+ax@corca.ai</code>로 발송한다. sender는 <code>ax@corca.ai</code>로 제한되고
+방문자 이메일은 <code>Reply-To</code>로만 사용한다.</li>
+<li>사이트 데이터베이스에는 리드를 저장하지 않는다.</li>
+<li>UTM과 비식별 전환 이벤트만 분석 도구에 전달하며 이름·이메일·상담
+내용은 Google Analytics 또는 <code>dataLayer</code>로 보내지 않는다.</li>
+<li>실제 웹사이트 발송과 수신이 정상 동작함을 사용자가 확인했다.</li>
+</ul>
+<h3 id="seo-발견성">SEO·발견성</h3>
+<ul>
+<li><code>https://www.corca.ai</code> canonical, 네 언어 hreflang과 <code>x-default</code>,
+언어별 title·description·OG 이미지가 반영됐다.</li>
+<li>모든 공개 페이지에서 <code>og:locale</code>과 <code>og:locale:alternate</code>를 제거했다.</li>
+<li>AX V2에는 사실에 맞는 service JSON-LD와 visible Breadcrumb와 같은
+경로를 쓰는 <code>BreadcrumbList</code>가 있다.</li>
+<li>네 언어 SEO 문구와 Kakao용 한국어 OG 문구를 별도로 다듬었다.</li>
+<li>Footer Breadcrumb는 홈 아이콘, 중간 링크, 링크 없는 굵은 현재
+페이지로 구성된다. 블로그 글의 현재 항목은 포스팅 제목이다.</li>
+<li>PR #165에서 승인된 Corca Shine 원본으로 favicon을 교체했다. 브라우저
+16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
+manifest를 빌드 시 재생성하며, 기존 favicon URL도 같은 원본을 쓴다.</li>
+</ul>
+<h3 id="전역-footer">전역 Footer</h3>
+<ul>
+<li>파란 Footer, 흰 Corca 로고, 언어별 태그라인, 법인 정보, 범고래,
+OpenAI Select Partner SVG를 공통 컴포넌트로 제공한다.</li>
+<li>이메일은 <code>mailto:</code>, 전화번호는 <code>tel:</code> 링크이며 hover/focus 상태가
+있다.</li>
+<li>데스크톱·태블릿·모바일의 Breadcrumb 상단 간격, 배지 정렬, 범고래
+크롭을 별도로 조정했다.</li>
+<li>범고래는 사진성 PNG를 표시 크기에 맞게 최적화한 자산이며, 로고와
+단순 도형은 SVG를 우선한다.</li>
+</ul>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="pr-140-165-시간순-원장">PR #140–#165 시간순 원장</summary>
+  <div class="handoff-section__body"><p>아래 표는 GitHub 병합 기록이다. “AX·현재 사이트 관련”은 이번 인수인계의
+직접 근거이고, “동시 변경”은 전체 patch에 포함되지만 AX 작업이 아닌
+변경이다.</p>
+<table>
+<thead>
+<tr>
+<th>PR</th>
+<th>병합 결과</th>
+<th>분류</th>
+<th>핵심 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/140">#140</a></td>
+<td><code>65196c</code></td>
+<td>AX</td>
+<td>리드 경험과 카피 개선</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/141">#141</a></td>
+<td><code>f1a72b</code></td>
+<td>AX</td>
+<td>과제 진단 CTA 카피 개선</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/142">#142</a></td>
+<td><code>89a747</code></td>
+<td>AX</td>
+<td>진단 비교 카피 정리</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/143">#143</a></td>
+<td><code>fb13ae</code></td>
+<td>AX</td>
+<td>파트너 카피 타이포그래피</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/144">#144</a></td>
+<td><code>6fdab92</code></td>
+<td>AX·메일</td>
+<td>상담 메일 제목에 timestamp 추가</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/145">#145</a></td>
+<td><code>08800fb</code></td>
+<td>동시 변경</td>
+<td>AI Colleague 블로그 현지화 수정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/146">#146</a></td>
+<td><code>f502246</code></td>
+<td>AX·기록</td>
+<td>다국어 타이포그래피 작업. 이 merge SHA 자체는 현재 <code>main</code>의 조상이 아니며 #147 최종 변경에 대체·흡수된 GitHub 기록</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/147">#147</a></td>
+<td><code>430419e</code></td>
+<td>AX</td>
+<td>AX V2 리드 폼과 다국어 개선 출시</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/148">#148</a></td>
+<td><code>79826a</code></td>
+<td>동시 변경</td>
+<td>Notion multiline italic 수정</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/149">#149</a></td>
+<td><code>675ec73</code></td>
+<td>전역 관련</td>
+<td>production domain을 <code>corca.ai</code>로 이전</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/150">#150</a></td>
+<td><code>e3e1f16</code></td>
+<td>동시 변경</td>
+<td>Wix legacy redirect와 HR 인터뷰 숨김</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/151">#151</a></td>
+<td><code>7affc0f</code></td>
+<td>동시 변경</td>
+<td>빈 alias를 Privacy로 redirect</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/152">#152</a></td>
+<td><code>e51a999</code></td>
+<td>AX</td>
+<td>Select Partner badge 추가</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/153">#153</a></td>
+<td><code>93abae3</code></td>
+<td>AX</td>
+<td>파트너 브랜드 자산 정렬</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/154">#154</a></td>
+<td><code>c398325</code></td>
+<td>AX·SEO</td>
+<td>네 언어 SEO·OG metadata</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/155">#155</a></td>
+<td><code>efd0d6d</code></td>
+<td>AX·SEO</td>
+<td>Kakao용 한국어 AX OG 문구 단축</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/156">#156</a></td>
+<td><code>828e592</code></td>
+<td>AX·SEO</td>
+<td>네 언어 SEO 문구 개선</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/157">#157</a></td>
+<td><code>067820c</code></td>
+<td>AX·SEO</td>
+<td>AX 다국어 hreflang을 언어 코드로 교체</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/158">#158</a></td>
+<td><code>9d11074</code></td>
+<td>전역 관련</td>
+<td>모든 현지화 페이지의 language-wide hreflang</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/159">#159</a></td>
+<td><code>bc60946</code></td>
+<td>동시 변경</td>
+<td>Charness 산출물 로컬 유지</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/160">#160</a></td>
+<td><code>d8958fc</code></td>
+<td>전역 SEO</td>
+<td>OG locale metadata 제거</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/161">#161</a></td>
+<td><code>42c74e</code></td>
+<td>동시 변경</td>
+<td>People 페이지 engineer interview 숨김</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/162">#162</a></td>
+<td><code>cc14d37</code></td>
+<td>전역 관련</td>
+<td>전역 Breadcrumb와 Footer 개편</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/163">#163</a></td>
+<td><code>e8b402e</code></td>
+<td>전역 관련</td>
+<td>반응형 Footer partner layout 개선</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/164">#164</a></td>
+<td><code>b4f38e0</code></td>
+<td>전역 관련</td>
+<td>Footer Breadcrumb 간격 축소</td>
+</tr>
+<tr>
+<td><a href="https://github.com/corca-ai/www/pull/165">#165</a></td>
+<td><code>22b8e37</code></td>
+<td>전역 관련</td>
+<td>Corca Shine favicon과 기기별 icon manifest 반영</td>
+</tr>
+</tbody>
+</table>
+<p>PR 번호와 축약 SHA는 탐색용이다. 정확한 코드 포함 여부는 <code>git merge-base --is-ancestor</code>와 현재 tree를 함께 확인한다. 특히 #146은
+GitHub에서 병합된 기록과 현재 <code>main</code>의 조상 관계가 다르므로 commit
+존재만으로 최종 코드 포함을 단정하지 않는다.</p>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="현재-구조를-바꿀-때의-회귀-위험">현재 구조를 바꿀 때의 회귀 위험</summary>
+  <div class="handoff-section__body"><ul>
+<li>AX V2와 frozen legacy가 이름이 비슷하다. active owner인 <code>ax-v2/</code>와
+보호 대상 <code>ax/</code>를 혼동하지 않는다.</li>
+<li>네 언어 콘텐츠는 한국어 base와 locale override가 합성된다. 한국어
+key를 바꾸면 override 누락과 런타임 fallback을 함께 점검한다.</li>
+<li>CJK와 Latin은 같은 font size에서도 실제 glyph 폭과 paint bounds가
+다르다. 문자열만 보고 일괄 CSS로 맞추지 말고 네 언어·대표 viewport를
+확인한다.</li>
+<li>Footer는 일반 Astro route와 정적 blog shell 양쪽에 동기화된다.
+컴포넌트만 확인하거나 생성된 블로그 HTML만 수동 수정하지 않는다.</li>
+<li>visible Breadcrumb와 JSON-LD는 같은 모델을 써야 한다. 표시 이름,
+canonical URL, 현재 항목의 링크 유무를 따로 관리하지 않는다.</li>
+<li><code>og:locale</code>은 의도적으로 제거됐다. SEO 라이브러리나 템플릿 변경으로
+다시 출력하지 않는다.</li>
+<li>상담 recipient, sender, privacy 고지, 중국어 국외이전 동의가 서로
+어긋나지 않게 유지한다. 실서비스 메일 테스트는 수신자 동의 없이
+반복하지 않는다.</li>
+<li>원본 SVG를 bitmap으로 rasterize하거나 CSS로 비정상 비율 축소하면
+흐림과 왜곡이 생긴다. 로고는 원본 비율과 intrinsic size를 유지한다.</li>
+<li><code>main</code> merge가 production에 연결된다. 코드 변경과 문서 전용 변경을
+같은 PR에 섞지 않는다.</li>
+</ul>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="검증된-품질-계약">검증된 품질 계약</summary>
+  <div class="handoff-section__body"><p>스냅샷 범위의 배포 과정에서 다음 검사가 통과했다.</p>
+<ul>
+<li><code>git diff --check</code></li>
+<li>Biome</li>
+<li>Astro check</li>
+<li>Knip</li>
+<li>agentic discovery</li>
+<li>SEO governance</li>
+<li>performance contract</li>
+<li>production build</li>
+<li>GitHub Actions CI</li>
+<li>네 언어 AX·Privacy와 <code>www.corca.ai</code> 실서비스 응답</li>
+</ul>
+<p>새 변경은 당시 통과 기록을 재사용하지 말고 현재 tree에서 해당 검사를
+다시 실행한다. UI 변경은 데스크톱, 태블릿, 모바일과 EN·JA·ZH의
+줄바꿈·크롭 회귀까지 확인한다.</p>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="완료된-작업과-미착수-계획의-경계">완료된 작업과 미착수 계획의 경계</summary>
+  <div class="handoff-section__body"><p>다음은 <strong>완료된 상태가 아니라 다음 작업 후보</strong>다.</p>
+<ul>
+<li>AX 카테고리 아래 신규 페이지 기획 및 신설</li>
+<li>메인 화면 리뉴얼</li>
+<li>회사소개 카테고리 리뉴얼</li>
+</ul>
+<p>이 후보의 URL, GNB 정보구조, 페이지 수, 다국어 범위, 디자인 시스템,
+마이그레이션 순서는 아직 승인되지 않았다. 현재 <code>/ax</code>를 <code>/ax/v2</code>로
+옮긴다거나 새 페이지를 “V3”로 명명하는 것도 결정하지 않았다. 새
+대화에서는 현재 구조를 먼저 읽고 계획만 작성한 뒤 명시적 승인 후
+구현한다.</p>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="문서-재현과-감사-절차">문서 재현과 감사 절차</summary>
+  <div class="handoff-section__body"><p>정본은 이 Markdown과 Git 저장소다. HTML은 사람이 검색·접기·코드
+표시로 검토하기 위한 파생물이며 직접 수정하지 않는다.</p>
+<pre><code class="language-sh">pnpm handoff:render docs/handoffs/2026-07-28-corca-site-handoff.md
+</code></pre>
+<p>patch 재현과 체크섬 검증:</p>
+<pre><code class="language-sh">git diff --binary --full-index --find-renames \
+  c55807bc611984299e5306c7a5343beb7edfa35f..\
+22b8e37f32d526188c344a49ef7dc25af1d17dae \
+  --output=c55807-to-22b8e37.full.patch
+shasum -a 256 c55807-to-22b8e37.full.patch
+</code></pre>
+</div>
+</details>
+<details class="handoff-section" open data-section>
+  <summary id="새-대화-시작문">새 대화 시작문</summary>
+  <div class="handoff-section__body"><p>새 컴퓨터에서는 먼저 저장소를 clone하고 <code>main</code>을 최신 상태로 만든다.</p>
+<pre><code class="language-sh">git clone https://github.com/corca-ai/www.git
+cd www
+git switch main
+git pull --ff-only origin main
+</code></pre>
+<p>그다음 아래 블록을 새 대화의 첫 입력으로 사용한다. 첫 줄의 경로만 해당
+컴퓨터에서 clone한 저장소의 절대 경로로 바꾼다.</p>
+<pre><code class="language-text">실제 Git 저장소는 &lt;이 컴퓨터에서 corca-ai/www를 clone한 절대 경로&gt;이다.
+이전 대화를 복구하거나 추측하지 말고 저장소 파일과 Git 이력만 기준으로 사용해라.
+
+다음 순서로 읽고 확인해라.
+
+1. AGENTS.md
+2. docs/index.md
+3. docs/handoffs/2026-07-28-corca-site-handoff.md
+
+먼저 아래 명령에 해당하는 읽기 전용 확인만 수행해라.
+
+- git status --short
+- git branch --show-current
+- git log -1 --oneline
+- git merge-base --is-ancestor 22b8e37f32d526188c344a49ef7dc25af1d17dae HEAD
+
+작업 트리가 clean인지 확인하고, 현재 HEAD가 위 스냅샷보다 최신이면
+22b8e37f32d526188c344a49ef7dc25af1d17dae 이후의 커밋과 diff만 별도로
+요약해라. 문서와 코드가 충돌하면 저장소 파일과 Git diff를 우선해라.
+
+현재 실서비스 /ax의 공식 명칭은 AX V2다.
+다음은 보호 대상이며 명시적 요청 없이 수정하지 마라.
+
+- /ax-backup
+- src/components/pages/AxLegacy.astro
+- src/components/pages/ax/
+
+완료된 작업과 미착수 계획을 섞지 마라.
+다음 작업 후보는 아직 미착수 상태다.
+
+- AX 카테고리 아래 신규 페이지 기획 및 신설
+- 메인 화면 리뉴얼
+- 회사소개 카테고리 리뉴얼
+
+이번 단계에서는 현재 구조, GNB, 다국어 체계, 공통 컴포넌트,
+SEO·Breadcrumb·Footer 정책을 확인하고 구현 계획만 작성해라.
+URL 구조, 페이지 수, 다국어 범위, 디자인 방향을 임의로 확정하지 말고
+코드 수정, commit, push, PR, merge, 배포를 시작하지 마라.
+</code></pre>
+</div>
+</details>
+    </article>
+  </main>
+  <script>
+    const search = document.querySelector('#handoff-search');
+    const sections = [...document.querySelectorAll('[data-section]')];
+    const toggle = document.querySelector('#toggle-sections');
+    search.addEventListener('input', () => {
+      const query = search.value.trim().toLocaleLowerCase('ko');
+      for (const section of sections) {
+        const matches = !query || section.textContent.toLocaleLowerCase('ko').includes(query);
+        section.classList.toggle('is-hidden', !matches);
+        if (query && matches) section.open = true;
+      }
+    });
+    toggle.addEventListener('click', () => {
+      const shouldOpen = sections.some((section) => !section.open);
+      for (const section of sections) section.open = shouldOpen;
+      toggle.textContent = shouldOpen ? '모두 접기' : '모두 펼치기';
+    });
+  </script>
+</body>
+</html>

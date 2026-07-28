@@ -3,6 +3,7 @@ import { appendFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/pro
 import { tmpdir } from 'node:os';
 import { basename, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { browserImageExtension } from './lib/browser-image-format.js';
 import { markdownToHtml } from './lib/markdown-renderer.js';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
@@ -663,10 +664,12 @@ async function downloadBinary(url) {
   };
 }
 
-async function downloadMediaAsset(url, context) {
+async function downloadMediaAsset(url, context, kind) {
   const { data, contentType } = await downloadBinary(url);
   const index = String(++context.mediaIndex).padStart(2, '0');
-  const extension = mediaExtension(url, contentType);
+  const sourceExtension = mediaExtension(url, contentType);
+  const extension =
+    kind === 'image' ? browserImageExtension(data, sourceExtension) : sourceExtension;
   const relativePath = `assets/notion-posts/${context.assetSlug}-${index}${extension}`;
   await mkdir(join(process.cwd(), 'public/blog/assets/notion-posts'), { recursive: true });
   await writeFile(join(process.cwd(), 'public/blog', relativePath), data);
@@ -684,7 +687,7 @@ async function resolveCoverAsset(value, slug) {
   }
 
   const { data, contentType } = await downloadBinary(rawCover);
-  const extension = mediaExtension(rawCover, contentType);
+  const extension = browserImageExtension(data, mediaExtension(rawCover, contentType));
   if (!['.avif', '.webp', '.png', '.jpg', '.jpeg', '.gif', '.svg'].includes(extension)) {
     throw new Error('Notion thumbnail must be an image file.');
   }
@@ -849,7 +852,18 @@ function richTextMarkdown(value) {
           if (!part || /^\n(?:[ \t]*\n)+$/.test(part)) {
             return part;
           }
-          let formatted = part;
+          const leadingWhitespace = part.match(/^\s+/u)?.[0] || '';
+          const contentWithTrailingWhitespace = part.slice(leadingWhitespace.length);
+          const trailingWhitespace = contentWithTrailingWhitespace.match(/\s+$/u)?.[0] || '';
+          const content = contentWithTrailingWhitespace.slice(
+            0,
+            contentWithTrailingWhitespace.length - trailingWhitespace.length,
+          );
+          if (!content) {
+            return part;
+          }
+
+          let formatted = content;
           if (annotations.code) {
             formatted = `\`${formatted.replaceAll('`', "'")}\``;
           }
@@ -862,7 +876,7 @@ function richTextMarkdown(value) {
           if (href && /^https?:\/\//i.test(href)) {
             formatted = `[${formatted}](${href})`;
           }
-          return formatted;
+          return `${leadingWhitespace}${formatted}${trailingWhitespace}`;
         })
         .join('');
     })
@@ -911,7 +925,7 @@ async function mediaMarkdown(value, kind, context) {
   if (!url) {
     return '';
   }
-  const mediaUrl = value.type === 'file' ? await downloadMediaAsset(url, context) : url;
+  const mediaUrl = value.type === 'file' ? await downloadMediaAsset(url, context, kind) : url;
   const caption =
     richTextPlain(value.caption || []) ||
     (kind === 'image' ? 'Notion image' : basename(safeUrlPathname(mediaUrl)) || '파일');

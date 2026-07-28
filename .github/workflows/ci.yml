@@ -36,6 +36,8 @@ jobs:
         run: pnpm check:performance-contract
       - name: Metadata, schema and image-alt governance
         run: pnpm check:seo-governance
+      - name: Notion publishing contract
+        run: pnpm notion:check
 
   # Duplication (nose) + docs (awiki) gates. Both are public corca-ai tools;
   # installed here from their public release binaries — no token needed.

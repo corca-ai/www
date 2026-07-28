@@ -2,6 +2,10 @@
 <?xml-stylesheet type="text/xsl" href="/sitemap.xsl?v=20260721-blue"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.corca.ai/blog/beyond-the-desk-to-researchers-kitech</loc>
+    <lastmod>2026-07-28T00:00:00.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://www.corca.ai/blog/we-make-ai-colleague</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
@@ -48,6 +52,10 @@
   <url>
     <loc>https://www.corca.ai/blog/hello-orca-bot</loc>
     <lastmod>2022-05-20T00:00:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.corca.ai/en/blog/beyond-the-desk-to-researchers-kitech</loc>
+    <lastmod>2026-07-28T00:00:00.000Z</lastmod>
   </url>
   <url>
     <loc>https://www.corca.ai/en/blog/we-make-ai-colleague</loc>
@@ -98,6 +106,10 @@
     <lastmod>2022-05-20T00:00:00.000Z</lastmod>
   </url>
   <url>
+    <loc>https://www.corca.ai/ja/blog/beyond-the-desk-to-researchers-kitech</loc>
+    <lastmod>2026-07-28T00:00:00.000Z</lastmod>
+  </url>
+  <url>
     <loc>https://www.corca.ai/ja/blog/we-make-ai-colleague</loc>
     <lastmod>2026-07-07T00:00:00.000Z</lastmod>
   </url>
@@ -144,6 +156,10 @@
   <url>
     <loc>https://www.corca.ai/ja/blog/corca-lunch-bot</loc>
     <lastmod>2022-05-20T00:00:00.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.corca.ai/zh/blog/beyond-the-desk-to-researchers-kitech</loc>
+    <lastmod>2026-07-28T00:00:00.000Z</lastmod>
   </url>
   <url>
     <loc>https://www.corca.ai/zh/blog/we-make-ai-colleague</loc>

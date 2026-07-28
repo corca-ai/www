@@ -3859,6 +3859,8 @@ main:has(.static-post-view) {
 .post-card img[src$="corca-openai-partner-cover.png"] {
   aspect-ratio: 16 / 9;
   background: #ffffff;
+  border-inline: 4px solid #000000;
+  box-sizing: border-box;
   object-fit: cover;
   object-position: 18% center;
   outline: none;

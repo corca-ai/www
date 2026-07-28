@@ -192,6 +192,7 @@ h1, h2, h3, .font-head {
    at 1120px (so at 1440px the left edge lands at ~160px, matching the source)
    with a 20px minimum gutter on narrow screens. */
 .container-c {
+  --container-c-gutter: max(20px, min(9.8vw - 15px, 3.9vw + 30px), 50% - 560px);
   width: 100%;
   margin-inline: auto;
   /* Side gutter fitted to corca.ai's own scaling, measured across widths:
@@ -199,7 +200,7 @@ h1, h2, h3, .font-head {
      the steep 9.8vw−15 ramp matches; above it live flattens (≈3.9vw+30), so we
      take the min of the two; the 50%−560 term then caps content at 1120px on
      wide screens; 20px floor. */
-  padding-inline: max(20px, min(9.8vw - 15px, 3.9vw + 30px), 50% - 560px);
+  padding-inline: var(--container-c-gutter);
 }
 
 /* ---------------------------------------------------------------------------
@@ -217,7 +218,7 @@ h1, h2, h3, .font-head {
 }
 
 .corca-footer-breadcrumb {
-  padding-top: 12px;
+  padding-top: 110px;
 }
 
 .corca-breadcrumb ol {
@@ -359,6 +360,7 @@ h1, h2, h3, .font-head {
 
 .corca-footer-visual {
   position: relative;
+  z-index: 1;
   min-height: 300px;
 }
 
@@ -369,6 +371,10 @@ h1, h2, h3, .font-head {
   right: 74px;
   width: 140px;
   height: auto;
+}
+
+.corca-footer-partner-mobile {
+  display: none;
 }
 
 .corca-footer-orca {
@@ -385,7 +391,7 @@ h1, h2, h3, .font-head {
 
 @media (max-width: 899px) {
   .corca-footer-breadcrumb {
-    padding-top: 48px;
+    padding-top: 110px;
   }
 
   .corca-footer-content,
@@ -397,7 +403,7 @@ h1, h2, h3, .font-head {
   }
 
   .corca-footer-copy {
-    min-height: 420px;
+    min-height: 560px;
     padding-bottom: 42px;
   }
 
@@ -412,6 +418,13 @@ h1, h2, h3, .font-head {
     font-size: 11px;
   }
 
+  .corca-footer-partner-mobile {
+    display: inline-block;
+    width: 122px;
+    height: auto;
+    margin: 22px 0 30px;
+  }
+
   .corca-footer-visual {
     position: absolute;
     inset: auto 0 0;
@@ -421,16 +434,51 @@ h1, h2, h3, .font-head {
   }
 
   .corca-footer-partner {
-    top: auto;
-    right: max(20px, 7vw);
-    bottom: 184px;
+    display: none;
+  }
+
+  .corca-footer-orca {
+    right: -66px;
+    bottom: -38px;
+    width: 353px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .corca-footer-breadcrumb {
+    padding-top: 55px;
+  }
+
+  .corca-footer-content {
+    position: relative;
+  }
+
+  .corca-footer-copy {
+    min-height: 420px;
+  }
+
+  .corca-footer-partner-mobile {
+    display: none;
+  }
+
+  .corca-footer-visual {
+    inset: 0;
+    height: auto;
+  }
+
+  .corca-footer-partner {
+    display: block;
+    /* Align the badge to the breadcrumb's first baseline and the shared grid. */
+    top: -20px;
+    right: var(--container-c-gutter);
+    bottom: auto;
     width: 122px;
   }
 
   .corca-footer-orca {
-    right: -102px;
-    bottom: -118px;
-    width: min(128vw, 540px);
+    right: -88px;
+    bottom: -84px;
+    width: 440px;
   }
 }
 
@@ -444,7 +492,7 @@ h1, h2, h3, .font-head {
   }
 
   .corca-footer-copy {
-    min-height: 390px;
+    min-height: 560px;
   }
 
   .corca-footer-legal .corca-footer-rights {

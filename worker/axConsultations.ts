@@ -1,4 +1,4 @@
-import { type AxTopicId, axTopicIds } from '../src/components/pages/ax/contract';
+import { type AxTopicId, axTopicIds } from '../src/components/pages/ax/contract.ts';
 
 export type AxConsultationEnv = Pick<Env, 'AX_EMAIL'>;
 
@@ -25,7 +25,13 @@ const consultingInterestIds = Object.keys(consultingInterestLabels);
 type Locale = (typeof locales)[number];
 type FieldErrors = Record<string, string>;
 
+interface ValidAttribution {
+  initialReferrerHost: string;
+  landingPath: string;
+}
+
 interface ValidConsultation {
+  attribution: ValidAttribution;
   interests: string[];
   email: string;
   locale: Locale;
@@ -112,6 +118,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   const locale = stringValue(payload.locale);
   const startedAt = parseStartedAt(payload.started_at);
   const utm = normalizeUtm(payload.utm);
+  const attribution = normalizeAttribution(payload.attribution);
   const fields: FieldErrors = {};
 
   if (!name || name.length > 80) fields.name = 'INVALID_NAME';
@@ -146,6 +153,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   if (!isLocale(locale)) fields.locale = 'INVALID_LOCALE';
   if (startedAt === null) fields.started_at = 'INVALID_STARTED_AT';
   if (!utm.valid) fields.utm = 'INVALID_UTM';
+  if (!attribution.valid) fields.attribution = 'INVALID_ATTRIBUTION';
 
   if (Object.keys(fields).length > 0) {
     return { code: 'VALIDATION_ERROR', fields, ok: false };
@@ -160,6 +168,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   return {
     ok: true,
     value: {
+      attribution: attribution.value,
       email,
       interests,
       locale: locale as Locale,
@@ -209,11 +218,50 @@ function normalizeUtm(value: unknown): { valid: boolean; value: string } {
   for (const key of ['source', 'medium', 'campaign', 'term', 'content']) {
     const entry = value[key];
     if (entry === undefined || entry === null || entry === '') continue;
-    if (typeof entry !== 'string' || entry.length > 200) return { valid: false, value: '' };
-    entries.push(`${key}=${entry.trim()}`);
+    if (typeof entry !== 'string' || entry.length > 200) {
+      return { valid: false, value: '' };
+    }
+    const normalized = entry.trim();
+    if (!normalized) continue;
+    entries.push(`${key}=${normalized}`);
   }
   const text = entries.join(' · ');
-  return { valid: text.length <= 1_000, value: text.slice(0, 1_000) };
+  return {
+    valid: text.length <= 1_000,
+    value: text.slice(0, 1_000),
+  };
+}
+
+function normalizeAttribution(value: unknown): {
+  valid: boolean;
+  value: ValidAttribution;
+} {
+  const empty = { initialReferrerHost: '', landingPath: '' };
+  if (value === undefined || value === null || value === '') {
+    return { valid: true, value: empty };
+  }
+  if (!isRecord(value)) return { valid: false, value: empty };
+
+  const initialReferrerHost = stringValue(value.initial_referrer_host).toLowerCase();
+  const landingPath = stringValue(value.landing_path);
+  const validHost =
+    !initialReferrerHost ||
+    (initialReferrerHost.length <= 253 &&
+      /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/u.test(
+        initialReferrerHost,
+      ));
+  const validPath =
+    !landingPath ||
+    (landingPath.length <= 512 &&
+      landingPath.startsWith('/') &&
+      !landingPath.startsWith('//') &&
+      !landingPath.includes('?') &&
+      !landingPath.includes('#'));
+
+  return {
+    valid: validHost && validPath,
+    value: validHost && validPath ? { initialReferrerHost, landingPath } : empty,
+  };
 }
 
 async function sendConsultationEmail(
@@ -232,6 +280,7 @@ async function sendConsultationEmail(
   );
   const interestSummary = interestLabels.join(', ');
   const consultationTimestamp = formatConsultationTimestamp(submittedDate);
+  const previousSite = input.attribution.initialReferrerHost || '확인되지 않음';
   const text = [
     'Corca AX 상담 요청',
     '',
@@ -242,7 +291,11 @@ async function sendConsultationEmail(
     ...(input.topic ? [`문의 유형: ${topicLabel} (${input.topic})`] : []),
     `페이지 언어: ${input.locale}`,
     `${interestSummary ? '선택 이유' : '문의 내용'}: ${input.reason || '입력하지 않음'}`,
-    `유입 정보: ${input.utm || '없음'}`,
+    `이전 사이트: ${previousSite}`,
+    ...(input.attribution.landingPath
+      ? [`최초 방문 페이지: ${input.attribution.landingPath}`]
+      : []),
+    ...(input.utm ? [`UTM: ${input.utm}`] : []),
     `접수 시각: ${submittedAt}`,
   ].join('\n');
   const rows = [
@@ -256,7 +309,11 @@ async function sendConsultationEmail(
       interestSummary ? '선택 이유' : '문의 내용',
       escapeHtml(input.reason || '입력하지 않음').replace(/\n/g, '<br />'),
     ],
-    ['유입 정보', escapeHtml(input.utm || '없음')],
+    ['이전 사이트', escapeHtml(previousSite)],
+    ...(input.attribution.landingPath
+      ? [['최초 방문 페이지', escapeHtml(input.attribution.landingPath)]]
+      : []),
+    ...(input.utm ? [['UTM', escapeHtml(input.utm)]] : []),
     ['접수 시각', escapeHtml(submittedAt)],
   ]
     .map(

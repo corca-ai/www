@@ -113,6 +113,19 @@ so the change applies site-wide. When changing the ID, include the old and new
 IDs in the pull request description so the analytics owner can verify the
 handoff.
 
+The site loads `gtag.js` directly and does not require Google Tag Manager. AX
+lead events use `gtag('event', ...)`, so GA4 supplies normal session acquisition
+dimensions such as source and medium. The form separately preserves the first
+external referrer hostname and landing UTM values for the consultation email;
+it does not query GA while sending a lead or classify that evidence itself.
+
+Use GA4's Traffic acquisition report as the authority for Session source /
+medium and Session default channel group. The consultation email deliberately
+shows only `이전 사이트`, `최초 방문 페이지` and UTM evidence. In particular,
+do not infer `direct` from a missing browser referrer: a browser or app may have
+withheld it. No Data API credential or numeric property ID is needed for this
+flow.
+
 ## Change the canonical domain
 
 The canonical origin is single-sourced as `SITE_ORIGIN` in `src/site.ts`. It

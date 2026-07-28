@@ -107,12 +107,41 @@ browser. The visitor's validated email address is used only as `Reply-To`, so a
 recipient can reply normally without allowing sender spoofing. The localized
 form's email fallback uses the same fixed recipient.
 
-The clients record UTM parameters and emit only non-PII AX conversion events
-when Google Analytics is present. Name, email, selected consulting interests,
-other-interest detail and consultation reason must never be sent to Google
-Analytics or `dataLayer`. Delivery failures return
-a generic localized message to visitors; detailed API error codes remain
+The shared layout records the tab's first Corca landing in
+`sessionStorage` under `corca:ax-acquisition:v1`. It keeps only the landing
+pathname, first external referrer hostname and first-landing UTM values. The
+full referrer URL, query string and hash are not retained. This shared capture
+means a visitor who enters on `/` and later opens `/ax` keeps the original
+session acquisition evidence.
+
+The AX client adds the saved hostname and landing path to the consultation
+payload. The Worker validates both fields and adds the browser evidence to the
+email as `이전 사이트`, `최초 방문 페이지` and any UTM values. It does not
+translate a hostname into a channel or label missing referrer evidence as
+direct traffic. Referrer suppression by an app or browser is not guessed
+around.
+
+The clients emit only non-PII AX conversion events through the site's direct
+Google tag (`gtag.js`); Google Tag Manager is not part of this flow.
+`form_submit` is emitted before the consultation request and `generate_lead`
+only after the email binding succeeds. Name, email, selected consulting
+interests, other-interest detail, consultation reason and the email attribution
+fields must never be sent to Google Analytics. Delivery failures return a
+generic localized message to visitors; detailed API error codes remain
 available in the network response for diagnosis.
+
+Google Analytics remains the single authority for source, medium and default
+channel group classification. For example, a click from an unpaid Google search
+result is normally reported as `google / organic` and Organic Search, while a
+visit without available campaign or referrer information can be reported as
+`(direct) / (none)`. The consultation email intentionally shows only the
+browser evidence and may say `이전 사이트: 확인되지 않음` when a browser or
+app withholds referrer information.
+
+Run `pnpm test:ax-attribution` for the pure acquisition and fake-email tests.
+`pnpm cf:preview` uses Wrangler's local email simulation because the email
+binding is not remote; messages are logged and saved locally rather than
+delivered. Do not add `remote: true` merely for local form testing.
 
 The published notice, three-year consultation retention practice, Cloudflare
 Email Service processor setup, sender domain and final recipient must stay in
@@ -130,6 +159,7 @@ Run the normal gates from [Development](development.md), then preview through
 the Worker so both the static routes and API dispatch are exercised:
 
 ```sh
+pnpm test:ax-attribution
 pnpm check
 pnpm build
 pnpm cf:preview

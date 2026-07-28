@@ -20,6 +20,7 @@
     "check:seo-governance": "node scripts/seo-governance-check.js",
     "check:dup": "nose query src --mode syntax 'dup>80' --fail-on any",
     "check:docs": "awiki lint -root docs",
+    "test:ax-attribution": "node --test tests/axAcquisition.test.ts tests/axConsultations.test.ts tests/gtag.test.ts",
     "blog:content:apply": "node scripts/apply-admin-post-change.js",
     "blog:content:check": "node scripts/admin-post-change-check.js",
     "blog:shell:sync": "node scripts/sync-blog-shell-assets.js",

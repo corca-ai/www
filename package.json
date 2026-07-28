@@ -32,6 +32,7 @@
     "dup": "nose query src",
     "docs:lint": "awiki lint -root docs",
     "docs:format": "awiki format -root docs",
+    "handoff:render": "node scripts/render-handoff.js",
     "prepare": "lefthook install"
   },
   "dependencies": {

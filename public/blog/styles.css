@@ -3856,7 +3856,8 @@ main:has(.static-post-view) {
 }
 
 .featured-card img[src$="corca-openai-partner-cover.png"],
-.post-card img[src$="corca-openai-partner-cover.png"] {
+.post-card img[src$="corca-openai-partner-cover.png"],
+.post-pagination-card .related-thumbnail img[src$="corca-openai-partner-cover.png"] {
   aspect-ratio: 16 / 9;
   background: #ffffff;
   border-inline: 4px solid #000000;

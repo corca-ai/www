@@ -49,7 +49,9 @@ no measurement ID; the production shell, common head, CSS and analytics
 configuration are single-sourced in the Astro site and applied to generated
 build output. For pages with a breadcrumb, the generated footer also places the
 desktop OpenAI Select Partner badge in the same breadcrumb row as the Astro
-Footer so their shared container and top alignment remain consistent.
+Footer so their shared container and top alignment remain consistent. The
+generator first removes the home shell's icon-only breadcrumb row, then adds
+exactly one blog-specific trail and desktop badge.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with

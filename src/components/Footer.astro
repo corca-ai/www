@@ -10,7 +10,7 @@ interface Props {
   lang: Lang;
   /** Page nodes after Home. Omitted for home. */
   breadcrumbs?: Crumb[] | undefined;
-  /** The home route keeps the footer's breadcrumb row as an icon-only home link. */
+  /** The home route keeps the footer's breadcrumb row as an icon-only current-page marker. */
   homeBreadcrumb?: boolean;
 }
 const { lang, breadcrumbs, homeBreadcrumb = false } = Astro.props;
@@ -21,7 +21,12 @@ const hasBreadcrumb = homeBreadcrumb || Boolean(breadcrumbs?.length);
 <footer class="corca-site-footer">
   {hasBreadcrumb ? (
     <div class="corca-footer-breadcrumb container-c">
-      <Breadcrumb lang={lang} items={breadcrumbs ?? []} iconOnlyHome={homeBreadcrumb} />
+      <Breadcrumb
+        lang={lang}
+        items={breadcrumbs ?? []}
+        iconOnlyHome={homeBreadcrumb}
+        homeIsCurrent={homeBreadcrumb}
+      />
       <img
         class="corca-footer-partner-desktop"
         src="/images/brand/openai-select-partner.svg"

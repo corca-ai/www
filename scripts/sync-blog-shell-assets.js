@@ -202,11 +202,18 @@ function extractFooter(html, source) {
 
 function markBlogFooter(sourceFooter, config, slug, document) {
   if (!sourceFooter) fail(`Missing shared footer for ${config.locale}.`);
-  const footerWithMarker = sourceFooter.replace(/<footer class="([^"]*)"/, (_match, classes) => {
-    const classNames = new Set(classes.split(/\s+/).filter(Boolean));
-    classNames.add('corca-main-footer');
-    return `<footer class="${[...classNames].join(' ')}"`;
-  });
+  // The rendered site home now has an icon-only breadcrumb row. Blog pages
+  // replace that home row with their own localized trail, so remove it before
+  // adding the blog-specific row rather than duplicating the badge and trail.
+  const footerWithoutBreadcrumb = removeFooterBreadcrumb(sourceFooter, config.locale);
+  const footerWithMarker = footerWithoutBreadcrumb.replace(
+    /<footer class="([^"]*)"/,
+    (_match, classes) => {
+      const classNames = new Set(classes.split(/\s+/).filter(Boolean));
+      classNames.add('corca-main-footer');
+      return `<footer class="${[...classNames].join(' ')}"`;
+    },
+  );
   if ((footerWithMarker.match(/corca-main-footer/g) || []).length !== 1) {
     fail(`Expected one blog footer marker in the ${config.locale} shared footer.`);
   }
@@ -214,6 +221,15 @@ function markBlogFooter(sourceFooter, config, slug, document) {
   const footerOpen = footer.match(/<footer\b[^>]*>/)?.[0];
   if (!footerOpen) fail(`Could not locate the ${config.locale} shared footer opening tag.`);
   return footer.replace(footerOpen, `${footerOpen}${renderBlogBreadcrumb(config, slug, document)}`);
+}
+
+function removeFooterBreadcrumb(footer, locale) {
+  const breadcrumbPattern = /<div class="corca-footer-breadcrumb container-c">[\s\S]*?<\/div>/g;
+  const matches = footer.match(breadcrumbPattern) || [];
+  if (matches.length > 1) {
+    fail(`Expected at most one shared footer breadcrumb in the ${locale} shell.`);
+  }
+  return footer.replace(breadcrumbPattern, '');
 }
 
 function markBlogFooterVisualPartner(footer, locale) {

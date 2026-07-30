@@ -191,6 +191,11 @@ try {
       );
       assert.equal(staticPost.includes('https://www.borca.ai'), false);
       assert.equal(staticPost.includes('https://www.corca.ai'), true);
+      assert.equal(
+        staticPost.includes('legacy-medium-post'),
+        false,
+        `${localeRoot}/${post.slug} must use the shared Corca article layout`,
+      );
     }
   }
   for (const locale of ['en', 'ja', 'zh']) {

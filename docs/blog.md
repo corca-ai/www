@@ -192,11 +192,6 @@ When changing blog files, keep these invariants:
   the existing collapsible navigation inside the article header. Table of
   contents clicks scroll to the selected heading without leaving a section
   hash in the browser URL.
-- Articles dated before 2026-05-01 retain the Medium-style archive treatment:
-  a narrow, left-aligned reading column with an editorial title, visible
-  description and unframed figures. Newer articles keep the Corca detail
-  treatment. Apply the date rule in `renderStaticPostPage`, not by editing
-  generated locale pages.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

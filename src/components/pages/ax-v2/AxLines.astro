@@ -1,9 +1,21 @@
 ---
 interface Props {
   values: readonly string[];
+  mobileValues?: readonly string[] | undefined;
 }
 
-const { values } = Astro.props;
+const { values, mobileValues } = Astro.props;
 ---
 
-{values.map((value, index) => <>{index > 0 && <br />}{value}</>)}
+{mobileValues ? (
+  <>
+    <span class="ax-v2-viewport-lines-desktop">
+      {values.map((value, index) => <>{index > 0 && <br />}{value}</>)}
+    </span>
+    <span class="ax-v2-viewport-lines-mobile">
+      {mobileValues.map((value, index) => <>{index > 0 && <br />}{value}</>)}
+    </span>
+  </>
+) : (
+  values.map((value, index) => <>{index > 0 && <br />}{value}</>)
+)}

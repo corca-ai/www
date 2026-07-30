@@ -694,9 +694,20 @@ const uiCopy = {
     const requestHash = '#request';
     const focusRequestNameInput = (contactSection) => {
       const nameInput = contactSection.querySelector('input[name="name"]');
-      if (nameInput instanceof HTMLInputElement) {
-        nameInput.focus({ preventScroll: true });
+      if (!(nameInput instanceof HTMLInputElement)) return;
+
+      if (nameInput.value) {
+        delete nameInput.dataset.requestAutofocus;
+      } else {
+        nameInput.dataset.requestAutofocus = 'true';
       }
+      if (nameInput.dataset.requestAutofocusBound !== 'true') {
+        nameInput.dataset.requestAutofocusBound = 'true';
+        nameInput.addEventListener('input', () => {
+          delete nameInput.dataset.requestAutofocus;
+        });
+      }
+      nameInput.focus({ preventScroll: true });
     };
 
     const focusRequestNameInputFromHash = () => {

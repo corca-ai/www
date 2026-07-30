@@ -114,7 +114,8 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   `/ax#request`로, 다른 언어에서는 현재 locale의 AX URL fragment로
   이동하며 Footer 직전 상담 섹션에 즉시 정렬하고 첫 입력칸을 focus한다.
   직접 `#request` 진입과 이후 hash 변경도 스크롤 위치를 바꾸지 않고 같은
-  입력칸을 focus한다.
+  입력칸을 focus한다. 자동 focus된 빈 성함 입력칸은 첫 입력 전까지 연한
+  노란 안내 상태로 보이며 오류 상태가 아니다.
   canonical·hreflang·sitemap·OG·JSON-LD는 fragment를 포함하지 않는다.
 - OpenAI Select Partner 원본 SVG와 OpenAI–Corca 조합 로고를 실제
   grid, 반응형, 모바일 구성에 맞게 배치했다.

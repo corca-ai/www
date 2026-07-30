@@ -12,6 +12,7 @@ const slug = 'admin-edit-fixture';
 const removedSlugs = [
   'corca-newbie-trip',
   'ceal-terview-ai-work-trust-cli-guideline-rewrite-with-image',
+  'corca-team-page',
 ];
 const fallbackThumbnail = 'assets/admin-posts/adjacent-thumbnail-fixture-222222222222.png';
 const tinyPngBase64 =
@@ -90,13 +91,9 @@ try {
     assert.equal(vocMetadata.section, expectedSection);
   }
   for (const [sourcePath, expectedSection] of [
-    ['public/blog/admin/post-sources/corca-team-page.html', '코르카'],
     ['public/blog/admin/post-sources/corca-buddy-program.html', '코르카'],
-    ['public/blog/admin/post-translations/en/corca-team-page.html', 'Corca'],
     ['public/blog/admin/post-translations/en/corca-buddy-program.html', 'Corca'],
-    ['public/blog/admin/post-translations/ja/corca-team-page.html', 'Corca'],
     ['public/blog/admin/post-translations/ja/corca-buddy-program.html', 'Corca'],
-    ['public/blog/admin/post-translations/zh/corca-team-page.html', 'Corca'],
     ['public/blog/admin/post-translations/zh/corca-buddy-program.html', 'Corca'],
   ]) {
     const corcaMetadata = embeddedMetadata(await readFile(join(repoRoot, sourcePath), 'utf8'));
@@ -180,7 +177,10 @@ try {
         { code: 'ENOENT' },
       );
     }
-    assert.deepEqual(posts.find((post) => post.slug === 'corca-team-page')?.tags, [corcaCategory]);
+    assert.equal(
+      posts.some((post) => post.slug === 'corca-team-page'),
+      false,
+    );
     assert.deepEqual(posts.find((post) => post.slug === 'corca-buddy-program')?.tags, [
       corcaCategory,
     ]);

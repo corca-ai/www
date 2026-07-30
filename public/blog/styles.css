@@ -4260,6 +4260,104 @@ body {
   box-shadow: none;
 }
 
+/* Medium's long-form reading rhythm for articles published before the
+   May 2026 site transition. Keep the current Corca treatment for newer posts
+   while giving imported archive posts their original, editorial presentation. */
+.legacy-medium-post {
+  width: min(100%, 680px);
+}
+
+.legacy-medium-post .article-header {
+  justify-items: start;
+  margin-inline: 0;
+  margin-bottom: 36px;
+  padding: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.legacy-medium-post .article-header h1 {
+  max-width: 100%;
+  color: #242424;
+  font-family: Georgia, "Times New Roman", "AppleMyungjo", serif;
+  font-size: clamp(34px, 5vw, 44px);
+  font-weight: 700;
+  line-height: 1.12;
+  text-wrap: pretty;
+}
+
+.legacy-medium-post .article-header p {
+  max-width: 100%;
+  color: #6b6b6b;
+  display: block;
+  overflow: visible;
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-line-clamp: unset;
+}
+
+.legacy-medium-post .article-meta {
+  justify-content: start;
+  gap: 6px 10px;
+  color: #6b6b6b;
+}
+
+.legacy-medium-post .article-content {
+  color: #242424;
+  font-family: Georgia, "Times New Roman", "AppleMyungjo", serif;
+  font-size: calc(20px * var(--article-scale, 1));
+  line-height: 1.58;
+}
+
+.legacy-medium-post .article-content h1,
+.legacy-medium-post .article-content h2,
+.legacy-medium-post .article-content h3,
+.legacy-medium-post .article-content h4,
+.legacy-medium-post .article-content h5,
+.legacy-medium-post .article-content h6 {
+  color: #242424;
+  font-family: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+.legacy-medium-post .article-content h2 {
+  margin: 52px 0 14px;
+  font-size: 26px;
+  line-height: 1.28;
+}
+
+.legacy-medium-post .article-content h3 {
+  margin: 40px 0 12px;
+  font-size: 22px;
+  line-height: 1.32;
+}
+
+.legacy-medium-post .article-content p {
+  margin: 0 0 28px;
+}
+
+.legacy-medium-post .article-content figure {
+  margin: 38px 0;
+}
+
+.legacy-medium-post .article-content img {
+  border: 0;
+  border-radius: 0;
+}
+
+.legacy-medium-post .article-content figcaption {
+  margin-top: 10px;
+  color: #6b6b6b;
+  font-family: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.legacy-medium-post .article-content blockquote {
+  padding-left: 22px;
+  color: #242424;
+  font-style: normal;
+}
+
 .toc {
   position: sticky;
   top: 112px;
@@ -4581,6 +4679,11 @@ body {
   .article-mobile-navigation .toc-recommendation:focus-visible {
     border-left-color: #d1d5db;
     color: #111827;
+  }
+
+  .legacy-medium-post .article-content {
+    font-size: calc(18px * var(--article-scale, 1));
+    line-height: 1.62;
   }
 }
 

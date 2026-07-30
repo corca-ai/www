@@ -1387,6 +1387,7 @@ function renderStaticPostPage(
   const visibleAuthor = post.author
     ? `              <span class="meta-item">${escapeHtml(post.author)}</span>\n`
     : '';
+  const legacyMediumClass = isLegacyMediumPost(post) ? ' legacy-medium-post' : '';
 
   return `<!doctype html>
 <html lang="${localeLabels[locale].lang}">
@@ -1424,7 +1425,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
   </head>
   <body>${shell.beforeMain}<main id="main" tabindex="-1">
       <section class="post-view static-post-view">
-        <article id="article" class="article static-article">
+        <article id="article" class="article static-article${legacyMediumClass}">
           <header class="article-header">
             <h1>${escapeHtml(post.title)}</h1>
             <p>${escapeHtml(post.description)}</p>
@@ -1446,6 +1447,10 @@ ${renderStaticRecommendations(recommendations, locale)}
     </main>${shell.afterMain}</body>
 </html>
 `;
+}
+
+function isLegacyMediumPost(post) {
+  return String(post.date || '') < '2026-05-01';
 }
 
 function getBlogShell(locale, slug, availableLocalesBySlug) {

@@ -31,6 +31,13 @@ interface ValidAttribution {
   landingPath: string;
 }
 
+interface ValidPageContext {
+  basePath: string;
+  contentType: string;
+  pageId: string;
+  pagePath: string;
+}
+
 interface ValidConsultation {
   attribution: ValidAttribution;
   interests: string[];
@@ -38,6 +45,7 @@ interface ValidConsultation {
   locale: Locale;
   name: string;
   otherInterest: string;
+  pageContext?: ValidPageContext;
   reason: string;
   topic: AxTopicId | '';
   utm: string;
@@ -121,6 +129,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   const startedAt = parseStartedAt(payload.started_at);
   const utm = normalizeUtm(payload.utm);
   const attribution = normalizeAttribution(payload.attribution);
+  const pageContext = normalizePageContext(payload);
   const fields: FieldErrors = {};
 
   if (!name || name.length > 80) fields.name = 'INVALID_NAME';
@@ -156,6 +165,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   if (startedAt === null) fields.started_at = 'INVALID_STARTED_AT';
   if (!utm.valid) fields.utm = 'INVALID_UTM';
   if (!attribution.valid) fields.attribution = 'INVALID_ATTRIBUTION';
+  if (!pageContext.valid) fields.page_context = 'INVALID_PAGE_CONTEXT';
 
   if (Object.keys(fields).length > 0) {
     return { code: 'VALIDATION_ERROR', fields, ok: false };
@@ -176,6 +186,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
       locale: locale as Locale,
       name,
       otherInterest,
+      ...(pageContext.value ? { pageContext: pageContext.value } : {}),
       reason: isV2Form ? reason : legacyMessage,
       topic: topic as AxTopicId | '',
       utm: utm.value,
@@ -274,6 +285,38 @@ function normalizeAttribution(value: unknown): {
   };
 }
 
+function normalizePageContext(value: Record<string, unknown>): {
+  valid: boolean;
+  value?: ValidPageContext;
+} {
+  const keys = ['page_id', 'page_path', 'base_path', 'content_type'] as const;
+  if (keys.every((key) => value[key] === undefined)) return { valid: true };
+
+  const pageId = stringValue(value.page_id);
+  const pagePath = stringValue(value.page_path);
+  const basePath = stringValue(value.base_path);
+  const contentType = stringValue(value.content_type);
+  const validToken = (entry: string) =>
+    entry.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(entry);
+  const validPath = (entry: string) =>
+    entry.length <= 512 &&
+    entry.startsWith('/') &&
+    !entry.startsWith('//') &&
+    !entry.includes('?') &&
+    !entry.includes('#');
+
+  if (
+    !validToken(pageId) ||
+    !validToken(contentType) ||
+    !validPath(pagePath) ||
+    !validPath(basePath)
+  ) {
+    return { valid: false };
+  }
+
+  return { valid: true, value: { basePath, contentType, pageId, pagePath } };
+}
+
 function formSourceMedium(input: ValidConsultation): string {
   if (Object.keys(input.utmParameters).length > 0) {
     return `${input.utmParameters.source || '(not set)'} / ${
@@ -307,6 +350,14 @@ async function sendConsultationEmail(
   const consultationTimestamp = formatConsultationTimestamp(submittedDate);
   const sourceMedium = formSourceMedium(input);
   const previousSite = input.attribution.initialReferrerHost || '확인되지 않음';
+  const pageContextLines = input.pageContext
+    ? [
+        `콘텐츠 ID: ${input.pageContext.pageId}`,
+        `콘텐츠 유형: ${input.pageContext.contentType}`,
+        `제출 페이지: ${input.pageContext.pagePath}`,
+        `기준 경로: ${input.pageContext.basePath}`,
+      ]
+    : [];
   const text = [
     'Corca AX 상담 요청',
     '',
@@ -315,6 +366,7 @@ async function sendConsultationEmail(
     ...(interestSummary ? [`관심 컨설팅: ${interestSummary}`] : []),
     ...(input.otherInterest ? [`기타 관심 분야: ${input.otherInterest}`] : []),
     ...(input.topic ? [`문의 유형: ${topicLabel} (${input.topic})`] : []),
+    ...pageContextLines,
     `페이지 언어: ${input.locale}`,
     `${interestSummary ? '선택 이유' : '문의 내용'}: ${input.reason || '입력하지 않음'}`,
     `유입 경로: ${sourceMedium}`,
@@ -331,6 +383,14 @@ async function sendConsultationEmail(
     ...(interestSummary ? [['관심 컨설팅', escapeHtml(interestSummary)]] : []),
     ...(input.otherInterest ? [['기타 관심 분야', escapeHtml(input.otherInterest)]] : []),
     ...(input.topic ? [['문의 유형', escapeHtml(`${topicLabel} (${input.topic})`)]] : []),
+    ...(input.pageContext
+      ? [
+          ['콘텐츠 ID', escapeHtml(input.pageContext.pageId)],
+          ['콘텐츠 유형', escapeHtml(input.pageContext.contentType)],
+          ['제출 페이지', escapeHtml(input.pageContext.pagePath)],
+          ['기준 경로', escapeHtml(input.pageContext.basePath)],
+        ]
+      : []),
     ['페이지 언어', escapeHtml(input.locale)],
     [
       interestSummary ? '선택 이유' : '문의 내용',

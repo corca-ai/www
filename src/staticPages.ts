@@ -11,6 +11,7 @@ import Products from './components/pages/Products.astro';
 import { type Meta, pageMeta } from './i18n/pageMeta';
 import { axServiceLd } from './i18n/structuredData';
 import { type Lang, ui } from './i18n/ui';
+import type { LeadPageDeclaration } from './lead/pageContext';
 
 type StaticPage = {
   basePath: string;
@@ -19,6 +20,7 @@ type StaticPage = {
   ogImage?: string;
   ogImageAlt?: (lang: Lang) => string;
   jsonLd?: (site: URL, lang: Lang, meta: Meta) => Record<string, unknown>[];
+  leadContext?: LeadPageDeclaration;
   noindex?: boolean;
 };
 
@@ -36,6 +38,7 @@ const staticPageDefinitions = {
   ax: {
     basePath: '/ax',
     Component: Ax,
+    leadContext: { pageId: 'ax', contentType: 'ax-solution' },
     meta: (l) => pageMeta.ax[l],
     ogImage: '/og-ax.png',
     ogImageAlt: (l) =>

@@ -1,6 +1,7 @@
 ---
 import type { Lang } from '../../i18n/ui';
-import AxLeadForm from './ax-v2/AxLeadForm.astro';
+import type { LeadPageContext } from '../../lead/pageContext';
+import LeadForm from '../forms/LeadForm.astro';
 import AxLines from './ax-v2/AxLines.astro';
 import AxResponsiveLines from './ax-v2/AxResponsiveLines.astro';
 import { axV2Assets, axV2ContentByLang, axV2MobileLineOverrides } from './ax-v2/content';
@@ -8,9 +9,10 @@ import './ax-v2/ax-v2.css';
 
 interface Props {
   lang: Lang;
+  leadContext?: LeadPageContext | undefined;
 }
 
-const { lang } = Astro.props;
+const { lang, leadContext } = Astro.props;
 const c = axV2ContentByLang[lang];
 const mobileCopy = lang === 'ko' ? c : undefined;
 const mobileLineOverrides = axV2MobileLineOverrides[lang as keyof typeof axV2MobileLineOverrides];
@@ -616,7 +618,7 @@ const uiCopy = {
         <a href="tel:+82269256978">{c.contact.phoneLabel}<strong>{c.contact.phone}</strong></a>
       </div>
       <div class="ax-v2-inline-form" data-reveal>
-        <AxLeadForm id="inline" lang={lang} compact />
+        <LeadForm id="inline" lang={lang} compact pageContext={leadContext} />
       </div>
     </div>
   </section>
@@ -666,7 +668,7 @@ const uiCopy = {
           {c.contact.dialogBody.next}
         </p>
       </div>
-      <AxLeadForm id="modal" lang={lang} compact />
+      <LeadForm id="modal" lang={lang} compact pageContext={leadContext} />
     </div>
   </dialog>
 

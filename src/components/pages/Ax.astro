@@ -1,12 +1,14 @@
 ---
 import type { Lang } from '../../i18n/ui';
+import type { LeadPageContext } from '../../lead/pageContext';
 import AxV2 from './AxV2.astro';
 
 interface Props {
   lang: Lang;
+  leadContext?: LeadPageContext | undefined;
 }
 
-const { lang } = Astro.props;
+const { lang, leadContext } = Astro.props;
 ---
 
 <!--
@@ -15,4 +17,4 @@ const { lang } = Astro.props;
   Replace this wrapper with a new component during the redesign; do not edit
   AxLegacy.astro or components/pages/ax solely to change the new page.
 -->
-<AxV2 lang={lang} />
+<AxV2 lang={lang} leadContext={leadContext} />

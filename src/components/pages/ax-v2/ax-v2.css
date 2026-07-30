@@ -2612,6 +2612,10 @@ body:has(.ax-v2-hold-dialog[open]) {
   display: none;
 }
 
+.ax-v2-viewport-lines-mobile {
+  display: none;
+}
+
 .ax-v2-proof-section .ax-v2-lead strong {
   color: #34445a;
   font-weight: 760;
@@ -3352,6 +3356,14 @@ body:has(.ax-v2-hold-dialog[open]) {
 }
 
 @media (max-width: 720px) {
+  .ax-v2-viewport-lines-desktop {
+    display: none;
+  }
+
+  .ax-v2-viewport-lines-mobile {
+    display: inline;
+  }
+
   .ax-v2-responsive-desktop-space,
   .ax-v2-responsive-mobile-hidden {
     display: none;
@@ -3740,6 +3752,15 @@ html:lang(ja) .ax-v2-feature-card strong {
 }
 
 @media (max-width: 720px) {
+  html:lang(ko) .ax-v2-diagnosis-section h3 {
+    font-size: clamp(36px, 10.2vw, 48px);
+  }
+
+  html:lang(ko) .ax-v2-diagnosis-section .ax-v2-heading-block {
+    width: calc(100% + 40px);
+    margin-inline: -20px;
+  }
+
   html:lang(ja) .ax-v2-heading-block h3,
   html:lang(ja) .ax-v2-partner-grid h3 {
     font-size: clamp(34px, 10.1vw, 46px);

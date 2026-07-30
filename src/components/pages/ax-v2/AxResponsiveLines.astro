@@ -1,34 +1,45 @@
 ---
 interface Props {
   lines: readonly (readonly string[])[];
+  mobileLines?: readonly (readonly string[])[] | undefined;
   mobileMergeBefore?: readonly number[];
   gradientFrom?: number;
 }
 
-const { lines, mobileMergeBefore = [], gradientFrom } = Astro.props;
+const { lines, mobileLines, mobileMergeBefore = [], gradientFrom } = Astro.props;
 const mobileMergeIndexes = new Set(mobileMergeBefore);
+const lineSets = mobileLines
+  ? [
+      { values: lines, className: 'ax-v2-viewport-lines-desktop' },
+      { values: mobileLines, className: 'ax-v2-viewport-lines-mobile' },
+    ]
+  : [{ values: lines, className: undefined }];
 ---
 
-{lines.map((segments, lineIndex) => (
-  <>
-    {lineIndex > 0 && (
+{lineSets.map(({ values, className }) => (
+  <span class={className}>
+    {values.map((segments, lineIndex) => (
       <>
-        <br class:list={{ 'ax-v2-responsive-mobile-hidden': mobileMergeIndexes.has(lineIndex) }} />
-        {mobileMergeIndexes.has(lineIndex) && <span class="ax-v2-responsive-mobile-space"> </span>}
-      </>
-    )}
-    <span class:list={{ 'ax-v2-point-gradient': gradientFrom !== undefined && lineIndex >= gradientFrom }}>
-      {segments.map((segment, segmentIndex) => (
-        <>
-          {segmentIndex > 0 && (
+        {lineIndex > 0 && (
+          <>
+            <br class:list={{ 'ax-v2-responsive-mobile-hidden': mobileMergeIndexes.has(lineIndex) }} />
+            {mobileMergeIndexes.has(lineIndex) && <span class="ax-v2-responsive-mobile-space"> </span>}
+          </>
+        )}
+        <span class:list={{ 'ax-v2-point-gradient': gradientFrom !== undefined && lineIndex >= gradientFrom }}>
+          {segments.map((segment, segmentIndex) => (
             <>
-              <span class="ax-v2-responsive-desktop-space"> </span>
-              <br class="ax-v2-responsive-mobile-break" />
+              {segmentIndex > 0 && (
+                <>
+                  <span class="ax-v2-responsive-desktop-space"> </span>
+                  <br class="ax-v2-responsive-mobile-break" />
+                </>
+              )}
+              {segment}
             </>
-          )}
-          {segment}
-        </>
-      ))}
-    </span>
-  </>
+          ))}
+        </span>
+      </>
+    ))}
+  </span>
 ))}

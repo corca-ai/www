@@ -80,6 +80,13 @@ Japanese and Simplified Chinese overrides from
 `docs/ax-content-plan-v2.md`. Do not edit the frozen `ax/content.ts` to change
 AX V2, and do not duplicate copy inside presentational components.
 
+When a mobile composition needs an intentional line break, keep the words in
+the content registry and provide a mobile line array to `AxLines` or
+`AxResponsiveLines`. These components preserve the desktop composition while
+switching only at the mobile breakpoint. Do not insert padding spaces,
+non-breaking spaces or ideographic spaces to force a visual line break: they
+collapse inconsistently and can orphan English or CJK punctuation.
+
 The Hero consultation CTA is a crawlable same-page link with `href="#request"`.
 It resolves to `/ax#request` in Korean and keeps the current locale for the
 other AX pages. A normal activation updates the fragment, moves instantly to

@@ -124,8 +124,20 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   `contact+ax@corca.ai`로 발송한다. sender는 `ax@corca.ai`로 제한되고
   방문자 이메일은 `Reply-To`로만 사용한다.
 - 사이트 데이터베이스에는 리드를 저장하지 않는다.
-- UTM과 비식별 전환 이벤트만 분석 도구에 전달하며 이름·이메일·상담
-  내용은 Google Analytics 또는 `dataLayer`로 보내지 않는다.
+- 공통 레이아웃은 탭 세션의 첫 랜딩 경로, 외부 리퍼러 hostname,
+  첫 랜딩 UTM을 `sessionStorage`에 보존한다. 전체 리퍼러 URL과 query,
+  hash는 저장하지 않는다.
+- 상담 메일은 UTM, Google 검색 referrer, 일반 외부 referrer, 정보 없음
+  순으로 폼 시점의 `source / medium`을 만들어 `유입 경로`로 표시하고,
+  원본 근거인 `이전 사이트`, `최초 방문 페이지`, UTM도 함께 표시한다.
+  이 값은 GA4 처리 결과를 다시 읽은 값이 아니므로 GA의 세션 채널 정본을
+  대체하지 않는다.
+- 사이트는 GTM 없이 직접 `gtag.js`를 사용한다. `form_submit`과 메일
+  성공 뒤 `generate_lead`만 비식별 전환 이벤트로 보내며 이름·이메일·
+  상담 내용·메일 attribution 값은 Google Analytics로 보내지 않는다.
+- source, medium, 기본 채널 그룹의 정본은 GA4 Traffic acquisition
+  보고서다. 이 흐름에는 GA Data API나 별도 Property ID 자격증명이
+  필요하지 않다.
 - 실제 웹사이트 발송과 수신이 정상 동작함을 사용자가 확인했다.
 
 ### SEO·발견성

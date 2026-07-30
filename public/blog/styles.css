@@ -2000,14 +2000,43 @@ body {
 
 .article-content ul,
 .article-content ol {
-  display: grid;
-  gap: 10px;
   margin: 0 0 20px;
-  padding-left: 24px;
+  padding-left: 1.5em;
+  list-style-position: outside;
+}
+
+.article-content ul {
+  list-style-type: disc;
+}
+
+.article-content ol {
+  list-style-type: decimal;
 }
 
 .article-content li {
-  padding-left: 2px;
+  display: list-item;
+}
+
+.article-content li + li {
+  margin-top: 10px;
+}
+
+.article-content li::marker {
+  color: var(--text-soft);
+  font-weight: 750;
+}
+
+.article-content li > :is(ul, ol) {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.article-content ul ul {
+  list-style-type: circle;
+}
+
+.article-content ol ol {
+  list-style-type: lower-alpha;
 }
 
 .article-content li > :last-child {

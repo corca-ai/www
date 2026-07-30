@@ -110,8 +110,10 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 제품명은 필요한 문맥에서 `ChatGPT Enterprise`로 통일했다.
 - 승인된 배경 모션은 감쇠형 스프링 패럴랙스이며 전경은 정상 속도,
   배경만 부드럽게 이동한다.
-- Hero CTA는 URL hash를 만들지 않고 Footer 직전 상담 섹션으로 즉시
-  이동한다.
+- Hero CTA는 crawlable `href="#request"` 링크다. 한국어에서는
+  `/ax#request`로, 다른 언어에서는 현재 locale의 AX URL fragment로
+  이동하며 Footer 직전 상담 섹션에 즉시 정렬하고 첫 입력칸을 focus한다.
+  canonical·hreflang·sitemap·OG·JSON-LD는 fragment를 포함하지 않는다.
 - OpenAI Select Partner 원본 SVG와 OpenAI–Corca 조합 로고를 실제
   grid, 반응형, 모바일 구성에 맞게 배치했다.
 

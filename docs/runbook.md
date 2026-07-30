@@ -98,6 +98,14 @@ Its SEO title and description come from `src/i18n/pageMeta.ts` under the matchin
 key. Add navigation or footer links in `src/i18n/ui.ts` only when the page should
 be discoverable from shared chrome.
 
+When the page renders the shared consultation form, also add
+`leadContext: { pageId, contentType }` to its `staticPages` entry or product
+manifest.
+The route supplies the existing `basePath` and locale automatically, so do not
+repeat the localized URL or manually put `page_id` into Form markup. Use a
+stable lowercase kebab-case page ID (for example `ax-knownow`) across all
+locales; the form sends the actual `page_path` only at submission time.
+
 Product pages are the exception: each is a self-contained folder that registers
 itself, described in [products](products.md). Preview the Korean URL and the
 localized variants such as `/en/<path>`, `/ja/<path>` and `/zh/<path>` before

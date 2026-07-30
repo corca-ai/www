@@ -14,6 +14,10 @@ function validPayload() {
     locale: 'ko',
     name: '테스트 리드',
     other_interest: '',
+    page_id: 'ax',
+    page_path: '/ax',
+    base_path: '/ax',
+    content_type: 'ax-solution',
     reason: '유입 정보 테스트',
     started_at: Date.now() - 3_000,
     utm: {},
@@ -61,9 +65,15 @@ test('renders Google search source/medium beside the raw referrer evidence', asy
   assert.match(email.text, /유입 경로: google \/ organic/u);
   assert.match(email.text, /이전 사이트: www\.google\.com/u);
   assert.match(email.text, /최초 방문 페이지: \/ax/u);
+  assert.match(email.text, /콘텐츠 ID: ax/u);
+  assert.match(email.text, /콘텐츠 유형: ax-solution/u);
+  assert.match(email.text, /제출 페이지: \/ax/u);
+  assert.match(email.text, /기준 경로: \/ax/u);
   assert.doesNotMatch(email.text, /Organic Search/u);
   assert.match(email.html, />유입 경로<\/th><td[^>]*>google \/ organic</u);
   assert.match(email.html, />이전 사이트<\/th><td[^>]*>www\.google\.com</u);
+  assert.match(email.html, />콘텐츠 ID<\/th><td[^>]*>ax</u);
+  assert.match(email.html, />제출 페이지<\/th><td[^>]*>\/ax</u);
 });
 
 test('shows UTM and browser referrer as separate evidence', async () => {
@@ -140,6 +150,17 @@ test('keeps attribution optional for older clients', async () => {
   assert.doesNotMatch(email.text, /최초 방문 페이지:/u);
 });
 
+test('keeps page context optional for older clients', async () => {
+  const messages: unknown[] = [];
+  const { base_path, content_type, page_id, page_path, ...payload } = validPayload();
+  const response = await submit(payload, messages);
+
+  assert.equal(response.status, 200);
+  const email = emailContent(messages[0]);
+  assert.doesNotMatch(email.text, /콘텐츠 ID:/u);
+  assert.doesNotMatch(email.text, /제출 페이지:/u);
+});
+
 test('renders a non-search external referrer with referral medium', async () => {
   const messages: unknown[] = [];
   const payload = {
@@ -205,3 +226,13 @@ for (const [name, attribution] of [
     assert.equal(messages.length, 0);
   });
 }
+
+test('rejects an invalid page context without sending email', async () => {
+  const messages: unknown[] = [];
+  const response = await submit({ ...validPayload(), page_path: '/ax?private=value' }, messages);
+  const result = (await response.json()) as { error?: { fields?: Record<string, string> } };
+
+  assert.equal(response.status, 422);
+  assert.equal(result.error?.fields?.page_context, 'INVALID_PAGE_CONTEXT');
+  assert.equal(messages.length, 0);
+});

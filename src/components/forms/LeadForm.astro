@@ -1,14 +1,16 @@
 ---
-import type { Lang } from '../../../i18n/ui';
-import { axV2ContentByLang } from './content';
+import type { Lang } from '../../i18n/ui';
+import type { LeadPageContext } from '../../lead/pageContext';
+import { axV2ContentByLang } from '../pages/ax-v2/content';
 
 interface Props {
   id: string;
   lang: Lang;
   compact?: boolean;
+  pageContext?: LeadPageContext | undefined;
 }
 
-const { id, lang, compact = false } = Astro.props;
+const { id, lang, compact = false, pageContext } = Astro.props;
 const c = axV2ContentByLang[lang].contact;
 const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
 const formId = `ax-lead-${id}`;
@@ -20,8 +22,12 @@ const formId = `ax-lead-${id}`;
   name="ax_consultation"
   action="/api/ax/consultations"
   method="post"
+  data-lead-form
   data-ax-v2-lead-form
   data-locale={lang}
+  data-lead-page={pageContext?.pageId}
+  data-page-base-path={pageContext?.basePath}
+  data-content-type={pageContext?.contentType}
   data-sending-label={c.sending}
   novalidate
 >
@@ -68,19 +74,10 @@ const formId = `ax-lead-${id}`;
 
     <div class="ax-v2-field ax-v2-field-interests">
       <span class="ax-v2-field-label">{c.labels.interests}</span>
-      <div
-        class="ax-v2-interest-options"
-        role="group"
-        aria-describedby={`${formId}-interests-error`}
-      >
+      <div class="ax-v2-interest-options" role="group" aria-describedby={`${formId}-interests-error`}>
         {c.interestOptions.map((option) => (
           <label class="ax-v2-interest-option">
-            <input
-              type="checkbox"
-              name="consulting_interests"
-              value={option.value}
-              data-interest-option={option.value}
-            />
+            <input type="checkbox" name="consulting_interests" value={option.value} data-interest-option={option.value} />
             <span>{option.label}</span>
           </label>
         ))}
@@ -97,17 +94,9 @@ const formId = `ax-lead-${id}`;
           disabled
           data-other-interest-input
         />
-        <span
-          class="ax-v2-field-error"
-          id={`${formId}-other-interest-error`}
-          data-field-error="other_interest"
-        ></span>
+        <span class="ax-v2-field-error" id={`${formId}-other-interest-error`} data-field-error="other_interest"></span>
       </div>
-      <span
-        class="ax-v2-field-error"
-        id={`${formId}-interests-error`}
-        data-field-error="consulting_interests"
-      ></span>
+      <span class="ax-v2-field-error" id={`${formId}-interests-error`} data-field-error="consulting_interests"></span>
     </div>
 
     <div class="ax-v2-field ax-v2-field-reason">
@@ -134,14 +123,7 @@ const formId = `ax-lead-${id}`;
   {lang === 'zh' && (
     <>
       <label class="ax-v2-consent" for={`${formId}-cross-border`}>
-        <input
-          id={`${formId}-cross-border`}
-          name="cross_border_consent"
-          type="checkbox"
-          value="true"
-          aria-describedby={`${formId}-cross-border-error`}
-          required
-        />
+        <input id={`${formId}-cross-border`} name="cross_border_consent" type="checkbox" value="true" aria-describedby={`${formId}-cross-border-error`} required />
         <span>我单独同意将咨询所需的个人信息跨境传输至韩国，并由隐私政策中列明的境外服务商处理。</span>
       </label>
       <span class="ax-v2-field-error" id={`${formId}-cross-border-error`} data-field-error="cross_border_consent"></span>
@@ -152,12 +134,9 @@ const formId = `ax-lead-${id}`;
     <span data-submit-label>{c.submit}</span>
   </button>
   <p class="ax-v2-privacy-notice">{c.privacyNotice}</p>
-  <p
-    class="ax-v2-form-status"
-    role="status"
-    aria-live="polite"
-    aria-atomic="true"
-    tabindex="-1"
-    data-form-status
-  ></p>
+  <p class="ax-v2-form-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-form-status></p>
 </form>
+
+<script>
+  import './leadFormClient';
+</script>

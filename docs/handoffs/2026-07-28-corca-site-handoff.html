@@ -275,11 +275,15 @@ sitemap 제외, canonical <code>/ax</code>다.</li>
 <td><code>i18n/ax-v2-content-localized.ts</code></td>
 </tr>
 <tr>
-<td>리드 폼 UI</td>
-<td><code>src/components/pages/ax-v2/AxLeadForm.astro</code></td>
+<td>공통 리드 폼 UI</td>
+<td><code>src/components/forms/LeadForm.astro</code></td>
 </tr>
 <tr>
-<td>동작·모션·폼 전송</td>
+<td>공통 폼 전송·검증</td>
+<td><code>src/components/forms/leadFormClient.ts</code></td>
+</tr>
+<tr>
+<td>AX V2 동작·모션·dialog</td>
 <td><code>src/components/pages/ax-v2/ax-v2-client.ts</code></td>
 </tr>
 <tr>
@@ -350,6 +354,13 @@ grid, 반응형, 모바일 구성에 맞게 배치했다.</li>
 <code>contact+ax@corca.ai</code>로 발송한다. sender는 <code>ax@corca.ai</code>로 제한되고
 방문자 이메일은 <code>Reply-To</code>로만 사용한다.</li>
 <li>사이트 데이터베이스에는 리드를 저장하지 않는다.</li>
+<li>각 리드 폼 페이지는 route/page manifest의 선택형 <code>leadContext</code>로 stable
+<code>pageId</code>와 <code>contentType</code>을 선언한다. 기존 <code>basePath</code>와 현재 locale은
+route가 자동 전달하며, 제출 payload와 메일에는 <code>page_id</code>, 실제
+<code>page_path</code>, locale 없는 <code>base_path</code>, <code>locale</code>, <code>content_type</code>이 포함된다.
+AX V2의 기준값은 <code>ax</code> / <code>ax-solution</code> / <code>/ax</code>다. 선언을 찾지 못해도
+제출을 막지 않고 <code>unknown</code>과 현재 pathname-derived 값으로 기록한다.
+이 값은 비식별 운영 정보이며 GA 이벤트에는 보내지 않는다.</li>
 <li>공통 레이아웃은 탭 세션의 첫 랜딩 경로, 외부 리퍼러 hostname,
 첫 랜딩 UTM을 <code>sessionStorage</code>에 보존한다. 전체 리퍼러 URL과 query,
 hash는 저장하지 않는다.</li>

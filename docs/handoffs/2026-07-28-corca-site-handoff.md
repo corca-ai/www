@@ -78,8 +78,9 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 | AX V2 composition | `src/components/pages/AxV2.astro` |
 | 한국어 기준 콘텐츠와 언어 병합 | `src/components/pages/ax-v2/content.ts` |
 | EN·JA·ZH override | `i18n/ax-v2-content-localized.ts` |
-| 리드 폼 UI | `src/components/pages/ax-v2/AxLeadForm.astro` |
-| 동작·모션·폼 전송 | `src/components/pages/ax-v2/ax-v2-client.ts` |
+| 공통 리드 폼 UI | `src/components/forms/LeadForm.astro` |
+| 공통 폼 전송·검증 | `src/components/forms/leadFormClient.ts` |
+| AX V2 동작·모션·dialog | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | 페이지 스타일·반응형 | `src/components/pages/ax-v2/ax-v2.css` |
 | 메타데이터·OG·hreflang | `src/i18n/pageMeta.ts`, `src/staticPages.ts` |
 | Service·Breadcrumb JSON-LD | `src/i18n/structuredData.ts` |
@@ -129,6 +130,13 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   `contact+ax@corca.ai`로 발송한다. sender는 `ax@corca.ai`로 제한되고
   방문자 이메일은 `Reply-To`로만 사용한다.
 - 사이트 데이터베이스에는 리드를 저장하지 않는다.
+- 각 리드 폼 페이지는 route/page manifest의 선택형 `leadContext`로 stable
+  `pageId`와 `contentType`을 선언한다. 기존 `basePath`와 현재 locale은
+  route가 자동 전달하며, 제출 payload와 메일에는 `page_id`, 실제
+  `page_path`, locale 없는 `base_path`, `locale`, `content_type`이 포함된다.
+  AX V2의 기준값은 `ax` / `ax-solution` / `/ax`다. 선언을 찾지 못해도
+  제출을 막지 않고 `unknown`과 현재 pathname-derived 값으로 기록한다.
+  이 값은 비식별 운영 정보이며 GA 이벤트에는 보내지 않는다.
 - 공통 레이아웃은 탭 세션의 첫 랜딩 경로, 외부 리퍼러 hostname,
   첫 랜딩 UTM을 `sessionStorage`에 보존한다. 전체 리퍼러 URL과 query,
   hash는 저장하지 않는다.

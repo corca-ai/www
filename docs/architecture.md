@@ -38,6 +38,9 @@ the same GA4 property.
   source project.
 - `src/i18n/` — locale config, UI strings, per-page SEO metadata and the
   structured-data (schema.org) builders.
+- `src/lead/pageContext.ts` — typed, non-PII lead-page metadata shared by
+  route manifests and the reusable Lead Form. It keeps stable content IDs
+  separate from localized URLs.
 - `src/assets/` and `public/` — optimized images, the font, the OG image, the
   web app manifest, blog assets, and feed/static files. Favicon PNG variants
   are generated from the branded symbol image with a rounded-square alpha mask

@@ -29,8 +29,9 @@ implementation and verified Git history.
 | Active route wrapper | `src/components/pages/Ax.astro` → `src/components/pages/AxV2.astro` |
 | AX V2 Korean base copy and locale merge | `src/components/pages/ax-v2/content.ts` |
 | AX V2 EN, JA and ZH overrides | `i18n/ax-v2-content-localized.ts` |
-| AX V2 lead form | `src/components/pages/ax-v2/AxLeadForm.astro` |
-| AX V2 client behavior and form submission | `src/components/pages/ax-v2/ax-v2-client.ts` |
+| Shared lead form markup | `src/components/forms/LeadForm.astro` |
+| Shared form submission and validation | `src/components/forms/leadFormClient.ts` |
+| AX V2 motion and dialog behavior | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | AX V2 page-scoped styles | `src/components/pages/ax-v2/ax-v2.css` |
 | Frozen 2026-07-22 page composition | `src/components/pages/AxLegacy.astro` |
 | Frozen Korean backup wrapper | `src/components/pages/AxBackup.astro` and `src/pages/ax-backup.astro` |
@@ -118,6 +119,18 @@ and retain the message under Corca's configured retention practices and their
 own policies. The forms show a required, concise processing notice. The
 localized privacy pages remain published with `noindex` metadata but are not
 linked from the current AX lead form.
+
+Each Lead Form page may declare `leadContext: { pageId, contentType }` in its
+route or page manifest. The existing route `basePath` supplies the
+locale-neutral URL, while the form reads the actual browser pathname at submit
+time. It sends `page_id`, `page_path`, `base_path`, `locale` and
+`content_type` with the existing payload. AX V2 declares `ax` /
+`ax-solution`: `/en/ax` therefore keeps `page_id=ax` and `base_path=/ax` while
+recording `page_path=/en/ax` and `locale=en`. These non-PII values are shown in
+the consultation email as content ID, content type, submitted page and base
+path; they are not sent to Google Analytics. If context is unavailable, the
+client records `page_id=unknown`, `content_type=unknown` and the pathname-derived
+base path without blocking submission.
 
 The `AX_EMAIL` binding in `wrangler.jsonc` restricts delivery to the verified
 `contact+ax@corca.ai` destination and restricts the sender to `ax@corca.ai`.

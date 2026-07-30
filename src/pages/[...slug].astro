@@ -34,6 +34,10 @@ const { lang, id, basePath } = Astro.props;
 // otherwise `id` is one of the static pages (guaranteed by getStaticPaths).
 const product = products.find((p) => `/products/${p.slug}` === basePath) ?? null;
 const staticPage = product ? null : staticPages[id as StaticId];
+const pageLeadDeclaration = product?.leadContext ?? staticPage?.leadContext;
+const leadContext = pageLeadDeclaration
+  ? { ...pageLeadDeclaration, basePath }
+  : undefined;
 const meta: Meta = product ? product.meta[lang] : staticPage!.meta(lang);
 const Component = product ? product.Page : staticPage!.Component;
 
@@ -85,5 +89,5 @@ const socialCopyProps = {
   {...socialImageProps}
   {...socialCopyProps}
 >
-  <Component lang={lang} />
+  <Component lang={lang} leadContext={leadContext} />
 </BaseLayout>

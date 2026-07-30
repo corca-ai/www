@@ -1,6 +1,7 @@
 import type { ImageMetadata } from 'astro';
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import type { Lang } from '../i18n/ui';
+import type { LeadPageDeclaration } from '../lead/pageContext';
 
 // The one convention a product team follows: each src/products/<slug>/ folder
 // has a manifest.ts default-exporting a `ProductMeta`, plus a Page.astro. The
@@ -23,6 +24,8 @@ export interface ProductMeta {
   blurb: Record<Lang, string>;
   /** Optional SoftwareApplication JSON-LD data. */
   app?: { category: string; os: string; appUrl: string };
+  /** Optional non-PII consultation-form identity for every localized route. */
+  leadContext?: LeadPageDeclaration;
 }
 
 /** A product as the registry exposes it: its manifest plus its Page component. */

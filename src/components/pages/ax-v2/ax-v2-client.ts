@@ -1,9 +1,8 @@
-import { readOrCaptureAxAcquisition } from '../../../analytics/axAcquisition';
 import { emitGtagEvent } from '../../../analytics/gtag';
+import { initializeLeadForms } from '../../forms/leadFormClient';
 
 declare global {
   interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
     gtag?: (...args: unknown[]) => void;
   }
 }
@@ -122,6 +121,9 @@ const FORM_MESSAGES = {
     sent: '咨询申请已发送。',
   },
 } as const;
+
+void emitAnalytics;
+void FORM_MESSAGES;
 
 class AxV2HeroMediaController {
   private visible = false;
@@ -606,272 +608,6 @@ function initializeSuccessDialog(page: HTMLElement) {
   });
 }
 
-function initializeLeadForm(form: HTMLFormElement) {
-  const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-  const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]');
-  const status = form.querySelector<HTMLElement>('[data-form-status]');
-  const formAlert = form.querySelector<HTMLElement>('[data-form-alert]');
-  if (!submit || !submitLabel || !status || !formAlert) return;
-  const defaultSubmitLabel = submitLabel.textContent ?? '2주 진단 상담 신청하기';
-  const locale = form.dataset.locale ?? 'ko';
-  const messages = FORM_MESSAGES[locale as keyof typeof FORM_MESSAGES] ?? FORM_MESSAGES.ko;
-  let startedAt = Date.now();
-  let submitting = false;
-
-  const interestOptions = Array.from(
-    form.querySelectorAll<HTMLInputElement>('[data-interest-option]'),
-  );
-  const syncInterestValidity = () => {
-    const firstInterest = interestOptions[0];
-    if (!firstInterest) return;
-    firstInterest.setCustomValidity(
-      interestOptions.some((option) => option.checked) ? '' : 'INTEREST_REQUIRED',
-    );
-  };
-
-  const syncSubmitState = () => {
-    syncInterestValidity();
-    const controls = Array.from(
-      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea'),
-    );
-    const isReady = controls.every((field) => !field.willValidate || field.validity.valid);
-    submit.disabled = submitting;
-    submit.classList.toggle('is-ready', isReady && !submitting);
-  };
-
-  const autoGrowTextareas = Array.from(
-    form.querySelectorAll<HTMLTextAreaElement>('textarea[data-autogrow]'),
-  );
-  const syncTextareaHeight = (textarea: HTMLTextAreaElement) => {
-    textarea.style.height = 'auto';
-    textarea.style.height = `${textarea.scrollHeight}px`;
-  };
-  autoGrowTextareas.forEach((textarea) => {
-    textarea.addEventListener('input', () => syncTextareaHeight(textarea));
-    syncTextareaHeight(textarea);
-  });
-
-  const clearErrors = () => {
-    form.querySelectorAll<HTMLElement>('[aria-invalid="true"]').forEach((field) => {
-      field.removeAttribute('aria-invalid');
-    });
-    form.querySelectorAll<HTMLElement>('[data-field-error]').forEach((element) => {
-      element.textContent = '';
-    });
-    formAlert.hidden = true;
-    formAlert.textContent = '';
-  };
-
-  const showRequestError = (code: string) => {
-    formAlert.textContent =
-      messages.request[code as keyof typeof messages.request] ?? messages.request.unknown;
-    formAlert.hidden = false;
-    formAlert.focus({ preventScroll: true });
-    status.textContent = formAlert.textContent;
-    status.className = 'ax-v2-form-status is-error';
-    emitAnalytics('form_error', { error_code: code, form_id: 'ax_consultation' });
-  };
-
-  const showFieldErrors = (fields: Record<string, string>) => {
-    for (const [name, code] of Object.entries(fields)) {
-      if (name === 'consulting_interests') {
-        form
-          .querySelector<HTMLElement>('.ax-v2-interest-options')
-          ?.setAttribute('aria-invalid', 'true');
-      } else {
-        form
-          .querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(`[name="${name}"]`)
-          .forEach((field) => {
-            field.setAttribute('aria-invalid', 'true');
-          });
-      }
-      const error = form.querySelector<HTMLElement>(`[data-field-error="${name}"]`);
-      if (error) {
-        error.textContent =
-          messages.fields[code as keyof typeof messages.fields] ?? messages.fieldFallback;
-      }
-    }
-  };
-
-  const fieldCode = (field: HTMLInputElement | HTMLTextAreaElement) => {
-    if (field.name === 'name') return 'INVALID_NAME';
-    if (field.name === 'email') return 'INVALID_EMAIL';
-    if (field.name === 'consulting_interests') return 'INTEREST_REQUIRED';
-    if (field.name === 'other_interest') return 'OTHER_INTEREST_REQUIRED';
-    if (field.name === 'reason') return 'REASON_REQUIRED';
-    if (field.name === 'cross_border_consent') return 'CROSS_BORDER_CONSENT_REQUIRED';
-    return 'INVALID_NAME';
-  };
-
-  const revealValidationAlert = (invalidFields: Array<HTMLInputElement | HTMLTextAreaElement>) => {
-    const fields: Record<string, string> = {};
-    for (const field of invalidFields) fields[field.name] = fieldCode(field);
-    showFieldErrors(fields);
-    formAlert.textContent = messages.required;
-    formAlert.hidden = false;
-    formAlert.focus({ preventScroll: true });
-    const firstInvalid = invalidFields[0];
-    if (!firstInvalid) return;
-    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    window.setTimeout(() => firstInvalid.focus({ preventScroll: true }), 320);
-  };
-
-  form.addEventListener(
-    'invalid',
-    (event) => {
-      event.preventDefault();
-    },
-    true,
-  );
-
-  form.addEventListener(
-    'blur',
-    (event) => {
-      const field = event.target;
-      if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
-      if (field.dataset.requestAutofocus === 'true' && !field.value) return;
-      if (!field.willValidate || field.validity.valid) return;
-      showFieldErrors({ [field.name]: fieldCode(field) });
-    },
-    true,
-  );
-
-  const otherInterestOption = form.querySelector<HTMLInputElement>(
-    '[data-interest-option="other"]',
-  );
-  const otherInterestField = form.querySelector<HTMLElement>('[data-other-interest]');
-  const otherInterestInput = form.querySelector<HTMLInputElement>('[data-other-interest-input]');
-  const syncOtherInterest = () => {
-    const enabled = Boolean(otherInterestOption?.checked);
-    if (otherInterestField) otherInterestField.hidden = !enabled;
-    if (otherInterestInput) {
-      otherInterestInput.disabled = !enabled;
-      otherInterestInput.required = enabled;
-      if (!enabled) {
-        otherInterestInput.value = '';
-        otherInterestInput.removeAttribute('aria-invalid');
-      }
-    }
-  };
-  otherInterestOption?.addEventListener('change', syncOtherInterest);
-  syncOtherInterest();
-
-  form.addEventListener('input', (event) => {
-    const field = event.target;
-    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
-    if (!field.checkValidity()) {
-      syncSubmitState();
-      return;
-    }
-    field.removeAttribute('aria-invalid');
-    const error = form.querySelector<HTMLElement>(`[data-field-error="${field.name}"]`);
-    if (error) error.textContent = '';
-    if (!form.querySelector('[aria-invalid="true"]')) {
-      formAlert.hidden = true;
-      formAlert.textContent = '';
-    }
-    syncSubmitState();
-  });
-  form.addEventListener('change', () => {
-    syncOtherInterest();
-    syncInterestValidity();
-    if (!interestOptions.some((option) => option.checked)) {
-      showFieldErrors({ consulting_interests: 'INTEREST_REQUIRED' });
-    }
-    syncSubmitState();
-  });
-  syncSubmitState();
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    clearErrors();
-    if (!form.checkValidity()) {
-      const invalidFields = Array.from(
-        form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(':invalid'),
-      );
-      revealValidationAlert(invalidFields);
-      status.textContent = messages.fieldFallback;
-      status.className = 'ax-v2-form-status is-error';
-      return;
-    }
-    submitting = true;
-    syncSubmitState();
-    submitLabel.textContent = form.dataset.sendingLabel ?? '상담 신청을 전송하고 있습니다.';
-    status.textContent = messages.sending;
-    status.className = 'ax-v2-form-status';
-    const data = new FormData(form);
-    let acquisitionStorage: Storage | undefined;
-    try {
-      acquisitionStorage = window.sessionStorage;
-    } catch {
-      acquisitionStorage = undefined;
-    }
-    const acquisition = readOrCaptureAxAcquisition(
-      acquisitionStorage,
-      window.location.href,
-      document.referrer,
-    );
-    const crossBorderConsent = form.elements.namedItem('cross_border_consent');
-    const payload = {
-      name: String(data.get('name') ?? ''),
-      email: String(data.get('email') ?? ''),
-      consulting_interests: data.getAll('consulting_interests').map(String),
-      other_interest: String(data.get('other_interest') ?? ''),
-      reason: String(data.get('reason') ?? ''),
-      cross_border_consent:
-        crossBorderConsent instanceof HTMLInputElement && crossBorderConsent.checked,
-      website: String(data.get('website') ?? ''),
-      started_at: startedAt,
-      utm: acquisition.utm,
-      attribution: {
-        initial_referrer_host: acquisition.initial_referrer_host,
-        landing_path: acquisition.landing_path,
-      },
-      locale,
-    };
-    const requestController = new AbortController();
-    const requestTimeout = window.setTimeout(() => requestController.abort(), 15_000);
-
-    emitAnalytics('form_submit', { form_id: 'ax_consultation', locale });
-
-    try {
-      const response = await fetch('/api/ax/consultations', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: requestController.signal,
-      });
-      const result = (await response.json().catch(() => null)) as {
-        ok?: boolean;
-        error?: { code?: string; fields?: Record<string, string> };
-      } | null;
-
-      if (!response.ok || !result?.ok) {
-        const fields = result?.error?.fields;
-        if (fields) showFieldErrors(fields);
-        showRequestError(result?.error?.code ?? 'unknown');
-        return;
-      }
-
-      form.reset();
-      autoGrowTextareas.forEach(syncTextareaHeight);
-      startedAt = Date.now();
-      status.textContent = messages.sent;
-      status.className = 'ax-v2-form-status is-success';
-      status.focus({ preventScroll: true });
-      emitAnalytics('generate_lead', { form_id: 'ax_consultation', locale });
-      form.dispatchEvent(new CustomEvent('ax:lead-sent', { bubbles: true }));
-    } catch {
-      showRequestError('network');
-    } finally {
-      window.clearTimeout(requestTimeout);
-      submitting = false;
-      syncSubmitState();
-      submitLabel.textContent = defaultSubmitLabel;
-    }
-  });
-}
-
 function initializeAnimatedDiagram(root: HTMLElement) {
   const observer = new IntersectionObserver(
     ([entry]) => {
@@ -1037,7 +773,7 @@ function initialize() {
   page.querySelectorAll<HTMLElement>('[data-testimonial-carousel]').forEach(initializeCarousel);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-tabs]').forEach(initializeTabs);
   page.querySelectorAll<HTMLElement>('[data-ax-v2-accordion]').forEach(initializeAccordion);
-  page.querySelectorAll<HTMLFormElement>('[data-ax-v2-lead-form]').forEach(initializeLeadForm);
+  initializeLeadForms(page);
   page.querySelectorAll<HTMLElement>('[data-ceal-diagrams]').forEach(initializeAnimatedDiagram);
   page
     .querySelectorAll<HTMLElement>('[data-internal-proof-sequence]')

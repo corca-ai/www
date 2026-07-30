@@ -16,6 +16,7 @@ in front of you:
 | branch, open a pull request, or understand the handoff after merge | [Contributing](contributing.md) |
 | understand the stack, route ownership, canonical URLs, analytics, or Worker role | [Architecture](architecture.md) |
 | understand the integrated blog structure, admin APIs, Notion publishing, or static asset contract | [Blog](blog.md) |
+| plan the opt-in email notification for new blog posts before implementation | [Blog newsletter plan](blog-newsletter-plan.md) |
 | update the localized Corca AX page, assets, consultation form, or Worker delivery settings | [Corca AX page](ax.md) |
 | continue the current site or AX V2 work in a new task with verified Git history | [2026-07-28 site and AX V2 handoff](handoffs/2026-07-28-corca-site-handoff.md) |
 | plan or implement the next `/ax` version without changing the frozen backup | [AX redesign handoff](ax-redesign-handoff.md) |

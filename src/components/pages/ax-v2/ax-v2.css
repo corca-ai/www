@@ -1533,6 +1533,12 @@
   box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.18);
 }
 
+.ax-v2-field input[data-request-autofocus='true']:focus-visible {
+  border-color: #e0b735;
+  background: #fff8d6;
+  box-shadow: 0 0 0 4px rgba(224, 183, 53, 0.24);
+}
+
 .ax-v2-field-error {
   min-height: 20px;
   margin-top: 5px;

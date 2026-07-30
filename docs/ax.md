@@ -83,10 +83,14 @@ AX V2, and do not duplicate copy inside presentational components.
 The Hero consultation CTA is a crawlable same-page link with `href="#request"`.
 It resolves to `/ax#request` in Korean and keeps the current locale for the
 other AX pages. A normal activation updates the fragment, moves instantly to
-the inline consultation section, and focuses its first field; modified clicks
-retain the browser's native new-tab behavior. The fragment is a navigation
-target only: canonical URLs, hreflang, sitemap entries, Open Graph URLs and
-structured data remain hash-free.
+the inline consultation section, and focuses its first field. Direct
+`#request` entries and later `#request` hash changes focus that same field
+without moving the browser's fragment position. An empty automatically focused
+name field uses a pale-yellow guidance state that clears on the first input;
+it is not an error state. Modified clicks retain the browser's native new-tab
+behavior. The fragment is a navigation target only:
+canonical URLs, hreflang, sitemap entries, Open Graph URLs and structured data
+remain hash-free.
 
 AX V2 keeps its asset URL registry in the `axV2Assets` export from
 `ax-v2/content.ts`. Replace or version the corresponding public asset and update

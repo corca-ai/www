@@ -691,6 +691,38 @@ const uiCopy = {
 
 <script is:inline>
   (() => {
+    const requestHash = '#request';
+    const focusRequestNameInput = (contactSection) => {
+      const nameInput = contactSection.querySelector('input[name="name"]');
+      if (!(nameInput instanceof HTMLInputElement)) return;
+
+      if (nameInput.value) {
+        delete nameInput.dataset.requestAutofocus;
+      } else {
+        nameInput.dataset.requestAutofocus = 'true';
+      }
+      if (nameInput.dataset.requestAutofocusBound !== 'true') {
+        nameInput.dataset.requestAutofocusBound = 'true';
+        nameInput.addEventListener('input', () => {
+          delete nameInput.dataset.requestAutofocus;
+        });
+      }
+      nameInput.focus({ preventScroll: true });
+    };
+
+    const focusRequestNameInputFromHash = () => {
+      if (window.location.hash !== requestHash) return;
+
+      const contactSection = document.querySelector('[data-contact-section]');
+      if (!(contactSection instanceof HTMLElement)) return;
+
+      requestAnimationFrame(() => {
+        if (window.location.hash === requestHash) {
+          focusRequestNameInput(contactSection);
+        }
+      });
+    };
+
     const bindContactJump = () => {
       const page = document.querySelector('[data-ax-v2-page]');
       const link = page?.querySelector('[data-contact-jump]');
@@ -702,11 +734,10 @@ const uiCopy = {
       link.addEventListener('click', (event) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
-        if (window.location.hash !== '#request') {
-          window.history.pushState(null, '', '#request');
+        if (window.location.hash !== requestHash) {
+          window.history.pushState(null, '', requestHash);
         }
 
-        const nameInput = contactSection.querySelector('input[name="name"]');
         const alignContactSection = () => {
           const top = window.scrollY + contactSection.getBoundingClientRect().top;
           window.scrollTo({ left: window.scrollX, top, behavior: 'instant' });
@@ -715,15 +746,18 @@ const uiCopy = {
         alignContactSection();
         requestAnimationFrame(() => {
           alignContactSection();
-          if (nameInput instanceof HTMLInputElement) {
-            nameInput.focus({ preventScroll: true });
-          }
+          focusRequestNameInput(contactSection);
         });
       });
     };
 
     bindContactJump();
-    document.addEventListener('astro:page-load', bindContactJump);
+    focusRequestNameInputFromHash();
+    document.addEventListener('astro:page-load', () => {
+      bindContactJump();
+      focusRequestNameInputFromHash();
+    });
+    window.addEventListener('hashchange', focusRequestNameInputFromHash);
   })();
 </script>
 

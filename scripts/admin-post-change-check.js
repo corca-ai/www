@@ -100,6 +100,48 @@ try {
     assert.deepEqual(corcaMetadata.tags, ['코르카']);
     assert.equal(corcaMetadata.section, expectedSection);
   }
+  for (const { slug: sourceSlug, required, forbidden = [] } of [
+    {
+      slug: 'corca-buddy-program',
+      required: [
+        /<p>그렇게 시작된 것이 코르카의 ‘버디\(Buddy\) 프로그램’입니다\.<\/p>/,
+        /<h2>1\. 버디 매칭 기준<\/h2>/,
+        /<h2>4\. 버디 프로그램에 참여한 팀원들의 인터뷰<\/h2>/,
+        /<ol>[\s\S]*?<li>1일차: 입사 당일 버디 프로그램을 소개하며 인사 나누기<\/li>/,
+        /<ul>[\s\S]*?<li>입사하고 2주간 매일 다른 팀과 돌아가면서 식사 필수<\/li>/,
+      ],
+      forbidden: [/그렇게 시작된 것이 ‘ \(Buddy\) ’입니다\./, /<h2>을 갖는 코르카의 문화<\/h2>/],
+    },
+    {
+      slug: 'corca-lunch-bot',
+      required: [
+        /<h1>다들 식사하시나요\?<\/h1>/,
+        /<h2>👀코르카인들이 이렇게 밥에 진심인 이유가 있을까요\?<\/h2>/,
+      ],
+    },
+    {
+      slug: 'hello-orca-bot',
+      required: [
+        /<h1>Hello 코르카, Hello 오르카봇<\/h1>/,
+        /<ul>[\s\S]*?<li>코르카에서 사용하는 업무 시스템에 대한 소개와 세팅<\/li>/,
+      ],
+    },
+    {
+      slug: 'corca-workation-busan-2024',
+      required: [
+        /<h3>코르카, 부산으로 떠나다!<\/h3>/,
+        /<figcaption>TF팀에서 준비한 워케이션과 코르카 2024 SS 티셔츠<\/figcaption>/,
+        /<figcaption>부산, 이제 안녕<\/figcaption>/,
+      ],
+    },
+  ]) {
+    const source = await readFile(
+      join(repoRoot, `public/blog/admin/post-sources/${sourceSlug}.html`),
+      'utf8',
+    );
+    for (const pattern of required) assert.match(source, pattern);
+    for (const pattern of forbidden) assert.doesNotMatch(source, pattern);
+  }
   for (const [localeRoot, productCategory, corcaCategory, expectedProductTopics] of [
     [
       'blog',

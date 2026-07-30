@@ -753,6 +753,15 @@ const uiCopy = {
 
     bindContactJump();
     focusRequestNameInputFromHash();
+    window.addEventListener(
+      'load',
+      () => {
+        if (document.activeElement === document.body) {
+          focusRequestNameInputFromHash();
+        }
+      },
+      { once: true },
+    );
     document.addEventListener('astro:page-load', () => {
       bindContactJump();
       focusRequestNameInputFromHash();

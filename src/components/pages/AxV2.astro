@@ -3,7 +3,7 @@ import type { Lang } from '../../i18n/ui';
 import AxLeadForm from './ax-v2/AxLeadForm.astro';
 import AxLines from './ax-v2/AxLines.astro';
 import AxResponsiveLines from './ax-v2/AxResponsiveLines.astro';
-import { axV2Assets, axV2ContentByLang } from './ax-v2/content';
+import { axV2Assets, axV2ContentByLang, axV2MobileLineOverrides } from './ax-v2/content';
 import './ax-v2/ax-v2.css';
 
 interface Props {
@@ -12,6 +12,8 @@ interface Props {
 
 const { lang } = Astro.props;
 const c = axV2ContentByLang[lang];
+const mobileCopy = lang === 'ko' ? c : undefined;
+const mobileLineOverrides = axV2MobileLineOverrides[lang as keyof typeof axV2MobileLineOverrides];
 const slowdownGradientStart = lang === 'ja' ? 1 : 2;
 const uiCopy = {
   ko: {
@@ -155,7 +157,7 @@ const uiCopy = {
           <span>{c.transformation.lead[0]}</span><br />
           <strong>{c.transformation.lead[1]}</strong>
         </p>
-        <p><AxLines values={c.transformation.body} /></p>
+        <p><AxLines values={c.transformation.body} mobileValues={mobileCopy?.transformation.mobileBody} /></p>
       </div>
 
       <div class="ax-v2-testimonials" role="region" aria-label={uiCopy.testimonials} tabindex="0" data-testimonial-carousel>
@@ -283,27 +285,14 @@ const uiCopy = {
       <h2 class="ax-v2-eyebrow" data-reveal>{c.slowdown.eyebrow}</h2>
       <div class="ax-v2-heading-block ax-v2-heading-block-wide" data-reveal>
         <h3 id="ax-v2-slowdown-title">
-          {c.slowdown.heading.map((segments, index) => (
-            <>
-              {index > 0 && <br />}
-              <span class:list={{ 'ax-v2-point-gradient': index >= slowdownGradientStart }}>
-                {segments.map((segment, segmentIndex) => (
-                  <>
-                    {segmentIndex > 0 && (
-                      <>
-                        <span class="ax-v2-slowdown-desktop-space"> </span>
-                        <br class="ax-v2-slowdown-mobile-break" />
-                      </>
-                    )}
-                    {segment}
-                  </>
-                ))}
-              </span>
-            </>
-          ))}
+          <AxResponsiveLines
+            lines={c.slowdown.heading}
+            mobileLines={mobileCopy?.slowdown.mobileHeading}
+            gradientFrom={slowdownGradientStart}
+          />
         </h3>
         <p><AxLines values={c.slowdown.body} /></p>
-        <strong class="ax-v2-section-closing"><AxLines values={c.slowdown.closing} /></strong>
+        <strong class="ax-v2-section-closing"><AxLines values={c.slowdown.closing} mobileValues={mobileCopy?.slowdown.mobileClosing} /></strong>
       </div>
 
       <div class="ax-v2-split-tabs" data-ax-v2-tabs>
@@ -369,9 +358,11 @@ const uiCopy = {
       <h2 class="ax-v2-eyebrow" data-reveal>{c.diagnosis.eyebrow}</h2>
       <div class="ax-v2-heading-block" data-reveal>
         <h3 id="ax-v2-diagnosis-title">
-          {c.diagnosis.heading.map((line, index) => (
-            <>{index > 0 && <br />}<span class:list={{ 'ax-v2-point-gradient': index === 1 }}>{line}</span></>
-          ))}
+          <AxResponsiveLines
+            lines={c.diagnosis.heading.map((line) => [line])}
+            mobileLines={mobileCopy?.diagnosis.mobileHeading.map((line) => [line]) ?? mobileLineOverrides?.diagnosisHeading}
+            gradientFrom={1}
+          />
         </h3>
         <div class="ax-v2-metric"><strong class="ax-v2-point-gradient">{c.diagnosis.metric[0]}</strong><span>{c.diagnosis.metric[1]}</span></div>
         <p><AxLines values={c.diagnosis.body} /></p>
@@ -388,7 +379,7 @@ const uiCopy = {
           </article>
           <span class="ax-v2-comparison-arrow" aria-hidden="true">➜</span>
           <article class="ax-v2-comparison-corca">
-            <h4><AxLines values={c.diagnosis.corca.title} /></h4>
+            <h4><AxLines values={c.diagnosis.corca.title} mobileValues={mobileCopy?.diagnosis.corca.mobileTitle} /></h4>
             <p><AxLines values={c.diagnosis.corca.body} /></p>
             <ol>{c.diagnosis.corca.items.map((item) => {
               const [count, ...label] = item.split(' ');
@@ -396,7 +387,7 @@ const uiCopy = {
             })}</ol>
           </article>
         </div>
-        <strong class="ax-v2-section-closing ax-v2-dark-closing"><AxLines values={c.diagnosis.closing} /></strong>
+        <strong class="ax-v2-section-closing ax-v2-dark-closing"><AxLines values={c.diagnosis.closing} mobileValues={mobileCopy?.diagnosis.mobileClosing} /></strong>
         <p class="ax-v2-source-note">{c.diagnosis.note}</p>
       </div>
     </div>
@@ -435,7 +426,11 @@ const uiCopy = {
       <h2 class="ax-v2-eyebrow" data-reveal>{c.environment.eyebrow}</h2>
       <div class="ax-v2-heading-block ax-v2-heading-block-wide ax-v2-heading-block-centered" data-reveal>
         <h3 id="ax-v2-environment-title">
-          <AxResponsiveLines lines={c.environment.heading} gradientFrom={1} />
+          <AxResponsiveLines
+            lines={c.environment.heading}
+            mobileLines={mobileLineOverrides?.environmentHeading}
+            gradientFrom={1}
+          />
         </h3>
         <p>
           {c.environment.body.map((line, index) => {
@@ -477,7 +472,7 @@ const uiCopy = {
           </article>
         ))}
       </div>
-      <strong class="ax-v2-section-closing ax-v2-dark-closing"><AxLines values={c.environment.closing} /></strong>
+      <strong class="ax-v2-section-closing ax-v2-dark-closing"><AxLines values={c.environment.closing} mobileValues={mobileCopy?.environment.mobileClosing ?? mobileLineOverrides?.environmentClosing} /></strong>
     </div>
   </section>
 

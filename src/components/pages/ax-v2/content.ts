@@ -27,6 +27,11 @@ export const axV2Content = {
       'AI를 도입했지만 전사적 성과로 연결하지 못했던 여러 기업이',
       'Corca와 함께 변화하고 있습니다.',
     ],
+    mobileBody: [
+      'AI를 도입했지만',
+      '전사적 성과로 연결하지 못했던 여러 기업이',
+      'Corca와 함께 변화하고 있습니다.',
+    ],
     testimonials: [
       {
         id: 'kyowon',
@@ -117,11 +122,20 @@ export const axV2Content = {
       ['적절한 과제 선정,', '구성원 역량 향상,'],
       ['조직 환경 구축이', '모두 필요합니다.'],
     ],
+    mobileHeading: [
+      ['모델 성능만으로는'],
+      ['AX가 확산되지 않습니다.'],
+      ['적절한 과제 선정,'],
+      ['구성원 역량 향상,'],
+      ['조직 환경 구축이'],
+      ['모두 필요합니다.'],
+    ],
     body: [
       '기술은 조직보다 먼저 도착하지만, 성과는 조직이 준비될 때 시작됩니다.',
       '도구를 도입해도 활용이 일부 개인에게만 머물면 조직의 일하는 방식은 바뀌지 않습니다. 성공한 시도가 반복되고 전파되는 구조가 만들어져야 합니다.',
     ],
     closing: ['Corca AX는 개인의 AI 활용을', '조직의 실행력으로 전환합니다.'],
+    mobileClosing: ['Corca AX는', '개인의 AI 활용을', '조직의 실행력으로', '전환합니다.'],
     tabs: [
       {
         id: 'diagnosis',
@@ -146,6 +160,12 @@ export const axV2Content = {
   diagnosis: {
     eyebrow: 'AX 과제 진단',
     heading: ['조직의 역량과 문제의 특성에 따라', '필요한 기술과 해결 전략이 달라져야 합니다.'],
+    mobileHeading: [
+      '조직의 역량과',
+      '문제의 특성에 따라',
+      '필요한 기술과 해결 전략이',
+      '달라져야 합니다.',
+    ],
     metric: ['61건', '고객사당 평균 개선 과제 수'],
     body: [
       'Corca AX는 기존의 솔루션 중심 접근을 근본적으로 검토해,',
@@ -164,6 +184,7 @@ export const axV2Content = {
     },
     corca: {
       title: ['Corca AX의', '고객 성과 중심 진단과 해결 전략'],
+      mobileTitle: ['Corca AX의', '고객 성과 중심 진단과', '해결 전략'],
       body: [
         'Corca AX는 고객사가',
         '실제로 성과를 낼 수 있도록 과제를 다시 살펴보고,',
@@ -179,6 +200,7 @@ export const axV2Content = {
       ],
     },
     closing: ['Corca AX는 조직의 과제를', '조직이 풀 수 있는 형태로 진단해 드립니다.'],
+    mobileClosing: ['Corca AX는 조직의 과제를', '조직이 풀 수 있는 형태로', '진단해 드립니다.'],
     note: '수치는 고객 과제를 Corca 기준으로 재분류한 결과입니다.',
   },
   coaching: {
@@ -257,6 +279,7 @@ export const axV2Content = {
       },
     ],
     closing: ['맥락·권한·통제는 기술로,', '운영체계는 제도와 문화로 해결해야 합니다.'],
+    mobileClosing: ['맥락·권한·통제는 기술로,', '운영체계는', '제도와 문화로 해결해야 합니다.'],
   },
   ceal: {
     eyebrow: 'AX 환경 구축 솔루션 — Ceal',
@@ -430,6 +453,19 @@ export const axV2ContentByLang: Record<Lang, typeof axV2Content> = {
   ja: mergeLocalized(axV2Content, axV2ContentOverrides.ja),
   zh: mergeLocalized(axV2Content, axV2ContentOverrides.zh),
 };
+
+/**
+ * Mobile-only line composition for localized copy that needs a different
+ * rhythm from its desktop counterpart. Keep this separate from desktop copy
+ * so a mobile adjustment cannot change the wider layout.
+ */
+export const axV2MobileLineOverrides = {
+  zh: {
+    diagnosisHeading: [['技术与解决策略'], ['须贴合组织能力'], ['与问题特性。']],
+    environmentHeading: [['AX推动者要持续'], ['产生成果，需要'], ['组织环境与文化。']],
+    environmentClosing: ['AX推动者要持续', '产生成果，需要', '组织环境与文化。'],
+  },
+} as const;
 
 export const axV2Assets = {
   hero: {

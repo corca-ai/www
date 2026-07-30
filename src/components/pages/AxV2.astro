@@ -139,7 +139,7 @@ const uiCopy = {
           </>
         ))}
       </h3>
-      <button class="ax-v2-primary-button" type="button" data-contact-jump>{c.hero.cta}</button>
+      <a class="ax-v2-primary-button" href="#request" data-contact-jump>{c.hero.cta}</a>
     </div>
   </section>
 
@@ -597,7 +597,7 @@ const uiCopy = {
 
   <section
     class="ax-v2-section ax-v2-contact-section"
-    id="ax-contact"
+    id="request"
     aria-labelledby="ax-v2-contact-title"
     data-contact-section
   >
@@ -693,13 +693,19 @@ const uiCopy = {
   (() => {
     const bindContactJump = () => {
       const page = document.querySelector('[data-ax-v2-page]');
-      const button = page?.querySelector('[data-contact-jump]');
+      const link = page?.querySelector('[data-contact-jump]');
       const contactSection = page?.querySelector('[data-contact-section]');
-      if (!(button instanceof HTMLButtonElement) || !(contactSection instanceof HTMLElement)) return;
-      if (button.dataset.contactJumpBound === 'true') return;
+      if (!(link instanceof HTMLAnchorElement) || !(contactSection instanceof HTMLElement)) return;
+      if (link.dataset.contactJumpBound === 'true') return;
 
-      button.dataset.contactJumpBound = 'true';
-      button.addEventListener('click', () => {
+      link.dataset.contactJumpBound = 'true';
+      link.addEventListener('click', (event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        if (window.location.hash !== '#request') {
+          window.history.pushState(null, '', '#request');
+        }
+
         const nameInput = contactSection.querySelector('input[name="name"]');
         const alignContactSection = () => {
           const top = window.scrollY + contactSection.getBoundingClientRect().top;

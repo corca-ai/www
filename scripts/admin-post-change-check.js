@@ -264,6 +264,14 @@ try {
     assert.equal(generatedOutput.includes('https://www.borca.ai'), false);
     assert.equal(generatedOutput.includes('https://www.corca.ai'), true);
   }
+  const blogStyles = await readFile(join(repoRoot, 'public/blog/styles.css'), 'utf8');
+  assert.match(blogStyles, /\.article-content ul \{\s+list-style-type: disc;/);
+  assert.match(blogStyles, /\.article-content ol \{\s+list-style-type: decimal;/);
+  assert.match(blogStyles, /\.article-content li \{\s+display: list-item;/);
+  assert.doesNotMatch(
+    blogStyles,
+    /\.article-content ul,\s+\.article-content ol \{\s+display: grid;/,
+  );
   const blogAppSource = await readFile(join(repoRoot, 'public/blog/app.js'), 'utf8');
   assert.match(
     blogAppSource,

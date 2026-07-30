@@ -325,7 +325,12 @@
 }
 
 .ax-v2-hero-copy .ax-v2-primary-button {
-  margin-top: 32px;
+  display: flex;
+  width: fit-content;
+  margin: 32px auto 0;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .ax-v2-compound {

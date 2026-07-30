@@ -2124,7 +2124,8 @@ body:has(.ax-v2-hold-dialog[open]) {
   }
 
   .ax-v2-hero {
-    min-height: max(calc(100svh - 66px), 720px);
+    /* Keep the complete CTA inside Safari's visible viewport, including its browser chrome. */
+    min-height: max(calc(100svh - 66px), 640px);
   }
 
   .ax-v2-hero-poster {
@@ -2154,7 +2155,7 @@ body:has(.ax-v2-hold-dialog[open]) {
 
   .ax-v2-hero-copy {
     width: calc(100% - 32px);
-    bottom: 56px;
+    bottom: clamp(48px, 7.5svh, 56px);
   }
 
   .ax-v2-hero-copy h1 {

@@ -80,6 +80,14 @@ Japanese and Simplified Chinese overrides from
 `docs/ax-content-plan-v2.md`. Do not edit the frozen `ax/content.ts` to change
 AX V2, and do not duplicate copy inside presentational components.
 
+The Hero consultation CTA is a crawlable same-page link with `href="#request"`.
+It resolves to `/ax#request` in Korean and keeps the current locale for the
+other AX pages. A normal activation updates the fragment, moves instantly to
+the inline consultation section, and focuses its first field; modified clicks
+retain the browser's native new-tab behavior. The fragment is a navigation
+target only: canonical URLs, hreflang, sitemap entries, Open Graph URLs and
+structured data remain hash-free.
+
 AX V2 keeps its asset URL registry in the `axV2Assets` export from
 `ax-v2/content.ts`. Replace or version the corresponding public asset and update
 that registry; do not route new AX V2 assets through the frozen

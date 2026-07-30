@@ -729,6 +729,7 @@ function initializeLeadForm(form: HTMLFormElement) {
     (event) => {
       const field = event.target;
       if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+      if (field.dataset.requestAutofocus === 'true' && !field.value) return;
       if (!field.willValidate || field.validity.valid) return;
       showFieldErrors({ [field.name]: fieldCode(field) });
     },

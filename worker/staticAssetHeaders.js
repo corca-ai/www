@@ -13,7 +13,6 @@ const revalidateCacheControl = 'public, max-age=0, must-revalidate';
 function utf8ContentType(pathname, contentType) {
   if (pathname === '/rss') return 'application/rss+xml; charset=utf-8';
   if (/\.txt$/i.test(pathname)) return 'text/plain; charset=utf-8';
-  if (/\/rss\.xml$/i.test(pathname)) return 'application/rss+xml; charset=utf-8';
   if (/\.xml$/i.test(pathname)) return 'application/xml; charset=utf-8';
   if (/\.xsl$/i.test(pathname)) return 'text/xsl; charset=utf-8';
   if (/^text\//i.test(contentType) && !/charset=/i.test(contentType)) {

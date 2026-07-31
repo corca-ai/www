@@ -208,7 +208,6 @@ for (const [pathname, input, expected] of [
   ['/sitemap.xml', 'application/xml', 'application/xml; charset=utf-8'],
   ['/sitemap.xsl', 'text/xsl', 'text/xsl; charset=utf-8'],
   ['/rss', '', 'application/rss+xml; charset=utf-8'],
-  ['/rss.xml', 'application/rss+xml', 'application/rss+xml; charset=utf-8'],
 ]) {
   const response = applyStaticHeaders(pathname, input);
   assert(

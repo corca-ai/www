@@ -1769,15 +1769,10 @@ body {
 }
 
 .article-header p {
-  display: -webkit-box;
-  overflow: hidden;
   color: var(--text-soft);
   font-size: 17px;
   line-height: 1.58;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow-wrap: break-word;
-  text-overflow: ellipsis;
   word-break: keep-all;
 }
 
@@ -4140,14 +4135,9 @@ body {
 .article-header p {
   max-width: 680px;
   color: #475569;
-  display: -webkit-box;
-  overflow: hidden;
   font-size: 18px;
   line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow-wrap: break-word;
-  text-overflow: ellipsis;
   text-wrap: pretty;
   word-break: keep-all;
 }

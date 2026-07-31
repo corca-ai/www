@@ -152,6 +152,9 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 사이트는 GTM 없이 직접 `gtag.js`를 사용한다. `form_submit`과 메일
   성공 뒤 `generate_lead`만 비식별 전환 이벤트로 보내며 이름·이메일·
   상담 내용·메일 attribution 값은 Google Analytics로 보내지 않는다.
+- Microsoft Clarity 프로젝트 `xuurf568oc`는 공통 head에서 로드되어
+  Astro와 정적 블로그 전체에 적용된다. AX 모바일에서는 GA와 함께 첫
+  상호작용 또는 `load` 5초 뒤까지 네트워크 요청을 미룬다.
 - source, medium, 기본 채널 그룹의 정본은 GA4 Traffic acquisition
   보고서다. 이 흐름에는 GA Data API나 별도 Property ID 자격증명이
   필요하지 않다.

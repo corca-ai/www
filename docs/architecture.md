@@ -52,7 +52,9 @@ property.
   holds the per-path relocation rules (old flat URLs → the `/products` and
   `/about` structure, legacy blog feed URLs → `/rss`, and legacy blog post
   redirects).
-- `worker/index.ts` — edge canonicalization and API dispatch. AX consultation
+- `worker/index.ts` — edge canonicalization and API dispatch. The retired
+  `/rss.xml` press/news feed returns `410 Gone`; the active blog feed remains
+  available at `/rss`. AX consultation
   validation and delivery live in `worker/axConsultations.ts`; see the
   [AX guide](ax.md). `src/site.ts` is the single source for the canonical origin
   (`SITE_ORIGIN`), and `src/canonical.ts` is the pure URL-normalization it applies.

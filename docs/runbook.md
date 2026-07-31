@@ -122,7 +122,7 @@ IDs in the pull request description so the analytics owner can verify the
 handoff.
 
 Microsoft Clarity is injected from `src/components/CommonHead.astro` with
-project ID `xuurf568oc`. The build copies this whole shared head block into every
+project ID `xuw7puf7d6`. The build copies this whole shared head block into every
 deployable static blog page, and fails if a blog page contains a missing or
 duplicate Clarity loader. Change the project ID or loader only in
 `CommonHead.astro`, then run `pnpm build` and

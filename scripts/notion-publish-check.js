@@ -319,6 +319,16 @@ second preserved code-like line</pre>
   assert.match(blogStyles, /\.article-content \.note/);
   assert.match(blogStyles, /\.article-content pre code/);
   assert.match(blogStyles, /\.article-content a\s*\{[^}]*font-weight:\s*inherit;/s);
+  const articleDescriptionRules = [
+    ...blogStyles.matchAll(/[^{}]*\.article-header p[^{}]*\{([^{}]*)\}/g),
+  ].map((match) => match[1]);
+  assert.ok(articleDescriptionRules.length >= 2);
+  for (const declarations of articleDescriptionRules) {
+    assert.doesNotMatch(
+      declarations,
+      /(?:-webkit-)?line-clamp|max-height|overflow:\s*hidden|text-overflow:\s*ellipsis/,
+    );
+  }
   const narrowArticleStyles = mediaBlockContaining(
     blogStyles,
     'max-width: 1024px',

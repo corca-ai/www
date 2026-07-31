@@ -22,7 +22,7 @@ property.
   every localized marketing and product page from two registries — static pages
   from `src/staticPages.ts` and product pages from the product registry (see
   [products](products.md)) — alongside `404.astro` and the `robots.txt`,
-  `sitemap.xml` and `rss.xml` endpoints.
+  `sitemap.xml` and `/rss` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`. The Footer keeps its breadcrumb row on the
   home route as an accessible icon-only current-page marker so its shared Partner badge
@@ -50,8 +50,11 @@ property.
   so browser and search result icons retain the navy background and white mark.
   `public/_redirects`
   holds the per-path relocation rules (old flat URLs → the `/products` and
-  `/about` structure, `/rss` → `/rss.xml`, and legacy blog post redirects).
-- `worker/index.ts` — edge canonicalization and API dispatch. AX consultation
+  `/about` structure, legacy blog feed URLs → `/rss`, and legacy blog post
+  redirects).
+- `worker/index.ts` — edge canonicalization and API dispatch. The retired
+  `/rss.xml` press/news feed returns `410 Gone`; the active blog feed remains
+  available at `/rss`. AX consultation
   validation and delivery live in `worker/axConsultations.ts`; see the
   [AX guide](ax.md). `src/site.ts` is the single source for the canonical origin
   (`SITE_ORIGIN`), and `src/canonical.ts` is the pure URL-normalization it applies.

@@ -318,10 +318,7 @@ second preserved code-like line</pre>
   assert.match(blogStyles, /\.article-content \.intro-question/);
   assert.match(blogStyles, /\.article-content \.note/);
   assert.match(blogStyles, /\.article-content pre code/);
-  assert.match(
-    blogStyles,
-    /\.article-content a\s*\{[^}]*font-weight:\s*inherit;/s,
-  );
+  assert.match(blogStyles, /\.article-content a\s*\{[^}]*font-weight:\s*inherit;/s);
   assert.match(
     blogStyles,
     /\.article-content img\s*\{[^}]*box-shadow:\s*none;[^}]*outline:\s*none;/s,

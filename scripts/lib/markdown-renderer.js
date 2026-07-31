@@ -150,9 +150,8 @@ export function normalizeArticleMediaHtml(html) {
     /<p>\s*(<img\b[^>]*>)\s*<\/p>\s*<p>\s*<em>([^<]+)<\/em>\s*<\/p>/g,
     (_match, image, caption) => renderFigureFromImage(image, caption),
   );
-  return withItalicCaptions.replace(
-    /<p>\s*(<img\b[^>]*>)\s*<\/p>/g,
-    (_match, image) => renderFigureFromImage(image),
+  return withItalicCaptions.replace(/<p>\s*(<img\b[^>]*>)\s*<\/p>/g, (_match, image) =>
+    renderFigureFromImage(image),
   );
 }
 
@@ -164,7 +163,11 @@ function renderFigureFromImage(image, explicitCaption = '') {
 }
 
 function isGenericImageAlt(value) {
-  return ['notion image', '노션 이미지', '概念图像'].includes(String(value || '').trim().toLowerCase());
+  return ['notion image', '노션 이미지', '概念图像'].includes(
+    String(value || '')
+      .trim()
+      .toLowerCase(),
+  );
 }
 
 function imageAttribute(image, name) {

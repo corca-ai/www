@@ -941,7 +941,8 @@ async function mediaMarkdown(value, kind, context) {
   const mediaUrl = value.type === 'file' ? await downloadMediaAsset(url, context, kind) : url;
   const notionCaption = richTextPlain(value.caption || []);
   const caption =
-    notionCaption || (kind === 'image' ? 'Notion image' : basename(safeUrlPathname(mediaUrl)) || '파일');
+    notionCaption ||
+    (kind === 'image' ? 'Notion image' : basename(safeUrlPathname(mediaUrl)) || '파일');
   if (kind === 'image') {
     return figureMarkdown({ src: mediaUrl, alt: caption, caption: notionCaption });
   }

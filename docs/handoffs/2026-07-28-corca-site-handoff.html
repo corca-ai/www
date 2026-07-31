@@ -240,6 +240,10 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 <li>네 언어 Privacy는 웹사이트에 배치되어 있지만 현재 정책상 <code>noindex</code>다.</li>
 <li><code>/ax-backup</code>은 과거 한국어 AX 비교본이며 <code>noindex, nofollow</code>,
 sitemap 제외, canonical <code>/ax</code>다.</li>
+<li>sitemap에는 canonical 공개 페이지와 블로그 글만 포함한다. 블로그의
+<code>?topic=</code>·<code>?q=</code> 필터 상태는 locale별 블로그 목록으로 canonical되며
+sitemap에 넣지 않는다. 블로그 목록 title과 description은 locale별로
+고유하게 유지한다.</li>
 <li>일반 merge가 Cloudflare Workers GitHub 연동을 통해 실서비스로
 배포된다. 수동 배포는 저장소의 배포 문서를 먼저 확인한다.</li>
 </ul>

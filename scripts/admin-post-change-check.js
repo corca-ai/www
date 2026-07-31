@@ -256,9 +256,7 @@ try {
     'public/blog/robots.txt',
     'public/blog/rss.xml',
     'public/blog/sitemap.xml',
-    'public/sitemap-categories.xml',
     'public/sitemap-posts.xml',
-    'public/sitemap-tags.xml',
   ]) {
     const generatedOutput = await readFile(join(repoRoot, outputPath), 'utf8');
     assert.equal(generatedOutput.includes('https://www.borca.ai'), false);
@@ -614,16 +612,16 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(sitemap, /hreflang=/);
   assert.doesNotMatch(sitemap, /<changefreq>/);
   assert.doesNotMatch(sitemap, /<priority>/);
-  const categorySitemap = await readFile(join(workDir, 'public/sitemap-categories.xml'), 'utf8');
-  assert.match(categorySitemap, /\/blog\?topic=product/);
-  assert.doesNotMatch(categorySitemap, /[?&]topic=moonlight/);
-  assert.doesNotMatch(categorySitemap, /[?&]topic=tech/);
-  const tagSitemap = await readFile(join(workDir, 'public/sitemap-tags.xml'), 'utf8');
-  assert.match(tagSitemap, /\/blog\?q=/);
-  assert.match(tagSitemap, /\/en\/blog\?q=/);
-  assert.doesNotMatch(tagSitemap, /[?&]search=/);
-  for (const localeRoot of ['blog', 'en/blog', 'ja/blog', 'zh/blog']) {
+  for (const [localeRoot, metaTitle] of [
+    ['blog', '코르카 블로그 | AI 제품·워크플로·팀 운영'],
+    ['en/blog', 'Corca Blog | AI Products, Workflows &amp; Team Operations'],
+    ['ja/blog', 'Corcaブログ | AI製品・ワークフロー・チーム運営'],
+    ['zh/blog', 'Corca 博客 | AI 产品、工作流与团队运营'],
+  ]) {
     const blogIndex = await readFile(join(workDir, `public/${localeRoot}/index.html`), 'utf8');
+    assert.ok(blogIndex.includes(`<title>${metaTitle}</title>`));
+    assert.ok(blogIndex.includes(`<meta property="og:title" content="${metaTitle}">`));
+    assert.ok(blogIndex.includes(`<meta name="twitter:title" content="${metaTitle}">`));
     assert.match(blogIndex, /data-topic-filter="product" data-topic-value="(?:제품|Product)"/);
     assert.doesNotMatch(blogIndex, /data-topic-filter="moonlight"/);
     assert.doesNotMatch(blogIndex, /data-topic-filter="tech"/);

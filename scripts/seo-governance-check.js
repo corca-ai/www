@@ -29,7 +29,7 @@ const redirectRules = (source) =>
     });
 
 const attributeValue = (tag, name) =>
-  tag.match(new RegExp(`\\b${name}=["']([^"']*)["']`, 'i'))?.[1] ?? '';
+  tag.match(new RegExp(`\\b${name}=(["'])(.*?)\\1`, 'i'))?.[2] ?? '';
 
 const alternateLinks = (source, tagName = 'link') =>
   [...source.matchAll(new RegExp(`<${tagName}\\b[^>]*>`, 'gi'))]
@@ -57,6 +57,8 @@ const canonicalHref = (html) =>
     .map((match) => match[0])
     .find((tag) => attributeValue(tag, 'rel').toLowerCase() === 'canonical')
     ?.match(/\bhref=["']([^"']*)["']/i)?.[1] ?? '';
+
+const documentTitle = (html) => html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? '';
 
 const alternateSet = (alternates) =>
   alternates.map(({ hreflang, href }) => `${hreflang}\u0000${href}`).sort();
@@ -117,7 +119,7 @@ const metaContent = (html, key, value) => {
   for (const match of html.matchAll(/<meta\b[^>]*>/g)) {
     const tag = match[0];
     if (!new RegExp(`\\b${key}=["']${value}["']`, 'i').test(tag)) continue;
-    return tag.match(/\bcontent=["']([^"']*)["']/i)?.[1] ?? '';
+    return attributeValue(tag, 'content');
   }
   return '';
 };
@@ -130,12 +132,7 @@ const sourceHasAuthor = (url) => {
   return existsSync(source) && /"author"\s*:\s*"[^"]+"/.test(readFileSync(source, 'utf8'));
 };
 
-const sitemapFiles = [
-  'sitemap-pages.xml',
-  'sitemap-categories.xml',
-  'sitemap-tags.xml',
-  'sitemap-posts.xml',
-];
+const sitemapFiles = ['sitemap-pages.xml', 'sitemap-posts.xml'];
 const entries = sitemapFiles.flatMap((filename) =>
   sitemapEntries(readDist(filename)).map((url) => ({
     url,
@@ -149,6 +146,28 @@ assert(
   !entries.some(({ url }) => new URL(url).pathname === '/ax-backup'),
   'AX backup must stay out of public sitemaps',
 );
+
+const indexedMetadata = entries.map(({ url, kind }) => {
+  const html = readDist(routeFile(url));
+  const canonical = canonicalHref(html);
+  assert(canonical === url, `${kind} sitemap URL ${url} canonicalizes to ${canonical}`);
+  return {
+    url,
+    title: documentTitle(html),
+    description: metaContent(html, 'name', 'description'),
+  };
+});
+
+for (const field of ['title', 'description']) {
+  const owners = new Map();
+  for (const record of indexedMetadata) {
+    const value = record[field];
+    assert(value, `${record.url} has no ${field}`);
+    const previous = owners.get(value);
+    assert(!previous, `${record.url} shares its ${field} with ${previous}`);
+    owners.set(value, record.url);
+  }
+}
 
 const hreflangByLocale = {
   ko: 'ko',

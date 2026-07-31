@@ -30,6 +30,8 @@ top-level pages.
   the static blog renderer. These are not public editing surfaces.
 - `public/blog/rss.xml`, `public/blog/feed.json`, `public/blog/sitemap.xml` and
   `public/blog/robots.txt` — blog discovery and feed files.
+- `public/sitemap-posts.xml` — canonical localized article URLs. Topic and
+  search filter query states are UI views, not sitemap entries.
 
 ## Routing
 
@@ -201,14 +203,15 @@ When changing blog files, keep these invariants:
 - Each localized blog list page should emit an absolute self-canonical URL and
   the same `ko`, `en`, `ja`, `zh-Hans` and Korean `x-default` hreflang set as
   `sitemap-pages.xml`.
-- Tag sitemap links should use the same `q` search parameter consumed by the
-  public blog client.
+- Localized blog list pages keep locale-specific titles and descriptions.
+  `?topic=` and `?q=` filter states canonicalize to that list page and must not
+  appear in a sitemap.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
 - Analytics must initialize independently of the list UI because static article
   pages load `public/blog/app.js` without the blog-index DOM.
-- `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
-  sitemap should be updated together.
+- `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and the
+  canonical post sitemap should be updated together.
 - Every post has exactly one public category in `section`: Product, AX or
   Corca. Topic filters use that category only. The single value in `tags`
   controls the label shown on list cards; Product posts keep their product

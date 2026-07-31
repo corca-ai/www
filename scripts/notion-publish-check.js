@@ -319,6 +319,14 @@ second preserved code-like line</pre>
   assert.match(blogStyles, /\.article-content \.note/);
   assert.match(blogStyles, /\.article-content pre code/);
   assert.match(blogStyles, /\.article-content a\s*\{[^}]*font-weight:\s*inherit;/s);
+  const narrowArticleStyles = mediaBlockContaining(
+    blogStyles,
+    'max-width: 1024px',
+    '.article-mobile-navigation',
+  );
+  assert.match(narrowArticleStyles, /\.table-of-contents-panel\s*\{\s*display:\s*none;/);
+  assert.match(narrowArticleStyles, /\.recommendations-panel\s*\{\s*margin-top:\s*48px;/);
+  assert.match(narrowArticleStyles, /\.article-mobile-navigation\s*\{\s*display:\s*block;/);
   assert.match(
     blogStyles,
     /\.article-content img\s*\{[^}]*box-shadow:\s*none;[^}]*outline:\s*none;/s,
@@ -494,4 +502,24 @@ function linkedText(value, url, annotations = {}) {
       annotations,
     },
   ];
+}
+
+function mediaBlockContaining(css, query, selector) {
+  const marker = `@media (${query})`;
+  let searchStart = 0;
+  while (searchStart < css.length) {
+    const mediaStart = css.indexOf(marker, searchStart);
+    if (mediaStart < 0) break;
+    const blockStart = css.indexOf('{', mediaStart);
+    let depth = 0;
+    for (let index = blockStart; index < css.length; index += 1) {
+      if (css[index] === '{') depth += 1;
+      if (css[index] !== '}' || --depth !== 0) continue;
+      const block = css.slice(mediaStart, index + 1);
+      if (block.includes(selector)) return block;
+      searchStart = index + 1;
+      break;
+    }
+  }
+  throw new Error(`Could not find ${selector} in ${marker}`);
 }

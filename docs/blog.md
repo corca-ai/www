@@ -190,7 +190,7 @@ When changing blog files, keep these invariants:
   override more specific blog component styles. Document-level primitives such
   as page background and overflow may remain global.
 - Desktop article pages keep the table of contents to the left of the article
-  and recommended posts to the right. At widths up to 880px, the table of
+  and recommended posts to the right. At widths up to 1024px, the table of
   contents becomes a collapsible control between the article header and body;
   recommended posts remain after the article. Table of contents clicks scroll
   to the selected heading without leaving a section hash in the browser URL.

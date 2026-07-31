@@ -4526,9 +4526,17 @@ body {
   }
 }
 
-@media (max-width: 880px) {
+@media (max-width: 1024px) {
   .article-header {
     margin-bottom: 24px;
+  }
+
+  .table-of-contents-panel {
+    display: none;
+  }
+
+  .recommendations-panel {
+    margin-top: 48px;
   }
 
   .article-mobile-navigation {

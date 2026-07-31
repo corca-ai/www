@@ -121,6 +121,14 @@ so the change applies site-wide. When changing the ID, include the old and new
 IDs in the pull request description so the analytics owner can verify the
 handoff.
 
+Microsoft Clarity is injected from `src/components/CommonHead.astro` with
+project ID `xuurf568oc`. The build copies this whole shared head block into every
+deployable static blog page, and fails if a blog page contains a missing or
+duplicate Clarity loader. Change the project ID or loader only in
+`CommonHead.astro`, then run `pnpm build` and
+`pnpm check:performance-contract`. GA and Clarity both defer their network
+scripts on AX mobile until the first interaction or five seconds after `load`.
+
 The site loads `gtag.js` directly and does not require Google Tag Manager. AX
 lead events use `gtag('event', ...)`, so GA4 supplies normal session acquisition
 dimensions such as source and medium. The form separately preserves the first

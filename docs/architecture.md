@@ -10,9 +10,11 @@ runs in front of the assets to canonicalize URLs and dispatch the small set of
 edge API endpoints, including AX consultations and Notion publishing. Page
 rendering and blog pages stay fully static, with no server data store. Styling is Tailwind CSS v4
 with a self-hosted Pretendard variable font. Google Analytics runs through the
-shared layout as a client-side `gtag.js` snippet. The production build copies
-that snippet's measurement ID into the static blog shell so both surfaces use
-the same GA4 property.
+shared layout as a client-side `gtag.js` snippet. Microsoft Clarity project
+`xuurf568oc` runs through the shared `CommonHead` so the same loader is copied
+into static blog pages. The production build separately copies the GA
+measurement ID into the static blog shell so both surfaces use the same GA4
+property.
 
 ## Project layout
 
@@ -20,7 +22,7 @@ the same GA4 property.
   every localized marketing and product page from two registries — static pages
   from `src/staticPages.ts` and product pages from the product registry (see
   [products](products.md)) — alongside `404.astro` and the `robots.txt`,
-  `sitemap.xml` and `rss.xml` endpoints.
+  `sitemap.xml` and `/rss` endpoints.
 - `src/components/` — the shared `Header` and `Footer`, plus one component per
   page under `components/pages/`. The Footer keeps its breadcrumb row on the
   home route as an accessible icon-only current-page marker so its shared Partner badge
@@ -29,7 +31,8 @@ the same GA4 property.
   auto-discovered by the shared shell; see [products](products.md).
 - `src/layouts/BaseLayout.astro` — the HTML shell, meta/Open Graph/Twitter tags,
   hreflang alternates, the canonical Google Analytics measurement ID and a
-  per-page JSON-LD `@graph`.
+  per-page JSON-LD `@graph`. `src/components/CommonHead.astro` owns shared
+  application metadata, fonts and the Microsoft Clarity loader.
 - `src/content/` — news and colleague entries as schema-validated YAML collections.
 - `public/blog/` — the integrated Corca Blog static subsite, generated from the
   separate `corca-blog-pages` project with `/blog` as its base path. It carries
@@ -47,8 +50,11 @@ the same GA4 property.
   so browser and search result icons retain the navy background and white mark.
   `public/_redirects`
   holds the per-path relocation rules (old flat URLs → the `/products` and
-  `/about` structure, `/rss` → `/rss.xml`, and legacy blog post redirects).
-- `worker/index.ts` — edge canonicalization and API dispatch. AX consultation
+  `/about` structure, legacy blog feed URLs → `/rss`, and legacy blog post
+  redirects).
+- `worker/index.ts` — edge canonicalization and API dispatch. The retired
+  `/rss.xml` press/news feed returns `410 Gone`; the active blog feed remains
+  available at `/rss`. AX consultation
   validation and delivery live in `worker/axConsultations.ts`; see the
   [AX guide](ax.md). `src/site.ts` is the single source for the canonical origin
   (`SITE_ORIGIN`), and `src/canonical.ts` is the pure URL-normalization it applies.

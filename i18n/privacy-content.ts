@@ -35,7 +35,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
     heading: '개인정보처리방침',
     lead: '주식회사 코르카는 AI·AX 서비스와 상담 과정에서 개인정보를 안전하고 투명하게 처리합니다.',
     effectiveLabel: '시행일',
-    effectiveDate: '2026년 7월 23일',
+    effectiveDate: '2026년 7월 31일',
     tocLabel: '목차',
     overviewLabel: '개요',
     intro:
@@ -54,17 +54,17 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'retention',
         title: '3. 보유 및 이용기간',
-        html: '<ul><li><strong>상담 및 자료 요청:</strong> 문의 처리 완료일 또는 마지막 상담일로부터 3년</li><li><strong>계약·프로젝트 정보:</strong> 계약 종료 후 5년</li><li><strong>웹 분석 정보:</strong> 수집일로부터 최대 14개월</li><li><strong>접속기록:</strong> 관계 법령이 적용되는 경우 3개월</li></ul><p>목적이 달성되거나 보유기간이 지나면 지체 없이 파기합니다. 법령상 보존 의무 또는 분쟁 대응 필요가 있는 경우에는 해당 기간 동안 분리 보관하고 그 목적으로만 이용합니다.</p>',
+        html: '<ul><li><strong>상담 및 자료 요청:</strong> 문의 처리 완료일 또는 마지막 상담일로부터 3년</li><li><strong>계약·프로젝트 정보:</strong> 계약 종료 후 5년</li><li><strong>Google Analytics 정보:</strong> 수집일로부터 최대 14개월</li><li><strong>Microsoft Clarity 정보:</strong> 세션 재생 데이터 최대 30일, 클릭·히트맵 및 선별 세션 데이터 최대 9개월</li><li><strong>접속기록:</strong> 관계 법령이 적용되는 경우 3개월</li></ul><p>목적이 달성되거나 보유기간이 지나면 지체 없이 파기합니다. 법령상 보존 의무 또는 분쟁 대응 필요가 있는 경우에는 해당 기간 동안 분리 보관하고 그 목적으로만 이용합니다.</p>',
       },
       {
         id: 'processors',
         title: '4. 제3자 제공 및 처리위탁',
-        html: '<p>회사는 동의 또는 법령상 근거 없이 개인정보를 제3자에게 제공하지 않습니다.</p><div class="privacy-table-wrap"><table><thead><tr><th>수탁자</th><th>위탁 업무</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>웹사이트 제공, 보안 및 상담 이메일 전송</td></tr><tr><th>Google LLC</th><td>Google Analytics 이용 분석</td></tr></tbody></table></div><p>회사는 계약과 감독을 통해 수탁자가 개인정보를 안전하게 처리하도록 관리합니다.</p>',
+        html: '<p>회사는 동의 또는 법령상 근거 없이 개인정보를 제3자에게 제공하지 않습니다.</p><div class="privacy-table-wrap"><table><thead><tr><th>수탁자</th><th>위탁 업무</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>웹사이트 제공, 보안 및 상담 이메일 전송</td></tr><tr><th>Google LLC</th><td>Google Analytics 이용 분석</td></tr><tr><th>Microsoft Corporation</th><td>Microsoft Clarity 행동 지표, 히트맵 및 세션 재구성 분석</td></tr></tbody></table></div><p>회사는 계약과 감독을 통해 수탁자가 개인정보를 안전하게 처리하도록 관리합니다.</p>',
       },
       {
         id: 'transfers',
         title: '5. 개인정보의 국외 이전',
-        html: '<div class="privacy-table-wrap"><table><thead><tr><th>이전받는 자</th><th>국가·시점·방법</th><th>항목·목적</th><th>기간</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>미국 등 서비스 제공 지역 / 웹사이트 이용·상담 신청 시 암호화 전송</td><td>접속·기기 및 상담 정보 / 호스팅, 보안, 이메일 전송</td><td>위탁 목적 달성 또는 계약 종료 시까지</td></tr><tr><th>Google LLC</th><td>미국 등 데이터센터 소재 국가 / 서비스 이용 시 네트워크 전송</td><td>웹 분석 정보 / 이용 분석</td><td>최대 14개월</td></tr></tbody></table></div><p>분석 목적 이전은 쿠키 설정으로 거부할 수 있습니다. 상담 정보 이전을 원하지 않으면 아래 담당자에게 이메일 또는 전화로 상담을 요청할 수 있습니다.</p>',
+        html: '<div class="privacy-table-wrap"><table><thead><tr><th>이전받는 자</th><th>국가·시점·방법</th><th>항목·목적</th><th>기간</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>미국 등 서비스 제공 지역 / 웹사이트 이용·상담 신청 시 암호화 전송</td><td>접속·기기 및 상담 정보 / 호스팅, 보안, 이메일 전송</td><td>위탁 목적 달성 또는 계약 종료 시까지</td></tr><tr><th>Google LLC</th><td>미국 등 데이터센터 소재 국가 / 서비스 이용 시 네트워크 전송</td><td>웹 분석 정보 / 이용 분석</td><td>최대 14개월</td></tr><tr><th>Microsoft Corporation</th><td>미국 등 데이터센터 소재 국가 / 서비스 이용 시 네트워크 전송</td><td>방문·클릭·스크롤·기기 정보 및 분석 식별자 / 행동 지표, 히트맵 및 세션 재구성 분석</td><td>세션 재생 데이터 최대 30일, 클릭·히트맵 및 선별 세션 데이터 최대 9개월</td></tr></tbody></table></div><p>분석 목적 이전은 쿠키 설정으로 거부할 수 있습니다. 상담 정보 이전을 원하지 않으면 아래 담당자에게 이메일 또는 전화로 상담을 요청할 수 있습니다.</p>',
       },
       {
         id: 'rights',
@@ -73,8 +73,8 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       },
       {
         id: 'cookies',
-        title: '7. 쿠키와 Google Analytics',
-        html: '<p>회사는 이용 현황과 유입 경로를 이해하고 서비스를 개선하기 위해 쿠키와 Google Analytics를 사용할 수 있습니다. 이름, 이메일, 전화번호 및 문의내용은 분석 이벤트로 전송하지 않습니다. 브라우저 설정에서 쿠키를 차단하거나 삭제할 수 있습니다.</p>',
+        title: '7. 쿠키와 분석 도구',
+        html: '<p>회사는 이용 현황과 유입 경로를 이해하고 서비스를 개선하기 위해 쿠키, Google Analytics 및 Microsoft Clarity를 사용할 수 있습니다. Clarity는 행동 지표, 히트맵과 세션 재구성에 방문·클릭·스크롤 등의 상호작용 정보를 사용합니다. 이름, 이메일, 전화번호 및 문의내용은 사용자 지정 분석 이벤트로 전송하지 않으며 입력란 내용은 Clarity의 기본 마스킹 대상입니다. 브라우저 설정에서 쿠키를 차단하거나 삭제할 수 있습니다. Microsoft의 데이터 처리에 관한 자세한 내용은 <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noreferrer">Microsoft 개인정보처리방침</a>에서 확인할 수 있습니다.</p>',
       },
       {
         id: 'security',
@@ -89,7 +89,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'changes',
         title: '10. 방침의 변경',
-        html: '<p>이 방침은 2026년 7월 23일부터 적용됩니다. 중요한 내용이 변경되는 경우 시행 전에 웹사이트를 통해 변경 사항과 시행일을 안내합니다.</p>',
+        html: '<p>이 방침은 2026년 7월 31일부터 적용됩니다. 중요한 내용이 변경되는 경우 시행 전에 웹사이트를 통해 변경 사항과 시행일을 안내합니다.</p>',
       },
     ],
   },
@@ -101,7 +101,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
     heading: 'Privacy Policy',
     lead: 'Corca, Inc. handles personal information transparently and securely across its AI and AX services.',
     effectiveLabel: 'Effective',
-    effectiveDate: 'July 23, 2026',
+    effectiveDate: 'July 31, 2026',
     tocLabel: 'Contents',
     overviewLabel: 'Overview',
     intro:
@@ -120,22 +120,22 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'retention',
         title: '3. Retention',
-        html: '<ul><li><strong>Consultations and resource requests:</strong> three years after resolution or the last consultation.</li><li><strong>Contracts and projects:</strong> five years after the relationship ends.</li><li><strong>Analytics:</strong> up to 14 months.</li><li><strong>Security logs:</strong> as reasonably necessary for security and legal obligations.</li></ul><p>We may retain information longer when required by law, needed to establish or defend legal claims, or requested by you.</p>',
+        html: '<ul><li><strong>Consultations and resource requests:</strong> three years after resolution or the last consultation.</li><li><strong>Contracts and projects:</strong> five years after the relationship ends.</li><li><strong>Google Analytics:</strong> up to 14 months.</li><li><strong>Microsoft Clarity:</strong> playback data for up to 30 days, and click, heatmap, and selected session data for up to nine months.</li><li><strong>Security logs:</strong> as reasonably necessary for security and legal obligations.</li></ul><p>We may retain information longer when required by law, needed to establish or defend legal claims, or requested by you.</p>',
       },
       {
         id: 'disclosure',
         title: '4. Service providers and disclosures',
-        html: '<div class="privacy-table-wrap"><table><thead><tr><th>Provider</th><th>Purpose</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>Website delivery, security, and consultation email transmission.</td></tr><tr><th>Google LLC</th><td>Google Analytics measurement.</td></tr></tbody></table></div><p>We may also disclose information when required by law, to protect rights and security, or in connection with a corporate transaction. We require service providers to use information only for contracted purposes.</p>',
+        html: '<div class="privacy-table-wrap"><table><thead><tr><th>Provider</th><th>Purpose</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>Website delivery, security, and consultation email transmission.</td></tr><tr><th>Google LLC</th><td>Google Analytics measurement.</td></tr><tr><th>Microsoft Corporation</th><td>Microsoft Clarity behavioral metrics, heatmaps, and session replay.</td></tr></tbody></table></div><p>We may also disclose information when required by law, to protect rights and security, or in connection with a corporate transaction. We require service providers to use information only for contracted purposes.</p>',
       },
       {
         id: 'international',
         title: '5. International transfers',
-        html: '<p>Corca is located in the Republic of Korea. Information may be processed in Korea, the United States, and other locations where Cloudflare or Google operates. Those jurisdictions may have privacy laws different from those in your location. We use contractual, technical, and organizational safeguards appropriate to the transfer.</p>',
+        html: '<p>Corca is located in the Republic of Korea. Information may be processed in Korea, the United States, and other locations where Cloudflare, Google, or Microsoft operates. Those jurisdictions may have privacy laws different from those in your location. We use contractual, technical, and organizational safeguards appropriate to the transfer.</p>',
       },
       {
         id: 'cookies',
         title: '6. Cookies and analytics',
-        html: '<p>We may use cookies and Google Analytics to understand traffic and improve the site. We do not send your name, email, telephone number, or consultation message as analytics events. You can block or delete cookies in your browser. We do not currently respond to “Do Not Track” signals. We do not sell personal information or share it for cross-context behavioral advertising.</p>',
+        html: '<p>We may use cookies, Google Analytics, and Microsoft Clarity to understand traffic and improve the site. Clarity uses interaction data such as visits, clicks, and scrolling to provide behavioral metrics, heatmaps, and session replay. We do not send your name, email, telephone number, or consultation message as custom analytics events, and Clarity masks input content by default. You can block or delete cookies in your browser. We do not currently respond to “Do Not Track” signals. We do not sell personal information or share it for cross-context behavioral advertising. Learn more in the <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noreferrer">Microsoft Privacy Statement</a>.</p>',
       },
       {
         id: 'rights',
@@ -155,7 +155,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'contact',
         title: '10. Contact and policy changes',
-        html: `<p>To exercise a right or ask a privacy question, contact us below. We may request information needed to verify your identity. You may appeal a refusal by replying to our decision.</p>${contactHtml.en}<p>This policy is effective July 23, 2026. We will post material changes and their effective date before they take effect.</p>`,
+        html: `<p>To exercise a right or ask a privacy question, contact us below. We may request information needed to verify your identity. You may appeal a refusal by replying to our decision.</p>${contactHtml.en}<p>This policy is effective July 31, 2026. We will post material changes and their effective date before they take effect.</p>`,
       },
     ],
   },
@@ -167,7 +167,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
     heading: 'プライバシーポリシー',
     lead: 'Corcaは、AI・AXサービスおよびご相談の過程で個人情報を安全かつ透明に取り扱います。',
     effectiveLabel: '施行日',
-    effectiveDate: '2026年7月23日',
+    effectiveDate: '2026年7月31日',
     tocLabel: '目次',
     overviewLabel: '概要',
     intro:
@@ -186,17 +186,17 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'retention',
         title: '3. 保有期間',
-        html: '<ul><li><strong>相談・資料請求：</strong>対応完了日または最終相談日から3年</li><li><strong>契約・プロジェクト：</strong>契約終了後5年</li><li><strong>アクセス解析：</strong>取得から最長14か月</li></ul><p>利用目的の達成後は遅滞なく削除します。ただし、法令上の保存義務または紛争対応に必要な場合は、その期間に限り分離保管します。</p>',
+        html: '<ul><li><strong>相談・資料請求：</strong>対応完了日または最終相談日から3年</li><li><strong>契約・プロジェクト：</strong>契約終了後5年</li><li><strong>Google Analytics：</strong>取得から最長14か月</li><li><strong>Microsoft Clarity：</strong>再生データは最長30日、クリック・ヒートマップおよび選別されたセッションデータは最長9か月</li></ul><p>利用目的の達成後は遅滞なく削除します。ただし、法令上の保存義務または紛争対応に必要な場合は、その期間に限り分離保管します。</p>',
       },
       {
         id: 'processors',
         title: '4. 委託先および第三者提供',
-        html: '<p>同意または法令上の根拠がない限り、個人データを第三者へ提供しません。</p><div class="privacy-table-wrap"><table><thead><tr><th>委託先</th><th>業務</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>サイト配信、セキュリティ、相談メール送信</td></tr><tr><th>Google LLC</th><td>Google Analyticsによる利用分析</td></tr></tbody></table></div>',
+        html: '<p>同意または法令上の根拠がない限り、個人データを第三者へ提供しません。</p><div class="privacy-table-wrap"><table><thead><tr><th>委託先</th><th>業務</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td>サイト配信、セキュリティ、相談メール送信</td></tr><tr><th>Google LLC</th><td>Google Analyticsによる利用分析</td></tr><tr><th>Microsoft Corporation</th><td>Microsoft Clarityによる行動指標、ヒートマップおよびセッション再現の分析</td></tr></tbody></table></div>',
       },
       {
         id: 'transfers',
         title: '5. 外国への移転',
-        html: '<p>当社は韓国に所在し、個人情報は韓国ならびにCloudflareおよびGoogleがサービスを提供する米国その他の国・地域で取り扱われる場合があります。相談情報は申込み時に暗号化通信でCloudflareを経由して韓国の当社受信箱へ送られます。分析情報はGoogleのデータセンターで最長14か月処理される場合があります。当社は契約上・技術上・組織上の保護措置を講じ、適用法が求める情報提供または同意を実施します。外国制度に関する追加情報は下記窓口へ請求できます。</p>',
+        html: '<p>当社は韓国に所在し、個人情報は韓国ならびにCloudflare、GoogleおよびMicrosoftがサービスを提供する米国その他の国・地域で取り扱われる場合があります。相談情報は申込み時に暗号化通信でCloudflareを経由して韓国の当社受信箱へ送られます。Google Analytics情報は最長14か月、Microsoft Clarityの再生データは最長30日、クリック・ヒートマップおよび選別されたセッションデータは最長9か月処理される場合があります。当社は契約上・技術上・組織上の保護措置を講じ、適用法が求める情報提供または同意を実施します。外国制度に関する追加情報は下記窓口へ請求できます。</p>',
       },
       {
         id: 'rights',
@@ -206,7 +206,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'cookies',
         title: '7. Cookieとアクセス解析',
-        html: '<p>利用状況の把握と改善のためCookieおよびGoogle Analyticsを使用する場合があります。氏名、メール、電話番号、相談内容を分析イベントとして送信しません。ブラウザ設定でCookieを拒否または削除できます。</p>',
+        html: '<p>利用状況の把握と改善のためCookie、Google AnalyticsおよびMicrosoft Clarityを使用する場合があります。Clarityは、行動指標、ヒートマップおよびセッション再現のために、訪問、クリック、スクロールなどの操作情報を使用します。氏名、メール、電話番号、相談内容をカスタム分析イベントとして送信せず、入力欄の内容はClarityの既定のマスキング対象です。ブラウザ設定でCookieを拒否または削除できます。Microsoftによるデータの取扱いについては、<a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noreferrer">Microsoft プライバシー ステートメント</a>をご覧ください。</p>',
       },
       {
         id: 'security',
@@ -216,7 +216,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'contact',
         title: '9. 窓口および改定',
-        html: `<p>個人情報の取扱い、外国移転、権利行使または苦情については下記へご連絡ください。</p>${contactHtml.ja}<p>本ポリシーは2026年7月23日から適用します。重要な変更は、施行日前に内容と施行日を掲載します。</p>`,
+        html: `<p>個人情報の取扱い、外国移転、権利行使または苦情については下記へご連絡ください。</p>${contactHtml.ja}<p>本ポリシーは2026年7月31日から適用します。重要な変更は、施行日前に内容と施行日を掲載します。</p>`,
       },
     ],
   },
@@ -227,7 +227,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
     heading: '隐私政策',
     lead: 'Corca在AI、AX服务及咨询过程中，以透明、安全的方式处理个人信息。',
     effectiveLabel: '生效日期',
-    effectiveDate: '2026年7月23日',
+    effectiveDate: '2026年7月31日',
     tocLabel: '目录',
     overviewLabel: '概述',
     intro:
@@ -246,17 +246,17 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'retention',
         title: '3. 保存期限',
-        html: '<ul><li><strong>咨询及资料申请：</strong>处理完成或最后一次咨询后3年</li><li><strong>合同及项目：</strong>合作结束后5年</li><li><strong>网站分析：</strong>最长14个月</li></ul><p>目的实现或期限届满后，我们将删除或匿名化个人信息；法律要求保存或处理争议所必需时，仅在相应期限和目的范围内保存。</p>',
+        html: '<ul><li><strong>咨询及资料申请：</strong>处理完成或最后一次咨询后3年</li><li><strong>合同及项目：</strong>合作结束后5年</li><li><strong>Google Analytics：</strong>最长14个月</li><li><strong>Microsoft Clarity：</strong>回放数据最长30天，点击、热图及选定的会话数据最长9个月</li></ul><p>目的实现或期限届满后，我们将删除或匿名化个人信息；法律要求保存或处理争议所必需时，仅在相应期限和目的范围内保存。</p>',
       },
       {
         id: 'processors',
         title: '4. 委托处理与对外提供',
-        html: '<div class="privacy-table-wrap"><table><thead><tr><th>接收方/受托方</th><th>联系方式</th><th>处理目的</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td><a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare Privacy</a></td><td>网站托管、安全及咨询邮件传输</td></tr><tr><th>Google LLC</th><td><a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">Google Privacy</a></td><td>Google Analytics网站分析</td></tr></tbody></table></div><p>除经您同意、履行法定义务或法律另有规定外，我们不会向其他第三方提供个人信息。我们通过合同和监督要求受托方仅按约定目的处理信息。</p>',
+        html: '<div class="privacy-table-wrap"><table><thead><tr><th>接收方/受托方</th><th>联系方式</th><th>处理目的</th></tr></thead><tbody><tr><th>Cloudflare, Inc.</th><td><a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare Privacy</a></td><td>网站托管、安全及咨询邮件传输</td></tr><tr><th>Google LLC</th><td><a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">Google Privacy</a></td><td>Google Analytics网站分析</td></tr><tr><th>Microsoft Corporation</th><td><a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noreferrer">Microsoft Privacy</a></td><td>Microsoft Clarity行为指标、热图及会话重现分析</td></tr></tbody></table></div><p>除经您同意、履行法定义务或法律另有规定外，我们不会向其他第三方提供个人信息。我们通过合同和监督要求受托方仅按约定目的处理信息。</p>',
       },
       {
         id: 'transfers',
         title: '5. 个人信息跨境传输',
-        html: '<p>由于Corca位于韩国，您提交的AX咨询信息将通过加密网络，经Cloudflare传输至韩国的Corca授权邮箱；网站使用及分析信息可能由Cloudflare或Google在美国及其服务地区处理。境外接收方处理的个人信息种类、目的和方式如上所述，保存期限分别为实现委托目的或合同终止前，以及分析信息最长14个月。</p><aside>在中国页面提交AX咨询前，我们会就向境外提供个人信息取得单独同意。您可拒绝，但我们将无法通过该表单受理咨询；您仍可通过下方邮箱或电话联系。您可向Corca或相应境外接收方行使访问、更正、删除等权利。</aside>',
+        html: '<p>由于Corca位于韩国，您提交的AX咨询信息将通过加密网络，经Cloudflare传输至韩国的Corca授权邮箱；网站使用及分析信息可能由Cloudflare、Google或Microsoft在美国及其服务地区处理。境外接收方处理的个人信息种类、目的和方式如上所述；Google Analytics信息最长保存14个月，Microsoft Clarity回放数据最长保存30天，点击、热图及选定的会话数据最长保存9个月。</p><aside>在中国页面提交AX咨询前，我们会就向境外提供个人信息取得单独同意。您可拒绝，但我们将无法通过该表单受理咨询；您仍可通过下方邮箱或电话联系。您可向Corca或相应境外接收方行使访问、更正、删除等权利。</aside>',
       },
       {
         id: 'rights',
@@ -266,7 +266,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'cookies',
         title: '7. Cookie与分析工具',
-        html: '<p>我们可能使用Cookie和Google Analytics了解访问及来源并改进网站。姓名、邮箱、电话及咨询内容不会作为分析事件发送。您可在浏览器中拒绝或删除Cookie；拒绝后部分分析功能可能受限。</p>',
+        html: '<p>我们可能使用Cookie、Google Analytics和Microsoft Clarity了解访问及来源并改进网站。Clarity使用访问、点击、滚动等交互信息提供行为指标、热图及会话重现。姓名、邮箱、电话及咨询内容不会作为自定义分析事件发送，输入框内容默认由Clarity遮蔽。您可在浏览器中拒绝或删除Cookie；拒绝后部分分析功能可能受限。有关Microsoft如何处理数据，请参阅<a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noreferrer">Microsoft隐私声明</a>。</p>',
       },
       {
         id: 'security',
@@ -276,7 +276,7 @@ export const privacyContent: Record<Lang, PrivacyContent> = {
       {
         id: 'contact',
         title: '9. 联系方式、投诉与政策更新',
-        html: `<p>如需行使权利、撤回同意、了解跨境接收方或提出投诉，请联系：</p>${contactHtml.zh}<p>本政策自2026年7月23日起生效。发生重大变化时，我们将在生效前公布变更内容和日期，并在法律要求时重新取得同意。</p>`,
+        html: `<p>如需行使权利、撤回同意、了解跨境接收方或提出投诉，请联系：</p>${contactHtml.zh}<p>本政策自2026年7月31日起生效。发生重大变化时，我们将在生效前公布变更内容和日期，并在法律要求时重新取得同意。</p>`,
       },
     ],
   },

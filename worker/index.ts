@@ -18,6 +18,7 @@ interface WorkerEnv extends Env {
 const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const axConsultationPattern = /^\/api\/ax\/consultations\/?$/;
 const adminPathPattern = /^\/(?:api\/admin|blog\/admin)(?:\/|$)/;
+const retiredRssPattern = /^\/rss\.xml\/?$/;
 const githubDispatchRepository = 'corca-ai/www';
 
 // Preview hosts must not be rewritten to the production domain, or the
@@ -41,6 +42,11 @@ export default {
       return handleNotionPublishWebhook(request, env);
     }
 
+    // The old root feed was a press/news export. It has no content-equivalent
+    // replacement: `/rss` remains the blog feed, so redirecting there would be
+    // misleading. Return Gone to retire the old URL from crawlers cleanly.
+    if (retiredRssPattern.test(url.pathname)) return retiredRssResponse();
+
     // Blog admin UI/API has been retired. Generated source/translation assets
     // may still exist under this path for the static blog renderer, but no
     // runtime route under /blog/admin or /api/admin should be browseable.
@@ -50,6 +56,17 @@ export default {
     return withStaticAssetCacheHeaders(request, response);
   },
 } satisfies ExportedHandler<WorkerEnv>;
+
+function retiredRssResponse(): Response {
+  return new Response(null, {
+    status: 410,
+    statusText: 'Gone',
+    headers: {
+      'Cache-Control': 'public, max-age=0, must-revalidate',
+      'X-Robots-Tag': 'noindex',
+    },
+  });
+}
 
 function isPreviewRequest(request: Request, url: URL): boolean {
   const forwardedHost = (request.headers.get('Host') || '').split(':')[0] || '';

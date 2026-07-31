@@ -44,16 +44,16 @@ rendered `src/components/Header.astro`, `src/components/Footer.astro` and
 `src/components/CommonHead.astro` output into every deployable blog page. It
 also syncs the current BaseLayout CSS and injects the GA4 measurement ID before
 `public/blog/app.js` starts. The shared head block owns the site favicon, PWA
-manifest and application metadata, publisher metadata and common font preload;
-page-specific blog SEO and feed metadata stays in the static blog pages. The
-public source HTML intentionally remains a static content-generation shell with
-no measurement ID; the production shell, common head, CSS and analytics
-configuration are single-sourced in the Astro site and applied to generated
-build output. For pages with a breadcrumb, the generated footer also places the
-desktop OpenAI Select Partner badge in the same breadcrumb row as the Astro
-Footer so their shared container and top alignment remain consistent. The
-generator first removes the home shell's icon-only breadcrumb row, then adds
-exactly one blog-specific trail and desktop badge.
+manifest and application metadata, publisher metadata, common font preload and
+Microsoft Clarity loader; page-specific blog SEO and feed metadata stays in the
+static blog pages. The public source HTML intentionally remains a static
+content-generation shell with no analytics identifiers; the production shell,
+common head, CSS and analytics configuration are single-sourced in the Astro
+site and applied to generated build output. For pages with a breadcrumb, the
+generated footer also places the desktop OpenAI Select Partner badge in the same
+breadcrumb row as the Astro Footer so their shared container and top alignment
+remain consistent. The generator first removes the home shell's icon-only
+breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with

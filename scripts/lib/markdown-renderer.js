@@ -69,33 +69,35 @@ markdown.renderer.rules.image = (tokens, index) => {
 };
 
 export function markdownToHtml(source) {
-  const { markdown: preparedMarkdown, cards } = extractLinkCardBlocks(source);
+  const { markdown: preparedMarkdown, blocks } = extractContentBlocks(source);
   const html = markdown.render(preparedMarkdown).trim();
-  return applyColorSyntax(restoreLinkCardBlocks(html, cards));
+  return normalizeArticleMediaHtml(applyColorSyntax(restoreContentBlocks(html, blocks)));
 }
 
-function extractLinkCardBlocks(source) {
-  const cards = [];
+function extractContentBlocks(source) {
+  const blocks = [];
   const lines = String(source || '')
     .replace(/\r\n?/g, '\n')
     .split('\n');
   const prepared = lines.map((line) => {
-    const card = parseLinkCardMarker(line.trim());
-    if (!card) return line;
-    const placeholder = `CORCA_LINK_CARD_${cards.length}`;
-    cards.push({ placeholder, html: renderLinkCard(card) });
+    const value = line.trim();
+    const card = parseLinkCardMarker(value);
+    const figure = parseFigureMarker(value);
+    if (!card && !figure) return line;
+    const placeholder = `CORCA_CONTENT_BLOCK_${blocks.length}`;
+    blocks.push({ placeholder, html: card ? renderLinkCard(card) : renderFigure(figure) });
     return placeholder;
   });
-  return { markdown: prepared.join('\n'), cards };
+  return { markdown: prepared.join('\n'), blocks };
 }
 
-function restoreLinkCardBlocks(html, cards) {
+function restoreContentBlocks(html, blocks) {
   let output = html;
-  for (const card of cards) {
-    const placeholder = escapeRegExp(card.placeholder);
+  for (const block of blocks) {
+    const placeholder = escapeRegExp(block.placeholder);
     output = output
-      .replace(new RegExp(`<p>\\s*${placeholder}\\s*</p>`, 'g'), card.html)
-      .replace(new RegExp(placeholder, 'g'), card.html);
+      .replace(new RegExp(`<p>\\s*${placeholder}\\s*</p>`, 'g'), block.html)
+      .replace(new RegExp(placeholder, 'g'), block.html);
   }
   return output;
 }
@@ -117,12 +119,59 @@ function parseLinkCardMarker(value) {
   }
 }
 
+function parseFigureMarker(value) {
+  const match = String(value || '').match(/^\{\{corca-figure:([^}]+)\}\}$/);
+  if (!match) return null;
+  try {
+    return JSON.parse(decodeURIComponent(match[1]));
+  } catch {
+    return null;
+  }
+}
+
 function renderLinkCard(card) {
   const url = String(card.url || '');
   if (!/^https?:\/\//i.test(url)) return '';
   const host = card.host || linkHost(url);
   const label = String(card.label || url).trim();
   return `<aside class="article-link-card"><a href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer"><span class="article-link-card-domain">${escapeHtml(host)}</span><strong>${escapeHtml(label)}</strong><span class="article-link-card-url">${escapeHtml(url)}</span></a></aside>`;
+}
+
+function renderFigure(figure) {
+  const src = safeMarkdownUrl(figure?.src);
+  if (src === '#') return '';
+  const alt = String(figure?.alt || '').trim();
+  const caption = String(figure?.caption || '').trim();
+  return `<figure><img src="${escapeAttribute(src)}" alt="${escapeAttribute(alt)}" loading="lazy" decoding="async">${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}</figure>`;
+}
+
+export function normalizeArticleMediaHtml(html) {
+  const withItalicCaptions = String(html || '').replace(
+    /<p>\s*(<img\b[^>]*>)\s*<\/p>\s*<p>\s*<em>([^<]+)<\/em>\s*<\/p>/g,
+    (_match, image, caption) => renderFigureFromImage(image, caption),
+  );
+  return withItalicCaptions.replace(
+    /<p>\s*(<img\b[^>]*>)\s*<\/p>/g,
+    (_match, image) => renderFigureFromImage(image),
+  );
+}
+
+function renderFigureFromImage(image, explicitCaption = '') {
+  const alt = imageAttribute(image, 'alt');
+  const caption = String(explicitCaption || '').trim() || (isGenericImageAlt(alt) ? '' : alt);
+  const safeCaption = escapeHtml(decodeHtmlEntities(caption));
+  return `<figure>${image}${safeCaption ? `<figcaption>${safeCaption}</figcaption>` : ''}</figure>`;
+}
+
+function isGenericImageAlt(value) {
+  return ['notion image', '노션 이미지', '概念图像'].includes(String(value || '').trim().toLowerCase());
+}
+
+function imageAttribute(image, name) {
+  const match = String(image || '').match(
+    new RegExp(`\\s${escapeRegExp(name)}=("([^"]*)"|'([^']*)')`, 'i'),
+  );
+  return decodeHtmlEntities(match?.[2] ?? match?.[3] ?? '').trim();
 }
 
 function linkHost(url) {

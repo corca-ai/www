@@ -574,7 +574,11 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.match(staticPage, /class="related-card post-pagination-card post-pagination-previous"/);
   assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
   assert.match(staticPage, /<details class="article-mobile-navigation">/);
-  assert.match(staticPage, /<summary>목차와 추천 글<\/summary>/);
+  assert.match(staticPage, /<summary>목차<\/summary>/);
+  assert.match(
+    staticPage,
+    /<\/header>\s*<details class="article-mobile-navigation">[\s\S]*?<\/details>\s*<div class="article-content">/,
+  );
   assert.match(
     staticPage,
     /<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<section class="toc-section"[\s\S]*?<\/aside>[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<section class="toc-recommendations"/,

@@ -245,6 +245,7 @@ second preserved code-like line</pre>
     notionBodyMetadata.sourceMarkdown,
     /> _First italic paragraph from Notion\._\n>\n> _Second italic paragraph from Notion\._/,
   );
+  assert.match(notionBodyMetadata.sourceMarkdown, /\{\{corca-figure:/);
   assert.doesNotMatch(notionBodyMetadata.sourceMarkdown, /\*\*\s+\*\*/);
   const notionBodyStaticPage = await readFile(
     join(workDir, 'public/blog/notion-body-fixture/index.html'),
@@ -254,6 +255,10 @@ second preserved code-like line</pre>
   assert.match(
     notionBodyStaticPage,
     /<blockquote>\s*<p><em>First italic paragraph from Notion\.<\/em><\/p>\s*<p><em>Second italic paragraph from Notion\.<\/em><\/p>\s*<\/blockquote>/,
+  );
+  assert.match(
+    notionBodyStaticPage,
+    /<figure><img[^>]*alt="Notion file image"[^>]*><figcaption>Notion file image<\/figcaption><\/figure>/,
   );
   assert.doesNotMatch(notionBodyStaticPage, /<p>_/);
   assert.doesNotMatch(notionBodyStaticPage, /\*\*/);
@@ -313,6 +318,10 @@ second preserved code-like line</pre>
   assert.match(blogStyles, /\.article-content \.intro-question/);
   assert.match(blogStyles, /\.article-content \.note/);
   assert.match(blogStyles, /\.article-content pre code/);
+  assert.match(
+    blogStyles,
+    /\.article-content a\s*\{[^}]*font-weight:\s*inherit;/s,
+  );
   assert.match(
     blogStyles,
     /\.article-content img\s*\{[^}]*box-shadow:\s*none;[^}]*outline:\s*none;/s,

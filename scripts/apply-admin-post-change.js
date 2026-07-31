@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { markdownToHtml } from './lib/markdown-renderer.js';
+import { markdownToHtml, normalizeArticleMediaHtml } from './lib/markdown-renderer.js';
 
 const repoRoot = resolve(
   process.env.BLOG_ADMIN_ROOT || join(dirname(fileURLToPath(import.meta.url)), '..'),
@@ -29,7 +29,6 @@ const localeLabels = {
     imageAltSuffix: '대표 이미지',
     toc: '목차',
     recommendations: '추천 글',
-    mobileNavigation: '목차와 추천 글',
     previous: '이전 글',
     next: '다음 글',
     postsBreadcrumb: '글',
@@ -44,7 +43,6 @@ const localeLabels = {
     imageAltSuffix: 'representative image',
     toc: 'Table of contents',
     recommendations: 'Recommended posts',
-    mobileNavigation: 'Contents and recommended posts',
     previous: 'Previous post',
     next: 'Next post',
     postsBreadcrumb: 'Posts',
@@ -59,7 +57,6 @@ const localeLabels = {
     imageAltSuffix: '代表画像',
     toc: '目次',
     recommendations: 'おすすめ記事',
-    mobileNavigation: '目次とおすすめ記事',
     previous: '前の記事',
     next: '次の記事',
     postsBreadcrumb: '記事',
@@ -74,7 +71,6 @@ const localeLabels = {
     imageAltSuffix: '代表图片',
     toc: '目录',
     recommendations: '推荐文章',
-    mobileNavigation: '目录和推荐文章',
     previous: '上一篇',
     next: '下一篇',
     postsBreadcrumb: '文章',
@@ -1431,8 +1427,8 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
             <div class="article-meta">
               <span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
 ${visibleAuthor}            </div>
-            ${renderStaticMobileNavigation(toc, recommendations, locale)}
           </header>
+${renderStaticMobileNavigation(toc, locale)}
           <div class="article-content">
 ${articleHtml}
           </div>
@@ -1573,23 +1569,15 @@ function renderRecommendation(post, locale) {
               </a>`;
 }
 
-function renderStaticMobileNavigation(toc, recommendations, locale) {
+function renderStaticMobileNavigation(toc, locale) {
+  if (!toc) return '';
   const labels = localeLabels[locale];
-  return `            <details class="article-mobile-navigation">
-              <summary>${escapeHtml(labels.mobileNavigation)}</summary>
+  return `          <details class="article-mobile-navigation">
+              <summary>${escapeHtml(labels.toc)}</summary>
               <div class="article-mobile-navigation-content">
-${renderStaticNavigationSections(toc, recommendations, locale)}
+${renderStaticTocSection(toc, locale)}
               </div>
-            </details>`;
-}
-
-function renderStaticNavigationSections(toc, recommendations, locale) {
-  const sections = [];
-  if (toc) {
-    sections.push(renderStaticTocSection(toc, locale));
-  }
-  sections.push(renderStaticRecommendations(recommendations, locale));
-  return sections.join('\n');
+            </details>\n`;
 }
 
 function renderStaticTableOfContents(toc, locale) {
@@ -1672,7 +1660,7 @@ function tableOfContents(articleHtml) {
 
 function prepareArticleHtml(html) {
   let headingIndex = 0;
-  return rewriteBlogAssetUrls(String(html || '').trim()).replace(
+  return normalizeArticleMediaHtml(rewriteBlogAssetUrls(String(html || '').trim())).replace(
     /<h2\b([^>]*)>([\s\S]*?)<\/h2>/gi,
     (match, attrs, body) => {
       if (/\sid=/.test(attrs)) return match;

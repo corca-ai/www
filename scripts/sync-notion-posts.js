@@ -939,13 +939,17 @@ async function mediaMarkdown(value, kind, context) {
     return '';
   }
   const mediaUrl = value.type === 'file' ? await downloadMediaAsset(url, context, kind) : url;
+  const notionCaption = richTextPlain(value.caption || []);
   const caption =
-    richTextPlain(value.caption || []) ||
-    (kind === 'image' ? 'Notion image' : basename(safeUrlPathname(mediaUrl)) || '파일');
+    notionCaption || (kind === 'image' ? 'Notion image' : basename(safeUrlPathname(mediaUrl)) || '파일');
   if (kind === 'image') {
-    return `![${caption}](${mediaUrl})`;
+    return figureMarkdown({ src: mediaUrl, alt: caption, caption: notionCaption });
   }
   return linkMarkdown(mediaUrl, caption);
+}
+
+function figureMarkdown({ src, alt, caption }) {
+  return `{{corca-figure:${encodeURIComponent(JSON.stringify({ src, alt, caption }))}}}`;
 }
 
 function linkMarkdown(url, label) {

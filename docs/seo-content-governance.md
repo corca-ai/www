@@ -25,9 +25,13 @@ page redesign.
   match `sitemap-pages.xml` when the URL is listed there.
 - A `noindex` page keeps its canonical and robots policy but emits no hreflang;
   indexable pages and sitemaps must not reference it as an alternate.
+- Every URL emitted by a sitemap must be that page's canonical URL. Client-side
+  blog filter states such as `?topic=` and `?q=` stay out of sitemaps because
+  they canonicalize to the localized blog index.
 - Document languages are Korean `ko`, English `en`, Japanese `ja` and
   Simplified Chinese `zh-CN`. Locale-specific metadata and structured data must
-  use the same language as the visible page.
+  use the same language as the visible page. Indexable localized pages must not
+  reuse another locale's title or meta description.
 - Organization, WebSite, BreadcrumbList, SoftwareApplication and Service
   structured data must describe facts visible on or supported by the page.
   Prices, availability and product terms must not remain in JSON-LD after they
@@ -76,8 +80,9 @@ replacement is measured and approved:
   after its carousel enters the viewport.
 - Images keep intrinsic dimensions or an explicit aspect ratio so content does
   not shift while assets load.
-- Mobile does not initialize the AX scroll-parallax loop. Google Analytics on
-  AX mobile loads after first interaction or five seconds after `load`.
+- Mobile does not initialize the AX scroll-parallax loop. Google Analytics and
+  Microsoft Clarity on AX mobile load after first interaction or five seconds
+  after `load`.
 - Content-hashed and versioned assets retain a one-year immutable cache.
   Mutable static assets retain the short cache with stale-while-revalidate;
   HTML, feeds and discovery documents revalidate; APIs remain `no-store`.

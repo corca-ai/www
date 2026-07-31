@@ -61,11 +61,11 @@ parallax, leaving the lightweight poster as the stable LCP element. The mobile
 poster keeps the approved wide composition, resized and encoded separately for
 the mobile critical path, and positions it in the upper-right so the orca stays
 clear of the centered headline; keep that composition and its bottom mask in
-sync when replacing the hero artwork. Google
-Analytics is queued immediately but its network script is delayed until five
-seconds after `load` or the first interaction. Carousel images are only
-preloaded after their carousel enters the viewport. Desktop behavior and other
-routes keep their existing loading strategy.
+sync when replacing the hero artwork. Google Analytics and Microsoft Clarity are
+queued immediately, but their network scripts are delayed until five seconds
+after `load` or the first interaction. Carousel images are only preloaded after
+their carousel enters the viewport. Desktop behavior and other routes keep
+their existing loading strategy.
 
 At desktop and tablet widths above 720px, viewports no taller than 720px anchor
 the hero copy 10px from the top of the hero instead of from the bottom. The hero

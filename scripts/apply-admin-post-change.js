@@ -92,6 +92,7 @@ const translationTargetLocales = supportedLocales.filter((locale) => locale !== 
 const defaultCover = 'assets/editorial-cover.jpg';
 const blogIndexLabels = {
   ko: {
+    metaTitle: '코르카 블로그 | AI 제품·워크플로·팀 운영',
     description: 'Corca가 AI 제품, 워크플로, 팀 운영에서 배운 내용을 기록하는 공식 블로그입니다.',
     heroSub: '기술 발전의 혜택을 모두가 누리게 하여 인류 문명의 발전에 기여한다.',
     lead: 'Corca의 기술, AI 제품, 개발 조직, 문화에 대한 이야기를 들려드려요.',
@@ -130,6 +131,7 @@ const blogIndexLabels = {
     aboutCompanyCopy: 'Corca가 중요하게 보는 원칙과 일하는 방식을 공개합니다.',
   },
   en: {
+    metaTitle: 'Corca Blog | AI Products, Workflows & Team Operations',
     description:
       'The official Corca blog for lessons from AI products, workflows, and team operations.',
     heroSub:
@@ -172,6 +174,7 @@ const blogIndexLabels = {
     aboutCompanyCopy: 'The principles and working methods Corca chooses to share publicly.',
   },
   ja: {
+    metaTitle: 'Corcaブログ | AI製品・ワークフロー・チーム運営',
     description: 'AI製品、ワークフロー、チーム運営から得た学びを記録するCorca公式ブログです。',
     heroSub: '技術発展の恩恵をすべての人が享受できるようにし、人類文明の発展に貢献します。',
     lead: 'Corcaの技術、AI製品、開発組織、カルチャーについてお届けします。',
@@ -210,6 +213,7 @@ const blogIndexLabels = {
     aboutCompanyCopy: 'Corcaが大切にしている原則と働き方を公開します。',
   },
   zh: {
+    metaTitle: 'Corca 博客 | AI 产品、工作流与团队运营',
     description: 'Corca 官方博客，记录 AI 产品、工作流和团队运营中的经验。',
     heroSub: '让每个人都能享受技术发展的成果，并为人类文明进步作出贡献。',
     lead: '分享 Corca 的技术、AI 产品、工程团队和文化故事。',
@@ -831,6 +835,7 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 
     html = html
       .replace(/<html lang="[^"]*"/, `<html lang="${localeLabels[locale].lang}"`)
+      .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(labels.metaTitle)}</title>`)
       .replace(/\n\s*<meta name="robots"[^>]*>/gi, '')
       .replace(/\n\s*<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/gi, '')
       .replace(/\n\s*<link\b(?=[^>]*\brel=["']alternate["'])(?=[^>]*\bhreflang=["'])[^>]*>/gi, '')
@@ -839,8 +844,16 @@ async function renderBlogIndexPages(postRecordsByLocale) {
         `<meta name="description" content="${escapeAttribute(labels.description)}">\n    <meta name="robots" content="index, follow">`,
       )
       .replace(
+        /<meta property="og:title" content="[^"]*">/,
+        `<meta property="og:title" content="${escapeAttribute(labels.metaTitle)}">`,
+      )
+      .replace(
         /<meta property="og:description" content="[^"]*">/,
         `<meta property="og:description" content="${escapeAttribute(labels.description)}">`,
+      )
+      .replace(
+        /<meta name="twitter:title" content="[^"]*">/,
+        `<meta name="twitter:title" content="${escapeAttribute(labels.metaTitle)}">`,
       )
       .replace(
         /<meta name="twitter:description" content="[^"]*">/,
@@ -965,34 +978,18 @@ async function renderBlogIndexPages(postRecordsByLocale) {
 }
 
 async function renderBlogDiscoveryFiles(postRecordsByLocale) {
-  const sitemapCategories = renderBlogCategoriesSitemap(postRecordsByLocale);
-  const sitemapTags = renderBlogTagsSitemap(postRecordsByLocale);
   const sitemapPosts = renderBlogPostsSitemap(postRecordsByLocale);
   const sitemap = renderBlogSitemapAlias(postRecordsByLocale);
   const rss = renderBlogRss(postRecordsByLocale.get('ko') || []);
   const feed = renderBlogJsonFeed(postRecordsByLocale.get('ko') || []);
   const robots = renderBlogRobotsTxt();
 
-  await writeFile(join(repoRoot, 'public/sitemap-categories.xml'), sitemapCategories);
-  await writeFile(join(repoRoot, 'public/sitemap-tags.xml'), sitemapTags);
   await writeFile(join(repoRoot, 'public/sitemap-posts.xml'), sitemapPosts);
   await writeFile(join(blogRoot, 'sitemap.xml'), sitemap);
   await writeFile(join(blogRoot, 'rss.xml'), rss);
   await writeFile(join(blogRoot, 'feed.json'), feed);
   await writeFile(join(blogRoot, 'robots.txt'), robots);
   console.log('Rendered blog sitemap index children, RSS, JSON feed and robots.txt.');
-}
-
-function renderBlogCategoriesSitemap(postRecordsByLocale) {
-  const lastmod = newestPostDate(postRecordsByLocale);
-  return renderUrlset(
-    supportedLocales.flatMap((locale) =>
-      getPostTopics(postRecordsByLocale.get(locale) || []).map((topic) => ({
-        path: `${localeLabels[locale].blogPath}?topic=${topicKey(topic)}`,
-        lastmod,
-      })),
-    ),
-  );
 }
 
 function renderTopicFilterButtons(records) {
@@ -1039,27 +1036,6 @@ function topicKey(value) {
         .toLowerCase()
     ] || normalizeSlug(value)
   );
-}
-
-function renderBlogTagsSitemap(postRecordsByLocale) {
-  const lastmod = newestPostDate(postRecordsByLocale);
-  const entries = [];
-  for (const locale of supportedLocales) {
-    const tags = [
-      ...new Set(
-        (postRecordsByLocale.get(locale) || []).flatMap(({ post }) =>
-          [...(post.tags || []), post.section].filter(Boolean),
-        ),
-      ),
-    ].sort((a, b) => a.localeCompare(b, localeLabels[locale].lang));
-    for (const tag of tags) {
-      entries.push({
-        path: `${localeLabels[locale].blogPath}?q=${encodeURIComponent(tag)}`,
-        lastmod,
-      });
-    }
-  }
-  return renderUrlset(entries);
 }
 
 function renderBlogPostsSitemap(postRecordsByLocale) {

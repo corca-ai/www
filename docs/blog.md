@@ -30,6 +30,8 @@ top-level pages.
   the static blog renderer. These are not public editing surfaces.
 - `public/blog/rss.xml`, `public/blog/feed.json`, `public/blog/sitemap.xml` and
   `public/blog/robots.txt` — blog discovery and feed files.
+- `public/sitemap-posts.xml` — canonical localized article URLs. Topic and
+  search filter query states are UI views, not sitemap entries.
 
 ## Routing
 
@@ -42,16 +44,16 @@ rendered `src/components/Header.astro`, `src/components/Footer.astro` and
 `src/components/CommonHead.astro` output into every deployable blog page. It
 also syncs the current BaseLayout CSS and injects the GA4 measurement ID before
 `public/blog/app.js` starts. The shared head block owns the site favicon, PWA
-manifest and application metadata, publisher metadata and common font preload;
-page-specific blog SEO and feed metadata stays in the static blog pages. The
-public source HTML intentionally remains a static content-generation shell with
-no measurement ID; the production shell, common head, CSS and analytics
-configuration are single-sourced in the Astro site and applied to generated
-build output. For pages with a breadcrumb, the generated footer also places the
-desktop OpenAI Select Partner badge in the same breadcrumb row as the Astro
-Footer so their shared container and top alignment remain consistent. The
-generator first removes the home shell's icon-only breadcrumb row, then adds
-exactly one blog-specific trail and desktop badge.
+manifest and application metadata, publisher metadata, common font preload and
+Microsoft Clarity loader; page-specific blog SEO and feed metadata stays in the
+static blog pages. The public source HTML intentionally remains a static
+content-generation shell with no analytics identifiers; the production shell,
+common head, CSS and analytics configuration are single-sourced in the Astro
+site and applied to generated build output. For pages with a breadcrumb, the
+generated footer also places the desktop OpenAI Select Partner badge in the same
+breadcrumb row as the Astro Footer so their shared container and top alignment
+remain consistent. The generator first removes the home shell's icon-only
+breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
@@ -201,14 +203,15 @@ When changing blog files, keep these invariants:
 - Each localized blog list page should emit an absolute self-canonical URL and
   the same `ko`, `en`, `ja`, `zh-Hans` and Korean `x-default` hreflang set as
   `sitemap-pages.xml`.
-- Tag sitemap links should use the same `q` search parameter consumed by the
-  public blog client.
+- Localized blog list pages keep locale-specific titles and descriptions.
+  `?topic=` and `?q=` filter states canonicalize to that list page and must not
+  appear in a sitemap.
 - Generated source files under `/blog/admin/` must remain unavailable to direct
   browser requests.
 - Analytics must initialize independently of the list UI because static article
   pages load `public/blog/app.js` without the blog-index DOM.
-- `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and
-  sitemap should be updated together.
+- `index.json`, `posts/index.json`, static post pages, RSS, JSON feed and the
+  canonical post sitemap should be updated together.
 - Every post has exactly one public category in `section`: Product, AX or
   Corca. Topic filters use that category only. The single value in `tags`
   controls the label shown on list cards; Product posts keep their product

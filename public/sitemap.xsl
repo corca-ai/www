@@ -247,7 +247,7 @@
                 </span>
               </h1>
               <p class="sub">
-                이 사이트의 sitemap은 아래의 4개 그룹으로 나뉘어 있습니다.
+                이 사이트의 sitemap은 아래의 2개 그룹으로 나뉘어 있습니다.
                 각 항목을 클릭하면 해당 그룹의 URL 목록을 볼 수 있습니다.
               </p>
               <div class="index-grid">
@@ -259,8 +259,6 @@
                     <p class="tile-name">
                       <xsl:choose>
                         <xsl:when test="contains(s:loc, 'sitemap-pages.xml')">페이지모음</xsl:when>
-                        <xsl:when test="contains(s:loc, 'sitemap-categories.xml')">카테고리페이지모음</xsl:when>
-                        <xsl:when test="contains(s:loc, 'sitemap-tags.xml')">태그페이지모음</xsl:when>
                         <xsl:when test="contains(s:loc, 'sitemap-posts.xml')">블로그포스트모음</xsl:when>
                         <xsl:otherwise>
                           <xsl:value-of select="s:loc" />

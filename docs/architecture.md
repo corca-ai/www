@@ -11,7 +11,7 @@ edge API endpoints, including AX consultations and Notion publishing. Page
 rendering and blog pages stay fully static, with no server data store. Styling is Tailwind CSS v4
 with a self-hosted Pretendard variable font. Google Analytics runs through the
 shared layout as a client-side `gtag.js` snippet. Microsoft Clarity project
-`xuurf568oc` runs through the shared `CommonHead` so the same loader is copied
+`xuw7puf7d6` runs through the shared `CommonHead` so the same loader is copied
 into static blog pages. The production build separately copies the GA
 measurement ID into the static blog shell so both surfaces use the same GA4
 property.

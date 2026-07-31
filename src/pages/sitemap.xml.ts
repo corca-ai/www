@@ -3,7 +3,7 @@ import type { APIRoute } from 'astro';
 import { SITE_ORIGIN } from '../site';
 import { latestLastModifiedFromXml, pagesSitemapLastModified } from '../sitemapMetadata';
 
-const sitemapNames = ['pages', 'categories', 'tags', 'posts'];
+const sitemapNames = ['pages', 'posts'];
 
 const childLastModified = (name: string) => {
   if (name === 'pages') return pagesSitemapLastModified;

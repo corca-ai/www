@@ -25,9 +25,13 @@ page redesign.
   match `sitemap-pages.xml` when the URL is listed there.
 - A `noindex` page keeps its canonical and robots policy but emits no hreflang;
   indexable pages and sitemaps must not reference it as an alternate.
+- Every URL emitted by a sitemap must be that page's canonical URL. Client-side
+  blog filter states such as `?topic=` and `?q=` stay out of sitemaps because
+  they canonicalize to the localized blog index.
 - Document languages are Korean `ko`, English `en`, Japanese `ja` and
   Simplified Chinese `zh-CN`. Locale-specific metadata and structured data must
-  use the same language as the visible page.
+  use the same language as the visible page. Indexable localized pages must not
+  reuse another locale's title or meta description.
 - Organization, WebSite, BreadcrumbList, SoftwareApplication and Service
   structured data must describe facts visible on or supported by the page.
   Prices, availability and product terms must not remain in JSON-LD after they

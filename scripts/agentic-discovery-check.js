@@ -54,9 +54,7 @@ const assertPublicUrl = (url, source) => {
 const sitemap = readDist('sitemap.xml');
 const sitemapIndexEntries = sitemapEntries(sitemap, 'sitemap');
 const childSitemaps = sitemapIndexEntries.map((entry) => entry.loc);
-const expectedSitemaps = ['pages', 'categories', 'tags', 'posts'].map(
-  (name) => `${canonicalOrigin}/sitemap-${name}.xml`,
-);
+const expectedSitemaps = ['pages', 'posts'].map((name) => `${canonicalOrigin}/sitemap-${name}.xml`);
 assert(
   JSON.stringify(childSitemaps) === JSON.stringify(expectedSitemaps),
   'sitemap.xml child sitemap list changed',
@@ -76,13 +74,7 @@ for (const entry of sitemapIndexEntries) {
     `sitemap.xml lastmod does not match the newest URL in ${entry.loc}`,
   );
 }
-for (const filename of [
-  'sitemap.xml',
-  'sitemap-pages.xml',
-  'sitemap-categories.xml',
-  'sitemap-tags.xml',
-  'sitemap-posts.xml',
-]) {
+for (const filename of ['sitemap.xml', 'sitemap-pages.xml', 'sitemap-posts.xml']) {
   assert(
     readDist(filename).includes('href="/sitemap.xsl?v=20260721-blue"'),
     `${filename} must reference the current sitemap presentation`,
@@ -181,12 +173,7 @@ for (const path of [
   assert(llms.includes(`${canonicalOrigin}${path}`), `llms.txt is missing ${path}`);
 }
 
-for (const filename of [
-  'sitemap-pages.xml',
-  'sitemap-categories.xml',
-  'sitemap-tags.xml',
-  'sitemap-posts.xml',
-]) {
+for (const filename of ['sitemap-pages.xml', 'sitemap-posts.xml']) {
   const entries = sitemapEntries(readDist(filename), 'url');
   assert(entries.length > 0, `${filename} contains no URL entries`);
   for (const entry of entries) {

@@ -80,8 +80,9 @@ replacement is measured and approved:
   after its carousel enters the viewport.
 - Images keep intrinsic dimensions or an explicit aspect ratio so content does
   not shift while assets load.
-- Mobile does not initialize the AX scroll-parallax loop. Google Analytics on
-  AX mobile loads after first interaction or five seconds after `load`.
+- Mobile does not initialize the AX scroll-parallax loop. Google Analytics and
+  Microsoft Clarity on AX mobile load after first interaction or five seconds
+  after `load`.
 - Content-hashed and versioned assets retain a one-year immutable cache.
   Mutable static assets retain the short cache with stale-while-revalidate;
   HTML, feeds and discovery documents revalidate; APIs remain `no-store`.

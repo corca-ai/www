@@ -25,6 +25,7 @@ const axBackupHtml = readDist('ax-backup/index.html');
 const axClient = read('src/components/pages/ax/ax-client.ts');
 const axCss = read('src/components/pages/ax/ax.css');
 const baseLayout = read('src/layouts/BaseLayout.astro');
+const commonHead = read('src/components/CommonHead.astro');
 
 const videoSource = axHtml.match(/<source\b[^>]*data-src="[^"]+\.webm"[^>]*>/)?.[0] ?? '';
 assert(videoSource, 'AX hero must retain a deferred WebM data-src for desktop');
@@ -90,7 +91,12 @@ assert(
 assert(
   baseLayout.includes("window.matchMedia('(max-width: 720px)').matches") &&
     baseLayout.includes('window.setTimeout(loadGoogleTag, 5000)'),
-  'AX mobile analytics must remain outside the initial critical path',
+  'AX mobile Google Analytics must remain outside the initial critical path',
+);
+assert(
+  commonHead.includes("c.matchMedia('(max-width: 720px)').matches") &&
+    commonHead.includes('c.setTimeout(loadClarity, 5000)'),
+  'AX mobile Clarity must remain outside the initial critical path',
 );
 
 const localePages = [

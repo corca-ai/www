@@ -425,6 +425,8 @@ function validateCommonHead(html, source) {
       'Pretendard preload',
       /<link\b(?=[^>]*\brel=["']preload["'])(?=[^>]*\bhref=["']\/fonts\/PretendardVariable\.woff2["'])[^>]*>/gi,
     ],
+    ['Microsoft Clarity project ID', /xuurf568oc/g],
+    ['Microsoft Clarity loader', /https:\/\/www\.clarity\.ms\/tag\//g],
   ];
   for (const [label, pattern] of expectedOnce) {
     const count = (html.match(pattern) || []).length;

@@ -35,3 +35,13 @@ All project documentation lives in `docs/`; start at the hub in
 - Whenever the canonical handoff Markdown changes, regenerate its companion
   HTML with `pnpm handoff:render`. The Markdown and Git history are the source
   of truth; the HTML is a review aid and full patches remain local audit data.
+
+## GitHub authentication fallback
+
+- A failing `gh auth status` alone does not block repository work. First check
+  whether remote Git access works with `git ls-remote origin HEAD`.
+- If remote Git works and connected GitHub tooling is available, do not ask the
+  user to repeat `gh auth login`; use Git for push and the connected tooling for
+  pull requests, CI status, and merging.
+- Ask for an authentication refresh only when both remote Git and the connected
+  GitHub tooling cannot perform the required operation.

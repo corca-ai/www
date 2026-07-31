@@ -425,7 +425,7 @@ function validateCommonHead(html, source) {
       'Pretendard preload',
       /<link\b(?=[^>]*\brel=["']preload["'])(?=[^>]*\bhref=["']\/fonts\/PretendardVariable\.woff2["'])[^>]*>/gi,
     ],
-    ['Microsoft Clarity project ID', /xuurf568oc/g],
+    ['Microsoft Clarity project ID', /xuw7puf7d6/g],
     ['Microsoft Clarity loader', /https:\/\/www\.clarity\.ms\/tag\//g],
   ];
   for (const [label, pattern] of expectedOnce) {
@@ -434,6 +434,9 @@ function validateCommonHead(html, source) {
   }
   if (html.includes('/blog/assets/favicon.png')) {
     fail(`Legacy blog favicon remains in ${source}.`);
+  }
+  if (html.includes('ref=bwt')) {
+    fail(`Legacy Microsoft Clarity ref query remains in ${source}.`);
   }
 }
 

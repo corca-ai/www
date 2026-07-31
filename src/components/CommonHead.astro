@@ -32,14 +32,14 @@ const axMobileFontFace = axMobileFontUrl
 
 <!-- Microsoft Clarity. AX mobile delays the network request until after load
      so session analytics cannot compete with the LCP poster. -->
-<script is:inline define:vars={{ isAxPage }}>
+<script type="text/javascript" is:inline define:vars={{ isAxPage }}>
   (function(c,l,a,r,i,t,y){
     c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
 
     const loadClarity = function(){
       if (l.querySelector('script[data-clarity-tag]')) return;
       t=l.createElement(r);t.async=1;t.dataset.clarityTag='true';
-      t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+      t.src="https://www.clarity.ms/tag/"+i;
       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     };
 
@@ -61,7 +61,7 @@ const axMobileFontFace = axMobileFontUrl
         c.setTimeout(loadClarity, 5000);
       }, { once: true });
     }
-  })(window, document, "clarity", "script", "xuurf568oc");
+  })(window, document, "clarity", "script", "xuw7puf7d6");
 </script>
 
 <!-- AX mobile uses one page-specific font subset instead of the dynamic

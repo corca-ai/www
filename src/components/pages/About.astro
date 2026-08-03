@@ -66,7 +66,7 @@ const content = {
     phone: '+82 2 6925 6978',
   },
   ja: {
-    heroTitle: '技術の進歩の恩恵をすべての人が享受できる社会を実現し、\n人類文明の発展に貢献します。',
+    heroTitle: '技術の進歩の恩恵をすべての人が享受できる\n社会を実現し、人類文明の発展に貢献します。',
     missionTitle: 'AIの力で、人生と仕事のパラダイムを変革します。',
     missionBody:
       'コルカは、想像を現実に変えるAI技術の最前線をリードしています。卓越したソリューション、倫理的リーダーシップ、そしてグローバルな影響力を中核的価値とし、顧客中心のサービスと不断の研究開発に取り組んでいます。技術の進歩の恩恵をすべての人が享受できるようにし、人類文明の発展に貢献することが私たちのミッションです。',
@@ -118,7 +118,12 @@ const cl = contactLinks[lang];
        bottom — a width-based pb pushed it to the bottom edge on mobile. -->
   <div class="container-c absolute inset-x-0 top-[66%] -translate-y-1/2">
     <h1
-      class="mx-auto max-w-[900px] text-center text-[25px] font-normal leading-[1.18] text-white [text-shadow:0_2px_14px_rgba(0,10,40,0.55)] sm:text-[34px] lg:text-[38px] xl:text-[45px]"
+      class:list={[
+        'mx-auto text-center text-[25px] font-normal leading-[1.18] text-white [text-shadow:0_2px_14px_rgba(0,10,40,0.55)]',
+        lang === 'ja'
+          ? 'max-w-[980px] sm:text-[30px] lg:text-[38px] xl:text-[45px]'
+          : 'max-w-[900px] sm:text-[34px] lg:text-[38px] xl:text-[45px]',
+      ]}
       set:html={br(c.heroTitle)}
     />
   </div>

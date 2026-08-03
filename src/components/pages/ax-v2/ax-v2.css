@@ -2584,6 +2584,7 @@ body:has(.ax-v2-hold-dialog[open]) {
 }
 
 .ax-v2-proof-section .ax-v2-heading-block > p {
+  margin-inline: auto;
   font-weight: 500;
   line-height: 1.08;
 }

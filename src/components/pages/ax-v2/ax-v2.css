@@ -2443,7 +2443,7 @@ body:has(.ax-v2-hold-dialog[open]) {
 
 .ax-v2-compound {
   color: var(--ax-v2-navy);
-  background: #8dcff2;
+  background: var(--color-footer);
 }
 
 .ax-v2-compound::after {
@@ -2473,7 +2473,7 @@ body:has(.ax-v2-hold-dialog[open]) {
 
 @media (min-width: 721px) {
   .ax-v2-compound-media {
-    background: #8dcff2;
+    background: var(--color-footer);
     transform: none;
   }
 

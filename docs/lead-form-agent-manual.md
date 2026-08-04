@@ -18,6 +18,66 @@ title: Lead Form Agent 매뉴얼
 컴포넌트는 실제 `id="request"`를 제공하므로 `/경로#request`로 바로 이동할
 수 있다.
 
+## 다양한 형식은 이렇게 요청하기
+
+이 문서에서 "Lead Form 형식"은 입력 Form 자체가 아니라 **Form을 감싸는
+상담 section의 표현 방식**을 뜻한다. 같은 `LeadForm`을 유지한 채 다음과
+같은 외부 형식을 요청할 수 있다.
+
+| 요청할 형식 | 변경하는 영역 |
+| --- | --- |
+| 기본 2단형 | 왼쪽 제목·설명·연락처, 오른쪽 Form 배치 |
+| 중앙 세로형 | 제목·설명을 중앙에 두고 Form을 아래에 배치 |
+| 블로그 글 하단형 | 글 본문 뒤·Footer 앞에 상담 section 배치 |
+| 페이지 톤 맞춤형 | section 배경색·바깥 여백·제목 색상 변경 |
+| 기존 영역에 Form만 삽입 | 페이지가 소유한 wrapper 안에서 `LeadForm` 호출 |
+
+형식을 요청할 때는 아래 항목을 가능한 만큼 적는다.
+
+1. 대상 URL 또는 블로그 slug
+2. 삽입 위치: 본문 뒤, Footer 앞, 특정 section 뒤 등
+3. 외부 레이아웃: 기본 2단형, 중앙 세로형, 글 하단형
+4. section 제목과 설명
+5. 배경색 또는 참고할 기존 페이지
+6. 연락처 영역 표시 여부
+7. 적용할 언어
+8. `page_id`와 `content_type`
+
+현재 `LeadRequestSection`이 원하는 외부 형식을 바로 표현하지 못하면 Agent는
+section root의 variant class 또는 바깥 wrapper prop만 추가한다. 레이아웃
+CSS도 Form 바깥 요소에만 적용한다. 이를 해결하기 위해 `LeadForm` 내부
+마크업이나 `lead-form.css`를 변경해서는 안 된다.
+
+### Agent에게 복사할 형식 지정 예시
+
+```text
+AGENTS.md와 docs/lead-form-agent-manual.md를 먼저 읽어라.
+
+다음 페이지에 공통 Lead Form 상담 영역을 붙여라.
+
+- 대상 URL 또는 블로그 slug: [입력]
+- 삽입 위치: [예: 글 본문 뒤, Footer 앞]
+- 상담 section 형식: [기본 2단형 / 중앙 세로형 / 글 하단형]
+- 제목: [입력]
+- 설명: [입력]
+- 배경 또는 참고 페이지: [입력]
+- 연락처 영역: [표시 / 숨김]
+- 적용 언어: [ko / en / ja / zh / 전체]
+- page_id: [언어와 무관한 식별자]
+- content_type: [예: blog-post]
+
+원하는 형식이 기존 LeadRequestSection에 없으면 Form 바깥의 section variant만
+추가해라. LeadForm 내부 DOM·필드·카피·validation·개인정보 문구·버튼·
+endpoint·payload·GA 이벤트·CSS·UX는 수정하거나 복사하지 마라.
+
+/경로#request 이동, 성함 자동 포커스, 실제 page context와 네 언어 화면을
+검증하고 필수 검사 결과와 diff를 보고해라.
+```
+
+"이메일 필드를 하나 더 추가", "버튼 문구 변경", "간단한 Form으로 축소",
+"동의 문구 제거"처럼 Form 계약을 바꾸는 요청은 section 형식 변경이 아니다.
+이런 변경은 별도 Form 정책 결정과 명시적으로 승인된 별도 PR이 필요하다.
+
 ## 절대로 바꾸지 않는 것
 
 `LeadForm.astro`의 `<form>...</form>`은 잠금 대상이다. 다음 항목을 새

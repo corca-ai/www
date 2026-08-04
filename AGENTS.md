@@ -3,6 +3,11 @@
 All project documentation lives in `docs/`; start at the hub in
 [docs/index.md](docs/index.md).
 
+Before adding a Lead Form or consultation-request section to any page, read
+[docs/lead-form-agent-manual.md](docs/lead-form-agent-manual.md). Do not copy or
+modify the shared Form markup, override its internal CSS, or manually place
+page context in Form markup.
+
 > Note: `CLAUDE.md` is a symlink to this file (`AGENTS.md`).
 
 ## Context discipline

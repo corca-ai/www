@@ -1,0 +1,166 @@
+---
+title: Lead Form Agent 매뉴얼
+---
+
+# Lead Form Agent 매뉴얼
+
+이 문서는 Corca 웹사이트의 상담 신청 Form을 새 페이지에 붙이는 실행
+매뉴얼이다. 개발 경험이 적어도 아래 순서를 그대로 따르면 된다.
+
+## 먼저 구분하기
+
+| 필요한 결과 | 사용할 컴포넌트 |
+| --- | --- |
+| 제목·설명·연락처·Form이 포함된 상담 영역 전체 | `LeadRequestSection.astro` |
+| 이미 별도 상담 영역이 있고 Form만 필요 | `LeadForm.astro` |
+
+대부분의 일반 페이지와 블로그에는 `LeadRequestSection`을 사용한다. 이
+컴포넌트는 실제 `id="request"`를 제공하므로 `/경로#request`로 바로 이동할
+수 있다.
+
+## 절대로 바꾸지 않는 것
+
+`LeadForm.astro`의 `<form>...</form>`은 잠금 대상이다. 다음 항목을 새
+페이지 요구에 맞춰 수정하지 않는다.
+
+- DOM 구조, 입력 필드, 필드 순서, label과 placeholder
+- validation, 오류 메시지, 개인정보 문구와 중국어 동의
+- 전송 버튼의 문구·disabled 상태·애니메이션
+- 자동 포커스, 오류 표시와 성공 안내 UX
+- `POST /api/ax/consultations` endpoint와 기존 payload
+- `form_submit`, `generate_lead` 이벤트 발생 조건
+- `lead-form.css`의 Form 내부 스타일
+
+Form 마크업을 페이지로 복사하거나 페이지 CSS에서
+`[data-lead-form]`, `.ax-v2-field`, `.ax-v2-form-*`를 선택하지 않는다.
+`pnpm check:lead-form-contract`가 이런 변경을 차단한다. 검사가 실패하면
+fixture를 갱신하지 말고 원본 Form 변경을 되돌린다. Form 정책 변경은
+명시적으로 승인된 별도 PR에서만 한다.
+
+## 일반 Astro 페이지에 붙이기
+
+### 1. 페이지 manifest에 context 선언
+
+`src/staticPages.ts` 또는 해당 제품 registry에 locale과 무관한 값을 한
+번 선언한다.
+
+```ts
+leadContext: {
+  pageId: 'ax-knownow',
+  contentType: 'ax-solution',
+}
+```
+
+- `pageId`: 소문자 kebab-case. 네 언어에서 같은 값 사용
+- `contentType`: `ax-solution`, `blog-post`처럼 안정적인 분류
+- `basePath`: 기존 route의 locale 없는 경로에서 자동 전달
+- `locale`, `pagePath`: 실제 제출 URL에서 자동 결정
+
+Form 태그나 CTA에 `page_id`를 직접 쓰지 않는다.
+
+### 2. 전체 상담 영역 렌더링
+
+```astro
+---
+import LeadRequestSection from '../forms/LeadRequestSection.astro';
+---
+
+<LeadRequestSection
+  lang={lang}
+  pageContext={leadContext}
+  heading={pageCopy.requestHeading}
+  description={pageCopy.requestDescription}
+/>
+```
+
+`heading`과 `description`을 생략하면 현재 AX 상담 섹션의 언어별 기본
+문구를 사용한다. 바깥 배경·정렬·여백을 바꾸려면 `class`를 전달해 section
+root만 스타일링한다. Form 내부 selector는 사용하지 않는다.
+
+### 3. CTA 연결
+
+```astro
+<a href="#request" data-lead-request-jump>상담 신청하기</a>
+```
+
+일반 클릭은 상담 영역으로 즉시 이동해 성함 필드에 포커스한다. 직접
+`/경로#request`로 진입해도 같은 필드에 포커스한다. Cmd/Ctrl 클릭은
+브라우저의 새 탭 동작을 유지한다. canonical, hreflang, sitemap, OG와
+JSON-LD에는 `#request`를 넣지 않는다.
+
+## Form만 붙이기
+
+```astro
+<LeadForm id="request-form" lang={lang} pageContext={leadContext} />
+```
+
+`id`는 같은 문서 안에서 고유해야 한다. Form은 성공 안내 template과
+클라이언트를 함께 제공한다. 필드·문구·버튼을 바꾸는 prop은 추가하지
+않는다.
+
+## 블로그 글에 붙이기
+
+블로그는 Astro route가 아니라 정적 HTML이므로 컴포넌트를 글 HTML에
+복사하지 않는다. `src/lead/blogLeadPages.json`에 선택한 locale-neutral
+slug만 등록한다.
+
+```json
+{
+  "agentic-workflow": {
+    "page_id": "blog-agentic-workflow",
+    "content_type": "blog-post"
+  }
+}
+```
+
+빌드가 `/blog/agentic-workflow`와 `/en|ja|zh/blog/agentic-workflow`에 같은
+공통 section을 본문 뒤·Footer 앞에 삽입한다. 네 페이지는 같은
+`page_id`와 `/blog/agentic-workflow` `base_path`를 쓰고, 실제 locale과
+`page_path`만 달라진다. manifest에 없는 글은 변경되지 않는다.
+
+등록한 slug가 네 언어 빌드 중 하나라도 없거나 이미 `id="request"`가
+있으면 빌드가 실패한다. 운영 글의 HTML을 직접 수정해 우회하지 않는다.
+
+## 실제 메일 없이 확인하기
+
+```sh
+pnpm test:lead-form
+pnpm test:ax-attribution
+pnpm check
+pnpm build
+pnpm cf:preview
+```
+
+`pnpm cf:preview`의 로컬 Email Sending simulation을 사용한다. 실제
+수신함으로 보내지 않고 Worker 응답과 로컬 메일 내용을 확인한다.
+
+브라우저에서는 다음을 확인한다.
+
+1. 한국어·영어·일본어·중국어 URL에 Form이 한 번만 표시된다.
+2. `/경로#request` 진입 시 상담 영역과 성함 포커스가 동작한다.
+3. 최초 포커스는 연한 노란 안내 상태이며 오류 메시지가 없다.
+4. 첫 글자 입력 후 안내 색상이 사라진다.
+5. Form 내부의 폭·필드·버튼·validation이 AX와 같다.
+6. 제출 payload의 `page_id`, `page_path`, `base_path`, `locale`,
+   `content_type`이 맞다.
+
+## 문제 해결 순서
+
+1. 페이지가 `leadContext`를 전달하는지 확인한다.
+2. 한 문서에 `id="request"`가 하나인지 확인한다.
+3. Form을 복사하지 않고 공통 컴포넌트를 import했는지 확인한다.
+4. 페이지 CSS가 Form 내부를 선택하지 않는지 확인한다.
+5. `pnpm check:lead-form-contract`의 첫 오류를 해결한다.
+6. Form 원본을 수정해야만 해결될 것 같으면 작업을 멈추고 별도 승인을
+   요청한다.
+
+## Agent에게 전달할 작업 지시문
+
+```text
+AGENTS.md와 docs/lead-form-agent-manual.md를 먼저 읽어라.
+대상 페이지에 공통 LeadRequestSection을 추가하고 route/manifest의
+leadContext를 연결해라. LeadForm 내부 마크업·필드·카피·validation·버튼·
+endpoint·GA 이벤트·CSS는 변경하거나 복사하지 마라. #request 이동과 네
+언어 page context를 검증하고 pnpm test:lead-form, pnpm test:ax-attribution,
+pnpm check, pnpm build를 실행한 뒤 diff와 회귀 위험을 보고해라.
+```

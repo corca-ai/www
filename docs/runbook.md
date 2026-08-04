@@ -101,6 +101,9 @@ be discoverable from shared chrome.
 When the page renders the shared consultation form, also add
 `leadContext: { pageId, contentType }` to its `staticPages` entry or product
 manifest.
+Read [Lead Form Agent manual](lead-form-agent-manual.md) before implementation:
+reuse `LeadRequestSection` or the closed `LeadForm` component, and never copy or
+customize the Form's internal markup, validation, button, endpoint or CSS.
 The route supplies the existing `basePath` and locale automatically, so do not
 repeat the localized URL or manually put `page_id` into Form markup. Use a
 stable lowercase kebab-case page ID (for example `ax-knownow`) across all

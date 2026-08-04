@@ -2,6 +2,7 @@
 import type { Lang } from '../../i18n/ui';
 import type { LeadPageContext } from '../../lead/pageContext';
 import { axV2ContentByLang } from '../pages/ax-v2/content';
+import { leadFormSuccessCopy } from './leadFormContent';
 
 interface Props {
   id: string;
@@ -12,8 +13,10 @@ interface Props {
 
 const { id, lang, compact = false, pageContext } = Astro.props;
 const c = axV2ContentByLang[lang].contact;
+const success = leadFormSuccessCopy[lang];
 const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
 const formId = `ax-lead-${id}`;
+const successTitleId = `${formId}-success-title`;
 ---
 
 <form
@@ -136,6 +139,28 @@ const formId = `ax-lead-${id}`;
   <p class="ax-v2-privacy-notice">{c.privacyNotice}</p>
   <p class="ax-v2-form-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" data-form-status></p>
 </form>
+
+<template data-lead-success-template data-lead-success-for={formId}>
+  <dialog
+    class="ax-v2-hold-dialog"
+    aria-labelledby={successTitleId}
+    data-lead-success-dialog
+    data-lead-success-for={formId}
+  >
+    <div class="ax-v2-hold-panel">
+      <div class="ax-v2-success-icon" aria-hidden="true">✓</div>
+      <p class="ax-v2-eyebrow">{success.eyebrow}</p>
+      <p class="ax-v2-hold-title" id={successTitleId}>{success.title}</p>
+      <p class="ax-v2-hold-copy">
+        {success.body.map((line) => <>{line}<br /></>)}
+      </p>
+      <div class="ax-v2-success-timer" aria-hidden="true"><span></span></div>
+      <button class="ax-v2-primary-button" type="button" data-lead-success-close>
+        {success.close}
+      </button>
+    </div>
+  </dialog>
+</template>
 
 <script>
   import './leadFormClient';

@@ -1,0 +1,159 @@
+/* Reusable outer request section. LeadForm internals are owned by lead-form.css. */
+.ax-v2-contact-section {
+  --ax-v2-blue: #0969da;
+  --ax-v2-ink: #101828;
+  --ax-v2-muted: #5f6b7a;
+  --ax-v2-shell: 1200px;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
+.ax-v2-contact-section,
+.ax-v2-contact-section *,
+.ax-v2-contact-section *::before,
+.ax-v2-contact-section *::after {
+  box-sizing: border-box;
+}
+
+.ax-v2-contact-section .ax-v2-shell {
+  width: min(calc(100% - 64px), var(--ax-v2-shell));
+  margin-inline: auto;
+}
+
+.ax-v2-contact-section.ax-v2-section {
+  padding: clamp(104px, 10vw, 168px) 0;
+}
+
+.ax-v2-contact-section .ax-v2-gradient-text {
+  color: #f5f5f7;
+  background: linear-gradient(90deg, #f5f5f7 0%, #b8e2ff 42%, #2997ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Contact and forms */
+.ax-v2-contact-section {
+  color: #fff;
+  background: #062451;
+}
+
+.ax-v2-contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
+  grid-template-areas:
+    'copy form'
+    'direct form';
+  column-gap: clamp(48px, 7vw, 96px);
+  row-gap: 0;
+  align-items: start;
+}
+
+.ax-v2-contact-copy {
+  grid-area: copy;
+}
+
+.ax-v2-contact-copy h2,
+.ax-v2-dialog-title {
+  margin: 0;
+  font-weight: 760;
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+}
+
+.ax-v2-contact-copy h2 {
+  font-size: clamp(34px, 4vw, 54px);
+}
+
+.ax-v2-dialog-title {
+  font-size: clamp(42px, 5vw, 68px);
+}
+
+.ax-v2-contact-copy > p,
+.ax-v2-dialog-heading > p {
+  margin: 34px 0 0;
+  color: #c3d3e7;
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+.ax-v2-contact-copy > p br:nth-of-type(2) {
+  display: block;
+  content: '';
+  margin-top: 1em;
+}
+
+.ax-v2-direct-contact {
+  grid-area: direct;
+  margin-top: 54px;
+  display: grid;
+  gap: 14px;
+}
+
+.ax-v2-direct-contact p {
+  margin: 24px 0 0;
+  color: #9fb6d1;
+}
+
+.ax-v2-direct-contact a {
+  padding: 18px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #345170;
+  color: #fff;
+  text-decoration: none;
+}
+
+.ax-v2-inline-form {
+  color: var(--ax-v2-ink);
+  background: #fff;
+}
+
+.ax-v2-inline-form {
+  grid-area: form;
+  position: relative;
+  align-self: start;
+  overflow: hidden;
+  padding: clamp(32px, 4vw, 48px);
+  border: 1px solid rgba(137, 184, 235, 0.48);
+  border-radius: 32px;
+  background: linear-gradient(155deg, #ffffff 0%, #f7faff 100%);
+  box-shadow:
+    0 32px 80px rgba(0, 20, 55, 0.3),
+    0 8px 24px rgba(0, 38, 91, 0.12);
+}
+
+
+.ax-v2-inline-form {
+  padding-bottom: clamp(32px, 4vw, 48px);
+}
+
+@media (max-width: 900px) {
+  .ax-v2-contact-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'copy'
+      'form'
+      'direct';
+    gap: 48px;
+  }
+
+  .ax-v2-direct-contact {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .ax-v2-contact-section .ax-v2-shell {
+    width: calc(100% - 40px);
+  }
+
+  .ax-v2-contact-section.ax-v2-section {
+    padding: 92px 0;
+  }
+
+  .ax-v2-contact-copy h2 {
+    font-size: 32px;
+  }
+}

@@ -55,6 +55,15 @@ breadcrumb row as the Astro Footer so their shared container and top alignment
 remain consistent. The generator first removes the home shell's icon-only
 breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
+Selected blog articles can also receive the shared immutable Lead Request
+Section. Register only the locale-neutral slug, stable `page_id` and
+`content_type` in `src/lead/blogLeadPages.json`; never paste Form HTML into a
+post. The build extracts the localized canonical component output, inserts it
+before `</main>` and rejects duplicate `#request` targets or missing locale
+aliases. Undeclared posts are unchanged. Follow the Korean
+[Lead Form Agent manual](lead-form-agent-manual.md) for the exact procedure and
+contract checks.
+
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
   the corresponding main-site navigation language.

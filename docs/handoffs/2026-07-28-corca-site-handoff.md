@@ -84,6 +84,8 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 | EN·JA·ZH override | `i18n/ax-v2-content-localized.ts` |
 | 공통 리드 폼 UI | `src/components/forms/LeadForm.astro` |
 | 공통 폼 전송·검증 | `src/components/forms/leadFormClient.ts` |
+| 공통 `#request` 상담 영역 | `src/components/forms/LeadRequestSection.astro` |
+| Lead Form Agent 실행 계약 | `docs/lead-form-agent-manual.md` |
 | AX V2 동작·모션·dialog | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | 페이지 스타일·반응형 | `src/components/pages/ax-v2/ax-v2.css` |
 | 메타데이터·OG·hreflang | `src/i18n/pageMeta.ts`, `src/staticPages.ts` |
@@ -127,6 +129,15 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 
 ### 리드 폼·메일
 
+- `LeadForm.astro`의 Form 내부 DOM, 필드, 카피, validation, 개인정보 문구,
+  버튼, endpoint, GA 이벤트와 UX는 불변 계약이다. 새 페이지는 Form을
+  복사하거나 내부 CSS를 덮어쓰지 않고 공통 컴포넌트를 사용한다.
+  `LeadRequestSection.astro`는 바깥 제목·설명·연락처·배경·정렬만 조정할 수
+  있는 재사용 `#request` 영역이다. 적용 절차와 금지 사항은
+  `docs/lead-form-agent-manual.md`가 정본이다.
+- 선택한 정적 블로그 글은 `src/lead/blogLeadPages.json`의 locale-neutral
+  slug 선언으로만 상담 영역을 받는다. 빌드는 네 언어에 동일한 stable
+  `page_id`를 적용하고 중복 `#request` 또는 누락된 locale alias를 거부한다.
 - 현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
   중국어에는 별도의 국외이전 동의가 포함된다.
 - 클라이언트는 `POST /api/ax/consultations`로 JSON을 보낸다.

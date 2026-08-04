@@ -1,6 +1,11 @@
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  extractLeadRequestSection,
+  injectBlogLeadRequestSection,
+  validateBlogLeadManifest,
+} from './blog-lead-section.js';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = join(repoRoot, 'dist');
@@ -62,6 +67,9 @@ const measurementId =
   rootHtml.match(/googletagmanager\.com\/gtag\/js\?id=(G-[A-Z0-9-]{4,32})/i)?.[1] ||
   '';
 const blogAppSource = await readFile(join(distRoot, 'blog/app.js'), 'utf8');
+const blogLeadManifest = validateBlogLeadManifest(
+  JSON.parse(await readFile(join(repoRoot, 'src/lead/blogLeadPages.json'), 'utf8')),
+);
 const analyticsBootstrapIndex = blogAppSource.indexOf('\ninitAnalytics();');
 const uiBootstrapIndex = blogAppSource.indexOf('\n  init();');
 if (!currentBaseLayoutCss) {
@@ -83,11 +91,15 @@ await assertFileExists(join(distRoot, currentBaseLayoutCss));
 const headerFragments = new Map();
 const footerFragments = new Map();
 const commonHeadFragments = new Map();
+const leadRequestFragments = new Map();
 for (const config of localeConfigs) {
   const pageHtml = await readFile(join(distRoot, config.page), 'utf8');
   headerFragments.set(config.locale, extractBeforeMain(pageHtml, config.page));
   footerFragments.set(config.locale, extractFooter(pageHtml, config.page));
   commonHeadFragments.set(config.locale, extractCommonHead(pageHtml, config.page));
+  const axPage = config.locale === 'ko' ? 'ax/index.html' : `${config.locale}/ax/index.html`;
+  const axHtml = await readFile(join(distRoot, axPage), 'utf8');
+  leadRequestFragments.set(config.locale, extractLeadRequestSection(axHtml, axPage));
 }
 
 let updated = 0;
@@ -98,6 +110,8 @@ let commonHeadsSynced = 0;
 let breadcrumbsSynced = 0;
 let analyticsConfigured = 0;
 let analyticsTargets = 0;
+let leadSectionsSynced = 0;
+const leadSectionLocales = new Map();
 for (const config of localeConfigs) {
   const root = join(distRoot, config.root);
   const files = (await htmlFiles(root)).filter((file) => isDeployableBlogPage(root, file));
@@ -117,6 +131,20 @@ for (const config of localeConfigs) {
       commonHeadFragments.get(config.locale),
       relative(repoRoot, file),
     );
+    const leadDeclaration = slug ? blogLeadManifest[slug] : undefined;
+    next = injectBlogLeadRequestSection(next, {
+      fragment: leadRequestFragments.get(config.locale),
+      slug,
+      locale: config.locale,
+      declaration: leadDeclaration,
+      source: relative(repoRoot, file),
+    });
+    if (leadDeclaration) {
+      leadSectionsSynced += 1;
+      const locales = leadSectionLocales.get(slug) ?? new Set();
+      locales.add(config.locale);
+      leadSectionLocales.set(slug, locales);
+    }
     headersSynced += 1;
     footersSynced += 1;
     commonHeadsSynced += 1;
@@ -159,6 +187,14 @@ if (footersSynced !== headerTargets) {
 if (commonHeadsSynced !== headerTargets) {
   fail(`Synced ${commonHeadsSynced} of ${headerTargets} deployable blog page common head(s).`);
 }
+for (const slug of Object.keys(blogLeadManifest)) {
+  const locales = leadSectionLocales.get(slug) ?? new Set();
+  if (locales.size !== localeConfigs.length) {
+    fail(
+      `Blog Lead Form slug ${slug} was found in ${locales.size} of ${localeConfigs.length} locales.`,
+    );
+  }
+}
 
 console.log(`Synced blog shell CSS ${currentBaseLayoutCss} in ${updated} file(s).`);
 console.log(`Synced ${headersSynced} blog page header(s) from src/components/Header.astro.`);
@@ -167,6 +203,7 @@ console.log(
   `Synced ${commonHeadsSynced} blog page common head(s) from src/components/CommonHead.astro.`,
 );
 console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
+console.log(`Synced ${leadSectionsSynced} opt-in blog Lead Request Section(s).`);
 console.log(
   `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`,
 );

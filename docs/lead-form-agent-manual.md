@@ -181,20 +181,101 @@ slug만 등록한다.
 등록한 slug가 네 언어 빌드 중 하나라도 없거나 이미 `id="request"`가
 있으면 빌드가 실패한다. 운영 글의 HTML을 직접 수정해 우회하지 않는다.
 
-## 실제 메일 없이 확인하기
+## 실제 메일을 보내지 않고 전송 확인하기
+
+운영 수신함 `contact+ax@corca.ai`로 테스트 메일을 보내지 않아도 세 단계로
+검증할 수 있다. PR의 기본 검증은 1단계와 2단계이며, 브라우저부터 Worker까지
+직접 확인해야 할 때만 3단계를 추가한다.
+
+### 1단계: 자동 테스트로 Form과 메일 생성 확인
 
 ```sh
 pnpm test:lead-form
 pnpm test:ax-attribution
-pnpm check
+```
+
+`pnpm test:lead-form`은 다음을 확인한다.
+
+- 잠긴 Form 마크업이 기준 fixture와 동일하다.
+- 블로그 글에 상담 section이 한 번만 삽입된다.
+- 네 언어가 같은 `page_id`와 올바른 locale context를 사용한다.
+- 미등록 글은 바뀌지 않고 중복 `#request`는 거부된다.
+
+`pnpm test:ax-attribution`의 `tests/axConsultations.test.ts`는 실제 이메일
+binding 대신 메모리에 메시지를 담는 가짜 `AX_EMAIL.send()`를 Worker에
+주입한다. 따라서 네트워크나 실제 수신함을 사용하지 않으면서 다음을
+검증한다.
+
+- 유효한 제출의 API 응답이 `200`이다.
+- `AX_EMAIL.send()`가 정확히 한 번 호출된다.
+- 생성된 text/HTML 메일에 이름·이메일·관심사·유입 정보가 들어간다.
+- `page_id`, `page_path`, `base_path`, `locale`, `content_type`이 메일에
+  들어간다.
+- 잘못된 context는 `422`가 되고 이메일 호출은 0회다.
+
+정상 판정은 두 명령이 exit code `0`으로 끝나고 Node test summary의
+`fail`이 `0`인 것이다. 이 단계가 통과하면 **Form 제출 payload를 Worker가
+받아 상담 메일 객체를 생성하고 send binding을 호출하는 코드 경로**가
+정상이라는 뜻이다.
+
+테스트 구현을 직접 확인하려면 다음 파일을 읽는다.
+
+- `tests/blogLeadSection.test.ts`: 블로그 삽입과 page context
+- `tests/axConsultations.test.ts`: 가짜 이메일 binding과 메일 text/HTML
+- `worker/axConsultations.ts`: 실제 API validation과 메일 생성
+
+### 2단계: 적용한 블로그 빌드 결과 확인
+
+manifest에 대상 글을 등록한 뒤 실행한다.
+
+```sh
 pnpm build
+```
+
+빌드가 성공하면 생성된 네 언어 HTML에서 `id="request"`, `data-lead-page`,
+`data-page-base-path`, `data-content-type`, `data-locale`을 확인한다. 예를 들어
+slug가 `agentic-workflow`이면 다음 파일을 검사한다.
+
+```sh
+rg -n 'id="request"|data-lead-page|data-page-base-path|data-content-type|data-locale' \
+  dist/blog/agentic-workflow/index.html \
+  dist/en/blog/agentic-workflow/index.html \
+  dist/ja/blog/agentic-workflow/index.html \
+  dist/zh/blog/agentic-workflow/index.html
+```
+
+정상 결과는 각 파일에 `id="request"`가 한 번, 같은 `page_id`와
+`base_path`, 언어별 `data-locale`이 표시되는 것이다. 이 단계에서는 Form을
+제출하지 않는다.
+
+### 3단계: 로컬 브라우저에서 전체 전송 흐름 확인
+
+```sh
 pnpm cf:preview
 ```
 
-`pnpm cf:preview`의 로컬 Email Sending simulation을 사용한다. 실제
-수신함으로 보내지 않고 Worker 응답과 로컬 메일 내용을 확인한다.
+터미널에 표시된 로컬 주소에서 `/blog/[slug]#request`를 열고 Form을 한 번
+제출한다. 현재 `wrangler.jsonc`의 `AX_EMAIL` binding에는 `remote: true`가
+없으므로 Wrangler가 이메일 전송을 로컬에서 시뮬레이션한다. 실제
+`contact+ax@corca.ai` 수신함에는 보내지 않는다.
 
-브라우저에서는 다음을 확인한다.
+정상일 때 확인할 내용은 다음과 같다.
+
+1. 브라우저 Network에서 `POST /api/ax/consultations`가 `200`이다.
+2. 화면에 기존 Form 성공 안내가 나타난다.
+3. Wrangler 터미널에 `send_email binding called`와 subject가 출력된다.
+4. 터미널에 출력된 `email-text`와 `email-html` 임시 파일을 열면 실제로
+   생성될 메일 본문과 page context를 볼 수 있다.
+
+Wrangler 로컬 simulator는 이메일을 콘솔에 기록하고 임시 파일로 저장한다.
+자세한 동작은 [Cloudflare Email Sending 로컬 개발 문서](https://developers.cloudflare.com/email-service/local-development/sending/)를
+참고한다.
+
+주의: `wrangler.jsonc`의 email binding에 `remote: true`를 추가하거나
+`wrangler dev --remote`를 사용하면 실제 이메일이 발송될 수 있다. 메일 없는
+검증에서는 이 설정을 사용하지 않는다.
+
+브라우저에서는 전송 외에도 다음을 확인한다.
 
 1. 한국어·영어·일본어·중국어 URL에 Form이 한 번만 표시된다.
 2. `/경로#request` 진입 시 상담 영역과 성함 포커스가 동작한다.
@@ -203,6 +284,13 @@ pnpm cf:preview
 5. Form 내부의 폭·필드·버튼·validation이 AX와 같다.
 6. 제출 payload의 `page_id`, `page_path`, `base_path`, `locale`,
    `content_type`이 맞다.
+
+마지막으로 전체 품질 검사를 실행한다.
+
+```sh
+pnpm check
+pnpm build
+```
 
 ## 문제 해결 순서
 

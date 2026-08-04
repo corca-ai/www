@@ -26,9 +26,9 @@ title: Lead Form Agent 매뉴얼
 
 | 요청할 형식 | 변경하는 영역 |
 | --- | --- |
-| 기본 2단형 | 왼쪽 제목·설명·연락처, 오른쪽 Form 배치 |
-| 중앙 세로형 | 제목·설명을 중앙에 두고 Form을 아래에 배치 |
-| 블로그 글 하단형 | 글 본문 뒤·Footer 앞에 상담 section 배치 |
+| `split` | 왼쪽 제목·설명·연락처, 오른쪽 Form 배치. 현재 AX 형식 |
+| `stacked` | 제목·설명, Form, 연락처를 세로로 배치 |
+| `article` | 블로그 글 하단 compact 배치. 직접 연락처는 표시하지 않음 |
 | 페이지 톤 맞춤형 | section 배경색·바깥 여백·제목 색상 변경 |
 | 기존 영역에 Form만 삽입 | 페이지가 소유한 wrapper 안에서 `LeadForm` 호출 |
 
@@ -36,8 +36,8 @@ title: Lead Form Agent 매뉴얼
 
 1. 대상 URL 또는 블로그 slug
 2. 삽입 위치: 본문 뒤, Footer 앞, 특정 section 뒤 등
-3. 외부 레이아웃: 기본 2단형, 중앙 세로형, 글 하단형
-4. section 제목과 설명
+3. 외부 레이아웃: `split`, `stacked`, `article`
+4. 사용할 4개 언어 문구 묶음인 `copy_key`
 5. 배경색 또는 참고할 기존 페이지
 6. 연락처 영역 표시 여부
 7. 적용할 언어
@@ -57,17 +57,16 @@ AGENTS.md와 docs/lead-form-agent-manual.md를 먼저 읽어라.
 
 - 대상 URL 또는 블로그 slug: [입력]
 - 삽입 위치: [예: 글 본문 뒤, Footer 앞]
-- 상담 section 형식: [기본 2단형 / 중앙 세로형 / 글 하단형]
-- 제목: [입력]
-- 설명: [입력]
+- 상담 section 형식: [split / stacked / article]
+- copy_key: [기존 ax-consultation / 승인된 신규 4개 언어 문구 키]
 - 배경 또는 참고 페이지: [입력]
 - 연락처 영역: [표시 / 숨김]
 - 적용 언어: [ko / en / ja / zh / 전체]
 - page_id: [언어와 무관한 식별자]
 - content_type: [예: blog-post]
 
-원하는 형식이 기존 LeadRequestSection에 없으면 Form 바깥의 section variant만
-추가해라. LeadForm 내부 DOM·필드·카피·validation·개인정보 문구·버튼·
+원하는 형식이 세 variant에 없으면 Form 바깥의 section variant만 별도
+승인 후 추가해라. LeadForm 내부 DOM·필드·카피·validation·개인정보 문구·버튼·
 endpoint·payload·GA 이벤트·CSS·UX는 수정하거나 복사하지 마라.
 
 /경로#request 이동, 성함 자동 포커스, 실제 page context와 네 언어 화면을
@@ -128,14 +127,18 @@ import LeadRequestSection from '../forms/LeadRequestSection.astro';
 <LeadRequestSection
   lang={lang}
   pageContext={leadContext}
-  heading={pageCopy.requestHeading}
-  description={pageCopy.requestDescription}
+  variant="stacked"
+  copyKey="ax-consultation"
+  formId="request-page"
 />
 ```
 
-`heading`과 `description`을 생략하면 현재 AX 상담 섹션의 언어별 기본
-문구를 사용한다. 바깥 배경·정렬·여백을 바꾸려면 `class`를 전달해 section
-root만 스타일링한다. Form 내부 selector는 사용하지 않는다.
+`variant`는 `split`, `stacked`, `article` 중 하나를 사용한다. `copyKey`는
+`src/components/forms/leadFormContent.ts`의 `leadRequestCopyRegistry`에 등록된
+4개 언어 문구 묶음이다. 새 문구가 필요하면 ko·en·ja·zh 전체를 승인받아
+새 key로 추가한다. 페이지마다 Form 안에 제목이나 문구를 직접 넣지 않는다.
+바깥 배경·정렬·여백을 바꾸려면 `class`를 전달해 section root만
+스타일링한다. Form 내부 selector는 사용하지 않는다.
 
 ### 3. CTA 연결
 
@@ -168,7 +171,9 @@ slug만 등록한다.
 {
   "agentic-workflow": {
     "page_id": "blog-agentic-workflow",
-    "content_type": "blog-post"
+    "content_type": "blog-post",
+    "variant": "article",
+    "copy_key": "ax-consultation"
   }
 }
 ```
@@ -178,8 +183,14 @@ slug만 등록한다.
 `page_id`와 `/blog/agentic-workflow` `base_path`를 쓰고, 실제 locale과
 `page_path`만 달라진다. manifest에 없는 글은 변경되지 않는다.
 
-등록한 slug가 네 언어 빌드 중 하나라도 없거나 이미 `id="request"`가
-있으면 빌드가 실패한다. 운영 글의 HTML을 직접 수정해 우회하지 않는다.
+빌드는 AX 페이지 HTML을 재사용하지 않는다. 전용 build-only route에서
+선택한 locale·variant·copy key의 중립 fragment를 렌더링하고 글 본문 뒤·
+Footer 앞에 삽입한다. 이 내부 route는 동기화 직후 `dist`에서 삭제되며,
+남아 있으면 빌드가 실패한다.
+
+등록한 slug가 네 언어 빌드 중 하나라도 없거나, variant/copy key가 잘못됐거나,
+이미 `id="request"`가 있으면 빌드가 실패한다. 운영 글의 HTML이나 Notion이
+생성한 콘텐츠를 직접 수정해 우회하지 않는다.
 
 ## 실제 메일을 보내지 않고 전송 확인하기
 
@@ -200,6 +211,7 @@ pnpm test:ax-attribution
 - 블로그 글에 상담 section이 한 번만 삽입된다.
 - 네 언어가 같은 `page_id`와 올바른 locale context를 사용한다.
 - 미등록 글은 바뀌지 않고 중복 `#request`는 거부된다.
+- 잘못된 `variant`와 `copy_key`는 거부된다.
 
 `pnpm test:ax-attribution`의 `tests/axConsultations.test.ts`는 실제 이메일
 binding 대신 메모리에 메시지를 담는 가짜 `AX_EMAIL.send()`를 Worker에
@@ -212,6 +224,8 @@ binding 대신 메모리에 메시지를 담는 가짜 `AX_EMAIL.send()`를 Work
 - `page_id`, `page_path`, `base_path`, `locale`, `content_type`이 메일에
   들어간다.
 - 잘못된 context는 `422`가 되고 이메일 호출은 0회다.
+- 블로그 context 제출은 API `200`, 가짜 send 1회, text/HTML 메일의
+  `page_id`·경로·언어를 검증한다.
 
 정상 판정은 두 명령이 exit code `0`으로 끝나고 Node test summary의
 `fail`이 `0`인 것이다. 이 단계가 통과하면 **Form 제출 payload를 Worker가
@@ -232,7 +246,16 @@ manifest에 대상 글을 등록한 뒤 실행한다.
 pnpm build
 ```
 
-빌드가 성공하면 생성된 네 언어 HTML에서 `id="request"`, `data-lead-page`,
+이 명령은 먼저 4개 언어 × 3개 variant의 중립 fragment를 만들고 다음을
+자동 검사한다.
+
+- 모든 fragment에 잠긴 Form, endpoint, Form client, `#request` focus client가 있다.
+- `article`에는 직접 연락처가 없고 `split`·`stacked`에는 있다.
+- synthetic 블로그 네 언어가 같은 `page_id`와 서로 다른 locale을 쓴다.
+- sitemap에는 `#request`나 build-only route가 없다.
+- 최종 `dist`에는 build-only route가 남지 않는다.
+
+빌드가 성공하면 등록된 글의 네 언어 HTML에서 `id="request"`, `data-lead-page`,
 `data-page-base-path`, `data-content-type`, `data-locale`을 확인한다. 예를 들어
 slug가 `agentic-workflow`이면 다음 파일을 검사한다.
 
@@ -299,7 +322,8 @@ pnpm build
 3. Form을 복사하지 않고 공통 컴포넌트를 import했는지 확인한다.
 4. 페이지 CSS가 Form 내부를 선택하지 않는지 확인한다.
 5. `pnpm check:lead-form-contract`의 첫 오류를 해결한다.
-6. Form 원본을 수정해야만 해결될 것 같으면 작업을 멈추고 별도 승인을
+6. `pnpm build`에서 fragment 생성·삽입·삭제 중 어느 단계가 실패했는지 확인한다.
+7. Form 원본을 수정해야만 해결될 것 같으면 작업을 멈추고 별도 승인을
    요청한다.
 
 ## Agent에게 전달할 작업 지시문
@@ -308,7 +332,10 @@ pnpm build
 AGENTS.md와 docs/lead-form-agent-manual.md를 먼저 읽어라.
 대상 페이지에 공통 LeadRequestSection을 추가하고 route/manifest의
 leadContext를 연결해라. LeadForm 내부 마크업·필드·카피·validation·버튼·
-endpoint·GA 이벤트·CSS는 변경하거나 복사하지 마라. #request 이동과 네
-언어 page context를 검증하고 pnpm test:lead-form, pnpm test:ax-attribution,
-pnpm check, pnpm build를 실행한 뒤 diff와 회귀 위험을 보고해라.
+endpoint·GA 이벤트·CSS는 변경하거나 복사하지 마라. 일반 페이지는
+variant와 copyKey를 컴포넌트에 전달하고, 블로그는
+src/lead/blogLeadPages.json에 locale-neutral slug·page_id·content_type·
+variant·copy_key만 선언해라. #request 이동과 네 언어 page context를
+검증하고 pnpm test:lead-form, pnpm test:ax-attribution, pnpm check,
+pnpm build를 실행한 뒤 diff와 회귀 위험을 보고해라.
 ```

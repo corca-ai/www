@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.22.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "pnpm favicon:build && astro build && node scripts/sync-blog-shell-assets.js",
+    "build": "pnpm favicon:build && astro build && node scripts/lead-form-rendered-check.js && node scripts/lead-request-build-check.js && node scripts/sync-blog-shell-assets.js",
     "preview": "astro preview",
     "cf:preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
@@ -19,6 +19,8 @@
     "check:performance-contract": "node scripts/performance-contract-check.js",
     "check:seo-governance": "node scripts/seo-governance-check.js",
     "check:lead-form-contract": "node scripts/lead-form-contract-check.js",
+    "check:lead-form-rendered": "node scripts/lead-form-rendered-check.js",
+    "check:lead-request-build": "node scripts/lead-request-build-check.js",
     "check:dup": "nose query src --mode syntax 'dup>80' --fail-on any",
     "check:docs": "awiki lint -root docs",
     "test:ax-attribution": "node --test tests/axAcquisition.test.ts tests/axConsultations.test.ts tests/gtag.test.ts tests/leadPageContext.test.ts",

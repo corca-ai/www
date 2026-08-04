@@ -1,8 +1,7 @@
 ---
 import type { Lang } from '../../i18n/ui';
 import type { LeadPageContext } from '../../lead/pageContext';
-import { axV2ContentByLang } from '../pages/ax-v2/content';
-import { leadFormSuccessCopy } from './leadFormContent';
+import { leadFormCopyByLang, leadFormSuccessCopy } from './leadFormContent';
 
 interface Props {
   id: string;
@@ -12,7 +11,7 @@ interface Props {
 }
 
 const { id, lang, compact = false, pageContext } = Astro.props;
-const c = axV2ContentByLang[lang].contact;
+const c = leadFormCopyByLang[lang];
 const success = leadFormSuccessCopy[lang];
 const websiteLabel = { ko: '웹사이트', en: 'Website', ja: 'ウェブサイト', zh: '网站' }[lang];
 const formId = `ax-lead-${id}`;

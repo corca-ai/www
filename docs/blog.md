@@ -56,11 +56,13 @@ remain consistent. The generator first removes the home shell's icon-only
 breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
 Selected blog articles can also receive the shared immutable Lead Request
-Section. Register only the locale-neutral slug, stable `page_id` and
-`content_type` in `src/lead/blogLeadPages.json`; never paste Form HTML into a
-post. The build extracts the localized canonical component output, inserts it
-before `</main>` and rejects duplicate `#request` targets or missing locale
-aliases. Undeclared posts are unchanged. Follow the Korean
+Section. Register only the locale-neutral slug, stable `page_id`,
+`content_type`, `variant` and `copy_key` in `src/lead/blogLeadPages.json`; never
+paste Form HTML into a post. A build-only Astro route renders a neutral
+locale/variant/copy fragment, the blog sync inserts it before `</main>`, and
+then removes the internal route from `dist`. The build rejects duplicate
+`#request` targets, invalid variants or copy keys, missing clients and missing
+locale aliases. Undeclared posts are unchanged. Follow the Korean
 [Lead Form Agent manual](lead-form-agent-manual.md) for the exact procedure and
 contract checks.
 

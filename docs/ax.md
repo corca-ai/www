@@ -120,9 +120,11 @@ the markup hash and rejects Form-internal selectors outside `lead-form.css`.
 
 Use `LeadRequestSection.astro` when a page needs the complete heading, direct
 contact and Form section. The component owns the real `id="request"` target and
-the existing focus behavior. Only its outer heading, description, background,
-alignment and spacing may vary. Form-only use keeps `LeadForm.astro` as the
-closed component.
+the existing focus behavior. `split` preserves the AX layout, `stacked` provides
+a vertical page layout and `article` provides a compact blog layout without
+direct contacts. `copyKey` selects one approved four-locale copy bundle. Only
+the section outside the Form may vary. Form-only use keeps `LeadForm.astro` as
+the closed component.
 
 The four localized AX V2 forms post JSON to
 `POST /api/ax/consultations`. The Worker validates the payload, rejects

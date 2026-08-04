@@ -161,6 +161,31 @@ test('keeps page context optional for older clients', async () => {
   assert.doesNotMatch(email.text, /제출 페이지:/u);
 });
 
+test('renders reusable blog Lead Form context and sends one fake email', async () => {
+  const messages: unknown[] = [];
+  const payload = {
+    ...validPayload(),
+    attribution: { initial_referrer_host: '', landing_path: '/en/blog/agentic-workflow' },
+    base_path: '/blog/agentic-workflow',
+    content_type: 'blog-post',
+    locale: 'en',
+    page_id: 'blog-agentic-workflow',
+    page_path: '/en/blog/agentic-workflow',
+  };
+  const response = await submit(payload, messages);
+
+  assert.equal(response.status, 200);
+  assert.equal(messages.length, 1);
+  const email = emailContent(messages[0]);
+  assert.match(email.text, /콘텐츠 ID: blog-agentic-workflow/u);
+  assert.match(email.text, /콘텐츠 유형: blog-post/u);
+  assert.match(email.text, /제출 페이지: \/en\/blog\/agentic-workflow/u);
+  assert.match(email.text, /기준 경로: \/blog\/agentic-workflow/u);
+  assert.match(email.text, /페이지 언어: en/u);
+  assert.match(email.html, />콘텐츠 ID<\/th><td[^>]*>blog-agentic-workflow/u);
+  assert.match(email.html, />제출 페이지<\/th><td[^>]*>\/en\/blog\/agentic-workflow/u);
+});
+
 test('renders a non-search external referrer with referral medium', async () => {
   const messages: unknown[] = [];
   const payload = {

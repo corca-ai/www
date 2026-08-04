@@ -1,6 +1,7 @@
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { leadRequestCopyKeys, leadRequestVariants } from '../src/lead/leadRequestContract.js';
 import {
   extractLeadRequestSection,
   injectBlogLeadRequestSection,
@@ -9,6 +10,7 @@ import {
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = join(repoRoot, 'dist');
+const leadRequestBuildRoot = join(distRoot, 'lead-request-fragment');
 // Astro names the shared shell stylesheet after the component that owns the
 // extracted CSS. It used to be BaseLayout and is currently CommonHead. Match
 // either name so a harmless bundling-name change does not break production
@@ -97,9 +99,16 @@ for (const config of localeConfigs) {
   headerFragments.set(config.locale, extractBeforeMain(pageHtml, config.page));
   footerFragments.set(config.locale, extractFooter(pageHtml, config.page));
   commonHeadFragments.set(config.locale, extractCommonHead(pageHtml, config.page));
-  const axPage = config.locale === 'ko' ? 'ax/index.html' : `${config.locale}/ax/index.html`;
-  const axHtml = await readFile(join(distRoot, axPage), 'utf8');
-  leadRequestFragments.set(config.locale, extractLeadRequestSection(axHtml, axPage));
+  for (const variant of leadRequestVariants) {
+    for (const copyKey of leadRequestCopyKeys) {
+      const fragmentPage = `lead-request-fragment/${config.locale}/${variant}/${copyKey}/index.html`;
+      const fragmentHtml = await readFile(join(distRoot, fragmentPage), 'utf8');
+      leadRequestFragments.set(
+        leadRequestFragmentKey(config.locale, variant, copyKey),
+        extractLeadRequestSection(fragmentHtml, fragmentPage),
+      );
+    }
+  }
 }
 
 let updated = 0;
@@ -133,7 +142,15 @@ for (const config of localeConfigs) {
     );
     const leadDeclaration = slug ? blogLeadManifest[slug] : undefined;
     next = injectBlogLeadRequestSection(next, {
-      fragment: leadRequestFragments.get(config.locale),
+      fragment: leadDeclaration
+        ? leadRequestFragments.get(
+            leadRequestFragmentKey(
+              config.locale,
+              leadDeclaration.variant,
+              leadDeclaration.copy_key,
+            ),
+          )
+        : '',
       slug,
       locale: config.locale,
       declaration: leadDeclaration,
@@ -196,6 +213,9 @@ for (const slug of Object.keys(blogLeadManifest)) {
   }
 }
 
+await rm(leadRequestBuildRoot, { recursive: true, force: true });
+await assertPathMissing(leadRequestBuildRoot);
+
 console.log(`Synced blog shell CSS ${currentBaseLayoutCss} in ${updated} file(s).`);
 console.log(`Synced ${headersSynced} blog page header(s) from src/components/Header.astro.`);
 console.log(`Synced ${footersSynced} blog page footer(s) from src/components/Footer.astro.`);
@@ -204,6 +224,7 @@ console.log(
 );
 console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
 console.log(`Synced ${leadSectionsSynced} opt-in blog Lead Request Section(s).`);
+console.log('Removed build-only Lead Request fragment routes from dist/.');
 console.log(
   `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`,
 );
@@ -216,6 +237,10 @@ function extractBeforeMain(html, source) {
     fail(`Could not locate the shared header in ${source}.`);
   }
   return html.slice(bodyOpenEnd + 1, mainStart);
+}
+
+function leadRequestFragmentKey(locale, variant, copyKey) {
+  return `${locale}:${variant}:${copyKey}`;
 }
 
 function replaceBeforeMain(html, header, source) {
@@ -562,6 +587,15 @@ async function assertFileExists(path) {
     // handled below
   }
   fail(`Expected Astro CSS asset does not exist: ${relative(repoRoot, path)}`);
+}
+
+async function assertPathMissing(path) {
+  try {
+    await stat(path);
+  } catch {
+    return;
+  }
+  fail(`Build-only Lead Request route remains in dist: ${relative(repoRoot, path)}`);
 }
 
 function fail(message) {

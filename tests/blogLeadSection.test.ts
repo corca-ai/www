@@ -6,7 +6,13 @@ import {
   validateBlogLeadManifest,
 } from '../scripts/blog-lead-section.js';
 
-const fragment = `<!-- corca-lead-request:start --><section id="request" data-lead-request-section><form data-lead-form data-locale="ko" data-lead-page="ax" data-page-base-path="/ax" data-content-type="ax-solution"></form></section><script type="module">window.testLeadSection=true</script><!-- corca-lead-request:end -->`;
+const fragment = `<!-- corca-lead-request:start --><section id="request" data-lead-request-section data-lead-request-variant="article" data-lead-request-copy="ax-consultation"><form action="/api/ax/consultations" data-lead-form data-locale="ko" data-lead-page="fragment" data-page-base-path="/_lead-request" data-content-type="fragment"></form></section><script type="module">window.testLeadForm=true</script><script type="module">window.testLeadSection=true</script><!-- corca-lead-request:end -->`;
+const declaration = {
+  page_id: 'blog-agentic-workflow',
+  content_type: 'blog-post',
+  variant: 'article',
+  copy_key: 'ax-consultation',
+};
 
 test('extracts exactly one rendered Lead Request Section', () => {
   assert.equal(extractLeadRequestSection(`<main>${fragment}</main>`), fragment);
@@ -18,7 +24,7 @@ test('injects stable blog context while keeping the actual pathname runtime-owne
     fragment,
     slug: 'agentic-workflow',
     locale: 'en',
-    declaration: { page_id: 'blog-agentic-workflow', content_type: 'blog-post' },
+    declaration,
   });
   assert.match(html, /data-lead-page="blog-agentic-workflow"/);
   assert.match(html, /data-page-base-path="\/blog\/agentic-workflow"/);
@@ -46,7 +52,7 @@ test('skips undeclared posts and rejects duplicate request targets', () => {
         fragment,
         slug: 'registered',
         locale: 'ko',
-        declaration: { page_id: 'registered', content_type: 'blog-post' },
+        declaration: { ...declaration, page_id: 'registered' },
       }),
     /already exists/,
   );
@@ -55,14 +61,28 @@ test('skips undeclared posts and rejects duplicate request targets', () => {
 test('validates locale-neutral slug, page ID and content type', () => {
   assert.deepEqual(
     validateBlogLeadManifest({
-      'agentic-workflow': { page_id: 'blog-agentic-workflow', content_type: 'blog-post' },
+      'agentic-workflow': declaration,
     }),
     {
-      'agentic-workflow': { page_id: 'blog-agentic-workflow', content_type: 'blog-post' },
+      'agentic-workflow': declaration,
     },
   );
   assert.throws(
     () => validateBlogLeadManifest({ 'Bad Slug': { page_id: 'bad', content_type: 'blog-post' } }),
     /Invalid blog slug/,
+  );
+  assert.throws(
+    () =>
+      validateBlogLeadManifest({
+        'agentic-workflow': { ...declaration, variant: 'wide' },
+      }),
+    /Invalid Lead Request variant/,
+  );
+  assert.throws(
+    () =>
+      validateBlogLeadManifest({
+        'agentic-workflow': { ...declaration, copy_key: 'unknown-copy' },
+      }),
+    /Invalid Lead Request copy_key/,
   );
 });

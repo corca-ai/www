@@ -3,6 +3,7 @@ import type { Lang } from '../../i18n/ui';
 import type { LeadPageContext } from '../../lead/pageContext';
 import LeadForm from '../forms/LeadForm.astro';
 import LeadRequestSection from '../forms/LeadRequestSection.astro';
+import { leadRequestCopy } from '../forms/leadFormContent';
 import AxLines from './ax-v2/AxLines.astro';
 import AxResponsiveLines from './ax-v2/AxResponsiveLines.astro';
 import { axV2Assets, axV2ContentByLang, axV2MobileLineOverrides } from './ax-v2/content';
@@ -15,6 +16,7 @@ interface Props {
 
 const { lang, leadContext } = Astro.props;
 const c = axV2ContentByLang[lang];
+const requestCopy = leadRequestCopy('ax-consultation', lang);
 const mobileCopy = lang === 'ko' ? c : undefined;
 const mobileLineOverrides = axV2MobileLineOverrides[lang as keyof typeof axV2MobileLineOverrides];
 const slowdownGradientStart = lang === 'ja' ? 1 : 2;
@@ -577,7 +579,13 @@ const uiCopy = {
     </div>
   </section>
 
-  <LeadRequestSection lang={lang} pageContext={leadContext} formId="inline" />
+  <LeadRequestSection
+    lang={lang}
+    pageContext={leadContext}
+    variant="split"
+    copyKey="ax-consultation"
+    formId="inline"
+  />
 
   <section
     class="ax-v2-compound ax-v2-dark-section"
@@ -614,14 +622,14 @@ const uiCopy = {
         <span aria-hidden="true">×</span>
       </button>
       <div class="ax-v2-dialog-heading">
-        <p class="ax-v2-dialog-title" id="ax-v2-dialog-title"><AxLines values={c.contact.heading} /></p>
+        <p class="ax-v2-dialog-title" id="ax-v2-dialog-title"><AxLines values={requestCopy.heading} /></p>
         <p class="ax-v2-dialog-description">
-          {c.contact.dialogBody.lead}<br />
-          {c.contact.dialogBody.selection}<br class="ax-v2-dialog-desktop-break" /><span
+          {requestCopy.dialogBody.lead}<br />
+          {requestCopy.dialogBody.selection}<br class="ax-v2-dialog-desktop-break" /><span
             class="ax-v2-dialog-mobile-space"> </span
-          >{c.contact.dialogBody.constraint}<br />
-          {c.contact.dialogBody.route}<br />
-          {c.contact.dialogBody.next}
+          >{requestCopy.dialogBody.constraint}<br />
+          {requestCopy.dialogBody.route}<br />
+          {requestCopy.dialogBody.next}
         </p>
       </div>
       <LeadForm id="modal" lang={lang} compact pageContext={leadContext} />

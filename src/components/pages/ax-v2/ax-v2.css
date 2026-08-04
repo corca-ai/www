@@ -1805,10 +1805,6 @@ body:has(.ax-v2-dialog[open]) {
     width: 100%;
   }
 
-  .ax-v2-contact-copy h2 {
-    font-size: 32px;
-  }
-
   .ax-v2-dialog-title {
     font-size: 38px;
   }

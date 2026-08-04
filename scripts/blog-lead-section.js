@@ -1,7 +1,11 @@
+import { leadRequestCopyKeys, leadRequestVariants } from '../src/lead/leadRequestContract.js';
+
 const START_MARKER = '<!-- corca-lead-request:start -->';
 const END_MARKER = '<!-- corca-lead-request:end -->';
 const PAGE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CONTENT_TYPE_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const VARIANTS = new Set(leadRequestVariants);
+const COPY_KEYS = new Set(leadRequestCopyKeys);
 
 export function validateBlogLeadManifest(manifest) {
   if (!manifest || Array.isArray(manifest) || typeof manifest !== 'object') {
@@ -19,11 +23,17 @@ export function validateBlogLeadManifest(manifest) {
     if (!CONTENT_TYPE_PATTERN.test(declaration.content_type ?? '')) {
       throw new Error(`Invalid content_type for blog slug ${slug}.`);
     }
+    if (!VARIANTS.has(declaration.variant)) {
+      throw new Error(`Invalid Lead Request variant for blog slug ${slug}.`);
+    }
+    if (!COPY_KEYS.has(declaration.copy_key)) {
+      throw new Error(`Invalid Lead Request copy_key for blog slug ${slug}.`);
+    }
   }
   return manifest;
 }
 
-export function extractLeadRequestSection(html, source = 'rendered AX page') {
+export function extractLeadRequestSection(html, source = 'rendered Lead Request fragment') {
   const startCount = html.split(START_MARKER).length - 1;
   const endCount = html.split(END_MARKER).length - 1;
   if (startCount !== 1 || endCount !== 1) {
@@ -31,7 +41,20 @@ export function extractLeadRequestSection(html, source = 'rendered AX page') {
   }
   const start = html.indexOf(START_MARKER);
   const end = html.indexOf(END_MARKER, start) + END_MARKER.length;
-  return html.slice(start, end);
+  const fragment = html.slice(start, end);
+  if (!fragment.includes('data-lead-form')) {
+    throw new Error(`Lead Form markup is missing from ${source}.`);
+  }
+  if (!fragment.includes('/api/ax/consultations')) {
+    throw new Error(`Lead Form endpoint is missing from ${source}.`);
+  }
+  if (!fragment.includes('data-lead-request-section')) {
+    throw new Error(`Lead Request Section contract is missing from ${source}.`);
+  }
+  if ((fragment.match(/<script\b/g) || []).length < 2) {
+    throw new Error(`Lead Form and request-focus clients are missing from ${source}.`);
+  }
+  return fragment;
 }
 
 export function injectBlogLeadRequestSection(
@@ -48,6 +71,8 @@ export function injectBlogLeadRequestSection(
   localized = replaceAttribute(localized, 'data-lead-page', declaration.page_id, source);
   localized = replaceAttribute(localized, 'data-page-base-path', `/blog/${slug}`, source);
   localized = replaceAttribute(localized, 'data-content-type', declaration.content_type, source);
+  assertAttribute(localized, 'data-lead-request-variant', declaration.variant, source);
+  assertAttribute(localized, 'data-lead-request-copy', declaration.copy_key, source);
 
   const mainClose = html.lastIndexOf('</main>');
   if (mainClose < 0) throw new Error(`Could not locate </main> in ${source}.`);
@@ -59,6 +84,13 @@ export function injectBlogLeadRequestSection(
     throw new Error(`Expected exactly one managed Lead Request Section in ${source}.`);
   }
   return next;
+}
+
+function assertAttribute(html, name, value, source) {
+  const pattern = new RegExp(`\\b${name}="${escapeRegExp(value)}"`, 'g');
+  if ((html.match(pattern) || []).length !== 1) {
+    throw new Error(`Expected ${name}="${value}" in the Lead Form fragment for ${source}.`);
+  }
 }
 
 function replaceAttribute(html, name, value, source) {
@@ -76,4 +108,8 @@ function escapeAttribute(value) {
     .replace(/"/g, '&quot;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

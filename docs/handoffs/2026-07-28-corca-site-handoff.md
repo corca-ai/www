@@ -194,9 +194,11 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   않도록 공개 PNG 파일명은 `corca-ai-*`를 사용하며 C 원본은 저장소에 두지
   않는다.
 - 검색엔진용 정본 URL은 `https://www.corca.ai/favicon.ico`다. 빌드가 공식
-  16·32·48px PNG를 담은 ICO를 생성하며, 모든 공개 페이지는 절대 URL의
-  `shortcut icon`·32px `icon`·Apple touch icon을 각각 한 번만 선언한다.
-  검색엔진 재수집 지연을 피하기 위해 이 URL을 다시 변경하지 않는다.
+  16·32·48px PNG를 담은 ICO를 생성하며, 모든 공개 페이지는 검색용
+  `rel="icon"` 절대 URL을 한 번만 선언한다. 별도 `shortcut icon`이나 PNG
+  후보를 추가하지 않는다. Apple/PWA 아이콘은 같은 정본에서 생성하며,
+  최종 빌드는 모든 공개 HTML의 favicon 계약을 전수 검사한다. 검색엔진
+  재수집 지연을 피하기 위해 정본 URL을 다시 변경하지 않는다.
 
 ### 전역 Footer
 

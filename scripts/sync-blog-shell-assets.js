@@ -463,12 +463,8 @@ function validateCommonHead(html, source) {
     ['common head start marker', /<!-- corca-common-head:start -->/g],
     ['common head end marker', /<!-- corca-common-head:end -->/g],
     [
-      'absolute shortcut favicon',
-      /<link\b(?=[^>]*\brel=["']shortcut icon["'])(?=[^>]*\bhref=["']https:\/\/www\.corca\.ai\/favicon\.ico["'])[^>]*>/gi,
-    ],
-    [
-      'absolute 32px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']https:\/\/www\.corca\.ai\/favicons\/corca-ai-32\.png["'])[^>]*>/gi,
+      'absolute canonical favicon',
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']https:\/\/www\.corca\.ai\/favicon\.ico["'])[^>]*>/gi,
     ],
     ['apple touch icon', /<link\b(?=[^>]*\brel=["']apple-touch-icon["'])[^>]*>/gi],
     [
@@ -490,11 +486,14 @@ function validateCommonHead(html, source) {
     const count = (html.match(pattern) || []).length;
     if (count !== 1) fail(`Expected one ${label} in ${source}, found ${count}.`);
   }
-  for (const rel of ['shortcut icon', 'icon', 'apple-touch-icon']) {
+  for (const rel of ['icon', 'apple-touch-icon']) {
     const count = (
       html.match(new RegExp(`<link\\b(?=[^>]*\\brel=["']${rel}["'])[^>]*>`, 'gi')) || []
     ).length;
     if (count !== 1) fail(`Expected exactly one rel="${rel}" in ${source}, found ${count}.`);
+  }
+  if (/<link\b(?=[^>]*\brel=["']shortcut icon["'])[^>]*>/i.test(html)) {
+    fail(`Legacy rel="shortcut icon" remains in ${source}.`);
   }
   if (html.includes('/blog/assets/favicon.png')) {
     fail(`Legacy blog favicon remains in ${source}.`);

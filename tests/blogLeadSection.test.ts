@@ -3,16 +3,18 @@ import test from 'node:test';
 import {
   extractLeadRequestSection,
   injectBlogLeadRequestSection,
+  resolveBlogLeadDeclaration,
   validateBlogLeadManifest,
 } from '../scripts/blog-lead-section.js';
 
-const fragment = `<!-- corca-lead-request:start --><section id="request" data-lead-request-section data-lead-request-variant="article" data-lead-request-copy="ax-consultation"><form action="/api/ax/consultations" data-lead-form data-locale="ko" data-lead-page="fragment" data-page-base-path="/_lead-request" data-content-type="fragment"></form></section><script type="module">window.testLeadForm=true</script><script type="module">window.testLeadSection=true</script><!-- corca-lead-request:end -->`;
+const fragment = `<!-- corca-lead-request:start --><section id="request" data-lead-request-section data-lead-request-variant="article" data-lead-request-copy="blog-article"><form action="/api/ax/consultations" data-lead-form data-locale="ko" data-lead-page="fragment" data-page-base-path="/_lead-request" data-content-type="fragment"></form></section><script type="module">window.testLeadForm=true</script><script type="module">window.testLeadSection=true</script><!-- corca-lead-request:end -->`;
 const declaration = {
-  page_id: 'blog-agentic-workflow',
+  page_id_prefix: 'blog',
   content_type: 'blog-post',
   variant: 'article',
-  copy_key: 'ax-consultation',
+  copy_key: 'blog-article',
 };
+const manifest = { all_public_posts: declaration };
 
 test('extracts exactly one rendered Lead Request Section', () => {
   assert.equal(extractLeadRequestSection(`<main>${fragment}</main>`), fragment);
@@ -20,11 +22,12 @@ test('extracts exactly one rendered Lead Request Section', () => {
 });
 
 test('injects stable blog context while keeping the actual pathname runtime-owned', () => {
+  const resolvedDeclaration = resolveBlogLeadDeclaration(manifest, 'agentic-workflow');
   const html = injectBlogLeadRequestSection('<main><article>Post</article></main>', {
     fragment,
     slug: 'agentic-workflow',
     locale: 'en',
-    declaration,
+    declaration: resolvedDeclaration,
   });
   assert.match(html, /data-lead-page="blog-agentic-workflow"/);
   assert.match(html, /data-page-base-path="\/blog\/agentic-workflow"/);
@@ -35,54 +38,55 @@ test('injects stable blog context while keeping the actual pathname runtime-owne
   assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('</main>'));
 });
 
-test('skips undeclared posts and rejects duplicate request targets', () => {
-  const html = '<main><article>Post</article></main>';
-  assert.equal(
-    injectBlogLeadRequestSection(html, {
+test('places the request section before latest-post navigation when present', () => {
+  const html = injectBlogLeadRequestSection(
+    '<main><article>Post</article><nav class="post-list" aria-label="최신 글 더보기"></nav></main>',
+    {
       fragment,
-      slug: 'unregistered',
+      slug: 'agentic-workflow',
       locale: 'ko',
-      declaration: undefined,
-    }),
-    html,
+      declaration: resolveBlogLeadDeclaration(manifest, 'agentic-workflow'),
+    },
   );
+  assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('<nav class="post-list"'));
+});
+
+test('applies the all-public-posts policy and rejects duplicate request targets', () => {
+  assert.deepEqual(resolveBlogLeadDeclaration(manifest, 'new-notion-post'), {
+    page_id: 'blog-new-notion-post',
+    content_type: 'blog-post',
+    variant: 'article',
+    copy_key: 'blog-article',
+  });
   assert.throws(
     () =>
       injectBlogLeadRequestSection('<main><div id="request"></div></main>', {
         fragment,
         slug: 'registered',
         locale: 'ko',
-        declaration: { ...declaration, page_id: 'registered' },
+        declaration: resolveBlogLeadDeclaration(manifest, 'registered'),
       }),
     /already exists/,
   );
 });
 
-test('validates locale-neutral slug, page ID and content type', () => {
-  assert.deepEqual(
-    validateBlogLeadManifest({
-      'agentic-workflow': declaration,
-    }),
-    {
-      'agentic-workflow': declaration,
-    },
-  );
-  assert.throws(
-    () => validateBlogLeadManifest({ 'Bad Slug': { page_id: 'bad', content_type: 'blog-post' } }),
-    /Invalid blog slug/,
-  );
+test('validates the all-public-posts policy', () => {
+  assert.deepEqual(validateBlogLeadManifest(manifest), manifest);
+  assert.throws(() => validateBlogLeadManifest({ 'Bad Slug': declaration }), /all_public_posts/);
   assert.throws(
     () =>
       validateBlogLeadManifest({
-        'agentic-workflow': { ...declaration, variant: 'wide' },
+        all_public_posts: { ...declaration, variant: 'wide' },
       }),
     /Invalid Lead Request variant/,
   );
   assert.throws(
     () =>
       validateBlogLeadManifest({
-        'agentic-workflow': { ...declaration, copy_key: 'unknown-copy' },
+        all_public_posts: { ...declaration, copy_key: 'unknown-copy' },
       }),
     /Invalid Lead Request copy_key/,
   );
+  assert.throws(() => resolveBlogLeadDeclaration(manifest, 'Bad Slug'), /Invalid public blog slug/);
+  assert.throws(() => resolveBlogLeadDeclaration(manifest, 'a'.repeat(116)), /page_id is too long/);
 });

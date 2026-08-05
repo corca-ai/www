@@ -251,6 +251,89 @@ const axConsultationCopy: Record<Lang, LeadRequestCopy> = {
   },
 };
 
+const blogArticleCopy: Record<Lang, LeadRequestCopy> = {
+  ko: {
+    heading: ['우리 조직의 AX,', '어디서부터 시작해야 할까요?'],
+    dialogBody: {
+      lead: '아직 막연해도 괜찮습니다.',
+      selection: '지금 고민을 그대로 적어 주세요.',
+      constraint: 'Corca AX가 이야기를 듣고,',
+      route: '우선순위와 실행 계획을 함께 잡겠습니다.',
+      next: '',
+    },
+    body: [
+      '아직 막연해도 괜찮습니다. 지금 고민을 그대로 적어 주세요.',
+      'Corca AX가 이야기를 듣고,',
+      '우선순위와 실행 계획을 함께 잡겠습니다.',
+    ],
+    directLead: 'Corca AX Lead에게 직접 상담받고 싶으시다면,',
+    emailLabel: '직접 메일 상담',
+    email: 'bae.hwidong@corca.ai',
+    phoneLabel: '전화 상담',
+    phone: '02-6925-6978',
+  },
+  en: {
+    heading: ['Where should your organization', 'begin with AX?'],
+    dialogBody: {
+      lead: 'It is okay if the path still feels unclear.',
+      selection: 'Tell us what you are considering.',
+      constraint: 'Corca AX will listen,',
+      route: 'then shape priorities and an execution plan with you.',
+      next: '',
+    },
+    body: [
+      'It is okay if the path still feels unclear. Tell us what you are considering.',
+      'Corca AX will listen,',
+      'then shape priorities and an execution plan with you.',
+    ],
+    directLead: 'Would you like to speak directly with the Corca AX Lead?',
+    emailLabel: 'Email consultation',
+    email: 'bae.hwidong@corca.ai',
+    phoneLabel: 'Phone consultation',
+    phone: '02-6925-6978',
+  },
+  ja: {
+    heading: ['組織のAXは、', 'どこから始めればよいでしょうか？'],
+    dialogBody: {
+      lead: 'まだ漠然としていても大丈夫です。',
+      selection: '今抱えている悩みをそのままお聞かせください。',
+      constraint: 'Corca AXが丁寧に伺い、',
+      route: '優先順位と実行計画を一緒に整理します。',
+      next: '',
+    },
+    body: [
+      'まだ漠然としていても大丈夫です。今抱えている悩みをそのままお聞かせください。',
+      'Corca AXが丁寧に伺い、',
+      '優先順位と実行計画を一緒に整理します。',
+    ],
+    directLead: 'Corca AX Leadに直接相談したい場合は、',
+    emailLabel: 'メール相談',
+    email: 'bae.hwidong@corca.ai',
+    phoneLabel: '電話相談',
+    phone: '02-6925-6978',
+  },
+  zh: {
+    heading: ['组织的 AX，', '应该从哪里开始？'],
+    dialogBody: {
+      lead: '即使现在还没有清晰的方向也没关系。',
+      selection: '请如实告诉我们您正在思考的问题。',
+      constraint: 'Corca AX 会认真倾听，',
+      route: '并与您一起梳理优先级和执行计划。',
+      next: '',
+    },
+    body: [
+      '即使现在还没有清晰的方向也没关系。请如实告诉我们您正在思考的问题。',
+      'Corca AX 会认真倾听，',
+      '并与您一起梳理优先级和执行计划。',
+    ],
+    directLead: '如果您希望直接接受 Corca AX Lead 的咨询，',
+    emailLabel: '邮件咨询',
+    email: 'bae.hwidong@corca.ai',
+    phoneLabel: '电话咨询',
+    phone: '02-6925-6978',
+  },
+};
+
 const launchTalkUrl =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pvmsLNxvJ5Jt9cX7kmgn8dhhFA27R8tnRNbe_THLtJHU4efWcKcNpyutCEU3n9Zf8R-9tMtRm';
 
@@ -363,6 +446,7 @@ const axLaunchTalkCopy: Record<Lang, LeadRequestCopy> = {
 
 const leadRequestCopyRegistry = {
   'ax-consultation': axConsultationCopy,
+  'blog-article': blogArticleCopy,
   'ax-launch-talk': axLaunchTalkCopy,
 } as const;
 

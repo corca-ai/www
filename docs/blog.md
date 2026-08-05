@@ -61,16 +61,19 @@ generated from the same brand source. Do not add a page-specific PNG or
 `shortcut icon` to generated blog HTML. The final build scans every public HTML
 file and fails when another search favicon candidate remains.
 
-Selected blog articles can also receive the shared immutable Lead Request
-Section. Register only the locale-neutral slug, stable `page_id`,
-`content_type`, `variant` and `copy_key` in `src/lead/blogLeadPages.json`; never
-paste Form HTML into a post. A build-only Astro route renders a neutral
-locale/variant/copy fragment, the blog sync inserts it before `</main>`, and
-then removes the internal route from `dist`. The build rejects duplicate
-`#request` targets, invalid variants or copy keys, missing clients and missing
-locale aliases. Undeclared posts are unchanged. Follow the Korean
-[Lead Form Agent manual](lead-form-agent-manual.md) for the exact procedure and
-contract checks.
+Every public blog article receives the shared immutable `article` Lead Request
+Section. `src/lead/blogLeadPages.json` owns this global policy: its
+`page_id_prefix` combines with each locale-neutral slug to create a stable
+`blog-<slug>` ID, and its `content_type`, `variant` and `copy_key` apply to all
+articles. The current `copy_key` is `blog-article`, which keeps the blog-only
+friendly AX prompt separate from the AX page's `ax-consultation` copy. Never paste
+Form HTML into a post. A build-only Astro route renders a
+neutral locale/variant/copy fragment, the blog sync inserts it before `</main>`,
+and then removes the internal route from `dist`. The build rejects duplicate
+`#request` targets, invalid policy values, missing clients and missing locale
+aliases. A future Notion post receives the same section when its static article
+page is generated. Follow the Korean [Lead Form Agent manual](lead-form-agent-manual.md)
+for the exact procedure and contract checks.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
@@ -207,10 +210,15 @@ When changing blog files, keep these invariants:
   override more specific blog component styles. Document-level primitives such
   as page background and overflow may remain global.
 - Desktop article pages keep the table of contents to the left of the article
-  and recommended posts to the right. At widths up to 1024px, the table of
-  contents becomes a collapsible control between the article header and body;
-  recommended posts remain after the article. Table of contents clicks scroll
-  to the selected heading without leaving a section hash in the browser URL.
+  and recommended posts to the right, inside `.static-post-content`. This
+  containment makes their sticky range end with the article, before the
+  full-width Lead Request Section and latest-post cards. The latest-post cards
+  use the same `post-list` and `post-card` markup as the blog index; do not add
+  a detail-page-specific card variant. At widths up to 1024px,
+  the table of contents becomes a collapsible control between the article header
+  and body; recommended posts remain after the article. Table of contents clicks
+  scroll to the selected heading without leaving a section hash in the browser
+  URL.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

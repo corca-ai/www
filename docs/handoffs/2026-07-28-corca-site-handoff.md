@@ -140,11 +140,16 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   Form 불변 계약은 유지하고 locale별 Google Calendar 런치 토크 링크를 밑줄
   텍스트로 노출하며 직접 이메일 행은 제거하고 전화 상담 행은 유지한다.
   제목·설명·런치 토크 본문은 언어별 의미 단위 줄바꿈을 명시한다.
-- 선택한 정적 블로그 글은 `src/lead/blogLeadPages.json`의 locale-neutral
-  slug·`page_id`·`content_type`·`variant`·`copy_key` 선언으로만 상담 영역을
-  받는다. build-only 중립 fragment를 네 언어에 적용한 뒤 내부 route를
-  `dist`에서 삭제하며, 중복 `#request`, 잘못된 선언, 누락 client 또는
-  locale alias를 거부한다.
+- 모든 공개 정적 블로그 글은 `src/lead/blogLeadPages.json`의
+  `all_public_posts` 전역 policy로 상담 영역을 받는다. 현재 블로그 전용
+  `blog-article` copy key는 AX 페이지의 상담 문구와 분리되어 있다. `page_id_prefix`와
+  slug를 결합해 `blog-<slug>` ID를 만들고, build-only 중립 fragment를 네
+  언어에 적용한 뒤 내부 route를 `dist`에서 삭제한다. 중복 `#request`, 잘못된
+  policy, 누락 client 또는 locale alias를 거부한다. Notion으로 새 글을
+  발행해도 같은 빌드 정책이 적용된다.
+- 정적 글의 데스크톱 목차·추천 글은 `.static-post-content` 안에서 본문과
+  같은 길이로 끝난다. 따라서 sticky 사이드바는 본문이 끝난 뒤의 리드 폼과
+  최신 글 영역까지 내려가지 않으며, 리드 폼 앞에는 별도 여백을 둔다.
 - 현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
   중국어에는 별도의 국외이전 동의가 포함된다.
 - 클라이언트는 `POST /api/ax/consultations`로 JSON을 보낸다.

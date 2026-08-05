@@ -6,31 +6,51 @@ const PAGE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CONTENT_TYPE_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VARIANTS = new Set(leadRequestVariants);
 const COPY_KEYS = new Set(leadRequestCopyKeys);
+const ALL_PUBLIC_POSTS_KEY = 'all_public_posts';
+const MAX_PAGE_ID_LENGTH = 120;
 
 export function validateBlogLeadManifest(manifest) {
   if (!manifest || Array.isArray(manifest) || typeof manifest !== 'object') {
-    throw new Error('Blog Lead Form manifest must be an object keyed by locale-neutral slug.');
+    throw new Error('Blog Lead Form manifest must define the all_public_posts policy.');
   }
-  for (const [slug, declaration] of Object.entries(manifest)) {
-    if (!PAGE_ID_PATTERN.test(slug))
-      throw new Error(`Invalid blog slug in Lead Form manifest: ${slug}`);
-    if (!declaration || typeof declaration !== 'object') {
-      throw new Error(`Missing Lead Form declaration for blog slug: ${slug}`);
-    }
-    if (!PAGE_ID_PATTERN.test(declaration.page_id ?? '')) {
-      throw new Error(`Invalid page_id for blog slug ${slug}.`);
-    }
-    if (!CONTENT_TYPE_PATTERN.test(declaration.content_type ?? '')) {
-      throw new Error(`Invalid content_type for blog slug ${slug}.`);
-    }
-    if (!VARIANTS.has(declaration.variant)) {
-      throw new Error(`Invalid Lead Request variant for blog slug ${slug}.`);
-    }
-    if (!COPY_KEYS.has(declaration.copy_key)) {
-      throw new Error(`Invalid Lead Request copy_key for blog slug ${slug}.`);
-    }
+  if (Object.keys(manifest).length !== 1 || !(ALL_PUBLIC_POSTS_KEY in manifest)) {
+    throw new Error('Blog Lead Form manifest must contain only the all_public_posts policy.');
+  }
+
+  const declaration = manifest[ALL_PUBLIC_POSTS_KEY];
+  if (!declaration || typeof declaration !== 'object') {
+    throw new Error('Missing all_public_posts Lead Form declaration.');
+  }
+  if (!PAGE_ID_PATTERN.test(declaration.page_id_prefix ?? '')) {
+    throw new Error('Invalid page_id_prefix for all_public_posts.');
+  }
+  if (!CONTENT_TYPE_PATTERN.test(declaration.content_type ?? '')) {
+    throw new Error('Invalid content_type for all_public_posts.');
+  }
+  if (!VARIANTS.has(declaration.variant)) {
+    throw new Error('Invalid Lead Request variant for all_public_posts.');
+  }
+  if (!COPY_KEYS.has(declaration.copy_key)) {
+    throw new Error('Invalid Lead Request copy_key for all_public_posts.');
   }
   return manifest;
+}
+
+export function resolveBlogLeadDeclaration(manifest, slug) {
+  if (!PAGE_ID_PATTERN.test(slug)) {
+    throw new Error(`Invalid public blog slug for Lead Form: ${slug}`);
+  }
+  const policy = manifest[ALL_PUBLIC_POSTS_KEY];
+  const pageId = `${policy.page_id_prefix}-${slug}`;
+  if (pageId.length > MAX_PAGE_ID_LENGTH) {
+    throw new Error(`Lead Form page_id is too long for public blog slug: ${slug}`);
+  }
+  return {
+    page_id: pageId,
+    content_type: policy.content_type,
+    variant: policy.variant,
+    copy_key: policy.copy_key,
+  };
 }
 
 export function extractLeadRequestSection(html, source = 'rendered Lead Request fragment') {
@@ -76,7 +96,16 @@ export function injectBlogLeadRequestSection(
 
   const mainClose = html.lastIndexOf('</main>');
   if (mainClose < 0) throw new Error(`Could not locate </main> in ${source}.`);
-  const next = `${html.slice(0, mainClose)}${localized}${html.slice(mainClose)}`;
+
+  // Static blog pages keep their adjacent-post navigation after the article.
+  // Place the request section immediately before that navigation so the
+  // conversion step has a clear finish before readers choose another post.
+  const latestPostsStart = html.search(
+    /<nav\b[^>]*\bclass=["'][^"']*\bpost-list\b[^"']*["'][^>]*>/i,
+  );
+  const insertAt =
+    latestPostsStart >= 0 && latestPostsStart < mainClose ? latestPostsStart : mainClose;
+  const next = `${html.slice(0, insertAt)}${localized}${html.slice(insertAt)}`;
   if (
     next.split(START_MARKER).length - 1 !== 1 ||
     (next.match(/\bid=["']request["']/g) || []).length !== 1

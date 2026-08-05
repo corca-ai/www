@@ -5,6 +5,7 @@ import { leadRequestCopyKeys, leadRequestVariants } from '../src/lead/leadReques
 import {
   extractLeadRequestSection,
   injectBlogLeadRequestSection,
+  resolveBlogLeadDeclaration,
   validateBlogLeadManifest,
 } from './blog-lead-section.js';
 
@@ -29,6 +30,7 @@ const localeConfigs = [
     homeLabel: '홈',
     blogLabel: '블로그',
     breadcrumbLabel: '현재 위치',
+    latestPostsTitle: '최신 글 더보기',
   },
   {
     locale: 'en',
@@ -39,6 +41,7 @@ const localeConfigs = [
     homeLabel: 'Home',
     blogLabel: 'Blog',
     breadcrumbLabel: 'Breadcrumb',
+    latestPostsTitle: 'Latest posts',
   },
   {
     locale: 'ja',
@@ -49,6 +52,7 @@ const localeConfigs = [
     homeLabel: 'ホーム',
     blogLabel: 'ブログ',
     breadcrumbLabel: 'パンくずリスト',
+    latestPostsTitle: '最新の記事',
   },
   {
     locale: 'zh',
@@ -59,6 +63,7 @@ const localeConfigs = [
     homeLabel: '首页',
     blogLabel: '博客',
     breadcrumbLabel: '面包屑导航',
+    latestPostsTitle: '最新文章',
   },
 ];
 
@@ -69,7 +74,7 @@ const measurementId =
   rootHtml.match(/googletagmanager\.com\/gtag\/js\?id=(G-[A-Z0-9-]{4,32})/i)?.[1] ||
   '';
 const blogAppSource = await readFile(join(distRoot, 'blog/app.js'), 'utf8');
-const blogLeadManifest = validateBlogLeadManifest(
+const blogLeadPolicy = validateBlogLeadManifest(
   JSON.parse(await readFile(join(repoRoot, 'src/lead/blogLeadPages.json'), 'utf8')),
 );
 const analyticsBootstrapIndex = blogAppSource.indexOf('\ninitAnalytics();');
@@ -140,7 +145,7 @@ for (const config of localeConfigs) {
       commonHeadFragments.get(config.locale),
       relative(repoRoot, file),
     );
-    const leadDeclaration = slug ? blogLeadManifest[slug] : undefined;
+    const leadDeclaration = slug ? resolveBlogLeadDeclaration(blogLeadPolicy, slug) : undefined;
     next = injectBlogLeadRequestSection(next, {
       fragment: leadDeclaration
         ? leadRequestFragments.get(
@@ -156,7 +161,9 @@ for (const config of localeConfigs) {
       declaration: leadDeclaration,
       source: relative(repoRoot, file),
     });
+    next = addLatestPostNavigationIntro(next, config, relative(repoRoot, file));
     if (leadDeclaration) {
+      validateStaticArticleLeadLayout(next, relative(repoRoot, file));
       leadSectionsSynced += 1;
       const locales = leadSectionLocales.get(slug) ?? new Set();
       locales.add(config.locale);
@@ -192,6 +199,26 @@ for (const config of localeConfigs) {
   }
 }
 
+function validateStaticArticleLeadLayout(html, source) {
+  const staticContentStart = html.indexOf('class="static-post-content"');
+  const leadStart = html.indexOf('<!-- corca-lead-request:start -->');
+  const leadEnd = html.indexOf('<!-- corca-lead-request:end -->');
+  const staticContentEnd = html.lastIndexOf('</div>', leadStart);
+  if (staticContentStart < 0 || staticContentEnd < 0 || leadStart < 0 || leadEnd < 0) {
+    fail(`Missing static article/sidebar or Lead Request structure in ${source}.`);
+  }
+  if (
+    !(staticContentStart < staticContentEnd && staticContentEnd < leadStart && leadStart < leadEnd)
+  ) {
+    fail(`Expected article sidebars to end before the Lead Request Section in ${source}.`);
+  }
+
+  const latestPostsStart = html.indexOf('class="article-more-posts"');
+  if (html.includes('class="post-list"') && !(leadEnd < latestPostsStart)) {
+    fail(`Expected latest-post navigation after the Lead Request Section in ${source}.`);
+  }
+}
+
 if (analyticsConfigured !== analyticsTargets) {
   fail(`Configured analytics for ${analyticsConfigured} of ${analyticsTargets} blog page(s).`);
 }
@@ -204,8 +231,7 @@ if (footersSynced !== headerTargets) {
 if (commonHeadsSynced !== headerTargets) {
   fail(`Synced ${commonHeadsSynced} of ${headerTargets} deployable blog page common head(s).`);
 }
-for (const slug of Object.keys(blogLeadManifest)) {
-  const locales = leadSectionLocales.get(slug) ?? new Set();
+for (const [slug, locales] of leadSectionLocales) {
   if (locales.size !== localeConfigs.length) {
     fail(
       `Blog Lead Form slug ${slug} was found in ${locales.size} of ${localeConfigs.length} locales.`,
@@ -223,7 +249,7 @@ console.log(
   `Synced ${commonHeadsSynced} blog page common head(s) from src/components/CommonHead.astro.`,
 );
 console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
-console.log(`Synced ${leadSectionsSynced} opt-in blog Lead Request Section(s).`);
+console.log(`Synced ${leadSectionsSynced} public blog Lead Request Section(s).`);
 console.log('Removed build-only Lead Request fragment routes from dist/.');
 console.log(
   `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`,
@@ -405,6 +431,27 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function addLatestPostNavigationIntro(html, config, source) {
+  if (html.includes('class="article-more-posts"')) return html;
+
+  const navigation = /<nav\b[^>]*\bclass=["'][^"']*\bpost-list\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
+  const match = html.match(navigation);
+  if (!match) return html;
+
+  const headingId = 'article-more-posts-title';
+  const wrapped = `<section class="article-more-posts" aria-labelledby="${headingId}">
+          <header class="article-more-posts-heading">
+            <h2 id="${headingId}">${escapeHtml(config.latestPostsTitle)}</h2>
+          </header>
+${match[0]}
+        </section>`;
+  const next = html.replace(navigation, wrapped);
+  if ((next.match(/class="article-more-posts"/g) || []).length !== 1) {
+    fail(`Expected one adjacent-post navigation section in ${source}.`);
+  }
+  return next;
 }
 
 function replaceFooter(html, footer, source) {

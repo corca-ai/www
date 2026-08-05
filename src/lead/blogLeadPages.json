@@ -1,1 +1,8 @@
-{}
+{
+  "all_public_posts": {
+    "page_id_prefix": "blog",
+    "content_type": "blog-post",
+    "variant": "article",
+    "copy_key": "blog-article"
+  }
+}

@@ -38,6 +38,19 @@ test('injects stable blog context while keeping the actual pathname runtime-owne
   assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('</main>'));
 });
 
+test('places the request section before adjacent-post navigation when present', () => {
+  const html = injectBlogLeadRequestSection(
+    '<main><article>Post</article><nav class="post-pagination" aria-label="글 이동"></nav></main>',
+    {
+      fragment,
+      slug: 'agentic-workflow',
+      locale: 'ko',
+      declaration: resolveBlogLeadDeclaration(manifest, 'agentic-workflow'),
+    },
+  );
+  assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('<nav class="post-pagination"'));
+});
+
 test('applies the all-public-posts policy and rejects duplicate request targets', () => {
   assert.deepEqual(resolveBlogLeadDeclaration(manifest, 'new-notion-post'), {
     page_id: 'blog-new-notion-post',

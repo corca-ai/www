@@ -96,7 +96,15 @@ export function injectBlogLeadRequestSection(
 
   const mainClose = html.lastIndexOf('</main>');
   if (mainClose < 0) throw new Error(`Could not locate </main> in ${source}.`);
-  const next = `${html.slice(0, mainClose)}${localized}${html.slice(mainClose)}`;
+
+  // Static blog pages keep their adjacent-post navigation after the article.
+  // Place the request section immediately before that navigation so the
+  // conversion step has a clear finish before readers choose another post.
+  const paginationStart = html.search(
+    /<nav\b[^>]*\bclass=["'][^"']*\bpost-pagination\b[^"']*["'][^>]*>/i,
+  );
+  const insertAt = paginationStart >= 0 && paginationStart < mainClose ? paginationStart : mainClose;
+  const next = `${html.slice(0, insertAt)}${localized}${html.slice(insertAt)}`;
   if (
     next.split(START_MARKER).length - 1 !== 1 ||
     (next.match(/\bid=["']request["']/g) || []).length !== 1

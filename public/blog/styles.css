@@ -4079,7 +4079,8 @@ body {
 .static-post-view {
   grid-template-areas:
     "toc article recommendations"
-    ". related .";
+    "lead lead lead"
+    "related related related";
   padding-top: 0;
 }
 
@@ -4421,6 +4422,150 @@ body {
   justify-self: center;
 }
 
+.static-post-view > .lead-request-section {
+  grid-area: lead;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+}
+
+.article-more-posts {
+  grid-area: related;
+  width: min(100%, 920px);
+  margin: 72px auto 0;
+}
+
+.article-more-posts-heading {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.article-more-posts-heading p,
+.article-more-posts-heading h2 {
+  margin: 0;
+}
+
+.article-more-posts-heading p {
+  color: #2563a9;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.article-more-posts-heading h2 {
+  color: #1a2352;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.article-more-posts .post-pagination {
+  width: 100%;
+  margin: 0;
+  gap: 24px;
+}
+
+.article-more-posts .post-pagination-card {
+  display: grid;
+  min-height: 0;
+  aspect-ratio: auto;
+  overflow: visible;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.article-more-posts .post-pagination-card .related-thumbnail {
+  position: relative;
+  inset: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 17px 17px 0 0;
+}
+
+.article-more-posts .post-pagination-card .related-thumbnail img {
+  position: absolute;
+  object-fit: cover;
+}
+
+.article-more-posts .post-pagination-card .related-copy {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px 20px;
+}
+
+.article-more-posts .post-pagination-card .related-meta {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  box-shadow: none;
+  white-space: normal;
+}
+
+.article-more-posts .post-pagination-card .related-meta strong {
+  color: #2563a9;
+}
+
+.article-more-posts .post-pagination-card .related-title {
+  position: static;
+  display: -webkit-box;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  clip: auto;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+.article-more-posts .post-pagination-card .related-cue {
+  top: clamp(84px, 14vw, 126px);
+  width: 42px;
+  height: 42px;
+  border-color: #dbe5f2;
+  background: #ffffff;
+  color: #1a2352;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+}
+
+.article-more-posts .post-pagination-card.post-pagination-previous .related-cue {
+  right: auto;
+  left: -21px;
+}
+
+.article-more-posts .post-pagination-card.post-pagination-next .related-cue {
+  right: -21px;
+}
+
+.article-more-posts .post-pagination-card:hover,
+.article-more-posts .post-pagination-card:focus-visible {
+  border-color: #b7cae7;
+  background: #ffffff;
+  box-shadow: 0 14px 28px rgba(37, 99, 169, 0.12);
+}
+
+.article-more-posts .post-pagination-card:hover .related-cue,
+.article-more-posts .post-pagination-card:focus-visible .related-cue {
+  color: #2563a9;
+}
+
 .article-mobile-navigation {
   display: none;
 }
@@ -4434,6 +4579,7 @@ body {
       "tools"
       "message"
       "article"
+      "lead"
       "toc"
       "recommendations"
       "related";
@@ -4489,6 +4635,33 @@ body {
   .static-post-view {
     width: min(100% - 32px, 768px);
     padding-top: 32px;
+  }
+
+  .article-more-posts {
+    width: 100%;
+    margin-top: 56px;
+  }
+
+  .article-more-posts .post-pagination {
+    gap: 18px;
+  }
+
+  .article-more-posts-heading h2 {
+    font-size: 22px;
+  }
+
+  .article-more-posts .post-pagination-card .related-cue {
+    top: clamp(84px, 24vw, 126px);
+    width: 38px;
+    height: 38px;
+  }
+
+  .article-more-posts .post-pagination-card.post-pagination-previous .related-cue {
+    left: -12px;
+  }
+
+  .article-more-posts .post-pagination-card.post-pagination-next .related-cue {
+    right: -12px;
   }
 
   .article-header {

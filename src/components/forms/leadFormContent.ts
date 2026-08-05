@@ -251,11 +251,13 @@ const axConsultationCopy: Record<Lang, LeadRequestCopy> = {
   },
 };
 
+const launchTalkUrl =
+  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pvmsLNxvJ5Jt9cX7kmgn8dhhFA27R8tnRNbe_THLtJHU4efWcKcNpyutCEU3n9Zf8R-9tMtRm';
+
 const axLaunchTalkCopy: Record<Lang, LeadRequestCopy> = {
-  ...axConsultationCopy,
   ko: {
     ...axConsultationCopy.ko,
-    heading: ['우리 조직의 AX,', '어디서부터 시작해야 할까요?'],
+    heading: ['우리 조직의 AX,', '어디서부터', '시작해야 할까요?'],
     body: [
       '아직 막연해도 괜찮습니다.',
       '지금 고민을 그대로 적어 주세요.',
@@ -276,8 +278,85 @@ const axLaunchTalkCopy: Record<Lang, LeadRequestCopy> = {
         '자료 준비 없이, 고민만 가져오세요.',
       ],
       ctaLabel: '런치 토크 예약하기',
-      ctaHref:
-        'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pvmsLNxvJ5Jt9cX7kmgn8dhhFA27R8tnRNbe_THLtJHU4efWcKcNpyutCEU3n9Zf8R-9tMtRm',
+      ctaHref: launchTalkUrl,
+    },
+  },
+  en: {
+    ...axConsultationCopy.en,
+    heading: ['Our AX journey,', 'where should we', 'begin?'],
+    body: [
+      'It is okay if things still feel unclear.',
+      'Tell us what is on your mind.',
+      'Corca AX will listen',
+      'and help you find the right starting point.',
+    ],
+    directLead: undefined,
+    emailLabel: undefined,
+    email: undefined,
+    launchTalk: {
+      kicker: 'Not ready to make an inquiry yet?',
+      title: 'AX Launch Talk',
+      body: [
+        'Honest conversations happen',
+        'more easily over lunch than in a meeting room.',
+        'Join Corca AX Lead Hwidong Bae for lunch',
+        "and share your organization's AX challenges.",
+        'No presentation needed—just bring what is on your mind.',
+      ],
+      ctaLabel: 'Book a Launch Talk',
+      ctaHref: launchTalkUrl,
+    },
+  },
+  ja: {
+    ...axConsultationCopy.ja,
+    heading: ['組織のAX、', 'どこから始めれば', 'よいでしょうか？'],
+    body: [
+      'まだ漠然としていても大丈夫です。',
+      '今のお悩みをそのままお聞かせください。',
+      'Corca AXがお話を伺い、',
+      '組織に合った出発点を一緒に見つけます。',
+    ],
+    directLead: undefined,
+    emailLabel: undefined,
+    email: undefined,
+    launchTalk: {
+      kicker: 'まだお問い合わせの段階でなければ',
+      title: 'AX Launch Talk',
+      body: [
+        '会議室よりも、ランチの席だからこそ',
+        '率直に話せることがあります。',
+        'Corca AXリード Hwidong Baeとランチをしながら、',
+        '組織のAXに関する悩みを話す場です。',
+        '資料は不要です。悩みだけお持ちください。',
+      ],
+      ctaLabel: 'ランチトークを予約する',
+      ctaHref: launchTalkUrl,
+    },
+  },
+  zh: {
+    ...axConsultationCopy.zh,
+    heading: ['组织的AX，', '应该从哪里', '开始？'],
+    body: [
+      '即使方向还不明确也没关系。',
+      '请直接告诉我们您现在的困惑。',
+      'Corca AX会认真倾听，',
+      '与您一起找到适合组织的起点。',
+    ],
+    directLead: undefined,
+    emailLabel: undefined,
+    email: undefined,
+    launchTalk: {
+      kicker: '如果还没到正式咨询的阶段',
+      title: 'AX Launch Talk',
+      body: [
+        '比起会议室，餐桌旁',
+        '更容易展开坦诚的交流。',
+        '与Corca AX负责人 Hwidong Bae共进午餐，',
+        '聊一聊组织在AX方面的困惑。',
+        '无需准备资料，带着问题来就好。',
+      ],
+      ctaLabel: '预约午餐交流',
+      ctaHref: launchTalkUrl,
     },
   },
 };

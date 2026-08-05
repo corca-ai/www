@@ -126,11 +126,11 @@ direct contacts. `copyKey` selects one approved four-locale copy bundle. Only
 the section outside the Form may vary. Form-only use keeps `LeadForm.astro` as
 the closed component.
 
-The Korean AX V2 inline section uses the `ax-launch-talk` copy bundle. It keeps
-the immutable Form unchanged, presents the Google Calendar lunch-talk link as
-an underlined text link, removes the direct-email row and retains the phone
-contact row. The English, Japanese and Chinese AX pages keep the existing
-`ax-consultation` presentation until localized launch-talk copy is approved.
+The four localized AX V2 inline sections use the `ax-launch-talk` copy bundle.
+It keeps the immutable Form unchanged, presents the localized Google Calendar
+lunch-talk link as an underlined text link, removes the direct-email row and
+retains the phone contact row. Each locale owns explicit semantic line breaks
+for the heading, description and launch-talk body.
 
 The four localized AX V2 forms post JSON to
 `POST /api/ax/consultations`. The Worker validates the payload, rejects

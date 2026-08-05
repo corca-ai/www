@@ -191,7 +191,12 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 공식 돌고래+i 심볼(`assets/brand/favicon-symbol.png`)이 favicon 정본이다.
   브라우저 16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
   manifest를 빌드 시 재생성한다. 과거 C 파비콘의 브라우저 캐시와 충돌하지
-  않도록 공개 파일명은 `corca-ai-*`를 사용하며 C 원본은 저장소에 두지 않는다.
+  않도록 공개 PNG 파일명은 `corca-ai-*`를 사용하며 C 원본은 저장소에 두지
+  않는다.
+- 검색엔진용 정본 URL은 `https://www.corca.ai/favicon.ico`다. 빌드가 공식
+  16·32·48px PNG를 담은 ICO를 생성하며, 모든 공개 페이지는 절대 URL의
+  `shortcut icon`·32px `icon`·Apple touch icon을 각각 한 번만 선언한다.
+  검색엔진 재수집 지연을 피하기 위해 이 URL을 다시 변경하지 않는다.
 
 ### 전역 Footer
 

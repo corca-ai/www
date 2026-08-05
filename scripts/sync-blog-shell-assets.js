@@ -432,7 +432,7 @@ function replaceCommonHead(html, commonHead, source) {
   next = next.replace(/<link\b[^>]*>/gi, (tag) => {
     const rel = attributeValue(tag, 'rel');
     const href = attributeValue(tag, 'href');
-    if (['icon', 'apple-touch-icon', 'manifest'].includes(rel)) return '';
+    if (['shortcut icon', 'icon', 'apple-touch-icon', 'manifest'].includes(rel)) return '';
     if (rel === 'preload' && href === '/fonts/PretendardVariable.woff2') return '';
     return tag;
   });
@@ -463,16 +463,12 @@ function validateCommonHead(html, source) {
     ['common head start marker', /<!-- corca-common-head:start -->/g],
     ['common head end marker', /<!-- corca-common-head:end -->/g],
     [
-      '16px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/corca-ai-16\.png["'])[^>]*>/gi,
+      'absolute shortcut favicon',
+      /<link\b(?=[^>]*\brel=["']shortcut icon["'])(?=[^>]*\bhref=["']https:\/\/www\.corca\.ai\/favicon\.ico["'])[^>]*>/gi,
     ],
     [
-      '32px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/corca-ai-32\.png["'])[^>]*>/gi,
-    ],
-    [
-      '48px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/corca-ai-48\.png["'])[^>]*>/gi,
+      'absolute 32px favicon',
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']https:\/\/www\.corca\.ai\/favicons\/corca-ai-32\.png["'])[^>]*>/gi,
     ],
     ['apple touch icon', /<link\b(?=[^>]*\brel=["']apple-touch-icon["'])[^>]*>/gi],
     [
@@ -493,6 +489,12 @@ function validateCommonHead(html, source) {
   for (const [label, pattern] of expectedOnce) {
     const count = (html.match(pattern) || []).length;
     if (count !== 1) fail(`Expected one ${label} in ${source}, found ${count}.`);
+  }
+  for (const rel of ['shortcut icon', 'icon', 'apple-touch-icon']) {
+    const count = (
+      html.match(new RegExp(`<link\\b(?=[^>]*\\brel=["']${rel}["'])[^>]*>`, 'gi')) || []
+    ).length;
+    if (count !== 1) fail(`Expected exactly one rel="${rel}" in ${source}, found ${count}.`);
   }
   if (html.includes('/blog/assets/favicon.png')) {
     fail(`Legacy blog favicon remains in ${source}.`);

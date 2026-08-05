@@ -56,6 +56,20 @@ accessibility contract:
   image. Decorative scene backgrounds may remain CSS or empty-alt images.
 - Image `title` attributes are optional and are not a substitute for alt text.
 
+## Favicon discovery contract
+
+- `assets/brand/favicon-symbol.png` is the only approved favicon source. It is
+  the white Corca dolphin+i symbol on the blue brand background.
+- The build generates a stable root `https://www.corca.ai/favicon.ico` with
+  16px, 32px and 48px PNG entries. Keep this URL crawlable and do not rename it;
+  search engines may retain an older favicon until they recrawl the same URL.
+- Every public page emits exactly one absolute `shortcut icon`, one absolute
+  32px `icon` and one absolute `apple-touch-icon`. Do not add multiple links
+  with the same `rel`; the blog build copies this same shared head contract.
+- Browser/PWA PNG assets remain generated from the same source. A favicon
+  change requires an explicit brand decision, regenerated assets and visual
+  inspection at 15px or 16px as well as the source size.
+
 Reference: [Google Images SEO best practices](https://developers.google.com/search/docs/appearance/google-images?hl=ko#descriptive-alt-text-descriptive-titles-captions-filenames).
 
 ## Performance invariants

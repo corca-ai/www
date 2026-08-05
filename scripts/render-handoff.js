@@ -105,7 +105,7 @@ const html = `<!doctype html>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>${escapeHtml(title)}</title>
-  <link rel="icon" type="image/png" href="../../assets/brand/favicon-symbol.png">
+  <link rel="icon" type="image/svg+xml" href="../../assets/brand/favicon-symbol.svg">
   <style>
     :root {
       color-scheme: light;

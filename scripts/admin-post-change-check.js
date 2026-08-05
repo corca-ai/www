@@ -646,6 +646,14 @@ This adjacent fixture gives the generated static page a previous-post card so th
     assert.match(blogIndex, /id="tableOfContents" class="toc table-of-contents-panel"/);
     assert.match(blogIndex, /id="recommendationsPanel" class="toc recommendations-panel"/);
     assert.match(blogIndex, /<noscript>[\s\S]*?<strong>(?:문라이트|Moonlight)<\/strong>/);
+    if (localeRoot === 'blog') {
+      assert.match(
+        blogIndex,
+        /<form data-newsletter-form action="\/api\/newsletter\/subscribe" method="post">/,
+      );
+    } else {
+      assert.doesNotMatch(blogIndex, /data-newsletter-form/);
+    }
   }
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
   assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);

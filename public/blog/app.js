@@ -23,12 +23,69 @@ const state = {
 
 document.documentElement.classList.remove("no-js");
 
+initializeNewsletterSignup();
+
 const STORAGE_KEYS = {
   prefs: "corca:blog-prefs"
 };
 
 const BASE_PATH = resolveBasePath(import.meta.url);
 const CURRENT_LOCALE = resolveCurrentLocale();
+
+function initializeNewsletterSignup() {
+  const form = document.querySelector("[data-newsletter-form]");
+  if (!(form instanceof HTMLFormElement)) return;
+  const section = form.closest("#newsletter");
+  const status = form.querySelector("[data-newsletter-status]");
+  const submit = form.querySelector('button[type="submit"]');
+
+  fetch("/api/newsletter/status", { headers: { accept: "application/json" } })
+    .then((response) => (response.ok ? response.json() : { enabled: false }))
+    .then((result) => {
+      if (section instanceof HTMLElement && result.enabled === true) section.hidden = false;
+    })
+    .catch(() => {});
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const values = new FormData(form);
+    const email = String(values.get("email") || "").trim();
+    const consent = values.get("consent") === "on";
+    const website = String(values.get("website") || "");
+    if (submit instanceof HTMLButtonElement) submit.disabled = true;
+    if (status) status.textContent = "구독 확인 메일을 보내는 중입니다…";
+
+    try {
+      const response = await fetch(form.action, {
+        body: JSON.stringify({ consent, email, website }),
+        headers: { "content-type": "application/json" },
+        method: "POST"
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(String(result.error || "subscription_failed"));
+      if (status) {
+        status.textContent =
+          result.status === "already_subscribed"
+            ? "이미 구독 중인 이메일입니다."
+            : result.status === "confirmation_recently_sent"
+              ? "이미 확인 메일을 보냈습니다. 메일함을 확인해 주세요."
+            : "확인 메일을 보냈습니다. 메일의 링크를 누르면 구독이 완료됩니다.";
+      }
+      if (result.status !== "already_subscribed") form.reset();
+    } catch (error) {
+      if (status) {
+        status.textContent =
+          error instanceof Error && error.message === "invalid_email"
+            ? "이메일 주소를 다시 확인해 주세요."
+            : "지금은 구독을 완료할 수 없습니다. 잠시 후 다시 시도해 주세요.";
+      }
+    } finally {
+      if (submit instanceof HTMLButtonElement) submit.disabled = false;
+    }
+  });
+}
+
 const UI_TEXT = {
   ko: {
     imageAltSuffix: "대표 이미지",

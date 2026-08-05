@@ -103,7 +103,8 @@ export function injectBlogLeadRequestSection(
   const paginationStart = html.search(
     /<nav\b[^>]*\bclass=["'][^"']*\bpost-pagination\b[^"']*["'][^>]*>/i,
   );
-  const insertAt = paginationStart >= 0 && paginationStart < mainClose ? paginationStart : mainClose;
+  const insertAt =
+    paginationStart >= 0 && paginationStart < mainClose ? paginationStart : mainClose;
   const next = `${html.slice(0, insertAt)}${localized}${html.slice(insertAt)}`;
   if (
     next.split(START_MARKER).length - 1 !== 1 ||

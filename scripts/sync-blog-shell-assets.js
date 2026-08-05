@@ -419,7 +419,8 @@ function escapeHtml(value) {
 function addAdjacentPostNavigationIntro(html, config, source) {
   if (html.includes('class="article-more-posts"')) return html;
 
-  const navigation = /<nav\b[^>]*\bclass=["'][^"']*\bpost-pagination\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
+  const navigation =
+    /<nav\b[^>]*\bclass=["'][^"']*\bpost-pagination\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
   const match = html.match(navigation);
   if (!match) return html;
 

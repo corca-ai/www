@@ -63,11 +63,35 @@ const showDirectContact = variant !== 'article';
     </div>
     {showDirectContact && (
       <div class="lead-request-direct-contact" data-reveal>
-        <p>{copy.directLead}</p>
-        <a href={`mailto:${copy.email}`}>
-          {copy.emailLabel}<strong>{copy.email}</strong>
-        </a>
-        <a href="tel:+82269256978">
+        {copy.launchTalk && (
+          <div class="lead-request-launch-talk">
+            <p class="lead-request-launch-kicker">{copy.launchTalk.kicker}</p>
+            <h3>{copy.launchTalk.title}</h3>
+            <p class="lead-request-launch-body">
+              {copy.launchTalk.body.map((line, index) => (
+                <>
+                  {index > 0 && <br />}
+                  {line}
+                </>
+              ))}
+            </p>
+            <a
+              class="lead-request-launch-link"
+              href={copy.launchTalk.ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {copy.launchTalk.ctaLabel}
+            </a>
+          </div>
+        )}
+        {copy.directLead && <p class="lead-request-direct-intro">{copy.directLead}</p>}
+        {copy.email && copy.emailLabel && (
+          <a class="lead-request-contact-row" href={`mailto:${copy.email}`}>
+            {copy.emailLabel}<strong>{copy.email}</strong>
+          </a>
+        )}
+        <a class="lead-request-contact-row" href="tel:+82269256978">
           {copy.phoneLabel}<strong>{copy.phone}</strong>
         </a>
       </div>

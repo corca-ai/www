@@ -32,6 +32,7 @@ const uiCopy = {
     cealIntroduction: 'Ceal 도입',
     onPremises: '온프레미스로 설치',
     openAiCorcaAlt: 'OpenAI와 Corca 로고',
+    partnerBadgeAlt: 'OpenAI Select Partner 공식 배지 — AX 컨설팅 기업 코르카(Corca)',
     dialogClose: '상담 신청 창 닫기',
   },
   en: {
@@ -45,6 +46,8 @@ const uiCopy = {
     cealIntroduction: 'Introduce Ceal',
     onPremises: 'On-premises',
     openAiCorcaAlt: 'OpenAI and Corca logos',
+    partnerBadgeAlt:
+      'OpenAI Select Partner official badge — Corca, AI transformation consulting',
     dialogClose: 'Close consultation form',
   },
   ja: {
@@ -58,6 +61,7 @@ const uiCopy = {
     cealIntroduction: 'Ceal導入',
     onPremises: 'オンプレミス設置',
     openAiCorcaAlt: 'OpenAIとCorcaのロゴ',
+    partnerBadgeAlt: 'OpenAI Select Partner公式バッジ — AXコンサルティングのCorca（コルカ）',
     dialogClose: '相談フォームを閉じる',
   },
   zh: {
@@ -71,6 +75,7 @@ const uiCopy = {
     cealIntroduction: '引入Ceal',
     onPremises: '本地部署',
     openAiCorcaAlt: 'OpenAI与Corca标志',
+    partnerBadgeAlt: 'OpenAI Select Partner官方徽章 — AX咨询公司Corca',
     dialogClose: '关闭咨询表单',
   },
 }[lang];
@@ -84,7 +89,7 @@ const uiCopy = {
       src={axV2Assets.partnerNetworkPortrait}
       width="100"
       height="115"
-      alt="OpenAI Select Partner"
+      alt={uiCopy.partnerBadgeAlt}
     />
     <div class="ax-v2-hero-media is-video-reset" data-hero-media aria-hidden="true">
       <picture class="ax-v2-hero-poster">
@@ -571,7 +576,7 @@ const uiCopy = {
           src={axV2Assets.partnerNetwork}
           width="375"
           height="177"
-          alt="OpenAI Select Partner"
+          alt={uiCopy.partnerBadgeAlt}
           loading="lazy"
           decoding="async"
         />

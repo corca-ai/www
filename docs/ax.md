@@ -48,6 +48,15 @@ The page deliberately does not render its own global header or footer. Add or
 change shared navigation in the normal site sources; keep AX-only section links
 inside `Ax.astro`.
 
+AX owns explicit title and description strings for all four locales in
+`pageMeta.ax`. The same strings must remain synchronized across document,
+Open Graph and Twitter metadata; the AX `Service` JSON-LD description is fed
+from the same registry value. Meaningful AX content or metadata changes also
+advance the stable `/ax` date in `sitemapMetadata.ts`. The two unlinked OpenAI
+Select Partner badges use the same descriptive, localized alternative text per
+locale. `pnpm check:ax-seo-contract` verifies this rendered four-locale contract
+after a production build.
+
 At widths up to 720px, AX uses one self-hosted, route-specific Pretendard
 variable subset instead of the full variable font or the old 92-slice dynamic
 stylesheet. Regenerate the Korean, English, and Japanese files with

@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.22.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "pnpm favicon:build && astro build && node scripts/lead-form-rendered-check.js && node scripts/lead-request-build-check.js && node scripts/sync-blog-shell-assets.js && node scripts/favicon-contract-check.js",
+    "build": "pnpm favicon:build && astro build && node scripts/lead-form-rendered-check.js && node scripts/lead-request-build-check.js && node scripts/sync-blog-shell-assets.js && node scripts/favicon-contract-check.js && node scripts/ax-seo-contract-check.js",
     "preview": "astro preview",
     "cf:preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
@@ -30,6 +30,7 @@
     "blog:shell:sync": "node scripts/sync-blog-shell-assets.js",
     "favicon:build": "node scripts/build-favicon-assets.js",
     "check:favicon-contract": "node scripts/favicon-contract-check.js",
+    "check:ax-seo-contract": "node scripts/ax-seo-contract-check.js",
     "notion:publish": "node scripts/sync-notion-posts.js",
     "notion:check": "node scripts/notion-publish-check.js",
     "check": "pnpm check:biome && pnpm check:astro && pnpm check:knip && pnpm check:lead-form-contract && pnpm check:dup && pnpm check:docs",

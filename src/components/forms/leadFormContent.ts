@@ -146,11 +146,20 @@ type LeadRequestCopy = {
     next: string;
   };
   body: readonly string[];
-  directLead: string;
-  emailLabel: string;
-  email: string;
+  directLead?: string | undefined;
+  emailLabel?: string | undefined;
+  email?: string | undefined;
   phoneLabel: string;
   phone: string;
+  launchTalk?:
+    | {
+        kicker: string;
+        title: string;
+        body: readonly string[];
+        ctaLabel: string;
+        ctaHref: string;
+      }
+    | undefined;
 };
 
 const axConsultationCopy: Record<Lang, LeadRequestCopy> = {
@@ -242,8 +251,40 @@ const axConsultationCopy: Record<Lang, LeadRequestCopy> = {
   },
 };
 
+const axLaunchTalkCopy: Record<Lang, LeadRequestCopy> = {
+  ...axConsultationCopy,
+  ko: {
+    ...axConsultationCopy.ko,
+    heading: ['우리 조직의 AX,', '어디서부터 시작해야 할까요?'],
+    body: [
+      '아직 막연해도 괜찮습니다.',
+      '지금 고민을 그대로 적어 주세요.',
+      'Corca AX가 이야기를 듣고,',
+      '조직에 맞는 시작점을 함께 찾겠습니다',
+    ],
+    directLead: undefined,
+    emailLabel: undefined,
+    email: undefined,
+    launchTalk: {
+      kicker: '아직 문의할 단계가 아니라면',
+      title: 'AX Launch Talk',
+      body: [
+        '회의실보다 식탁에서',
+        '더 솔직한 이야기가 오갑니다.',
+        'Corca AX 배휘동 리드와 점심을 함께하며,',
+        '조직의 AX 고민을 나누는 자리입니다.',
+        '자료 준비 없이, 고민만 가져오세요.',
+      ],
+      ctaLabel: '런치 토크 예약하기',
+      ctaHref:
+        'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pvmsLNxvJ5Jt9cX7kmgn8dhhFA27R8tnRNbe_THLtJHU4efWcKcNpyutCEU3n9Zf8R-9tMtRm',
+    },
+  },
+};
+
 const leadRequestCopyRegistry = {
   'ax-consultation': axConsultationCopy,
+  'ax-launch-talk': axLaunchTalkCopy,
 } as const;
 
 export type LeadRequestCopyKey = keyof typeof leadRequestCopyRegistry;

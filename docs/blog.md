@@ -55,6 +55,12 @@ breadcrumb row as the Astro Footer so their shared container and top alignment
 remain consistent. The generator first removes the home shell's icon-only
 breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
+The shared head emits one absolute `shortcut icon` pointing to the stable root
+`https://www.corca.ai/favicon.ico`, one absolute PNG `icon`, and one Apple touch
+icon. Do not add page-specific favicon links to generated blog HTML: duplicate
+`rel` values can prevent search engines from selecting the current brand icon,
+and the build validation rejects them.
+
 Selected blog articles can also receive the shared immutable Lead Request
 Section. Register only the locale-neutral slug, stable `page_id`,
 `content_type`, `variant` and `copy_key` in `src/lead/blogLeadPages.json`; never

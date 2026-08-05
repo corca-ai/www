@@ -193,17 +193,17 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 네 언어 SEO 문구와 Kakao용 한국어 OG 문구를 별도로 다듬었다.
 - Footer Breadcrumb는 홈 아이콘, 중간 링크, 링크 없는 굵은 현재
   페이지로 구성된다. 블로그 글의 현재 항목은 포스팅 제목이다.
-- 공식 돌고래+i 심볼(`assets/brand/favicon-symbol.png`)이 favicon 정본이다.
-  브라우저 16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
-  manifest를 빌드 시 재생성한다. 과거 C 파비콘의 브라우저 캐시와 충돌하지
-  않도록 공개 PNG 파일명은 `corca-ai-*`를 사용하며 C 원본은 저장소에 두지
-  않는다.
-- 검색엔진용 정본 URL은 `https://www.corca.ai/favicon.ico`다. 빌드가 공식
-  16·32·48px PNG를 담은 ICO를 생성하며, 모든 공개 페이지는 검색용
-  `rel="icon"` 절대 URL을 한 번만 선언한다. 별도 `shortcut icon`이나 PNG
-  후보를 추가하지 않는다. Apple/PWA 아이콘은 같은 정본에서 생성하며,
-  최종 빌드는 모든 공개 HTML의 favicon 계약을 전수 검사한다. 검색엔진
-  재수집 지연을 피하기 위해 정본 URL을 다시 변경하지 않는다.
+- Figma 노드 `46:17`의 공식 돌고래+i SVG
+  (`assets/brand/favicon-symbol.svg`)가 favicon 정본이다. 브라우저
+  16·32·48·96px, Apple touch 180px, Android/PWA `any`·`maskable`
+  192·512px PNG와 manifest를 빌드 시 재생성한다.
+- 검색엔진용 정본 URL은
+  `https://www.corca.ai/favicons/corca-ai-48.png`다. 모든 공개 페이지는
+  `sizes="48x48"` 검색용 `rel="icon"` 절대 URL을 한 번만 선언한다. 루트
+  `/favicon.ico`는 16·32·48px fallback이며 별도 head 후보로 선언하지 않는다.
+  삭제된 적이 있던 `/favicons/favicon-{16,32,48}.png` 등 과거 공개 URL도
+  공식 심볼의 호환 alias로 영구 유지한다. 최종 빌드는 모든 공개 HTML,
+  manifest와 현재·호환 아이콘의 favicon 계약을 전수 검사한다.
 
 ### 전역 Footer
 

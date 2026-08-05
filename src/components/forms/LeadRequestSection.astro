@@ -46,7 +46,7 @@ const showDirectContact = variant !== 'article';
         {copy.heading.map((line, index) => (
           <>
             {index > 0 && <br />}
-            <span class:list={{ 'lead-request-gradient-text': index >= Math.ceil(copy.heading.length / 2) }}>
+            <span class:list={{ 'lead-request-gradient-text': index >= Math.floor(copy.heading.length / 2) }}>
               {line}
             </span>
           </>

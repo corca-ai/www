@@ -314,6 +314,30 @@ second preserved code-like line</pre>
   );
   assert.match(htmlStaticPage, /class="note"/);
   const blogStyles = await readFile(join(repoRoot, 'public/blog/styles.css'), 'utf8');
+  const leadRequestStyles = await readFile(
+    join(repoRoot, 'src/components/forms/lead-request-section.css'),
+    'utf8',
+  );
+  assert.match(
+    leadRequestStyles,
+    /\.lead-request-section--article \.lead-request-form-shell\s*\{[^}]*width:\s*min\(100%,\s*640px\);/s,
+  );
+  assert.match(
+    blogStyles,
+    /\.article-more-posts\s*\{[^}]*width:\s*100vw;[^}]*background:\s*var\(--color-footer,\s*#163272\);/s,
+  );
+  assert.match(
+    blogStyles,
+    /\.article-more-posts-heading h2\s*\{[^}]*font-family:\s*"Pretendard Variable"[^}]*font-weight:\s*700;/s,
+  );
+  assert.match(
+    blogStyles,
+    /\.article-more-posts \.post-pagination-card\s*\{[^}]*border:\s*0;[^}]*box-shadow:\s*none;/s,
+  );
+  assert.match(
+    blogStyles,
+    /\.article-more-posts \.post-pagination-card \.related-thumbnail\s*\{[^}]*height:\s*184px;[^}]*aspect-ratio:\s*auto;/s,
+  );
   assert.match(blogStyles, /\.article-content \.frame/);
   assert.match(blogStyles, /\.article-content \.intro-question/);
   assert.match(blogStyles, /\.article-content \.note/);

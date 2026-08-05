@@ -4436,12 +4436,15 @@ body {
 
 .article-more-posts {
   grid-area: related;
-  width: min(100%, 920px);
-  margin: 72px auto 0;
+  width: 100vw;
+  margin: 72px calc(50% - 50vw) 0;
+  padding: 72px max(16px, calc((100vw - 920px) / 2)) 80px;
+  background: var(--color-footer, #163272);
 }
 
 .article-more-posts-heading {
-  margin: 0 0 20px;
+  width: min(100%, 920px);
+  margin: 0 auto 24px;
   text-align: center;
 }
 
@@ -4450,14 +4453,17 @@ body {
 }
 
 .article-more-posts-heading h2 {
-  color: #1a2352;
+  color: #ffffff;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
   font-size: 24px;
+  font-weight: 700;
   line-height: 1.3;
 }
 
 .article-more-posts .post-pagination {
-  width: 100%;
-  margin: 0;
+  width: min(100%, 920px);
+  margin: 0 auto;
   gap: 24px;
 }
 
@@ -4466,17 +4472,18 @@ body {
   min-height: 0;
   aspect-ratio: auto;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 0;
   border-radius: 18px;
   background: #ffffff;
-  box-shadow: var(--shadow-border), var(--shadow-soft);
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+  box-shadow: none;
+  transition: transform 160ms ease;
 }
 
 .article-more-posts .post-pagination-card .related-thumbnail {
   position: relative;
   inset: auto;
-  aspect-ratio: 16 / 9;
+  height: 184px;
+  aspect-ratio: auto;
   border-radius: 17px 17px 0 0;
 }
 
@@ -4549,9 +4556,8 @@ body {
 
 .article-more-posts .post-pagination-card:hover,
 .article-more-posts .post-pagination-card:focus-visible {
-  border-color: #b7cae7;
   background: #ffffff;
-  box-shadow: 0 14px 28px rgba(37, 99, 169, 0.12);
+  box-shadow: none;
 }
 
 .article-mobile-navigation {
@@ -4640,8 +4646,10 @@ body {
   }
 
   .article-more-posts {
-    width: 100%;
+    width: 100vw;
     margin-top: 56px;
+    margin-inline: calc(50% - 50vw);
+    padding: 56px 20px 64px;
   }
 
   .article-more-posts .post-pagination {

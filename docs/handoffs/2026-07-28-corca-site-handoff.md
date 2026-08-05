@@ -193,9 +193,10 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 네 언어 SEO 문구와 Kakao용 한국어 OG 문구를 별도로 다듬었다.
 - Footer Breadcrumb는 홈 아이콘, 중간 링크, 링크 없는 굵은 현재
   페이지로 구성된다. 블로그 글의 현재 항목은 포스팅 제목이다.
-- PR #165에서 승인된 Corca Shine 원본으로 favicon을 교체했다. 브라우저
-  16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
-  manifest를 빌드 시 재생성하며, 기존 favicon URL도 같은 원본을 쓴다.
+- 공식 돌고래+i 심볼(`assets/brand/favicon-symbol.png`)이 favicon 정본이다.
+  브라우저 16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
+  manifest를 빌드 시 재생성한다. 과거 C 파비콘의 브라우저 캐시와 충돌하지
+  않도록 공개 파일명은 `corca-ai-*`를 사용하며 C 원본은 저장소에 두지 않는다.
 
 ### 전역 Footer
 
@@ -241,7 +242,7 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 | [#162](https://github.com/corca-ai/www/pull/162) | `cc14d37` | 전역 관련 | 전역 Breadcrumb와 Footer 개편 |
 | [#163](https://github.com/corca-ai/www/pull/163) | `e8b402e` | 전역 관련 | 반응형 Footer partner layout 개선 |
 | [#164](https://github.com/corca-ai/www/pull/164) | `b4f38e0` | 전역 관련 | Footer Breadcrumb 간격 축소 |
-| [#165](https://github.com/corca-ai/www/pull/165) | `22b8e37` | 전역 관련 | Corca Shine favicon과 기기별 icon manifest 반영 |
+| [#165](https://github.com/corca-ai/www/pull/165) | `22b8e37` | 전역 관련 | 반응형 favicon과 기기별 icon manifest 반영 |
 
 PR 번호와 축약 SHA는 탐색용이다. 정확한 코드 포함 여부는 `git
 merge-base --is-ancestor`와 현재 tree를 함께 확인한다. 특히 #146은

@@ -7,7 +7,7 @@ const pageLastModifiedByBasePath = {
   '/about/colleagues': '2026-07-15',
   '/about/how-we-work': '2026-07-15',
   '/about/vision-mission': '2026-07-15',
-  '/ax': '2026-07-21',
+  '/ax': '2026-08-05',
   '/blog': '2026-07-20',
   '/news': '2026-07-15',
   '/products': '2026-07-15',

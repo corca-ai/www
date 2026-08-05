@@ -49,41 +49,43 @@ export const pageMeta = {
   },
   ax: {
     ko: {
-      title: 'Corca AX 컨설팅 | OpenAI Select Partner의 8주 프로그램 · 기업 AI 컨설팅',
+      title: 'Corca AX | AX 컨설팅 · 기업 AI 도입을 성과로 - OpenAI Select Partner',
       description:
-        'AI 도입이 성과로 이어지지 않는 기업을 위한 8주 AX 컨설팅. 2주 진단 + 6주 실전 전환. 첫 업무는 함께 바꾸고, 다음 업무를 직접 풀 힘까지 남깁니다.',
-      ogTitle: 'Corca AX·OpenAI Select Partner',
-      ogDescription: 'AI 도입은 시작입니다. Corca는 조직의 변화를 만듭니다.',
+        '우리 조직의 AX, 어디서부터 시작해야 할까요? 막연해도 괜찮습니다 — Corca AX가 이야기를 듣고 시작점을 함께 찾습니다. 2주 진단 + 6주 실전 전환으로 성과까지.',
+      ogTitle: 'Corca AX | AX 컨설팅 · 기업 AI 도입을 성과로 - OpenAI Select Partner',
+      ogDescription:
+        '우리 조직의 AX, 어디서부터 시작해야 할까요? 막연해도 괜찮습니다 — Corca AX가 이야기를 듣고 시작점을 함께 찾습니다. 2주 진단 + 6주 실전 전환으로 성과까지.',
       ogImage: '/images/og/og-ax-KO.png',
       ogImageAlt: 'OpenAI Select Partner 배지와 “Corca AX는 조직의 체질을 바꿉니다” 문구',
     },
     en: {
-      title:
-        "Corca AX Consulting | OpenAI Select Partner's 8-Week AI Transformation Program · Enterprise AI Consulting",
+      title: 'Corca AX | AI Transformation Consulting · OpenAI Select Partner',
       description:
-        'AI adoption but no results? An 8-week AI transformation program — 2-week diagnosis + 6 weeks to production. First workflow together; the capability to solve the next one stays in-house.',
-      ogTitle: 'Corca AX | OpenAI Select Partner',
-      ogDescription: 'Anyone can adopt AI. Few can transform the way an organization works.',
+        "Not sure where to start with AI? That's okay — we listen and find your starting point together. 2-week diagnosis + 6 weeks to production, through to results.",
+      ogTitle: 'Corca AX | AI Transformation Consulting · OpenAI Select Partner',
+      ogDescription:
+        "Not sure where to start with AI? That's okay — we listen and find your starting point together. 2-week diagnosis + 6 weeks to production, through to results.",
       ogImage: '/images/og/og-ax-EN.png',
       ogImageAlt:
         'OpenAI Select Partner badge with the message “Corca AX transforms how organizations work”',
     },
     ja: {
-      title:
-        'Corca AXコンサルティング | OpenAI Select Partnerの8週間プログラム · 企業向けAIコンサルティング',
+      title: 'Corca AX | AXコンサルティング · 企業のAI導入を成果に - OpenAI Select Partner',
       description:
-        'AI導入が成果につながらない企業のための8週間AXコンサルティング。2週間の診断＋6週間の実運用移行。最初の業務は共に変え、次の業務を自ら解く力まで残します。',
-      ogTitle: 'Corca AX | OpenAI Select Partner',
-      ogDescription: 'AIは誰でも導入できます。しかし、組織の働き方を変えるのは簡単ではありません。',
+        '自社のAX、どこから始めればいいのか？漠然としていても大丈夫です — Corca AXがお話を伺い、始めるべき一歩を共に見つけます。2週間の診断＋6週間の実運用移行で、成果まで。',
+      ogTitle: 'Corca AX | AXコンサルティング · 企業のAI導入を成果に - OpenAI Select Partner',
+      ogDescription:
+        '自社のAX、どこから始めればいいのか？漠然としていても大丈夫です — Corca AXがお話を伺い、始めるべき一歩を共に見つけます。2週間の診断＋6週間の実運用移行で、成果まで。',
       ogImage: '/images/og/og-ax-JA.png',
       ogImageAlt: 'OpenAI Select Partnerバッジと「Corca AXは組織の働き方を変えます」のメッセージ',
     },
     zh: {
-      title: 'Corca AX咨询 | OpenAI Select Partner的8周AI转型项目 · 企业AI咨询',
+      title: 'Corca AX | AX咨询 · 让企业AI落地见效 - OpenAI Select Partner',
       description:
-        '为AI落地却不见成效的企业打造的8周AI转型咨询：2周诊断 + 6周实战上线。第一个业务与您一起改变，并把自主解决下一个业务的能力留在贵司。',
-      ogTitle: 'Corca AX | OpenAI Select Partner',
-      ogDescription: '部署AI并不难。真正困难的是，改变整个组织的工作方式。',
+        '企业的AX，该从哪里开始？还不明确也没关系 — Corca AX倾听您的情况，与您一起找到起点。2周诊断 + 6周实战上线，直至见效。',
+      ogTitle: 'Corca AX | AX咨询 · 让企业AI落地见效 - OpenAI Select Partner',
+      ogDescription:
+        '企业的AX，该从哪里开始？还不明确也没关系 — Corca AX倾听您的情况，与您一起找到起点。2周诊断 + 6周实战上线，直至见效。',
       ogImage: '/images/og/og-ax-ZH.png',
       ogImageAlt: 'OpenAI Select Partner徽章及“Corca AX重塑组织的工作方式”文案',
     },

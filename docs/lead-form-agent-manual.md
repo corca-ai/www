@@ -58,7 +58,7 @@ AGENTS.md와 docs/lead-form-agent-manual.md를 먼저 읽어라.
 - 대상 URL 또는 블로그 slug: [입력]
 - 삽입 위치: [예: 글 본문 뒤, Footer 앞]
 - 상담 section 형식: [split / stacked / article]
-- copy_key: [기존 ax-consultation / 승인된 신규 4개 언어 문구 키]
+- copy_key: [기존 ax-consultation / blog-article / 승인된 신규 4개 언어 문구 키]
 - 배경 또는 참고 페이지: [입력]
 - 연락처 영역: [표시 / 숨김]
 - 적용 언어: [ko / en / ja / zh / 전체]
@@ -174,7 +174,7 @@ JSON-LD에는 `#request`를 넣지 않는다.
     "page_id_prefix": "blog",
     "content_type": "blog-post",
     "variant": "article",
-    "copy_key": "ax-consultation"
+    "copy_key": "blog-article"
   }
 }
 ```

@@ -29,8 +29,7 @@ const localeLabels = {
     imageAltSuffix: '대표 이미지',
     toc: '목차',
     recommendations: '추천 글',
-    previous: '이전 글',
-    next: '다음 글',
+    latestPosts: '최신 글 더보기',
     postsBreadcrumb: '글',
     dateLocale: 'ko-KR',
   },
@@ -43,8 +42,7 @@ const localeLabels = {
     imageAltSuffix: 'representative image',
     toc: 'Table of contents',
     recommendations: 'Recommended posts',
-    previous: 'Previous post',
-    next: 'Next post',
+    latestPosts: 'Latest posts',
     postsBreadcrumb: 'Posts',
     dateLocale: 'en-US',
   },
@@ -57,8 +55,7 @@ const localeLabels = {
     imageAltSuffix: '代表画像',
     toc: '目次',
     recommendations: 'おすすめ記事',
-    previous: '前の記事',
-    next: '次の記事',
+    latestPosts: '最新の記事',
     postsBreadcrumb: '記事',
     dateLocale: 'ja-JP',
   },
@@ -71,8 +68,7 @@ const localeLabels = {
     imageAltSuffix: '代表图片',
     toc: '目录',
     recommendations: '推荐文章',
-    previous: '上一篇',
-    next: '下一篇',
+    latestPosts: '最新文章',
     postsBreadcrumb: '文章',
     dateLocale: 'zh-CN',
   },
@@ -788,7 +784,6 @@ async function renderAllStaticPosts(postRecordsByLocale) {
   for (const locale of supportedLocales) {
     const records = postRecordsByLocale.get(locale) || [];
     const localePosts = records.map((record) => record.post);
-    const postBySlug = new Map(localePosts.map((item) => [item.slug, item]));
     for (const record of records) {
       const post = record.post;
       const outputDir = join(repoRoot, localePaths[locale], post.slug);
@@ -796,7 +791,6 @@ async function renderAllStaticPosts(postRecordsByLocale) {
         post,
         prepareArticleHtml(record.articleHtml),
         localePosts,
-        postBySlug,
         locale,
         availableLocalesBySlug,
       );
@@ -1335,14 +1329,7 @@ function renderBlogIndexSeoLinks(locale) {
   return lines.join('\n');
 }
 
-function renderStaticPostPage(
-  post,
-  articleHtml,
-  posts,
-  postBySlug,
-  locale,
-  availableLocalesBySlug,
-) {
+function renderStaticPostPage(post, articleHtml, posts, locale, availableLocalesBySlug) {
   const shell = getBlogShell(locale, post.slug, availableLocalesBySlug);
   const blogStylesHref = shell.blogStylesHref || '/blog/styles.css';
   const coverUrl = absoluteBlogAsset(post.cover);
@@ -1350,7 +1337,7 @@ function renderStaticPostPage(
   const publishedTime = `${post.date}T00:00:00.000Z`;
   const toc = tableOfContents(articleHtml);
   const recommendations = recommendationPosts(post, posts);
-  const pageNav = adjacentPostNav(post, posts, postBySlug, locale);
+  const pageNav = latestPostNav(post, posts, locale);
   const articleSection = post.section || post.tags[0] || '코르카';
   const imageAlt = post.coverAlt || `${post.title} ${localeLabels[locale].imageAltSuffix}`;
   const articleAuthorMeta = post.author
@@ -1582,43 +1569,27 @@ ${recommendations.map((item) => renderRecommendation(item, locale)).join('\n')}
 </section>`;
 }
 
-function adjacentPostNav(post, posts, postBySlug, locale) {
-  const index = posts.findIndex((item) => item.slug === post.slug);
-  const previous = index >= 0 ? posts[index + 1] : null;
-  const next = index > 0 ? posts[index - 1] : null;
-  const cards = [];
-  if (previous && postBySlug.has(previous.slug)) {
-    cards.push(
-      renderAdjacentCard(
-        previous,
-        locale,
-        localeLabels[locale].previous,
-        '←',
-        'post-pagination-previous',
-      ),
-    );
-  }
-  if (next && postBySlug.has(next.slug)) {
-    cards.push(
-      renderAdjacentCard(next, locale, localeLabels[locale].next, '→', 'post-pagination-next'),
-    );
-  }
+function latestPostNav(post, posts, locale) {
+  const cards = posts
+    .filter((candidate) => candidate.slug !== post.slug)
+    .slice(0, 3)
+    .map((candidate) => renderLatestPostCard(candidate, locale));
   return cards.length
-    ? `<nav class="post-pagination" aria-label="글 이동">\n${cards.join('')}\n        </nav>`
+    ? `<nav class="post-pagination" aria-label="${escapeAttribute(localeLabels[locale].latestPosts)}">\n${cards.join('\n')}\n        </nav>`
     : '';
 }
 
-function renderAdjacentCard(post, locale, label, cue, className) {
+function renderLatestPostCard(post, locale) {
   const thumbnailSrc = `/blog/${String(post.cover || defaultCover).replace(/^\/+/, '')}`;
   const displayTopic = post.tags[0] || post.section || '코르카';
-  return `        <a class="related-card post-pagination-card ${className}" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${label}: ${escapeAttribute(post.title)}">
-          <span class="related-cue" aria-hidden="true">${cue}</span>
+  return `        <a class="related-card post-pagination-card" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${escapeAttribute(post.title)}">
           <span class="related-thumbnail" aria-hidden="true">
             <img src="${escapeAttribute(thumbnailSrc)}" alt="" loading="lazy" decoding="async">
           </span>
           <span class="related-copy">
-            <span class="related-meta">${label} · <strong>${escapeHtml(displayTopic)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
             <span class="related-title">${escapeHtml(post.title)}</span>
+            <span class="related-meta"><strong>${escapeHtml(displayTopic)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
+            <span class="related-description">${escapeHtml(post.description)}</span>
           </span>
         </a>`;
 }

@@ -30,8 +30,7 @@ const localeConfigs = [
     homeLabel: '홈',
     blogLabel: '블로그',
     breadcrumbLabel: '현재 위치',
-    adjacentPostsEyebrow: '더 읽어보기',
-    adjacentPostsTitle: '이어서 읽을 글',
+    latestPostsTitle: '최신 글 더보기',
   },
   {
     locale: 'en',
@@ -42,8 +41,7 @@ const localeConfigs = [
     homeLabel: 'Home',
     blogLabel: 'Blog',
     breadcrumbLabel: 'Breadcrumb',
-    adjacentPostsEyebrow: 'More from Corca',
-    adjacentPostsTitle: 'Continue reading',
+    latestPostsTitle: 'Latest posts',
   },
   {
     locale: 'ja',
@@ -54,8 +52,7 @@ const localeConfigs = [
     homeLabel: 'ホーム',
     blogLabel: 'ブログ',
     breadcrumbLabel: 'パンくずリスト',
-    adjacentPostsEyebrow: 'もっと読む',
-    adjacentPostsTitle: '次に読む記事',
+    latestPostsTitle: '最新の記事',
   },
   {
     locale: 'zh',
@@ -66,8 +63,7 @@ const localeConfigs = [
     homeLabel: '首页',
     blogLabel: '博客',
     breadcrumbLabel: '面包屑导航',
-    adjacentPostsEyebrow: '延伸阅读',
-    adjacentPostsTitle: '接着阅读',
+    latestPostsTitle: '最新文章',
   },
 ];
 
@@ -165,7 +161,7 @@ for (const config of localeConfigs) {
       declaration: leadDeclaration,
       source: relative(repoRoot, file),
     });
-    next = addAdjacentPostNavigationIntro(next, config, relative(repoRoot, file));
+    next = addLatestPostNavigationIntro(next, config, relative(repoRoot, file));
     if (leadDeclaration) {
       leadSectionsSynced += 1;
       const locales = leadSectionLocales.get(slug) ?? new Set();
@@ -416,7 +412,7 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function addAdjacentPostNavigationIntro(html, config, source) {
+function addLatestPostNavigationIntro(html, config, source) {
   if (html.includes('class="article-more-posts"')) return html;
 
   const navigation =
@@ -427,8 +423,7 @@ function addAdjacentPostNavigationIntro(html, config, source) {
   const headingId = 'article-more-posts-title';
   const wrapped = `<section class="article-more-posts" aria-labelledby="${headingId}">
           <header class="article-more-posts-heading">
-            <p>${escapeHtml(config.adjacentPostsEyebrow)}</p>
-            <h2 id="${headingId}">${escapeHtml(config.adjacentPostsTitle)}</h2>
+            <h2 id="${headingId}">${escapeHtml(config.latestPostsTitle)}</h2>
           </header>
 ${match[0]}
         </section>`;

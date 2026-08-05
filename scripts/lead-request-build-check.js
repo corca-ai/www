@@ -12,7 +12,7 @@ const declaration = {
   page_id: 'blog-synthetic-lead-form-fixture',
   content_type: 'blog-post',
   variant: 'article',
-  copy_key: 'ax-consultation',
+  copy_key: 'blog-article',
 };
 
 for (const locale of locales) {
@@ -31,7 +31,7 @@ for (const locale of locales) {
     }
   }
 
-  const articleSource = `lead-request-fragment/${locale}/article/ax-consultation/index.html`;
+  const articleSource = `lead-request-fragment/${locale}/article/blog-article/index.html`;
   const articleHtml = await readFile(join(distRoot, articleSource), 'utf8');
   const fragment = extractLeadRequestSection(articleHtml, articleSource);
   const syntheticBlog = injectBlogLeadRequestSection(

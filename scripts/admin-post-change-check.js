@@ -569,7 +569,16 @@ This adjacent fixture gives the generated static page a previous-post card so th
     staticPage,
     /<img src="\/blog\/assets\/admin-posts\/admin-edit-fixture-111111111111\.png"/,
   );
-  assert.match(staticPage, /class="related-card post-pagination-card post-pagination-previous"/);
+  assert.match(staticPage, /<nav class="post-pagination" aria-label="최신 글 더보기">/);
+  assert.match(staticPage, /class="related-card post-pagination-card"/);
+  assert.doesNotMatch(staticPage, /post-pagination-(?:previous|next)|related-cue/);
+  const latestPostNav = staticPage.match(
+    /<nav class="post-pagination" aria-label="최신 글 더보기">[\s\S]*?<\/nav>/,
+  )?.[0];
+  assert.ok(latestPostNav);
+  assert.doesNotMatch(latestPostNav, /href="\/blog\/admin-edit-fixture"/);
+  assert.match(latestPostNav, /href="\/blog\/adjacent-thumbnail-fixture"/);
+  assert.equal((latestPostNav.match(/class="related-card post-pagination-card"/g) || []).length, 1);
   assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
   assert.match(staticPage, /<details class="article-mobile-navigation">/);
   assert.match(staticPage, /<summary>목차<\/summary>/);
@@ -594,6 +603,7 @@ This adjacent fixture gives the generated static page a previous-post card so th
     ),
   );
   assert.match(staticPage, /<span class="related-title">Adjacent Thumbnail Fixture<\/span>/);
+  assert.match(staticPage, /<span class="related-description">[\s\S]+<\/span>/);
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
   assert.equal(
     (

@@ -137,7 +137,8 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   승인된 네 언어 `copyKey`를 사용한다. 적용 절차와 금지 사항은
   `docs/lead-form-agent-manual.md`가 정본이다.
 - 모든 공개 정적 블로그 글은 `src/lead/blogLeadPages.json`의
-  `all_public_posts` 전역 policy로 상담 영역을 받는다. `page_id_prefix`와
+  `all_public_posts` 전역 policy로 상담 영역을 받는다. 현재 블로그 전용
+  `blog-article` copy key는 AX 페이지의 상담 문구와 분리되어 있다. `page_id_prefix`와
   slug를 결합해 `blog-<slug>` ID를 만들고, build-only 중립 fragment를 네
   언어에 적용한 뒤 내부 route를 `dist`에서 삭제한다. 중복 `#request`, 잘못된
   policy, 누락 client 또는 locale alias를 거부한다. Notion으로 새 글을

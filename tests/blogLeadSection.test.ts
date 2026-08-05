@@ -7,12 +7,12 @@ import {
   validateBlogLeadManifest,
 } from '../scripts/blog-lead-section.js';
 
-const fragment = `<!-- corca-lead-request:start --><section id="request" data-lead-request-section data-lead-request-variant="article" data-lead-request-copy="ax-consultation"><form action="/api/ax/consultations" data-lead-form data-locale="ko" data-lead-page="fragment" data-page-base-path="/_lead-request" data-content-type="fragment"></form></section><script type="module">window.testLeadForm=true</script><script type="module">window.testLeadSection=true</script><!-- corca-lead-request:end -->`;
+const fragment = `<!-- corca-lead-request:start --><section id="request" data-lead-request-section data-lead-request-variant="article" data-lead-request-copy="blog-article"><form action="/api/ax/consultations" data-lead-form data-locale="ko" data-lead-page="fragment" data-page-base-path="/_lead-request" data-content-type="fragment"></form></section><script type="module">window.testLeadForm=true</script><script type="module">window.testLeadSection=true</script><!-- corca-lead-request:end -->`;
 const declaration = {
   page_id_prefix: 'blog',
   content_type: 'blog-post',
   variant: 'article',
-  copy_key: 'ax-consultation',
+  copy_key: 'blog-article',
 };
 const manifest = { all_public_posts: declaration };
 
@@ -38,9 +38,9 @@ test('injects stable blog context while keeping the actual pathname runtime-owne
   assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('</main>'));
 });
 
-test('places the request section before adjacent-post navigation when present', () => {
+test('places the request section before latest-post navigation when present', () => {
   const html = injectBlogLeadRequestSection(
-    '<main><article>Post</article><nav class="post-pagination" aria-label="글 이동"></nav></main>',
+    '<main><article>Post</article><nav class="post-pagination" aria-label="최신 글 더보기"></nav></main>',
     {
       fragment,
       slug: 'agentic-workflow',
@@ -56,7 +56,7 @@ test('applies the all-public-posts policy and rejects duplicate request targets'
     page_id: 'blog-new-notion-post',
     content_type: 'blog-post',
     variant: 'article',
-    copy_key: 'ax-consultation',
+    copy_key: 'blog-article',
   });
   assert.throws(
     () =>

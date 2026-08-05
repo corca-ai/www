@@ -59,7 +59,9 @@ Every public blog article receives the shared immutable `article` Lead Request
 Section. `src/lead/blogLeadPages.json` owns this global policy: its
 `page_id_prefix` combines with each locale-neutral slug to create a stable
 `blog-<slug>` ID, and its `content_type`, `variant` and `copy_key` apply to all
-articles. Never paste Form HTML into a post. A build-only Astro route renders a
+articles. The current `copy_key` is `blog-article`, which keeps the blog-only
+friendly AX prompt separate from the AX page's `ax-consultation` copy. Never paste
+Form HTML into a post. A build-only Astro route renders a
 neutral locale/variant/copy fragment, the blog sync inserts it before `</main>`,
 and then removes the internal route from `dist`. The build rejects duplicate
 `#request` targets, invalid policy values, missing clients and missing locale

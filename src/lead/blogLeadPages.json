@@ -3,6 +3,6 @@
     "page_id_prefix": "blog",
     "content_type": "blog-post",
     "variant": "article",
-    "copy_key": "ax-consultation"
+    "copy_key": "blog-article"
   }
 }

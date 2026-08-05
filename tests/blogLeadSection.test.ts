@@ -40,7 +40,7 @@ test('injects stable blog context while keeping the actual pathname runtime-owne
 
 test('places the request section before latest-post navigation when present', () => {
   const html = injectBlogLeadRequestSection(
-    '<main><article>Post</article><nav class="post-pagination" aria-label="최신 글 더보기"></nav></main>',
+    '<main><article>Post</article><nav class="post-list" aria-label="최신 글 더보기"></nav></main>',
     {
       fragment,
       slug: 'agentic-workflow',
@@ -48,7 +48,7 @@ test('places the request section before latest-post navigation when present', ()
       declaration: resolveBlogLeadDeclaration(manifest, 'agentic-workflow'),
     },
   );
-  assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('<nav class="post-pagination"'));
+  assert.ok(html.indexOf('corca-lead-request:end') < html.indexOf('<nav class="post-list"'));
 });
 
 test('applies the all-public-posts policy and rejects duplicate request targets', () => {

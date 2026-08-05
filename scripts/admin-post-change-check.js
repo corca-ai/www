@@ -569,21 +569,22 @@ This adjacent fixture gives the generated static page a previous-post card so th
     staticPage,
     /<img src="\/blog\/assets\/admin-posts\/admin-edit-fixture-111111111111\.png"/,
   );
-  assert.match(staticPage, /<nav class="post-pagination" aria-label="최신 글 더보기">/);
+  assert.match(staticPage, /<nav class="post-list" aria-label="최신 글 더보기">/);
   assert.match(
     staticPage,
-    /<section class="post-view static-post-view">\s*<div class="static-post-content">[\s\S]*?<\/article>[\s\S]*?<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<\/aside>\s*<\/div>\s*<nav class="post-pagination"/,
+    /<section class="post-view static-post-view">\s*<div class="static-post-content">[\s\S]*?<\/article>[\s\S]*?<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<\/aside>\s*<\/div>\s*<nav class="post-list"/,
   );
-  assert.match(staticPage, /class="related-card post-pagination-card"/);
-  assert.doesNotMatch(staticPage, /post-pagination-(?:previous|next)|related-cue/);
   const latestPostNav = staticPage.match(
-    /<nav class="post-pagination" aria-label="최신 글 더보기">[\s\S]*?<\/nav>/,
+    /<nav class="post-list" aria-label="최신 글 더보기">[\s\S]*?<\/nav>/,
   )?.[0];
   assert.ok(latestPostNav);
   assert.doesNotMatch(latestPostNav, /href="\/blog\/admin-edit-fixture"/);
   assert.match(latestPostNav, /href="\/blog\/adjacent-thumbnail-fixture"/);
-  assert.equal((latestPostNav.match(/class="related-card post-pagination-card"/g) || []).length, 1);
-  assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
+  assert.equal((latestPostNav.match(/<article class="post-card">/g) || []).length, 1);
+  assert.match(
+    latestPostNav,
+    /<a class="post-card-link" href="\/blog\/adjacent-thumbnail-fixture">/,
+  );
   assert.match(staticPage, /<details class="article-mobile-navigation">/);
   assert.match(staticPage, /<summary>목차<\/summary>/);
   assert.match(
@@ -601,13 +602,12 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(noTocStaticPage, /<section class="toc-section"/);
   assert.doesNotMatch(noTocStaticPage, /table-of-contents-panel/);
   assert.match(noTocStaticPage, /class="toc static-toc recommendations-panel"/);
-  assert.ok(
-    staticPage.includes(
-      `<img src="/blog/${fallbackThumbnail}" alt="" loading="lazy" decoding="async">`,
-    ),
+  assert.match(
+    staticPage,
+    new RegExp(`<img src="/blog/${fallbackThumbnail}" alt="" width="1672" height="941"`),
   );
-  assert.match(staticPage, /<span class="related-title">Adjacent Thumbnail Fixture<\/span>/);
-  assert.match(staticPage, /<span class="related-description">[\s\S]+<\/span>/);
+  assert.match(latestPostNav, /<h3>Adjacent Thumbnail Fixture<\/h3>/);
+  assert.match(latestPostNav, /<p>[\s\S]+<\/p>/);
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
   assert.equal(
     (

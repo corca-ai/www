@@ -1577,23 +1577,23 @@ function latestPostNav(post, posts, locale) {
     .slice(0, 3)
     .map((candidate) => renderLatestPostCard(candidate, locale));
   return cards.length
-    ? `<nav class="post-pagination" aria-label="${escapeAttribute(localeLabels[locale].latestPosts)}">\n${cards.join('\n')}\n        </nav>`
+    ? `<nav class="post-list" aria-label="${escapeAttribute(localeLabels[locale].latestPosts)}">\n${cards.join('\n')}\n        </nav>`
     : '';
 }
 
 function renderLatestPostCard(post, locale) {
   const thumbnailSrc = `/blog/${String(post.cover || defaultCover).replace(/^\/+/, '')}`;
   const displayTopic = post.tags[0] || post.section || '코르카';
-  return `        <a class="related-card post-pagination-card" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${escapeAttribute(post.title)}">
-          <span class="related-thumbnail" aria-hidden="true">
-            <img src="${escapeAttribute(thumbnailSrc)}" alt="" loading="lazy" decoding="async">
-          </span>
-          <span class="related-copy">
-            <span class="related-title">${escapeHtml(post.title)}</span>
-            <span class="related-meta"><strong>${escapeHtml(displayTopic)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
-            <span class="related-description">${escapeHtml(post.description)}</span>
-          </span>
-        </a>`;
+  return `        <article class="post-card">
+          <a class="post-card-link" href="${escapeAttribute(staticPostPath(post, locale))}">
+            <img src="${escapeAttribute(thumbnailSrc)}" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            <div class="post-card-body">
+              <h3>${escapeHtml(post.title)}</h3>
+              <div class="meta post-card-meta"><span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>${post.author ? ` <span class="meta-item">${escapeHtml(post.author)}</span>` : ''}<span class="meta-item post-card-topic">${escapeHtml(displayTopic)}</span></div>
+              <p>${escapeHtml(post.description)}</p>
+            </div>
+          </a>
+        </article>`;
 }
 
 function tableOfContents(articleHtml) {

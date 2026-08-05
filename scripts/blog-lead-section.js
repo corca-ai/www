@@ -100,11 +100,11 @@ export function injectBlogLeadRequestSection(
   // Static blog pages keep their adjacent-post navigation after the article.
   // Place the request section immediately before that navigation so the
   // conversion step has a clear finish before readers choose another post.
-  const paginationStart = html.search(
-    /<nav\b[^>]*\bclass=["'][^"']*\bpost-pagination\b[^"']*["'][^>]*>/i,
+  const latestPostsStart = html.search(
+    /<nav\b[^>]*\bclass=["'][^"']*\bpost-list\b[^"']*["'][^>]*>/i,
   );
   const insertAt =
-    paginationStart >= 0 && paginationStart < mainClose ? paginationStart : mainClose;
+    latestPostsStart >= 0 && latestPostsStart < mainClose ? latestPostsStart : mainClose;
   const next = `${html.slice(0, insertAt)}${localized}${html.slice(insertAt)}`;
   if (
     next.split(START_MARKER).length - 1 !== 1 ||

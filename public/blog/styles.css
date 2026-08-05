@@ -4420,7 +4420,7 @@ body {
   white-space: nowrap;
 }
 
-.post-view > .post-pagination,
+.post-view > .post-list,
 .related-posts {
   grid-area: related;
   width: 100%;
@@ -4438,14 +4438,14 @@ body {
   grid-area: related;
   width: 100vw;
   margin: 72px calc(50% - 50vw) 0;
-  padding: 72px max(16px, calc((100vw - 920px) / 2)) 80px;
-  background: var(--color-footer, #163272);
+  padding: 72px max(16px, calc((100vw - 1280px) / 2)) 80px;
+  background: #ffffff;
 }
 
 .article-more-posts-heading {
-  width: min(100%, 920px);
+  width: min(100%, 1280px);
   margin: 0 auto 24px;
-  text-align: center;
+  text-align: left;
 }
 
 .article-more-posts-heading h2 {
@@ -4453,7 +4453,7 @@ body {
 }
 
 .article-more-posts-heading h2 {
-  color: #ffffff;
+  color: #1a2352;
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui,
     sans-serif;
   font-size: 24px;
@@ -4461,113 +4461,9 @@ body {
   line-height: 1.3;
 }
 
-.article-more-posts .post-pagination {
-  width: min(100%, 920px);
+.article-more-posts .post-list {
+  width: min(100%, 1280px);
   margin: 0 auto;
-  gap: 24px;
-}
-
-.article-more-posts .post-pagination-card {
-  display: grid;
-  min-height: 0;
-  aspect-ratio: auto;
-  overflow: hidden;
-  border: 0;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: none;
-  transition: transform 160ms ease;
-}
-
-.article-more-posts .post-pagination-card .related-thumbnail {
-  position: relative;
-  inset: auto;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  background: #f3f4f6;
-  border-radius: 17px 17px 0 0;
-}
-
-.article-more-posts .post-pagination-card .related-thumbnail img {
-  position: absolute;
-  object-fit: contain;
-  object-position: center;
-}
-
-.article-more-posts .post-pagination-card .related-thumbnail img[src$="corca-openai-partner-cover.png"] {
-  border-inline: 0;
-  background: #ffffff;
-  object-fit: contain;
-  object-position: center;
-}
-
-.article-more-posts .post-pagination-card:hover .related-thumbnail img,
-.article-more-posts .post-pagination-card:focus-visible .related-thumbnail img {
-  transform: scale(1.02);
-}
-
-.article-more-posts .post-pagination-card .related-copy {
-  position: relative;
-  right: auto;
-  bottom: auto;
-  left: auto;
-  display: grid;
-  gap: 10px;
-  padding: 18px 20px 20px;
-}
-
-.article-more-posts .post-pagination-card .related-meta {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.45;
-  box-shadow: none;
-  white-space: normal;
-}
-
-.article-more-posts .post-pagination-card .related-description {
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--text-soft);
-  font-size: 14px;
-  line-height: 1.55;
-  text-wrap: pretty;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.article-more-posts .post-pagination-card .related-meta strong {
-  color: #2563a9;
-}
-
-.article-more-posts .post-pagination-card .related-title {
-  position: static;
-  display: -webkit-box;
-  width: auto;
-  height: auto;
-  overflow: hidden;
-  clip: auto;
-  color: #1f2937;
-  font-size: 21px;
-  font-weight: 800;
-  line-height: 1.28;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  white-space: normal;
-}
-
-.article-more-posts .post-pagination-card:hover,
-.article-more-posts .post-pagination-card:focus-visible {
-  background: #ffffff;
-  box-shadow: none;
 }
 
 .article-mobile-navigation {
@@ -4660,10 +4556,6 @@ body {
     margin-top: 56px;
     margin-inline: calc(50% - 50vw);
     padding: 56px 20px 64px;
-  }
-
-  .article-more-posts .post-pagination {
-    gap: 18px;
   }
 
   .article-more-posts-heading h2 {

@@ -214,7 +214,7 @@ function validateStaticArticleLeadLayout(html, source) {
   }
 
   const latestPostsStart = html.indexOf('class="article-more-posts"');
-  if (html.includes('class="post-pagination"') && !(leadEnd < latestPostsStart)) {
+  if (html.includes('class="post-list"') && !(leadEnd < latestPostsStart)) {
     fail(`Expected latest-post navigation after the Lead Request Section in ${source}.`);
   }
 }
@@ -436,8 +436,7 @@ function escapeHtml(value) {
 function addLatestPostNavigationIntro(html, config, source) {
   if (html.includes('class="article-more-posts"')) return html;
 
-  const navigation =
-    /<nav\b[^>]*\bclass=["'][^"']*\bpost-pagination\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
+  const navigation = /<nav\b[^>]*\bclass=["'][^"']*\bpost-list\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
   const match = html.match(navigation);
   if (!match) return html;
 

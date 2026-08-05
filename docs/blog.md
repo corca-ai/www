@@ -206,7 +206,9 @@ When changing blog files, keep these invariants:
 - Desktop article pages keep the table of contents to the left of the article
   and recommended posts to the right, inside `.static-post-content`. This
   containment makes their sticky range end with the article, before the
-  full-width Lead Request Section and latest-post cards. At widths up to 1024px,
+  full-width Lead Request Section and latest-post cards. The latest-post cards
+  use the same `post-list` and `post-card` markup as the blog index; do not add
+  a detail-page-specific card variant. At widths up to 1024px,
   the table of contents becomes a collapsible control between the article header
   and body; recommended posts remain after the article. Table of contents clicks
   scroll to the selected heading without leaving a section hash in the browser

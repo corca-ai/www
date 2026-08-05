@@ -324,7 +324,7 @@ second preserved code-like line</pre>
   );
   assert.match(
     blogStyles,
-    /\.article-more-posts\s*\{[^}]*width:\s*100vw;[^}]*background:\s*var\(--color-footer,\s*#163272\);/s,
+    /\.article-more-posts\s*\{[^}]*width:\s*100vw;[^}]*background:\s*#ffffff;/s,
   );
   assert.match(
     blogStyles,
@@ -332,16 +332,9 @@ second preserved code-like line</pre>
   );
   assert.match(
     blogStyles,
-    /\.article-more-posts \.post-pagination-card\s*\{[^}]*border:\s*0;[^}]*box-shadow:\s*none;/s,
+    /\.article-more-posts \.post-list\s*\{[^}]*width:\s*min\(100%,\s*1280px\);/s,
   );
-  assert.match(
-    blogStyles,
-    /\.article-more-posts \.post-pagination-card \.related-thumbnail\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;[^}]*aspect-ratio:\s*16\s*\/\s*9;[^}]*background:\s*#f3f4f6;/s,
-  );
-  assert.match(
-    blogStyles,
-    /\.article-more-posts \.post-pagination-card \.related-thumbnail img\s*\{[^}]*object-fit:\s*contain;[^}]*object-position:\s*center;/s,
-  );
+  assert.doesNotMatch(blogStyles, /\.article-more-posts \.post-pagination-card/);
   assert.match(blogStyles, /\.article-content \.frame/);
   assert.match(blogStyles, /\.article-content \.intro-question/);
   assert.match(blogStyles, /\.article-content \.note/);

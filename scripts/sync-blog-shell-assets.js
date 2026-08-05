@@ -5,6 +5,7 @@ import { leadRequestCopyKeys, leadRequestVariants } from '../src/lead/leadReques
 import {
   extractLeadRequestSection,
   injectBlogLeadRequestSection,
+  resolveBlogLeadDeclaration,
   validateBlogLeadManifest,
 } from './blog-lead-section.js';
 
@@ -69,7 +70,7 @@ const measurementId =
   rootHtml.match(/googletagmanager\.com\/gtag\/js\?id=(G-[A-Z0-9-]{4,32})/i)?.[1] ||
   '';
 const blogAppSource = await readFile(join(distRoot, 'blog/app.js'), 'utf8');
-const blogLeadManifest = validateBlogLeadManifest(
+const blogLeadPolicy = validateBlogLeadManifest(
   JSON.parse(await readFile(join(repoRoot, 'src/lead/blogLeadPages.json'), 'utf8')),
 );
 const analyticsBootstrapIndex = blogAppSource.indexOf('\ninitAnalytics();');
@@ -140,7 +141,7 @@ for (const config of localeConfigs) {
       commonHeadFragments.get(config.locale),
       relative(repoRoot, file),
     );
-    const leadDeclaration = slug ? blogLeadManifest[slug] : undefined;
+    const leadDeclaration = slug ? resolveBlogLeadDeclaration(blogLeadPolicy, slug) : undefined;
     next = injectBlogLeadRequestSection(next, {
       fragment: leadDeclaration
         ? leadRequestFragments.get(
@@ -204,8 +205,7 @@ if (footersSynced !== headerTargets) {
 if (commonHeadsSynced !== headerTargets) {
   fail(`Synced ${commonHeadsSynced} of ${headerTargets} deployable blog page common head(s).`);
 }
-for (const slug of Object.keys(blogLeadManifest)) {
-  const locales = leadSectionLocales.get(slug) ?? new Set();
+for (const [slug, locales] of leadSectionLocales) {
   if (locales.size !== localeConfigs.length) {
     fail(
       `Blog Lead Form slug ${slug} was found in ${locales.size} of ${localeConfigs.length} locales.`,
@@ -223,7 +223,7 @@ console.log(
   `Synced ${commonHeadsSynced} blog page common head(s) from src/components/CommonHead.astro.`,
 );
 console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
-console.log(`Synced ${leadSectionsSynced} opt-in blog Lead Request Section(s).`);
+console.log(`Synced ${leadSectionsSynced} public blog Lead Request Section(s).`);
 console.log('Removed build-only Lead Request fragment routes from dist/.');
 console.log(
   `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`,

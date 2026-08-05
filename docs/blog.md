@@ -55,16 +55,17 @@ breadcrumb row as the Astro Footer so their shared container and top alignment
 remain consistent. The generator first removes the home shell's icon-only
 breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
-Selected blog articles can also receive the shared immutable Lead Request
-Section. Register only the locale-neutral slug, stable `page_id`,
-`content_type`, `variant` and `copy_key` in `src/lead/blogLeadPages.json`; never
-paste Form HTML into a post. A build-only Astro route renders a neutral
-locale/variant/copy fragment, the blog sync inserts it before `</main>`, and
-then removes the internal route from `dist`. The build rejects duplicate
-`#request` targets, invalid variants or copy keys, missing clients and missing
-locale aliases. Undeclared posts are unchanged. Follow the Korean
-[Lead Form Agent manual](lead-form-agent-manual.md) for the exact procedure and
-contract checks.
+Every public blog article receives the shared immutable `article` Lead Request
+Section. `src/lead/blogLeadPages.json` owns this global policy: its
+`page_id_prefix` combines with each locale-neutral slug to create a stable
+`blog-<slug>` ID, and its `content_type`, `variant` and `copy_key` apply to all
+articles. Never paste Form HTML into a post. A build-only Astro route renders a
+neutral locale/variant/copy fragment, the blog sync inserts it before `</main>`,
+and then removes the internal route from `dist`. The build rejects duplicate
+`#request` targets, invalid policy values, missing clients and missing locale
+aliases. A future Notion post receives the same section when its static article
+page is generated. Follow the Korean [Lead Form Agent manual](lead-form-agent-manual.md)
+for the exact procedure and contract checks.
 
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with

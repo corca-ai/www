@@ -164,13 +164,14 @@ JSON-LD에는 `#request`를 넣지 않는다.
 ## 블로그 글에 붙이기
 
 블로그는 Astro route가 아니라 정적 HTML이므로 컴포넌트를 글 HTML에
-복사하지 않는다. `src/lead/blogLeadPages.json`에 선택한 locale-neutral
-slug만 등록한다.
+복사하지 않는다. 모든 공개 상세 글에는 `article` Lead Request Section이
+자동으로 들어간다. `src/lead/blogLeadPages.json`은 글별 목록이 아니라 전역
+정책을 가진다.
 
 ```json
 {
-  "agentic-workflow": {
-    "page_id": "blog-agentic-workflow",
+  "all_public_posts": {
+    "page_id_prefix": "blog",
     "content_type": "blog-post",
     "variant": "article",
     "copy_key": "ax-consultation"
@@ -178,19 +179,20 @@ slug만 등록한다.
 }
 ```
 
-빌드가 `/blog/agentic-workflow`와 `/en|ja|zh/blog/agentic-workflow`에 같은
-공통 section을 본문 뒤·Footer 앞에 삽입한다. 네 페이지는 같은
-`page_id`와 `/blog/agentic-workflow` `base_path`를 쓰고, 실제 locale과
-`page_path`만 달라진다. manifest에 없는 글은 변경되지 않는다.
+빌드는 모든 `/blog/<slug>`와 `/en|ja|zh/blog/<slug>`에 같은 공통 section을
+본문 뒤·Footer 앞에 삽입한다. 각 글의 `page_id`는 `blog-<slug>`이고
+`base_path`는 `/blog/<slug>`다. 실제 locale과 `page_path`만 달라진다. Notion
+동기화로 생성되는 이후 글도 이 규칙을 그대로 따른다.
 
 빌드는 AX 페이지 HTML을 재사용하지 않는다. 전용 build-only route에서
 선택한 locale·variant·copy key의 중립 fragment를 렌더링하고 글 본문 뒤·
 Footer 앞에 삽입한다. 이 내부 route는 동기화 직후 `dist`에서 삭제되며,
 남아 있으면 빌드가 실패한다.
 
-등록한 slug가 네 언어 빌드 중 하나라도 없거나, variant/copy key가 잘못됐거나,
-이미 `id="request"`가 있으면 빌드가 실패한다. 운영 글의 HTML이나 Notion이
-생성한 콘텐츠를 직접 수정해 우회하지 않는다.
+공개 slug가 네 언어 빌드 중 하나라도 없거나, 전역 policy의
+variant/copy key가 잘못됐거나, 이미 `id="request"`가 있으면 빌드가
+실패한다. 운영 글의 HTML이나 Notion이 생성한 콘텐츠를 직접 수정해 우회하지
+않는다.
 
 ## 실제 메일을 보내지 않고 전송 확인하기
 
@@ -209,8 +211,8 @@ pnpm test:ax-attribution
 
 - 잠긴 Form 마크업이 기준 fixture와 동일하다.
 - 블로그 글에 상담 section이 한 번만 삽입된다.
-- 네 언어가 같은 `page_id`와 올바른 locale context를 사용한다.
-- 미등록 글은 바뀌지 않고 중복 `#request`는 거부된다.
+- 네 언어가 slug별 `page_id`와 올바른 locale context를 사용한다.
+- 모든 공개 글은 같은 policy로 처리되고 중복 `#request`는 거부된다.
 - 잘못된 `variant`와 `copy_key`는 거부된다.
 
 `pnpm test:ax-attribution`의 `tests/axConsultations.test.ts`는 실제 이메일
@@ -240,7 +242,7 @@ binding 대신 메모리에 메시지를 담는 가짜 `AX_EMAIL.send()`를 Work
 
 ### 2단계: 적용한 블로그 빌드 결과 확인
 
-manifest에 대상 글을 등록한 뒤 실행한다.
+전역 policy를 변경하거나 블로그 글을 추가한 뒤 실행한다.
 
 ```sh
 pnpm build
@@ -334,8 +336,8 @@ AGENTS.md와 docs/lead-form-agent-manual.md를 먼저 읽어라.
 leadContext를 연결해라. LeadForm 내부 마크업·필드·카피·validation·버튼·
 endpoint·GA 이벤트·CSS는 변경하거나 복사하지 마라. 일반 페이지는
 variant와 copyKey를 컴포넌트에 전달하고, 블로그는
-src/lead/blogLeadPages.json에 locale-neutral slug·page_id·content_type·
-variant·copy_key만 선언해라. #request 이동과 네 언어 page context를
+src/lead/blogLeadPages.json의 전역 policy로 모든 공개 상세 글에 적용해라.
+글별 Form HTML을 추가하지 마라. #request 이동과 네 언어 page context를
 검증하고 pnpm test:lead-form, pnpm test:ax-attribution, pnpm check,
 pnpm build를 실행한 뒤 diff와 회귀 위험을 보고해라.
 ```

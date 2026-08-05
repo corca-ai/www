@@ -366,11 +366,12 @@ grid, 반응형, 모바일 구성에 맞게 배치했다.</li>
 있는 재사용 <code>#request</code> 영역이다. <code>split</code>·<code>stacked</code>·<code>article</code> variant와
 승인된 네 언어 <code>copyKey</code>를 사용한다. 적용 절차와 금지 사항은
 <code>docs/lead-form-agent-manual.md</code>가 정본이다.</li>
-<li>선택한 정적 블로그 글은 <code>src/lead/blogLeadPages.json</code>의 locale-neutral
-slug·<code>page_id</code>·<code>content_type</code>·<code>variant</code>·<code>copy_key</code> 선언으로만 상담 영역을
-받는다. build-only 중립 fragment를 네 언어에 적용한 뒤 내부 route를
-<code>dist</code>에서 삭제하며, 중복 <code>#request</code>, 잘못된 선언, 누락 client 또는
-locale alias를 거부한다.</li>
+<li>모든 공개 정적 블로그 글은 <code>src/lead/blogLeadPages.json</code>의
+<code>all_public_posts</code> 전역 policy로 상담 영역을 받는다. <code>page_id_prefix</code>와
+slug를 결합해 <code>blog-&lt;slug&gt;</code> ID를 만들고, build-only 중립 fragment를 네
+언어에 적용한 뒤 내부 route를 <code>dist</code>에서 삭제한다. 중복 <code>#request</code>, 잘못된
+policy, 누락 client 또는 locale alias를 거부한다. Notion으로 새 글을
+발행해도 같은 빌드 정책이 적용된다.</li>
 <li>현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
 중국어에는 별도의 국외이전 동의가 포함된다.</li>
 <li>클라이언트는 <code>POST /api/ax/consultations</code>로 JSON을 보낸다.</li>

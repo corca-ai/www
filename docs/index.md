@@ -17,6 +17,7 @@ in front of you:
 | understand the stack, route ownership, canonical URLs, analytics, or Worker role | [Architecture](architecture.md) |
 | understand the integrated blog structure, admin APIs, Notion publishing, or static asset contract | [Blog](blog.md) |
 | update the localized Corca AX page, assets, consultation form, or Worker delivery settings | [Corca AX page](ax.md) |
+| add the immutable Lead Form or reusable `#request` consultation section to a page or blog post | [Lead Form Agent manual](lead-form-agent-manual.md) |
 | continue the current site or AX V2 work in a new task with verified Git history | [2026-07-28 site and AX V2 handoff](handoffs/2026-07-28-corca-site-handoff.md) |
 | plan or implement the next `/ax` version without changing the frozen backup | [AX redesign handoff](ax-redesign-handoff.md) |
 | verify the exact approved Korean AX headings, copy, line breaks, links, and figures | [AX Korean content lock v2](ax-content-plan-v2.md) |

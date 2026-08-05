@@ -1,9 +1,16 @@
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { leadRequestCopyKeys, leadRequestVariants } from '../src/lead/leadRequestContract.js';
+import {
+  extractLeadRequestSection,
+  injectBlogLeadRequestSection,
+  validateBlogLeadManifest,
+} from './blog-lead-section.js';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = join(repoRoot, 'dist');
+const leadRequestBuildRoot = join(distRoot, 'lead-request-fragment');
 // Astro names the shared shell stylesheet after the component that owns the
 // extracted CSS. It used to be BaseLayout and is currently CommonHead. Match
 // either name so a harmless bundling-name change does not break production
@@ -62,6 +69,9 @@ const measurementId =
   rootHtml.match(/googletagmanager\.com\/gtag\/js\?id=(G-[A-Z0-9-]{4,32})/i)?.[1] ||
   '';
 const blogAppSource = await readFile(join(distRoot, 'blog/app.js'), 'utf8');
+const blogLeadManifest = validateBlogLeadManifest(
+  JSON.parse(await readFile(join(repoRoot, 'src/lead/blogLeadPages.json'), 'utf8')),
+);
 const analyticsBootstrapIndex = blogAppSource.indexOf('\ninitAnalytics();');
 const uiBootstrapIndex = blogAppSource.indexOf('\n  init();');
 if (!currentBaseLayoutCss) {
@@ -83,11 +93,22 @@ await assertFileExists(join(distRoot, currentBaseLayoutCss));
 const headerFragments = new Map();
 const footerFragments = new Map();
 const commonHeadFragments = new Map();
+const leadRequestFragments = new Map();
 for (const config of localeConfigs) {
   const pageHtml = await readFile(join(distRoot, config.page), 'utf8');
   headerFragments.set(config.locale, extractBeforeMain(pageHtml, config.page));
   footerFragments.set(config.locale, extractFooter(pageHtml, config.page));
   commonHeadFragments.set(config.locale, extractCommonHead(pageHtml, config.page));
+  for (const variant of leadRequestVariants) {
+    for (const copyKey of leadRequestCopyKeys) {
+      const fragmentPage = `lead-request-fragment/${config.locale}/${variant}/${copyKey}/index.html`;
+      const fragmentHtml = await readFile(join(distRoot, fragmentPage), 'utf8');
+      leadRequestFragments.set(
+        leadRequestFragmentKey(config.locale, variant, copyKey),
+        extractLeadRequestSection(fragmentHtml, fragmentPage),
+      );
+    }
+  }
 }
 
 let updated = 0;
@@ -98,6 +119,8 @@ let commonHeadsSynced = 0;
 let breadcrumbsSynced = 0;
 let analyticsConfigured = 0;
 let analyticsTargets = 0;
+let leadSectionsSynced = 0;
+const leadSectionLocales = new Map();
 for (const config of localeConfigs) {
   const root = join(distRoot, config.root);
   const files = (await htmlFiles(root)).filter((file) => isDeployableBlogPage(root, file));
@@ -117,6 +140,28 @@ for (const config of localeConfigs) {
       commonHeadFragments.get(config.locale),
       relative(repoRoot, file),
     );
+    const leadDeclaration = slug ? blogLeadManifest[slug] : undefined;
+    next = injectBlogLeadRequestSection(next, {
+      fragment: leadDeclaration
+        ? leadRequestFragments.get(
+            leadRequestFragmentKey(
+              config.locale,
+              leadDeclaration.variant,
+              leadDeclaration.copy_key,
+            ),
+          )
+        : '',
+      slug,
+      locale: config.locale,
+      declaration: leadDeclaration,
+      source: relative(repoRoot, file),
+    });
+    if (leadDeclaration) {
+      leadSectionsSynced += 1;
+      const locales = leadSectionLocales.get(slug) ?? new Set();
+      locales.add(config.locale);
+      leadSectionLocales.set(slug, locales);
+    }
     headersSynced += 1;
     footersSynced += 1;
     commonHeadsSynced += 1;
@@ -159,6 +204,17 @@ if (footersSynced !== headerTargets) {
 if (commonHeadsSynced !== headerTargets) {
   fail(`Synced ${commonHeadsSynced} of ${headerTargets} deployable blog page common head(s).`);
 }
+for (const slug of Object.keys(blogLeadManifest)) {
+  const locales = leadSectionLocales.get(slug) ?? new Set();
+  if (locales.size !== localeConfigs.length) {
+    fail(
+      `Blog Lead Form slug ${slug} was found in ${locales.size} of ${localeConfigs.length} locales.`,
+    );
+  }
+}
+
+await rm(leadRequestBuildRoot, { recursive: true, force: true });
+await assertPathMissing(leadRequestBuildRoot);
 
 console.log(`Synced blog shell CSS ${currentBaseLayoutCss} in ${updated} file(s).`);
 console.log(`Synced ${headersSynced} blog page header(s) from src/components/Header.astro.`);
@@ -167,6 +223,8 @@ console.log(
   `Synced ${commonHeadsSynced} blog page common head(s) from src/components/CommonHead.astro.`,
 );
 console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
+console.log(`Synced ${leadSectionsSynced} opt-in blog Lead Request Section(s).`);
+console.log('Removed build-only Lead Request fragment routes from dist/.');
 console.log(
   `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`,
 );
@@ -179,6 +237,10 @@ function extractBeforeMain(html, source) {
     fail(`Could not locate the shared header in ${source}.`);
   }
   return html.slice(bodyOpenEnd + 1, mainStart);
+}
+
+function leadRequestFragmentKey(locale, variant, copyKey) {
+  return `${locale}:${variant}:${copyKey}`;
 }
 
 function replaceBeforeMain(html, header, source) {
@@ -525,6 +587,15 @@ async function assertFileExists(path) {
     // handled below
   }
   fail(`Expected Astro CSS asset does not exist: ${relative(repoRoot, path)}`);
+}
+
+async function assertPathMissing(path) {
+  try {
+    await stat(path);
+  } catch {
+    return;
+  }
+  fail(`Build-only Lead Request route remains in dist: ${relative(repoRoot, path)}`);
 }
 
 function fail(message) {

@@ -1,0 +1,18 @@
+{
+  "ko": {
+    "inline": "1f30d8feacf2ab9ef7ff3d435f6ab663355f8743462151b994a7cf74d5831cf4",
+    "modal": "10fe4e17c9216053ef5dff72d6cbfa0501b2b88bc89f995a86fcd3d575cd00c7"
+  },
+  "en": {
+    "inline": "9399735240cf0011f19bcaf0f712b08c35d8d1c006dbb74685d7477c991bdf5b",
+    "modal": "22ea2e8e192a448397af0160eeb43480457a32944fd25c77ef862a94d9c35aaf"
+  },
+  "ja": {
+    "inline": "4e2ea4a1fef2081a045d0b816990c8d5df3a80522c3cb840d889566255a43941",
+    "modal": "b3bce9daef6926d4396b7067c5a94bf694cdd7dd3e5ac8215657e5f7d59c3595"
+  },
+  "zh": {
+    "inline": "60a93ee1c903b480adafd1bc1428eb71206b0919df3a746af854f402b47e4205",
+    "modal": "64aaeb4dd0907f810e9655399167f56d6a0018895c20b96c3082467257cac041"
+  }
+}

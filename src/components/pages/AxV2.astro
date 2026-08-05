@@ -2,6 +2,8 @@
 import type { Lang } from '../../i18n/ui';
 import type { LeadPageContext } from '../../lead/pageContext';
 import LeadForm from '../forms/LeadForm.astro';
+import LeadRequestSection from '../forms/LeadRequestSection.astro';
+import { leadRequestCopy } from '../forms/leadFormContent';
 import AxLines from './ax-v2/AxLines.astro';
 import AxResponsiveLines from './ax-v2/AxResponsiveLines.astro';
 import { axV2Assets, axV2ContentByLang, axV2MobileLineOverrides } from './ax-v2/content';
@@ -14,6 +16,7 @@ interface Props {
 
 const { lang, leadContext } = Astro.props;
 const c = axV2ContentByLang[lang];
+const requestCopy = leadRequestCopy('ax-consultation', lang);
 const mobileCopy = lang === 'ko' ? c : undefined;
 const mobileLineOverrides = axV2MobileLineOverrides[lang as keyof typeof axV2MobileLineOverrides];
 const slowdownGradientStart = lang === 'ja' ? 1 : 2;
@@ -30,10 +33,6 @@ const uiCopy = {
     onPremises: '온프레미스로 설치',
     openAiCorcaAlt: 'OpenAI와 Corca 로고',
     dialogClose: '상담 신청 창 닫기',
-    successEyebrow: '상담 접수 완료',
-    successTitle: '상담 신청이 접수되었습니다.',
-    successBody: ['보내주신 내용을 담당자가 꼼꼼히 확인한 뒤 곧 연락드리겠습니다.', '감사합니다.', '이 창은 잠시 후 자동으로 닫힙니다.'],
-    close: '닫기',
   },
   en: {
     compoundAlt: 'Ten orcas swimming across the blue Atlantic on a clear morning',
@@ -47,10 +46,6 @@ const uiCopy = {
     onPremises: 'On-premises',
     openAiCorcaAlt: 'OpenAI and Corca logos',
     dialogClose: 'Close consultation form',
-    successEyebrow: 'Request received',
-    successTitle: 'Your consultation request is complete.',
-    successBody: ['Our team will review your message carefully and contact you soon.', 'Thank you.', 'This window will close automatically.'],
-    close: 'Close',
   },
   ja: {
     compoundAlt: '晴れた朝の青い大西洋を泳ぐ10頭のシャチ',
@@ -64,10 +59,6 @@ const uiCopy = {
     onPremises: 'オンプレミス設置',
     openAiCorcaAlt: 'OpenAIとCorcaのロゴ',
     dialogClose: '相談フォームを閉じる',
-    successEyebrow: '受付完了',
-    successTitle: '相談申請を受け付けました。',
-    successBody: ['担当者が内容を確認し、まもなくご連絡します。', 'ありがとうございます。', 'この画面は自動的に閉じます。'],
-    close: '閉じる',
   },
   zh: {
     compoundAlt: '十头虎鲸在晴朗清晨的蓝色大西洋中畅游',
@@ -81,10 +72,6 @@ const uiCopy = {
     onPremises: '本地部署',
     openAiCorcaAlt: 'OpenAI与Corca标志',
     dialogClose: '关闭咨询表单',
-    successEyebrow: '申请已受理',
-    successTitle: '您的咨询申请已提交。',
-    successBody: ['负责人将认真查看您的信息并尽快与您联系。', '感谢您的咨询。', '此窗口将自动关闭。'],
-    close: '关闭',
   },
 }[lang];
 
@@ -592,36 +579,13 @@ const uiCopy = {
     </div>
   </section>
 
-  <section
-    class="ax-v2-section ax-v2-contact-section"
-    id="request"
-    aria-labelledby="ax-v2-contact-title"
-    data-contact-section
-  >
-    <div class="ax-v2-shell ax-v2-contact-grid">
-      <div class="ax-v2-contact-copy" data-reveal>
-        <h2 id="ax-v2-contact-title">
-          {c.contact.heading.map((line, index) => (
-            <>
-              {index > 0 && <br />}
-              <span class:list={{ 'ax-v2-gradient-text': index >= Math.ceil(c.contact.heading.length / 2) }}>
-                {line}
-              </span>
-            </>
-          ))}
-        </h2>
-        <p><AxLines values={c.contact.body} /></p>
-      </div>
-      <div class="ax-v2-direct-contact" data-reveal>
-        <p>{c.contact.directLead}</p>
-        <a href={`mailto:${c.contact.email}`}>{c.contact.emailLabel}<strong>{c.contact.email}</strong></a>
-        <a href="tel:+82269256978">{c.contact.phoneLabel}<strong>{c.contact.phone}</strong></a>
-      </div>
-      <div class="ax-v2-inline-form" data-reveal>
-        <LeadForm id="inline" lang={lang} compact pageContext={leadContext} />
-      </div>
-    </div>
-  </section>
+  <LeadRequestSection
+    lang={lang}
+    pageContext={leadContext}
+    variant="split"
+    copyKey="ax-consultation"
+    formId="inline"
+  />
 
   <section
     class="ax-v2-compound ax-v2-dark-section"
@@ -658,114 +622,21 @@ const uiCopy = {
         <span aria-hidden="true">×</span>
       </button>
       <div class="ax-v2-dialog-heading">
-        <p class="ax-v2-dialog-title" id="ax-v2-dialog-title"><AxLines values={c.contact.heading} /></p>
+        <p class="ax-v2-dialog-title" id="ax-v2-dialog-title"><AxLines values={requestCopy.heading} /></p>
         <p class="ax-v2-dialog-description">
-          {c.contact.dialogBody.lead}<br />
-          {c.contact.dialogBody.selection}<br class="ax-v2-dialog-desktop-break" /><span
+          {requestCopy.dialogBody.lead}<br />
+          {requestCopy.dialogBody.selection}<br class="ax-v2-dialog-desktop-break" /><span
             class="ax-v2-dialog-mobile-space"> </span
-          >{c.contact.dialogBody.constraint}<br />
-          {c.contact.dialogBody.route}<br />
-          {c.contact.dialogBody.next}
+          >{requestCopy.dialogBody.constraint}<br />
+          {requestCopy.dialogBody.route}<br />
+          {requestCopy.dialogBody.next}
         </p>
       </div>
       <LeadForm id="modal" lang={lang} compact pageContext={leadContext} />
     </div>
   </dialog>
 
-  <dialog class="ax-v2-hold-dialog" aria-labelledby="ax-v2-hold-title" data-ax-v2-success-dialog>
-    <div class="ax-v2-hold-panel">
-      <div class="ax-v2-success-icon" aria-hidden="true">✓</div>
-      <p class="ax-v2-eyebrow">{uiCopy.successEyebrow}</p>
-      <p class="ax-v2-hold-title" id="ax-v2-hold-title">{uiCopy.successTitle}</p>
-      <p class="ax-v2-hold-copy">
-        {uiCopy.successBody.map((line) => <>{line}<br /></>)}
-      </p>
-      <div class="ax-v2-success-timer" aria-hidden="true"><span></span></div>
-      <button class="ax-v2-primary-button" type="button" data-ax-v2-success-close>{uiCopy.close}</button>
-    </div>
-  </dialog>
 </div>
-
-<script is:inline>
-  (() => {
-    const requestHash = '#request';
-    const focusRequestNameInput = (contactSection) => {
-      const nameInput = contactSection.querySelector('input[name="name"]');
-      if (!(nameInput instanceof HTMLInputElement)) return;
-
-      if (nameInput.value) {
-        delete nameInput.dataset.requestAutofocus;
-      } else {
-        nameInput.dataset.requestAutofocus = 'true';
-      }
-      if (nameInput.dataset.requestAutofocusBound !== 'true') {
-        nameInput.dataset.requestAutofocusBound = 'true';
-        nameInput.addEventListener('input', () => {
-          delete nameInput.dataset.requestAutofocus;
-        });
-      }
-      nameInput.focus({ preventScroll: true });
-    };
-
-    const focusRequestNameInputFromHash = () => {
-      if (window.location.hash !== requestHash) return;
-
-      const contactSection = document.querySelector('[data-contact-section]');
-      if (!(contactSection instanceof HTMLElement)) return;
-
-      requestAnimationFrame(() => {
-        if (window.location.hash === requestHash) {
-          focusRequestNameInput(contactSection);
-        }
-      });
-    };
-
-    const bindContactJump = () => {
-      const page = document.querySelector('[data-ax-v2-page]');
-      const link = page?.querySelector('[data-contact-jump]');
-      const contactSection = page?.querySelector('[data-contact-section]');
-      if (!(link instanceof HTMLAnchorElement) || !(contactSection instanceof HTMLElement)) return;
-      if (link.dataset.contactJumpBound === 'true') return;
-
-      link.dataset.contactJumpBound = 'true';
-      link.addEventListener('click', (event) => {
-        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-        event.preventDefault();
-        if (window.location.hash !== requestHash) {
-          window.history.pushState(null, '', requestHash);
-        }
-
-        const alignContactSection = () => {
-          const top = window.scrollY + contactSection.getBoundingClientRect().top;
-          window.scrollTo({ left: window.scrollX, top, behavior: 'instant' });
-        };
-
-        alignContactSection();
-        requestAnimationFrame(() => {
-          alignContactSection();
-          focusRequestNameInput(contactSection);
-        });
-      });
-    };
-
-    bindContactJump();
-    focusRequestNameInputFromHash();
-    window.addEventListener(
-      'load',
-      () => {
-        if (document.activeElement === document.body) {
-          focusRequestNameInputFromHash();
-        }
-      },
-      { once: true },
-    );
-    document.addEventListener('astro:page-load', () => {
-      bindContactJump();
-      focusRequestNameInputFromHash();
-    });
-    window.addEventListener('hashchange', focusRequestNameInputFromHash);
-  })();
-</script>
 
 <script>
   import './ax-v2/ax-v2-client';

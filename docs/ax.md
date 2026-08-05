@@ -31,6 +31,8 @@ implementation and verified Git history.
 | AX V2 EN, JA and ZH overrides | `i18n/ax-v2-content-localized.ts` |
 | Shared lead form markup | `src/components/forms/LeadForm.astro` |
 | Shared form submission and validation | `src/components/forms/leadFormClient.ts` |
+| Reusable `#request` consultation section | `src/components/forms/LeadRequestSection.astro` |
+| Lead Form and request-section styles | `src/components/forms/lead-form.css`, `lead-request-section.css` |
 | AX V2 motion and dialog behavior | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | AX V2 page-scoped styles | `src/components/pages/ax-v2/ax-v2.css` |
 | Frozen 2026-07-22 page composition | `src/components/pages/AxLegacy.astro` |
@@ -109,6 +111,20 @@ descriptive localized alternative text with the visible content rather than
 encoding it in the asset registry.
 
 ## Consultation form
+
+Read the Korean [Lead Form Agent manual](lead-form-agent-manual.md) before
+attaching the Form to another page. `LeadForm.astro` is an immutable contract:
+page work must not change or copy its internal markup, fields, copy, validation,
+privacy notice, button, endpoint, analytics or UX. The contract check protects
+the markup hash and rejects Form-internal selectors outside `lead-form.css`.
+
+Use `LeadRequestSection.astro` when a page needs the complete heading, direct
+contact and Form section. The component owns the real `id="request"` target and
+the existing focus behavior. `split` preserves the AX layout, `stacked` provides
+a vertical page layout and `article` provides a compact blog layout without
+direct contacts. `copyKey` selects one approved four-locale copy bundle. Only
+the section outside the Form may vary. Form-only use keeps `LeadForm.astro` as
+the closed component.
 
 The four localized AX V2 forms post JSON to
 `POST /api/ax/consultations`. The Worker validates the payload, rejects

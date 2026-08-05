@@ -431,58 +431,6 @@ function initializeDialog(page: HTMLElement) {
   });
 }
 
-function initializeSuccessDialog(page: HTMLElement) {
-  const dialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-success-dialog]');
-  const closer = dialog?.querySelector<HTMLButtonElement>('[data-ax-v2-success-close]');
-  if (!dialog || !closer) return;
-
-  let returnFocus: HTMLElement | null = null;
-  let closeTimer = 0;
-  let finishTimer = 0;
-
-  const clearTimers = () => {
-    window.clearTimeout(closeTimer);
-    window.clearTimeout(finishTimer);
-  };
-
-  const close = () => {
-    clearTimers();
-    if (!dialog.open) return;
-    dialog.classList.add('is-closing');
-    finishTimer = window.setTimeout(() => dialog.close(), 280);
-  };
-
-  page.addEventListener('ax:lead-sent', (event) => {
-    const form = event.target instanceof HTMLFormElement ? event.target : null;
-    returnFocus = form?.querySelector<HTMLButtonElement>('button[type="submit"]') ?? null;
-    const leadDialog = page.querySelector<HTMLDialogElement>('[data-ax-v2-dialog]');
-    if (leadDialog?.open) leadDialog.close();
-    requestAnimationFrame(() => {
-      clearTimers();
-      dialog.classList.remove('is-counting', 'is-closing');
-      if (dialog.open) dialog.close();
-      dialog.showModal();
-      closer.focus();
-      requestAnimationFrame(() => dialog.classList.add('is-counting'));
-      closeTimer = window.setTimeout(close, 5_000);
-    });
-  });
-
-  closer.addEventListener('click', close);
-  dialog.addEventListener('click', (event) => {
-    if (event.target === dialog) close();
-  });
-  dialog.addEventListener('cancel', (event) => {
-    event.preventDefault();
-    close();
-  });
-  dialog.addEventListener('close', () => {
-    clearTimers();
-    dialog.classList.remove('is-counting', 'is-closing');
-    returnFocus?.focus();
-  });
-}
-
 function initializeAnimatedDiagram(root: HTMLElement) {
   const observer = new IntersectionObserver(
     ([entry]) => {
@@ -657,7 +605,6 @@ function initialize() {
     .querySelectorAll<HTMLElement>('[data-diagnosis-sequence]')
     .forEach(initializeDiagnosisSequence);
   initializeDialog(page);
-  initializeSuccessDialog(page);
 }
 
 initialize();

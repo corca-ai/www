@@ -123,6 +123,80 @@ function emitAnalytics(event: string, parameters: Record<string, unknown> = {}) 
   emitGtagEvent(window.gtag, event, parameters);
 }
 
+function matchingSuccessElement<T extends HTMLElement>(
+  selector: string,
+  formId: string,
+): T | undefined {
+  return Array.from(document.querySelectorAll<T>(selector)).find(
+    (element) => element.dataset.leadSuccessFor === formId,
+  );
+}
+
+function ensureSuccessDialog(form: HTMLFormElement) {
+  const existing = matchingSuccessElement<HTMLDialogElement>('[data-lead-success-dialog]', form.id);
+  if (existing) return existing;
+
+  const template = matchingSuccessElement<HTMLTemplateElement>(
+    'template[data-lead-success-template]',
+    form.id,
+  );
+  if (!template) return undefined;
+  const fragment = template.content.cloneNode(true);
+  if (!(fragment instanceof DocumentFragment)) return undefined;
+  document.body.appendChild(fragment);
+  return matchingSuccessElement<HTMLDialogElement>('[data-lead-success-dialog]', form.id);
+}
+
+function showSuccessDialog(form: HTMLFormElement) {
+  const dialog = ensureSuccessDialog(form);
+  const closer = dialog?.querySelector<HTMLButtonElement>('[data-lead-success-close]');
+  if (!dialog || !closer) return;
+
+  const returnFocus = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+  const leadDialog = form.closest<HTMLDialogElement>('[data-ax-v2-dialog]');
+  if (leadDialog?.open) leadDialog.close();
+
+  const previousCloseTimer = Number(dialog.dataset.closeTimer ?? 0);
+  const previousFinishTimer = Number(dialog.dataset.finishTimer ?? 0);
+  window.clearTimeout(previousCloseTimer);
+  window.clearTimeout(previousFinishTimer);
+  dialog.classList.remove('is-counting', 'is-closing');
+  if (dialog.open) dialog.close();
+  dialog.showModal();
+  closer.focus();
+  requestAnimationFrame(() => dialog.classList.add('is-counting'));
+
+  const finishClose = () => {
+    if (!dialog.open) return;
+    dialog.classList.add('is-closing');
+    dialog.dataset.finishTimer = String(window.setTimeout(() => dialog.close(), 280));
+  };
+  dialog.dataset.closeTimer = String(window.setTimeout(finishClose, 5_000));
+
+  if (dialog.dataset.leadSuccessInitialized === 'true') return;
+  dialog.dataset.leadSuccessInitialized = 'true';
+  const close = () => {
+    window.clearTimeout(Number(dialog.dataset.closeTimer ?? 0));
+    finishClose();
+  };
+  closer.addEventListener('click', close);
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) close();
+  });
+  dialog.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    close();
+  });
+  dialog.addEventListener('close', () => {
+    window.clearTimeout(Number(dialog.dataset.closeTimer ?? 0));
+    window.clearTimeout(Number(dialog.dataset.finishTimer ?? 0));
+    dialog.classList.remove('is-counting', 'is-closing');
+    delete dialog.dataset.closeTimer;
+    delete dialog.dataset.finishTimer;
+    returnFocus?.focus();
+  });
+}
+
 function initializeLeadForm(form: HTMLFormElement) {
   if (form.dataset.leadFormInitialized === 'true') return;
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -352,6 +426,7 @@ function initializeLeadForm(form: HTMLFormElement) {
       status.focus({ preventScroll: true });
       emitAnalytics('generate_lead', { form_id: 'ax_consultation', locale });
       form.dispatchEvent(new CustomEvent('ax:lead-sent', { bubbles: true }));
+      showSuccessDialog(form);
     } catch {
       showRequestError('network');
     } finally {

@@ -366,6 +366,10 @@ grid, 반응형, 모바일 구성에 맞게 배치했다.</li>
 있는 재사용 <code>#request</code> 영역이다. <code>split</code>·<code>stacked</code>·<code>article</code> variant와
 승인된 네 언어 <code>copyKey</code>를 사용한다. 적용 절차와 금지 사항은
 <code>docs/lead-form-agent-manual.md</code>가 정본이다.</li>
+<li>한국어 AX V2의 inline 상담 영역은 <code>ax-launch-talk</code> copy bundle을 사용한다.
+Form 불변 계약은 유지하고 Google Calendar 런치 토크 링크를 밑줄 텍스트로
+노출하며 직접 이메일 행은 제거하고 전화 상담 행은 유지한다. 영어·일본어·
+중국어 AX는 번역 승인 전까지 기존 <code>ax-consultation</code> 표현을 유지한다.</li>
 <li>선택한 정적 블로그 글은 <code>src/lead/blogLeadPages.json</code>의 locale-neutral
 slug·<code>page_id</code>·<code>content_type</code>·<code>variant</code>·<code>copy_key</code> 선언으로만 상담 영역을
 받는다. build-only 중립 fragment를 네 언어에 적용한 뒤 내부 route를

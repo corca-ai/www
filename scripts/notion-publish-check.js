@@ -336,7 +336,11 @@ second preserved code-like line</pre>
   );
   assert.match(
     blogStyles,
-    /\.article-more-posts \.post-pagination-card \.related-thumbnail\s*\{[^}]*height:\s*184px;[^}]*aspect-ratio:\s*auto;/s,
+    /\.article-more-posts \.post-pagination-card \.related-thumbnail\s*\{[^}]*width:\s*100%;[^}]*height:\s*auto;[^}]*aspect-ratio:\s*16\s*\/\s*9;[^}]*background:\s*#f3f4f6;/s,
+  );
+  assert.match(
+    blogStyles,
+    /\.article-more-posts \.post-pagination-card \.related-thumbnail img\s*\{[^}]*object-fit:\s*contain;[^}]*object-position:\s*center;/s,
   );
   assert.match(blogStyles, /\.article-content \.frame/);
   assert.match(blogStyles, /\.article-content \.intro-question/);

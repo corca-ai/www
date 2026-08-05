@@ -4482,14 +4482,24 @@ body {
 .article-more-posts .post-pagination-card .related-thumbnail {
   position: relative;
   inset: auto;
-  height: 184px;
-  aspect-ratio: auto;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  background: #f3f4f6;
   border-radius: 17px 17px 0 0;
 }
 
 .article-more-posts .post-pagination-card .related-thumbnail img {
   position: absolute;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+}
+
+.article-more-posts .post-pagination-card .related-thumbnail img[src$="corca-openai-partner-cover.png"] {
+  border-inline: 0;
+  background: #ffffff;
+  object-fit: contain;
+  object-position: center;
 }
 
 .article-more-posts .post-pagination-card:hover .related-thumbnail img,

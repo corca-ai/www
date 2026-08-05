@@ -464,15 +464,15 @@ function validateCommonHead(html, source) {
     ['common head end marker', /<!-- corca-common-head:end -->/g],
     [
       '16px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-16\.png["'])[^>]*>/gi,
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/corca-ai-16\.png["'])[^>]*>/gi,
     ],
     [
       '32px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-32\.png["'])[^>]*>/gi,
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/corca-ai-32\.png["'])[^>]*>/gi,
     ],
     [
       '48px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-48\.png["'])[^>]*>/gi,
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/corca-ai-48\.png["'])[^>]*>/gi,
     ],
     ['apple touch icon', /<link\b(?=[^>]*\brel=["']apple-touch-icon["'])[^>]*>/gi],
     [

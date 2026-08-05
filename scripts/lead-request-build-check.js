@@ -16,6 +16,12 @@ const declaration = {
 };
 const launchTalkUrl =
   'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3pvmsLNxvJ5Jt9cX7kmgn8dhhFA27R8tnRNbe_THLtJHU4efWcKcNpyutCEU3n9Zf8R-9tMtRm';
+const launchTalkCtas = {
+  ko: '런치 토크 예약하기',
+  en: 'Book a Launch Talk',
+  ja: 'ランチトークを予約する',
+  zh: '预约午餐交流',
+};
 
 for (const locale of locales) {
   for (const variant of leadRequestVariants) {
@@ -30,10 +36,10 @@ for (const locale of locales) {
       } else {
         assertIncludes(fragment, 'lead-request-direct-contact', source);
       }
-      if (locale === 'ko' && copyKey === 'ax-launch-talk' && variant !== 'article') {
+      if (copyKey === 'ax-launch-talk' && variant !== 'article') {
         assertIncludes(fragment, 'AX Launch Talk', source);
         assertIncludes(fragment, launchTalkUrl, source);
-        assertIncludes(fragment, '런치 토크 예약하기', source);
+        assertIncludes(fragment, launchTalkCtas[locale], source);
         assertExcludes(fragment, 'mailto:bae.hwidong@corca.ai', source);
         assertIncludes(fragment, 'tel:+82269256978', source);
       }

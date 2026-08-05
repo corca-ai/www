@@ -136,10 +136,10 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   있는 재사용 `#request` 영역이다. `split`·`stacked`·`article` variant와
   승인된 네 언어 `copyKey`를 사용한다. 적용 절차와 금지 사항은
   `docs/lead-form-agent-manual.md`가 정본이다.
-- 한국어 AX V2의 inline 상담 영역은 `ax-launch-talk` copy bundle을 사용한다.
-  Form 불변 계약은 유지하고 Google Calendar 런치 토크 링크를 밑줄 텍스트로
-  노출하며 직접 이메일 행은 제거하고 전화 상담 행은 유지한다. 영어·일본어·
-  중국어 AX는 번역 승인 전까지 기존 `ax-consultation` 표현을 유지한다.
+- 네 언어 AX V2의 inline 상담 영역은 `ax-launch-talk` copy bundle을 사용한다.
+  Form 불변 계약은 유지하고 locale별 Google Calendar 런치 토크 링크를 밑줄
+  텍스트로 노출하며 직접 이메일 행은 제거하고 전화 상담 행은 유지한다.
+  제목·설명·런치 토크 본문은 언어별 의미 단위 줄바꿈을 명시한다.
 - 선택한 정적 블로그 글은 `src/lead/blogLeadPages.json`의 locale-neutral
   slug·`page_id`·`content_type`·`variant`·`copy_key` 선언으로만 상담 영역을
   받는다. build-only 중립 fragment를 네 언어에 적용한 뒤 내부 route를

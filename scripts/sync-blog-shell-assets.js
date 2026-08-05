@@ -163,6 +163,7 @@ for (const config of localeConfigs) {
     });
     next = addLatestPostNavigationIntro(next, config, relative(repoRoot, file));
     if (leadDeclaration) {
+      validateStaticArticleLeadLayout(next, relative(repoRoot, file));
       leadSectionsSynced += 1;
       const locales = leadSectionLocales.get(slug) ?? new Set();
       locales.add(config.locale);
@@ -195,6 +196,26 @@ for (const config of localeConfigs) {
       fail(`${relative(repoRoot, file)} does not reference ${currentBaseLayoutCss}.`);
     }
     validateCommonHead(next, relative(repoRoot, file));
+  }
+}
+
+function validateStaticArticleLeadLayout(html, source) {
+  const staticContentStart = html.indexOf('class="static-post-content"');
+  const leadStart = html.indexOf('<!-- corca-lead-request:start -->');
+  const leadEnd = html.indexOf('<!-- corca-lead-request:end -->');
+  const staticContentEnd = html.lastIndexOf('</div>', leadStart);
+  if (staticContentStart < 0 || staticContentEnd < 0 || leadStart < 0 || leadEnd < 0) {
+    fail(`Missing static article/sidebar or Lead Request structure in ${source}.`);
+  }
+  if (
+    !(staticContentStart < staticContentEnd && staticContentEnd < leadStart && leadStart < leadEnd)
+  ) {
+    fail(`Expected article sidebars to end before the Lead Request Section in ${source}.`);
+  }
+
+  const latestPostsStart = html.indexOf('class="article-more-posts"');
+  if (html.includes('class="post-pagination"') && !(leadEnd < latestPostsStart)) {
+    fail(`Expected latest-post navigation after the Lead Request Section in ${source}.`);
   }
 }
 

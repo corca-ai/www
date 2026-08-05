@@ -373,6 +373,9 @@ slug를 결합해 <code>blog-&lt;slug&gt;</code> ID를 만들고, build-only 중
 언어에 적용한 뒤 내부 route를 <code>dist</code>에서 삭제한다. 중복 <code>#request</code>, 잘못된
 policy, 누락 client 또는 locale alias를 거부한다. Notion으로 새 글을
 발행해도 같은 빌드 정책이 적용된다.</li>
+<li>정적 글의 데스크톱 목차·추천 글은 <code>.static-post-content</code> 안에서 본문과
+같은 길이로 끝난다. 따라서 sticky 사이드바는 본문이 끝난 뒤의 리드 폼과
+최신 글 영역까지 내려가지 않으며, 리드 폼 앞에는 별도 여백을 둔다.</li>
 <li>현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
 중국어에는 별도의 국외이전 동의가 포함된다.</li>
 <li>클라이언트는 <code>POST /api/ax/consultations</code>로 JSON을 보낸다.</li>

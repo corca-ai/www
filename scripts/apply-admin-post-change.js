@@ -1383,6 +1383,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
   </head>
   <body>${shell.beforeMain}<main id="main" tabindex="-1">
       <section class="post-view static-post-view">
+        <div class="static-post-content">
         <article id="article" class="article static-article">
           <header class="article-header">
             <h1>${escapeHtml(post.title)}</h1>
@@ -1400,6 +1401,7 @@ ${renderStaticTableOfContents(toc, locale)}
         <aside class="toc static-toc recommendations-panel" aria-label="${escapeAttribute(localeLabels[locale].recommendations)}">
 ${renderStaticRecommendations(recommendations, locale)}
         </aside>
+        </div>
         ${pageNav}
       </section>
     </main>${shell.afterMain}</body>

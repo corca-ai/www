@@ -570,6 +570,10 @@ This adjacent fixture gives the generated static page a previous-post card so th
     /<img src="\/blog\/assets\/admin-posts\/admin-edit-fixture-111111111111\.png"/,
   );
   assert.match(staticPage, /<nav class="post-pagination" aria-label="최신 글 더보기">/);
+  assert.match(
+    staticPage,
+    /<section class="post-view static-post-view">\s*<div class="static-post-content">[\s\S]*?<\/article>[\s\S]*?<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<\/aside>\s*<\/div>\s*<nav class="post-pagination"/,
+  );
   assert.match(staticPage, /class="related-card post-pagination-card"/);
   assert.doesNotMatch(staticPage, /post-pagination-(?:previous|next)|related-cue/);
   const latestPostNav = staticPage.match(

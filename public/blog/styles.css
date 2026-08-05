@@ -4077,11 +4077,16 @@ body {
 }
 
 .static-post-view {
-  grid-template-areas:
-    "toc article recommendations"
-    "lead lead lead"
-    "related related related";
+  display: block;
   padding-top: 0;
+}
+
+.static-post-content {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 768px) minmax(0, 280px);
+  grid-template-areas: "toc article recommendations";
+  justify-content: center;
+  column-gap: 40px;
 }
 
 .article-tools {
@@ -4291,6 +4296,7 @@ body {
 .toc {
   position: sticky;
   top: 112px;
+  align-self: start;
   justify-self: end;
   width: min(280px, 100%);
   margin: 0;
@@ -4423,8 +4429,8 @@ body {
 }
 
 .static-post-view > .lead-request-section {
-  grid-area: lead;
   width: 100vw;
+  margin-top: clamp(48px, 6vw, 72px);
   margin-inline: calc(50% - 50vw);
 }
 
@@ -4553,8 +4559,7 @@ body {
 }
 
 @media (max-width: 1024px) {
-  .post-view,
-  .static-post-view {
+  .post-view {
     width: min(100% - 40px, 768px);
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -4566,6 +4571,21 @@ body {
       "recommendations"
       "related";
     padding-top: 48px;
+  }
+
+  .static-post-view {
+    width: min(100% - 40px, 768px);
+    padding-top: 48px;
+  }
+
+  .static-post-content {
+    width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "article"
+      "toc"
+      "recommendations";
+    padding-top: 0;
   }
 
   .toc {

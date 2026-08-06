@@ -8,6 +8,10 @@ Before adding a Lead Form or consultation-request section to any page, read
 modify the shared Form markup, override its internal CSS, or manually place
 page context in Form markup.
 
+For page creation and refinement, use the repository-local
+[`corca-site-page-pipeline`](.agents/skills/corca-site-page-pipeline/SKILL.md)
+skill and follow the [Git-native Agent workflow](docs/agent-workflow.md).
+
 > Note: `CLAUDE.md` is a symlink to this file (`AGENTS.md`).
 
 ## Context discipline
@@ -17,29 +21,26 @@ page context in Form markup.
 - Do not repeatedly reread entire files or rerun repository-wide searches.
 - Summarize only the relevant parts of long output.
 - Capture before and after screenshots only once per phase.
-- At 60% context, close the current phase and prepare a handoff; at 70%, switch
-  to a new task.
+- At 60% context, close the current phase and persist durable facts in the
+  nearest canonical document or focused commit; at 70%, switch to a new task.
 - At 80% context, do not start new implementation, full checks, pushes, pull
   requests, or deployments.
 
 ## Continuation contract
 
-- Keep the copy-ready new-conversation prompts in the canonical handoff stable
-  for routine site work. Change them only when the start procedure, safety
-  requirements, or required local tooling genuinely changes.
-- Treat Git commits and diffs as the exact record of each change. A new task
-  fetches `origin`, verifies the handoff anchor, and summarizes later relevant
-  diffs instead of rewriting its starting prompt for every merged pull request.
+- Treat current code, tests, focused Git commits and diffs as the exact record
+  of each change. New tasks follow `docs/agent-workflow.md` and load only the
+  topic documents routed from `docs/index.md`.
+- Do not use dated handoffs, generated HTML, full transcripts or patch dumps as
+  default startup context. Keep historical material in Git history and search
+  it only when current code and canonical docs cannot explain a decision.
 - For every pull request, decide whether it changes durable route ownership,
   shared components, design/SEO/i18n policy, deployment behavior, local setup,
   or a known regression risk. If it does, update the nearest canonical `docs/`
-  page and the site handoff when the fact matters to future tasks.
+  page once when the fact matters to future tasks.
 - Document the decision, affected paths, validation, and remaining regression
   risk in the pull request. If no documentation update is needed, say so and
   explain why in the pull request summary.
-- Whenever the canonical handoff Markdown changes, regenerate its companion
-  HTML with `pnpm handoff:render`. The Markdown and Git history are the source
-  of truth; the HTML is a review aid and full patches remain local audit data.
 
 ## GitHub authentication fallback
 

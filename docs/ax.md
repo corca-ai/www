@@ -18,9 +18,10 @@ The Korean page that existed before AX V2 is preserved at
 `/ax-backup`. It is intentionally `noindex, nofollow`, is absent from every
 sitemap and canonicalizes to `/ax`. Its implementation lives in
 `AxLegacy.astro` and `components/pages/ax/`; do not edit those files for the new
-design. Read the [2026-07-28 site and AX V2
-handoff](handoffs/2026-07-28-corca-site-handoff.md) for the current
-implementation and verified Git history.
+design. The [2026-07-28 site and AX V2
+handoff](handoffs/2026-07-28-corca-site-handoff.md) is historical context only;
+routine work must use the ownership map below, current code and current Git
+history instead.
 
 ## Ownership map
 

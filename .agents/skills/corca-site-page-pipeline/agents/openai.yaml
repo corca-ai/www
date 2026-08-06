@@ -1,0 +1,4 @@
+interface:
+  display_name: "Corca Site Page Pipeline"
+  short_description: "Corca 페이지를 원문 보존형으로 구현·검증·배포"
+  default_prompt: "Use $corca-site-page-pipeline to build or refine a Corca website page from approved source content."

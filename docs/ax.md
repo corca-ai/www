@@ -164,11 +164,14 @@ receive the widget. Each AX page places one `data-ax-floating-hero` marker on
 its Hero. A missing marker degrades to the compact avatar instead of assuming
 that an arbitrary section is the Hero.
 
-Desktop and tablet show the Figma-derived card while the Hero intersects the
-viewport and collapse it to the avatar and temporary speech bubble afterward.
-Mobile uses a horizontal mini card in the Hero and the 56px avatar below it.
-The avatar can reopen the card; outside activation, Escape or subsequent
-scroll collapses it again. The speech bubble alone is suppressed when it would
+Desktop and tablet show the Figma-derived card while the Hero remains below the
+sticky header and collapse it to the avatar as soon as the second section reaches
+that header boundary. The speech bubble stays for three seconds, then fades out.
+On mobile the whole 60px portrait circle is the Calendar link in the Hero; from
+the second section onward, the whole horizontal banner becomes that link and
+keeps the localized lunch prompt visible inside it. Desktop and tablet avatars
+can reopen the card; outside activation, Escape or subsequent scroll collapses
+it again. The desktop speech bubble alone is suppressed when it would
 cover interactive or meaningful page content. The native Calendar anchor is
 never delayed or cancelled. Safe-area insets, keyboard focus and
 `prefers-reduced-motion` are part of the component contract.

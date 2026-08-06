@@ -32,11 +32,24 @@ for (const [locale, path, pagePath] of [
     'data-page-base-path="/ax"',
     'data-content-type="ax-solution"',
     'data-ax-launch-talk-cta',
+    'ax-launch-talk-mobile-hero',
+    'ax-launch-talk-mobile-mini-message',
   ]) {
     if (!html.includes(value)) fail(`${locale} AX is missing ${value}`);
   }
   if (!html.includes('target="_blank"') || !html.includes('rel="noopener noreferrer"')) {
     fail(`${locale} AX Launch Talk CTA must remain a native safe new-tab link`);
+  }
+  for (const [className, state] of [
+    ['ax-launch-talk-mobile-hero', 'compact'],
+    ['ax-launch-talk-mobile-mini', 'mobile-mini'],
+  ]) {
+    const wholeSurfaceLink = new RegExp(
+      `<a class="${className}"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="${state}">`,
+    );
+    if (!wholeSurfaceLink.test(html)) {
+      fail(`${locale} ${className} must be one whole-surface Calendar link`);
+    }
   }
   if (!html.includes(pagePath)) fail(`${locale} AX lost its localized page path`);
 }
@@ -64,6 +77,9 @@ for (const token of [
   "fetch('/api/ax/launch-talk-leads'",
   'keepalive: true',
   "const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'",
+  'const BUBBLE_DURATION_MS = 3000',
+  "document.querySelector<HTMLElement>('body > header')",
+  'hero.getBoundingClientRect().bottom > compactBoundary',
   "window.setTimeout(() => {\n      if (mode === 'open')",
   'focus({ preventScroll: true })',
 ]) {

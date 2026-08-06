@@ -97,27 +97,47 @@ const contextAttributes = {
     </div>
   </div>
 
-  <div class="ax-launch-talk-mobile-mini">
+  <a
+    class="ax-launch-talk-mobile-hero"
+    href={launchTalk.ctaHref}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={launchTalk.ctaLabel}
+    data-ax-launch-talk-cta
+    data-widget-state="compact"
+  >
     <img
       src="/images/pages/ax/launch-talk/hwidong-bae.webp"
       width="400"
       height="400"
       alt=""
     />
-    <div>
+    <span aria-hidden="true"></span>
+  </a>
+
+  <a
+    class="ax-launch-talk-mobile-mini"
+    href={launchTalk.ctaHref}
+    target="_blank"
+    rel="noopener noreferrer"
+    data-ax-launch-talk-cta
+    data-widget-state="mobile-mini"
+  >
+    <img
+      src="/images/pages/ax/launch-talk/hwidong-bae.webp"
+      width="400"
+      height="400"
+      alt=""
+    />
+    <div class="ax-launch-talk-mobile-mini-copy">
       <strong>AX Launch Talk</strong>
       <span>{content.name} · {content.role}</span>
     </div>
-    <a
-      href={launchTalk.ctaHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-ax-launch-talk-cta
-      data-widget-state="mobile-mini"
-    >
+    <span class="ax-launch-talk-mobile-mini-cta">
       {launchTalk.ctaLabel}
-    </a>
-  </div>
+    </span>
+    <p class="ax-launch-talk-mobile-mini-message">{content.bubble}</p>
+  </a>
 
   <div class="ax-launch-talk-compact">
     <p class="ax-launch-talk-bubble" aria-hidden="true" data-ax-launch-talk-bubble>

@@ -2,9 +2,12 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   createUnsubscribeToken,
+  extractSesSuppressedEmails,
   handleNewsletterRequest,
   isNewsletterEmail,
+  nextDeliveryRetryAt,
   parseRssItems,
+  runNewsletterDaily,
   sendSesEmail,
   verifyUnsubscribeToken,
 } from '../worker/newsletter.ts';
@@ -38,6 +41,81 @@ test('uses a tamper-evident per-delivery unsubscribe token', async () => {
     subscriberId: 'subscriber-1',
   });
   assert.equal(await verifyUnsubscribeToken('test-secret', `${token}x`), null);
+});
+
+test('schedules no more than three total newsletter delivery attempts', () => {
+  const now = new Date('2026-08-06T00:00:00.000Z');
+  assert.equal(nextDeliveryRetryAt(1, now), '2026-08-06T00:15:00.000Z');
+  assert.equal(nextDeliveryRetryAt(2, now), '2026-08-06T01:00:00.000Z');
+  assert.equal(nextDeliveryRetryAt(3, now), null);
+  assert.equal(nextDeliveryRetryAt(4, now), null);
+});
+
+test('does not requeue a stale claim after its final delivery attempt', async () => {
+  const calls: Array<{ query: string; values: unknown[] }> = [];
+  const database = {
+    prepare(query: string) {
+      return {
+        bind(...values: unknown[]) {
+          calls.push({ query, values });
+          return {
+            all: async () => ({ results: [] }),
+            first: async () =>
+              query.includes('newsletter_settings')
+                ? { value: '2026-08-05T00:00:00.000Z' }
+                : { id: 'old-edition' },
+            run: async () => ({ meta: { changes: 0 } }),
+          };
+        },
+      };
+    },
+  } as unknown as D1Database;
+  const now = new Date('2026-08-06T00:00:00.000Z');
+  await runNewsletterDaily(
+    { NEWSLETTER_DB: database, NEWSLETTER_TOKEN_SECRET: 'test-secret' },
+    {
+      fetcher: async () =>
+        new Response(
+          '<rss><channel><item><guid>old</guid><title>Old</title><link>https://www.corca.ai/blog/old</link></item></channel></rss>',
+        ),
+      now,
+    },
+  );
+  const expireFinalClaim = calls.find((call) =>
+    call.query.includes('Delivery claim expired after the final allowed attempt'),
+  );
+  const recoverRetryableClaim = calls.find(
+    (call) => call.query.includes("SET status = 'pending'") && call.query.includes('attempts < ?'),
+  );
+  assert.deepEqual(expireFinalClaim?.values.slice(-1), [3]);
+  assert.deepEqual(recoverRetryableClaim?.values.slice(-1), [3]);
+});
+
+test('extracts distinct bounced and complained addresses from SES events', () => {
+  assert.deepEqual(
+    extractSesSuppressedEmails({
+      'detail-type': 'Email Bounced',
+      detail: {
+        bounce: {
+          bouncedRecipients: [
+            { emailAddress: 'Reader@Example.com' },
+            { emailAddress: 'reader@example.com' },
+          ],
+        },
+      },
+    }),
+    ['reader@example.com'],
+  );
+  assert.deepEqual(
+    extractSesSuppressedEmails({
+      Message: JSON.stringify({
+        eventType: 'Complaint',
+        complaint: { complainedRecipients: [{ emailAddress: 'stop@example.com' }] },
+      }),
+    }),
+    ['stop@example.com'],
+  );
+  assert.deepEqual(extractSesSuppressedEmails({ eventType: 'Delivery' }), []);
 });
 
 test('does not accept subscriptions before D1 and mail settings exist', async () => {

@@ -3,6 +3,8 @@ const maxBodyBytes = 8 * 1024;
 const maxPendingDeliveriesPerRun = 100;
 const confirmationCooldownMs = 10 * 60 * 1000;
 const deliveryClaimTimeoutMs = 15 * 60 * 1000;
+const maxDeliveryAttempts = 3;
+const deliveryRetryDelaysMs = [15 * 60 * 1000, 60 * 60 * 1000];
 const textEncoder = new TextEncoder();
 
 export interface NewsletterEnv {
@@ -14,6 +16,7 @@ export interface NewsletterEnv {
   NEWSLETTER_FROM_EMAIL?: string;
   NEWSLETTER_REPLY_TO_EMAIL?: string;
   NEWSLETTER_RSS_URL?: string;
+  NEWSLETTER_SES_EVENT_SECRET?: string;
   NEWSLETTER_SITE_ORIGIN?: string;
   NEWSLETTER_TOKEN_SECRET?: string;
 }
@@ -31,6 +34,7 @@ interface NewsletterEdition {
 }
 
 interface PendingDelivery extends NewsletterEdition {
+  attempts: number;
   email: string;
   subscriber_id: string;
   delivery_id: string;
@@ -67,6 +71,7 @@ export async function handleNewsletterRequest(
   if (url.pathname === '/api/newsletter/subscribe') return subscribe(request, env);
   if (url.pathname === '/api/newsletter/confirm') return confirm(url, env);
   if (url.pathname === '/api/newsletter/unsubscribe') return unsubscribe(url, env);
+  if (url.pathname === '/api/newsletter/events') return receiveSesEvent(request, env);
   return json({ error: 'not_found' }, 404);
 }
 
@@ -104,10 +109,28 @@ export async function runNewsletterDaily(
   await database
     .prepare(
       `UPDATE newsletter_deliveries
-       SET status = 'pending', claimed_at = NULL, updated_at = ?
-       WHERE status = 'sending' AND claimed_at < ?`,
+       SET status = 'failed', claimed_at = NULL,
+           last_error = 'Delivery claim expired after the final allowed attempt',
+           next_attempt_at = NULL, updated_at = ?
+       WHERE status = 'sending' AND claimed_at < ? AND attempts >= ?`,
     )
-    .bind(timestamp, new Date(now.getTime() - deliveryClaimTimeoutMs).toISOString())
+    .bind(
+      timestamp,
+      new Date(now.getTime() - deliveryClaimTimeoutMs).toISOString(),
+      maxDeliveryAttempts,
+    )
+    .run();
+  await database
+    .prepare(
+      `UPDATE newsletter_deliveries
+       SET status = 'pending', claimed_at = NULL, next_attempt_at = NULL, updated_at = ?
+       WHERE status = 'sending' AND claimed_at < ? AND attempts < ?`,
+    )
+    .bind(
+      timestamp,
+      new Date(now.getTime() - deliveryClaimTimeoutMs).toISOString(),
+      maxDeliveryAttempts,
+    )
     .run();
 
   const newEditions: NewsletterEdition[] = [];
@@ -161,14 +184,20 @@ export async function runNewsletterDaily(
 
   const pending = await queryAll<PendingDelivery>(
     database,
-    `SELECT d.id AS delivery_id, d.subscriber_id, s.email, e.id, e.post_title, e.post_url
+    `SELECT d.id AS delivery_id, d.subscriber_id, d.attempts, s.email, e.id, e.post_title, e.post_url
      FROM newsletter_deliveries d
      JOIN newsletter_subscribers s ON s.id = d.subscriber_id
      JOIN newsletter_editions e ON e.id = d.edition_id
-     WHERE d.status = 'pending' AND s.state = 'active'
+     WHERE (
+       (d.status = 'pending' AND d.attempts < ?)
+       OR (
+         d.status = 'failed' AND d.attempts < ?
+         AND d.next_attempt_at IS NOT NULL AND d.next_attempt_at <= ?
+       )
+     ) AND s.state = 'active'
      ORDER BY d.created_at ASC
      LIMIT ?`,
-    [maxPendingDeliveriesPerRun],
+    [maxDeliveryAttempts, maxDeliveryAttempts, timestamp, maxPendingDeliveriesPerRun],
   );
   let delivered = 0;
   for (const delivery of pending) {
@@ -176,9 +205,22 @@ export async function runNewsletterDaily(
       .prepare(
         `UPDATE newsletter_deliveries
          SET status = 'sending', claimed_at = ?, attempts = attempts + 1, updated_at = ?
-         WHERE id = ? AND status = 'pending'`,
+         WHERE id = ? AND (
+           (status = 'pending' AND attempts < ?)
+           OR (
+             status = 'failed' AND attempts < ?
+             AND next_attempt_at IS NOT NULL AND next_attempt_at <= ?
+           )
+         )`,
       )
-      .bind(timestamp, timestamp, delivery.delivery_id)
+      .bind(
+        timestamp,
+        timestamp,
+        delivery.delivery_id,
+        maxDeliveryAttempts,
+        maxDeliveryAttempts,
+        timestamp,
+      )
       .run();
     if (!Number(claim.meta.changes || 0)) continue;
     const unsubscribeToken = await createUnsubscribeToken(
@@ -196,20 +238,21 @@ export async function runNewsletterDaily(
         .prepare(
           `UPDATE newsletter_deliveries
            SET status = 'sent', claimed_at = NULL, provider_message_id = ?, sent_at = ?,
-               last_error = NULL, updated_at = ?
+               last_error = NULL, next_attempt_at = NULL, updated_at = ?
            WHERE id = ?`,
         )
         .bind(messageId, timestamp, timestamp, delivery.delivery_id)
         .run();
       delivered += 1;
     } catch (error) {
+      const nextAttemptAt = nextDeliveryRetryAt(delivery.attempts + 1, now);
       await database
         .prepare(
           `UPDATE newsletter_deliveries
-           SET status = 'failed', claimed_at = NULL, last_error = ?, updated_at = ?
+           SET status = 'failed', claimed_at = NULL, last_error = ?, next_attempt_at = ?, updated_at = ?
            WHERE id = ?`,
         )
-        .bind(errorMessage(error), timestamp, delivery.delivery_id)
+        .bind(errorMessage(error), nextAttemptAt, timestamp, delivery.delivery_id)
         .run();
     }
   }
@@ -477,6 +520,88 @@ async function unsubscribe(url: URL, env: NewsletterEnv): Promise<Response> {
   return newsletterPage('뉴스레터 수신을 중단했습니다.');
 }
 
+async function receiveSesEvent(request: Request, env: NewsletterEnv): Promise<Response> {
+  if (request.method.toUpperCase() !== 'POST') {
+    return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST' });
+  }
+  const secret = String(env.NEWSLETTER_SES_EVENT_SECRET || '');
+  const suppliedSecret = request.headers.get('X-Newsletter-Event-Secret') || '';
+  if (!secret) return json({ error: 'newsletter_event_not_configured' }, 503);
+  if (!constantTimeEqual(suppliedSecret, secret)) return json({ error: 'unauthorized' }, 401);
+  if (!env.NEWSLETTER_DB) return json({ error: 'newsletter_not_configured' }, 503);
+
+  const text = await request.text();
+  if (textEncoder.encode(text).byteLength > maxBodyBytes) {
+    return json({ error: 'payload_too_large' }, 413);
+  }
+  let payload: unknown;
+  try {
+    payload = JSON.parse(text);
+  } catch {
+    return json({ error: 'invalid_json' }, 400);
+  }
+  const emails = extractSesSuppressedEmails(payload);
+  if (!emails.length) return json({ ok: true, suppressed: 0 }, 202);
+
+  const now = new Date().toISOString();
+  let suppressed = 0;
+  for (const email of emails) {
+    const result = await env.NEWSLETTER_DB.prepare(
+      `UPDATE newsletter_subscribers
+       SET state = 'unsubscribed', unsubscribed_at = COALESCE(unsubscribed_at, ?), updated_at = ?
+       WHERE email = ? AND state <> 'unsubscribed'`,
+    )
+      .bind(now, now, email)
+      .run();
+    suppressed += Number(result.meta.changes || 0);
+  }
+  return json({ ok: true, suppressed }, 202);
+}
+
+/**
+ * Returns unique mailbox addresses which must no longer receive newsletter
+ * deliveries. It accepts the direct SES/EventBridge payload and the SNS
+ * envelope EventBridge API destinations may forward unchanged.
+ */
+export function extractSesSuppressedEmails(payload: unknown): string[] {
+  const unwrapped = unwrapSnsMessage(payload);
+  if (!isRecord(unwrapped)) return [];
+  const detail = isRecord(unwrapped.detail) ? unwrapped.detail : unwrapped;
+  const type = String(detail.eventType || unwrapped['detail-type'] || '').toLowerCase();
+  if (
+    type !== 'bounce' &&
+    type !== 'complaint' &&
+    !type.includes('bounced') &&
+    !type.includes('complained')
+  ) {
+    return [];
+  }
+  const feedback = type.includes('complaint') ? detail.complaint : detail.bounce;
+  if (!isRecord(feedback)) return [];
+  const recipients = type.includes('complaint')
+    ? feedback.complainedRecipients
+    : feedback.bouncedRecipients;
+  if (!Array.isArray(recipients)) return [];
+  return [
+    ...new Set(
+      recipients
+        .filter(isRecord)
+        .map((recipient) =>
+          String(recipient.emailAddress || recipient.email || '')
+            .trim()
+            .toLowerCase(),
+        )
+        .filter(isNewsletterEmail),
+    ),
+  ];
+}
+
+export function nextDeliveryRetryAt(attempts: number, now: Date): string | null {
+  const delay = deliveryRetryDelaysMs[attempts - 1];
+  if (!delay || attempts >= maxDeliveryAttempts) return null;
+  return new Date(now.getTime() + delay).toISOString();
+}
+
 async function insertEdition(
   database: D1Database,
   item: RssItem,
@@ -688,6 +813,15 @@ function errorMessage(error: unknown): string {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function unwrapSnsMessage(value: unknown): unknown {
+  if (!isRecord(value) || typeof value.Message !== 'string') return value;
+  try {
+    return JSON.parse(value.Message);
+  } catch {
+    return value;
+  }
 }
 
 class NewsletterSetupError extends Error {}

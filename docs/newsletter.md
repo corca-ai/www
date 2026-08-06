@@ -14,7 +14,8 @@ editions and delivery rows.
 ## Ownership
 
 - `worker/newsletter.ts` owns subscribe, confirmation, unsubscribe, RSS
-  discovery, delivery queueing and AWS SES SigV4 mail delivery.
+  discovery, delivery queueing, bounded delivery retry, SES feedback handling,
+  and AWS SES SigV4 mail delivery.
 - `migrations/0001_newsletter.sql` owns D1 tables for subscribers, editions,
   deliveries and the RSS baseline marker. The unique edition/subscriber pair is
   the duplicate-send guard.
@@ -50,7 +51,8 @@ code therefore cannot expose a broken subscription form.
    `NEWSLETTER_AWS_SECRET_ACCESS_KEY`, `NEWSLETTER_AWS_REGION`, and
    `NEWSLETTER_FROM_EMAIL`. Set `NEWSLETTER_AWS_SESSION_TOKEN` only for
    temporary AWS credentials. `NEWSLETTER_REPLY_TO_EMAIL` and
-   `NEWSLETTER_SITE_ORIGIN` are optional.
+   `NEWSLETTER_SITE_ORIGIN` are optional. Also create and store a random
+   `NEWSLETTER_SES_EVENT_SECRET`; it authenticates the SES feedback endpoint.
 5. Run the Cron manually once to establish its RSS baseline, then publish one
    test post and run it again. Check D1 `newsletter_deliveries` for a single
    `sent` row and use the email's one-click unsubscribe link.
@@ -58,6 +60,15 @@ code therefore cannot expose a broken subscription form.
    `true` in D1 (with the current ISO timestamp). This is the explicit release
    switch for the public form; leave it absent or `false` to keep the form
    hidden.
+7. Apply `migrations/0002_newsletter_delivery_retries.sql` to add the delivery
+   retry timestamp before deploying this code in a new environment. It is
+   already applied to the production `corca-www-newsletter` database. In AWS,
+   create an EventBridge rule for SES **Email Bounced**
+   and **Email Complained** events. Its API Destination is
+   `https://www.corca.ai/api/newsletter/events`; configure the connection to
+   send `X-Newsletter-Event-Secret` with the exact Worker secret. That endpoint
+   immediately marks matching subscribers unsubscribed, so later editions do
+   not send to a bounced or complained address.
 
 ## Safety and operating behavior
 
@@ -70,8 +81,10 @@ code therefore cannot expose a broken subscription form.
 - A missing D1 binding, token secret or SES configuration returns a safe `503`
   from the subscribe endpoint. A scheduled run can still discover and queue
   new editions, but leaves deliveries pending until SES is configured.
-- SES failures mark the delivery `failed` with an attempt count and bounded
-  error text. Retry policy and bounce/complaint webhooks are intentionally not
-  automated yet; add them only after SES event destinations are agreed.
+- SES failures retry automatically at 15 minutes and 1 hour (three total
+  attempts), then remain failed with a bounded error message for review.
+- The SES feedback endpoint accepts only authenticated EventBridge API
+  Destination requests. Once the AWS rule above is enabled, bounce and
+  complaint recipients are automatically suppressed from future delivery.
 - The source is `https://www.corca.ai/rss`. Phase one is Korean-only; localized
   feeds and digests need an explicit product decision before expanding it.

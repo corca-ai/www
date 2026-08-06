@@ -18,7 +18,7 @@ interface WorkerEnv extends Env, NewsletterEnv {
 
 const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const axConsultationPattern = /^\/api\/ax\/consultations\/?$/;
-const newsletterPattern = /^\/api\/newsletter\/(?:status|subscribe|confirm|unsubscribe)\/?$/;
+const newsletterPattern = /^\/api\/newsletter\/(?:status|subscribe|confirm|unsubscribe|events)\/?$/;
 const adminPathPattern = /^\/(?:api\/admin|blog\/admin)(?:\/|$)/;
 const retiredRssPattern = /^\/rss\.xml\/?$/;
 const githubDispatchRepository = 'corca-ai/www';

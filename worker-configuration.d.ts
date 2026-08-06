@@ -4,7 +4,6 @@
 interface __BaseEnv_Env {
 	NEWSLETTER_DB: D1Database;
 	AX_EMAIL: SendEmail;
-	AX_LAUNCH_TALK_RATE_LIMITER: RateLimit;
 	ASSETS: Fetcher;
 }
 declare namespace Cloudflare {

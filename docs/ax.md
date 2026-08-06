@@ -44,7 +44,6 @@ implementation and verified Git history.
 | Service structured data | `src/i18n/structuredData.ts` |
 | Consultation endpoint | `worker/axConsultations.ts` |
 | AX-family Launch Talk widget | `src/components/ax-launch-talk/` |
-| Launch Talk click endpoint | `worker/axLaunchTalkLeads.ts` |
 | Shared AX lead validation and email helpers | `worker/axLeadShared.ts` |
 
 The page deliberately does not render its own global header or footer. Add or
@@ -176,29 +175,19 @@ cover interactive or meaningful page content. The native Calendar anchor is
 never delayed or cancelled. Safe-area insets, keyboard focus and
 `prefers-reduced-motion` are part of the component contract.
 
-Every Launch Talk Calendar CTA on an AX-family page emits the non-PII GA4 event
-`ax_launch_talk_click` and independently sends a keepalive JSON request to
-`POST /api/ax/launch-talk-leads`. The payload contains the stable page context,
-actual pathname, locale, widget state and the same tab-first acquisition
-evidence used by the consultation form. It contains no name, email, query,
-hash or full referrer URL. GA or email failure must not interfere with the
-native new-tab Calendar navigation.
+Every Launch Talk Calendar CTA on an AX-family page emits only the non-PII GA4
+event `ax_launch_talk_click`. Its parameters are the stable `page_id`, actual
+`page_path`, locale-neutral `base_path`, `locale`, `content_type` and visible
+`widget_state`. The native new-tab Calendar navigation is never delayed or
+cancelled, and a missing or blocked Google tag does not interfere with it.
 
-The Worker sends one `contact+ax@corca.ai` notification for each valid click
-and labels it `Google Calendar 예약 페이지 이동`. This is an intent signal,
-not proof that an appointment was completed, and it has no Reply-To address.
-The endpoint requires same-origin browser metadata, strict AX-family page
-context and a fixed `ax-launch-talk` lead type. Cloudflare's
-`AX_LAUNCH_TALK_RATE_LIMITER` binding permits approximately six valid requests
-per network/browser key per minute; excess requests return 429 without sending
-email while Calendar and GA client behavior continue. The limiter is abuse
-mitigation, not an exact global counter.
-
-Do not reuse `/api/ax/consultations` for this click lead or emit
-`generate_lead`: that event remains reserved for a successfully delivered
-consultation form. Run `pnpm test:ax-attribution` and
-`pnpm check:ax-launch-talk-contract` to verify the fake-email, path, locale,
-PII, limiter and rendered-widget contracts without sending a real message.
+Launch Talk clicks do not call a Corca API and do not send an email to
+`contact+ax@corca.ai`. A click is the last observable website funnel step, not
+proof that an appointment was completed. Do not reuse
+`/api/ax/consultations` or emit `generate_lead`: that endpoint and event remain
+reserved for a successfully delivered consultation form. Run
+`pnpm test:ax-attribution` and `pnpm check:ax-launch-talk-contract` to verify
+the GA-only, localized rendered-widget contract.
 
 Each Lead Form page may declare `leadContext: { pageId, contentType }` in its
 route or page manifest. The existing route `basePath` supplies the

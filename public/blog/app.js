@@ -38,11 +38,14 @@ function initializeNewsletterSignup() {
   const section = form.closest("#newsletter");
   const status = form.querySelector("[data-newsletter-status]");
   const submit = form.querySelector('button[type="submit"]');
+  const isWorkerPreview = window.location.hostname.endsWith(".workers.dev");
 
   fetch("/api/newsletter/status", { headers: { accept: "application/json" } })
     .then((response) => (response.ok ? response.json() : { enabled: false }))
     .then((result) => {
-      if (section instanceof HTMLElement && result.enabled === true) section.hidden = false;
+      if (section instanceof HTMLElement && (result.enabled === true || isWorkerPreview)) {
+        section.hidden = false;
+      }
     })
     .catch(() => {});
 

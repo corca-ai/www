@@ -31,6 +31,10 @@ KST (`0 0 * * *` in UTC). The public form first calls
 the operator explicitly enables it after the Cron baseline check. Merging this
 code therefore cannot expose a broken subscription form.
 
+The `*.workers.dev` Worker preview is intentionally an exception: it always
+reveals the form for release testing while the canonical `www.corca.ai` host
+continues to obey `public_enabled`.
+
 ## Required setup after this PR merges
 
 1. Before deploying a new or replacement database, apply the schema remotely:

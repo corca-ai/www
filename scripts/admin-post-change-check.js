@@ -572,7 +572,11 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.match(staticPage, /<nav class="post-list" aria-label="최신 글 더보기">/);
   assert.match(
     staticPage,
-    /<section class="post-view static-post-view">\s*<div class="static-post-content">[\s\S]*?<\/article>[\s\S]*?<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<\/aside>\s*<\/div>\s*<nav class="post-list"/,
+    /<section id="newsletter" class="newsletter-signup newsletter-signup-article"[\s\S]*?<\/section>\s*<nav class="post-list" aria-label="최신 글 더보기">/,
+  );
+  assert.match(
+    staticPage,
+    /<section class="post-view static-post-view">\s*<div class="static-post-content">[\s\S]*?<\/article>[\s\S]*?<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<\/aside>\s*<\/div>\s*<section id="newsletter" class="newsletter-signup newsletter-signup-article"[\s\S]*?<\/section>\s*<nav class="post-list"/,
   );
   const latestPostNav = staticPage.match(
     /<nav class="post-list" aria-label="최신 글 더보기">[\s\S]*?<\/nav>/,
@@ -602,6 +606,7 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(noTocStaticPage, /<section class="toc-section"/);
   assert.doesNotMatch(noTocStaticPage, /table-of-contents-panel/);
   assert.match(noTocStaticPage, /class="toc static-toc recommendations-panel"/);
+  assert.match(noTocStaticPage, /class="newsletter-signup newsletter-signup-article"/);
   assert.match(
     staticPage,
     new RegExp(`<img src="/blog/${fallbackThumbnail}" alt="" width="1672" height="941"`),

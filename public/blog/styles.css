@@ -3879,6 +3879,11 @@ main:has(.static-post-view) {
   white-space: nowrap;
 }
 
+.static-post-view > .newsletter-signup-article {
+  width: min(100%, 768px);
+  margin: clamp(56px, 8vw, 88px) auto 0;
+}
+
 .topic-map,
 .posts-section {
   margin: 0 0 96px;

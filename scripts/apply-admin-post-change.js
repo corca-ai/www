@@ -1230,8 +1230,10 @@ function renderIndexAbout(labels) {
       </section>`;
 }
 
-function renderNewsletterSignup() {
-  return `      <section id="newsletter" class="newsletter-signup" aria-labelledby="newsletter-title" hidden>
+function renderNewsletterSignup(placement = 'index') {
+  const className =
+    placement === 'article' ? 'newsletter-signup newsletter-signup-article' : 'newsletter-signup';
+  return `      <section id="newsletter" class="${className}" aria-labelledby="newsletter-title" hidden>
         <div>
           <p class="eyebrow">CORCA BLOG</p>
           <h2 id="newsletter-title">새 글을 메일로 받아보세요</h2>
@@ -1430,7 +1432,7 @@ ${renderStaticTableOfContents(toc, locale)}
 ${renderStaticRecommendations(recommendations, locale)}
         </aside>
         </div>
-        ${pageNav}
+${locale === 'ko' ? `${renderNewsletterSignup('article')}\n` : ''}        ${pageNav}
       </section>
     </main>${shell.afterMain}</body>
 </html>

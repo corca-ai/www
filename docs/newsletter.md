@@ -4,11 +4,12 @@ title: Blog newsletter
 
 # Blog newsletter
 
-The Korean `/blog` home has a double-opt-in newsletter form. The Worker stores
-subscribers and delivery history in D1, reads the production Korean RSS feed on
-a daily Cron Trigger, and sends one email for each newly discovered post. It
-does not send the existing RSS archive on its first run: that run only records
-a baseline, then later RSS GUIDs become editions and delivery rows.
+The Korean `/blog` home and every Korean static article have a double-opt-in
+newsletter form. The Worker stores subscribers and delivery history in D1,
+reads the production Korean RSS feed on a daily Cron Trigger, and sends one
+email for each newly discovered post. It does not send the existing RSS archive
+on its first run: that run only records a baseline, then later RSS GUIDs become
+editions and delivery rows.
 
 ## Ownership
 
@@ -18,23 +19,26 @@ a baseline, then later RSS GUIDs become editions and delivery rows.
   deliveries and the RSS baseline marker. The unique edition/subscriber pair is
   the duplicate-send guard.
 - `public/blog/index.html`, `public/blog/app.js` and `public/blog/styles.css`
-  own the Korean blog-home form. `scripts/apply-admin-post-change.js` regenerates
-  that same form when blog content is rebuilt.
+  own the Korean blog-home form and its shared behavior. The static-post
+  generator inserts the same form after each Korean article whenever blog
+  content is rebuilt.
 
-The code is deliberately inert until the platform bindings and secrets below
-exist. The public form first calls `/api/newsletter/status` and remains hidden
-until all of them are available *and* the operator explicitly enables it after
-the Cron baseline check. Merging this code therefore cannot expose a broken
-subscription form. Do not add placeholders to `wrangler.jsonc`: an invalid D1
-ID or a Cron Trigger there would change production deployment behavior.
+The dedicated APAC D1 database is configured in `wrangler.jsonc` as
+`NEWSLETTER_DB`, and the same file schedules the daily Cron Trigger at 09:00
+KST (`0 0 * * *` in UTC). The public form first calls
+`/api/newsletter/status` and remains hidden until the mail secrets exist *and*
+the operator explicitly enables it after the Cron baseline check. Merging this
+code therefore cannot expose a broken subscription form.
 
 ## Required setup after this PR merges
 
-1. Create a dedicated Cloudflare D1 database, apply
-   `migrations/0001_newsletter.sql`, then bind it to this Worker as
-   `NEWSLETTER_DB`.
-2. Add one daily Cloudflare Cron Trigger. `0 0 * * *` is 09:00 in Korea while
-   Cloudflare interprets the expression in UTC. The first successful run only
+1. Before deploying a new or replacement database, apply the schema remotely:
+   `wrangler d1 execute corca-www-newsletter --remote --file=migrations/0001_newsletter.sql`.
+   The production `corca-www-newsletter` database has already received this
+   migration; this command is the required recovery/setup step before a Cron
+   can query `newsletter_settings`.
+2. Deploy this PR so the committed D1 binding and daily Cron Trigger become
+   active. The first successful Cron run only
    establishes the RSS baseline; verify its log before treating a later run as
    live sending.
 3. In AWS SES, verify the existing company sender or create

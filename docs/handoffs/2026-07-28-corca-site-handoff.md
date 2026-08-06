@@ -91,6 +91,8 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 | 메타데이터·OG·hreflang | `src/i18n/pageMeta.ts`, `src/staticPages.ts` |
 | Service·Breadcrumb JSON-LD | `src/i18n/structuredData.ts` |
 | 상담 API·메일 | `worker/axConsultations.ts`, `wrangler.jsonc` |
+| AX-family Launch Talk 위젯 | `src/components/ax-launch-talk/` |
+| Launch Talk 클릭 API·공통 메일 계약 | `worker/axLaunchTalkLeads.ts`, `worker/axLeadShared.ts` |
 | 전역 Breadcrumb·Footer | `src/components/Breadcrumb.astro`, `src/components/Footer.astro` |
 | 블로그 셸 동기화 | `scripts/sync-blog-shell-assets.js` |
 
@@ -182,6 +184,22 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   보고서다. 이 흐름에는 GA Data API나 별도 Property ID 자격증명이
   필요하지 않다.
 - 실제 웹사이트 발송과 수신이 정상 동작함을 사용자가 확인했다.
+- 공개 AX-family pathname에는 `BaseLayout`이 Figma 기반 Launch Talk 위젯을
+  한 번 렌더링한다. 실제 pathname으로 범위를 판정해 `/ax-backup`은
+  제외하고, 각 AX Hero의 `data-ax-floating-hero`를 확장 카드에서 compact
+  avatar로 전환하는 기준으로 쓴다. Hero marker가 없으면 compact로
+  안전하게 degrade한다.
+- Launch Talk Calendar 링크는 항상 native 새 탭 이동을 먼저 보장한다.
+  같은 클릭에서 비식별 `ax_launch_talk_click` GA4 event와
+  `POST /api/ax/launch-talk-leads` keepalive 요청을 각각 보낸다. 메일은
+  `contact+ax@corca.ai`로 가지만 예약 완료가 아닌 `예약 페이지 이동`
+  리드로 명시하며 이름·이메일·Reply-To는 없다. `generate_lead`는 기존
+  Lead Form 성공에만 유지한다.
+- Launch Talk API는 AX page context·locale/path 일치·Origin·Sec-Fetch-Site를
+  검증하고 Cloudflare rate limiting binding으로 네트워크·브라우저 키당
+  분당 약 6회를 넘는 비정상 반복만 429 처리한다. 이때도 Calendar 이동과
+  GA client event는 막지 않는다. 상담 Form의 optional context와 legacy UTM
+  계약은 그대로 유지한다.
 
 ### SEO·발견성
 

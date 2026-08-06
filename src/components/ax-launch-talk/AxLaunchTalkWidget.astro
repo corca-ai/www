@@ -1,0 +1,146 @@
+---
+import type { Lang } from '../../i18n/ui';
+import type { LeadPageContext } from '../../lead/pageContext';
+import { leadRequestCopy } from '../forms/leadFormContent';
+
+interface Props {
+  lang: Lang;
+  pageContext?: LeadPageContext | undefined;
+}
+
+const { lang, pageContext } = Astro.props;
+const launchTalk = leadRequestCopy('ax-launch-talk', lang).launchTalk;
+if (!launchTalk) throw new Error(`Missing AX Launch Talk copy for ${lang}`);
+
+const content = {
+  ko: {
+    name: '배휘동',
+    role: 'Corca AX Lead',
+    bubble: 'AX 고민, 점심 자리에서 풀어보시죠',
+    avatarLabel: 'AX Launch Talk 안내 열기',
+  },
+  en: {
+    name: 'Hwidong Bae',
+    role: 'Corca AX Lead',
+    bubble: 'Let’s unpack your AX challenges over lunch',
+    avatarLabel: 'Open AX Launch Talk details',
+  },
+  ja: {
+    name: 'Hwidong Bae',
+    role: 'Corca AX Lead',
+    bubble: 'AXの悩み、ランチで話してみませんか',
+    avatarLabel: 'AX Launch Talkの案内を開く',
+  },
+  zh: {
+    name: 'Hwidong Bae',
+    role: 'Corca AX Lead',
+    bubble: '午餐时间，一起聊聊您的AX困惑',
+    avatarLabel: '打开AX Launch Talk介绍',
+  },
+}[lang];
+
+const contextAttributes = {
+  'data-locale': lang,
+  'data-lead-page': pageContext?.pageId,
+  'data-page-base-path': pageContext?.basePath,
+  'data-content-type': pageContext?.contentType,
+};
+---
+
+<aside
+  class="ax-launch-talk-widget"
+  data-ax-launch-talk-widget
+  data-ax-launch-talk-context
+  data-mode="hero"
+  {...contextAttributes}
+  aria-label="AX Launch Talk"
+>
+  <div class="ax-launch-talk-card" data-ax-launch-talk-card>
+    <div class="ax-launch-talk-portrait" aria-hidden="true">
+      <img
+        class="ax-launch-talk-portrait-background"
+        src="/images/pages/ax/launch-talk/launch-talk-background.webp"
+        width="642"
+        height="300"
+        alt=""
+      />
+      <img
+        class="ax-launch-talk-portrait-person"
+        src="/images/pages/ax/launch-talk/hwidong-bae.webp"
+        width="400"
+        height="400"
+        alt=""
+      />
+    </div>
+    <div class="ax-launch-talk-card-body">
+      <h2>AX Launch Talk</h2>
+      <strong>{content.name}</strong>
+      <span>{content.role}</span>
+      <p>
+        {launchTalk.body.slice(-2).map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </p>
+      <a
+        class="ax-launch-talk-cta"
+        href={launchTalk.ctaHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-ax-launch-talk-cta
+        data-widget-state="expanded"
+      >
+        {launchTalk.ctaLabel}
+      </a>
+    </div>
+  </div>
+
+  <div class="ax-launch-talk-mobile-mini">
+    <img
+      src="/images/pages/ax/launch-talk/hwidong-bae.webp"
+      width="400"
+      height="400"
+      alt=""
+    />
+    <div>
+      <strong>AX Launch Talk</strong>
+      <span>{content.name} · {content.role}</span>
+    </div>
+    <a
+      href={launchTalk.ctaHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-ax-launch-talk-cta
+      data-widget-state="mobile-mini"
+    >
+      {launchTalk.ctaLabel}
+    </a>
+  </div>
+
+  <div class="ax-launch-talk-compact">
+    <p class="ax-launch-talk-bubble" aria-hidden="true" data-ax-launch-talk-bubble>
+      {content.bubble}
+    </p>
+    <button
+      class="ax-launch-talk-avatar"
+      type="button"
+      aria-label={content.avatarLabel}
+      aria-expanded="false"
+      data-ax-launch-talk-avatar
+    >
+      <img
+        src="/images/pages/ax/launch-talk/hwidong-bae.webp"
+        width="400"
+        height="400"
+        alt=""
+      />
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+</aside>
+
+<script>
+  import './axLaunchTalkWidgetClient';
+</script>

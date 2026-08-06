@@ -80,6 +80,13 @@ const showDirectContact = variant !== 'article';
               href={copy.launchTalk.ctaHref}
               target="_blank"
               rel="noopener noreferrer"
+              data-ax-launch-talk-context
+              data-ax-launch-talk-cta
+              data-widget-state="expanded"
+              data-locale={lang}
+              data-lead-page={pageContext?.pageId}
+              data-page-base-path={pageContext?.basePath}
+              data-content-type={pageContext?.contentType}
             >
               {copy.launchTalk.ctaLabel}
             </a>

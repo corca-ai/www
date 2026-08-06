@@ -41,6 +41,15 @@
       "allowed_sender_addresses": ["ax@corca.ai"]
     }
   ],
+  // Each valid Launch Talk click creates an email. This limiter blocks only
+  // abusive repetition; Calendar navigation and client-side GA remain intact.
+  "ratelimits": [
+    {
+      "name": "AX_LAUNCH_TALK_RATE_LIMITER",
+      "namespace_id": "2026080601",
+      "simple": { "limit": 6, "period": 60 }
+    }
+  ],
   // Production custom domains. Attaching both hosts lets the Worker canonicalize
   // the apex (corca.ai → www.corca.ai) while serving the www host directly.
   "routes": [

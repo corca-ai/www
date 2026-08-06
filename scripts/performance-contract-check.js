@@ -26,6 +26,8 @@ const axClient = read('src/components/pages/ax/ax-client.ts');
 const axCss = read('src/components/pages/ax/ax.css');
 const baseLayout = read('src/layouts/BaseLayout.astro');
 const commonHead = read('src/components/CommonHead.astro');
+const launchTalkCss = read('src/components/ax-launch-talk/ax-launch-talk-widget.css');
+const launchTalkClient = read('src/components/ax-launch-talk/axLaunchTalkWidgetClient.ts');
 
 const videoSource = axHtml.match(/<source\b[^>]*data-src="[^"]+\.webm"[^>]*>/)?.[0] ?? '';
 assert(videoSource, 'AX hero must retain a deferred WebM data-src for desktop');
@@ -98,6 +100,21 @@ assert(
     commonHead.includes('c.setTimeout(loadClarity, 5000)'),
   'AX mobile Clarity must remain outside the initial critical path',
 );
+assert(
+  launchTalkClient.includes("const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'"),
+  'AX Launch Talk widget must respect reduced motion',
+);
+assert(
+  /@media \(max-width: 720px\)[\s\S]*?\.ax-launch-talk-widget\[data-mode='hero'\] \.ax-launch-talk-mobile-mini/.test(
+    launchTalkCss,
+  ),
+  'AX Launch Talk must use the compact mobile hero card',
+);
+assert(
+  !launchTalkClient.includes('setInterval') &&
+    !launchTalkClient.includes('requestAnimationFrame(loop'),
+  'AX Launch Talk must not add a permanent animation loop',
+);
 
 const localePages = [
   ['ko', 'ax/index.html', 'pretendard-ko.woff2'],
@@ -135,6 +152,8 @@ for (const [path, maximumBytes] of [
   ['public/fonts/ax-mobile/v1/pretendard-ko.woff2', 150_000],
   ['public/fonts/ax-mobile/v1/pretendard-en.woff2', 60_000],
   ['public/fonts/ax-mobile/v1/pretendard-ja.woff2', 250_000],
+  ['public/images/pages/ax/launch-talk/launch-talk-background.webp', 10_000],
+  ['public/images/pages/ax/launch-talk/hwidong-bae.webp', 25_000],
 ]) {
   const file = join(root, path);
   assert(existsSync(file), `${path} is missing`);

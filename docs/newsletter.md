@@ -16,6 +16,10 @@ editions and delivery rows.
 - `worker/newsletter.ts` owns subscribe, confirmation, unsubscribe, RSS
   discovery, delivery queueing, bounded delivery retry, SES feedback handling,
   and AWS SES SigV4 mail delivery.
+- `worker/index.ts` reads the default `/rss` feed directly from the Worker
+  Assets binding during scheduled runs, avoiding a self-request through the
+  public custom domain. `NEWSLETTER_RSS_URL` remains the explicit override for
+  an external feed.
 - `migrations/0001_newsletter.sql` owns D1 tables for subscribers, editions,
   deliveries and the RSS baseline marker. The unique edition/subscriber pair is
   the duplicate-send guard.

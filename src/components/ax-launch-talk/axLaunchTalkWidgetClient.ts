@@ -1,4 +1,3 @@
-import { readOrCaptureAxAcquisition } from '../../analytics/axAcquisition';
 import { emitGtagEvent, type Gtag } from '../../analytics/gtag';
 import { resolveLeadPayloadContext } from '../../lead/pageContext';
 
@@ -17,16 +16,6 @@ const BUBBLE_DURATION_MS = 3000;
 const COLLISION_SELECTOR =
   '#request, footer, [data-ax-floating-exclusion], h1, h2, h3, h4, p, a, button, form, input, textarea, img, video';
 
-function acquisitionForClick() {
-  let storage: Storage | undefined;
-  try {
-    storage = window.sessionStorage;
-  } catch {
-    storage = undefined;
-  }
-  return readOrCaptureAxAcquisition(storage, window.location.href, document.referrer);
-}
-
 function initializeLaunchTalkLeadTracking() {
   const links = document.querySelectorAll<HTMLAnchorElement>('[data-ax-launch-talk-cta]');
   for (const link of links) {
@@ -38,17 +27,6 @@ function initializeLaunchTalkLeadTracking() {
 
       const page = resolveLeadPayloadContext(context.dataset, window.location.pathname);
       const widgetState = (link.dataset.widgetState ?? 'expanded') as WidgetState;
-      const acquisition = acquisitionForClick();
-      const payload = {
-        lead_type: 'ax-launch-talk' as const,
-        widget_state: widgetState,
-        ...page,
-        attribution: {
-          initial_referrer_host: acquisition.initial_referrer_host,
-          landing_path: acquisition.landing_path,
-        },
-        utm: acquisition.utm,
-      };
 
       emitGtagEvent(window.gtag, 'ax_launch_talk_click', {
         page_id: page.page_id,
@@ -58,13 +36,6 @@ function initializeLaunchTalkLeadTracking() {
         content_type: page.content_type,
         widget_state: widgetState,
       });
-
-      void fetch('/api/ax/launch-talk-leads', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(payload),
-        keepalive: true,
-      }).catch(() => undefined);
     });
   }
 }

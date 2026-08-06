@@ -23,7 +23,7 @@
     "check:lead-request-build": "node scripts/lead-request-build-check.js",
     "check:dup": "nose query src --mode syntax 'dup>80' --fail-on any",
     "check:docs": "awiki lint -root docs",
-    "test:ax-attribution": "node --test tests/axAcquisition.test.ts tests/axConsultations.test.ts tests/axLaunchTalkLeads.test.ts tests/axFamily.test.ts tests/gtag.test.ts tests/leadPageContext.test.ts",
+    "test:ax-attribution": "node --test tests/axAcquisition.test.ts tests/axConsultations.test.ts tests/axFamily.test.ts tests/gtag.test.ts tests/leadPageContext.test.ts",
     "test:lead-form": "node scripts/lead-form-contract-check.js && node --test tests/blogLeadSection.test.ts",
     "blog:content:apply": "node scripts/apply-admin-post-change.js",
     "blog:content:check": "node scripts/admin-post-change-check.js",

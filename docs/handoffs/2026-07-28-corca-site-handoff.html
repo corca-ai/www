@@ -319,10 +319,6 @@ sitemap에 넣지 않는다. 블로그 목록 title과 description은 locale별�
 <td><code>src/components/ax-launch-talk/</code></td>
 </tr>
 <tr>
-<td>Launch Talk 클릭 API·공통 메일 계약</td>
-<td><code>worker/axLaunchTalkLeads.ts</code>, <code>worker/axLeadShared.ts</code></td>
-</tr>
-<tr>
 <td>전역 Breadcrumb·Footer</td>
 <td><code>src/components/Breadcrumb.astro</code>, <code>src/components/Footer.astro</code></td>
 </tr>
@@ -425,17 +421,11 @@ Astro와 정적 블로그 전체에 적용된다. AX 모바일에서는 GA와 �
 제외하고, 각 AX Hero의 <code>data-ax-floating-hero</code>를 확장 카드에서 compact
 avatar로 전환하는 기준으로 쓴다. Hero marker가 없으면 compact로
 안전하게 degrade한다.</li>
-<li>Launch Talk Calendar 링크는 항상 native 새 탭 이동을 먼저 보장한다.
-같은 클릭에서 비식별 <code>ax_launch_talk_click</code> GA4 event와
-<code>POST /api/ax/launch-talk-leads</code> keepalive 요청을 각각 보낸다. 메일은
-<code>contact+ax@corca.ai</code>로 가지만 예약 완료가 아닌 <code>예약 페이지 이동</code>
-리드로 명시하며 이름·이메일·Reply-To는 없다. <code>generate_lead</code>는 기존
-Lead Form 성공에만 유지한다.</li>
-<li>Launch Talk API는 AX page context·locale/path 일치·Origin·Sec-Fetch-Site를
-검증하고 Cloudflare rate limiting binding으로 네트워크·브라우저 키당
-분당 약 6회를 넘는 비정상 반복만 429 처리한다. 이때도 Calendar 이동과
-GA client event는 막지 않는다. 상담 Form의 optional context와 legacy UTM
-계약은 그대로 유지한다.</li>
+<li>Launch Talk Calendar 링크는 항상 native 새 탭 이동을 보장하고, 클릭 시
+비식별 <code>ax_launch_talk_click</code> GA4 event만 보낸다. 클릭은 예약 완료가 아닌
+마지막 웹 퍼널 신호이므로 Corca API를 호출하거나
+<code>contact+ax@corca.ai</code> 메일을 만들지 않는다. <code>generate_lead</code>와
+<code>POST /api/ax/consultations</code>는 기존 Lead Form 성공에만 유지한다.</li>
 </ul>
 <h3 id="seo-발견성">SEO·발견성</h3>
 <ul>

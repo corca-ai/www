@@ -74,8 +74,6 @@ const client = readFileSync(
 );
 for (const token of [
   "'ax_launch_talk_click'",
-  "fetch('/api/ax/launch-talk-leads'",
-  'keepalive: true',
   "const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'",
   'const BUBBLE_DURATION_MS = 3000',
   "document.querySelector<HTMLElement>('body > header')",
@@ -86,7 +84,10 @@ for (const token of [
   if (!client.includes(token)) fail(`widget client is missing ${token}`);
 }
 if (client.includes('preventDefault')) fail('Calendar CTA must never prevent native navigation');
+if (client.includes('/api/ax/launch-talk-leads')) {
+  fail('Launch Talk clicks must be GA-only and must not call the retired email endpoint');
+}
 
 console.log(
-  'AX Launch Talk contract passed: four locales, native Calendar CTA, AX-only scope, assets, GA and keepalive lead request.',
+  'AX Launch Talk contract passed: four locales, native Calendar CTA, AX-only scope, assets and GA-only click tracking.',
 );

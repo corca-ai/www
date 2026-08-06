@@ -7,7 +7,6 @@
 import { canonicalUrl } from '../src/canonical';
 import { SITE_ORIGIN } from '../src/site';
 import { handleAxConsultation } from './axConsultations';
-import { handleAxLaunchTalkLead } from './axLaunchTalkLeads';
 import { handleNewsletterRequest, runNewsletterDaily } from './newsletter';
 import { withStaticAssetCacheHeaders } from './staticAssetHeaders.js';
 
@@ -20,7 +19,6 @@ interface WorkerEnv extends Env {
 
 const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const axConsultationPattern = /^\/api\/ax\/consultations\/?$/;
-const axLaunchTalkLeadPattern = /^\/api\/ax\/launch-talk-leads\/?$/;
 const newsletterPattern = /^\/api\/newsletter\/(?:status|subscribe|confirm|unsubscribe|events)\/?$/;
 const adminPathPattern = /^\/(?:api\/admin|blog\/admin)(?:\/|$)/;
 const retiredRssPattern = /^\/rss\.xml\/?$/;
@@ -41,10 +39,6 @@ export default {
 
     if (axConsultationPattern.test(url.pathname)) {
       return handleAxConsultation(request, env);
-    }
-
-    if (axLaunchTalkLeadPattern.test(url.pathname)) {
-      return handleAxLaunchTalkLead(request, env);
     }
 
     if (newsletterPattern.test(url.pathname)) {

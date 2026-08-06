@@ -4,8 +4,8 @@ title: Blog newsletter
 
 # Blog newsletter
 
-The Korean `/blog` home and every Korean static article have a double-opt-in
-newsletter form. The Worker stores subscribers and delivery history in D1,
+Every Korean static article has a double-opt-in newsletter form. The `/blog`
+listing intentionally has no newsletter form. The Worker stores subscribers and delivery history in D1,
 reads the production Korean RSS feed on a daily Cron Trigger, and sends one
 email for each newly discovered post. It does not send the existing RSS archive
 on its first run: that run only records a baseline, then later RSS GUIDs become
@@ -19,10 +19,10 @@ editions and delivery rows.
 - `migrations/0001_newsletter.sql` owns D1 tables for subscribers, editions,
   deliveries and the RSS baseline marker. The unique edition/subscriber pair is
   the duplicate-send guard.
-- `public/blog/index.html`, `public/blog/app.js` and `public/blog/styles.css`
-  own the Korean blog-home form and its shared behavior. The static-post
-  generator inserts the same form after each Korean article whenever blog
-  content is rebuilt.
+- `public/blog/app.js` and `public/blog/styles.css` own the shared newsletter
+  behavior and presentation. The static-post generator inserts the form after
+  each Korean article whenever blog content is rebuilt; it never inserts one
+  on the listing page.
 
 The dedicated APAC D1 database is configured in `wrangler.jsonc` as
 `NEWSLETTER_DB`, and the same file schedules the daily Cron Trigger at 09:00

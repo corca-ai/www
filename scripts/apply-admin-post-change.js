@@ -874,10 +874,6 @@ async function renderBlogIndexPages(postRecordsByLocale) {
       )
       .replace(/\n\s*<section id="newsletter"[\s\S]*?<\/section>/, '')
       .replace(
-        /(<section id="featuredPost"[^>]*><\/section>)/,
-        `$1${locale === 'ko' ? `\n${renderNewsletterSignup()}` : ''}`,
-      )
-      .replace(
         /(<section id="recentReads"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.recent)}$2`,
       )
@@ -1230,10 +1226,8 @@ function renderIndexAbout(labels) {
       </section>`;
 }
 
-function renderNewsletterSignup(placement = 'index') {
-  const className =
-    placement === 'article' ? 'newsletter-signup newsletter-signup-article' : 'newsletter-signup';
-  return `      <section id="newsletter" class="${className}" aria-labelledby="newsletter-title" hidden>
+function renderNewsletterSignup() {
+  return `      <section id="newsletter" class="newsletter-signup newsletter-signup-article" aria-labelledby="newsletter-title" hidden>
         <div>
           <p class="eyebrow">CORCA BLOG</p>
           <h2 id="newsletter-title">새 글을 메일로 받아보세요</h2>
@@ -1432,7 +1426,7 @@ ${renderStaticTableOfContents(toc, locale)}
 ${renderStaticRecommendations(recommendations, locale)}
         </aside>
         </div>
-${locale === 'ko' ? `${renderNewsletterSignup('article')}\n` : ''}        ${pageNav}
+${locale === 'ko' ? `${renderNewsletterSignup()}\n` : ''}        ${pageNav}
       </section>
     </main>${shell.afterMain}</body>
 </html>

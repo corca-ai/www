@@ -112,3 +112,25 @@ rg -n -i '<route|component|symptom keywords>' docs/failed-approaches.md
 - Adopted replacement: 현재 정본 명령 `pnpm favicon:build`를 사용하고 문서 변경 시 `package.json`과 함께 검증한다.
 - Evidence: `package.json`, commit `cf30896`의 context 문서 감사.
 - Retry only if: package script 이름이 실제로 변경될 때.
+
+## FAIL-0010 — production build 완료 후 Lead Request build 검사만 재실행
+
+- Status: rejected
+- Tags: lead-form, build-order, fragment, false-failure
+- Attempt: `pnpm build`가 성공한 뒤 `pnpm check:lead-request-build`만 다시 실행했다.
+- Symptom: `dist/lead-request-fragment/...`를 찾지 못해 `ENOENT`로 실패했다.
+- Why it failed: production build는 내부 fragment를 검사한 뒤 공개 산출물에서 의도적으로 삭제한다.
+- Adopted replacement: Lead Request fragment 계약은 전체 `pnpm build` 안에서 검증하고, 완료 후에는 최종 공개 HTML과 sitemap을 검사한다.
+- Evidence: `package.json`, `scripts/lead-request-build-check.js`, `scripts/sync-blog-shell-assets.js`.
+- Retry only if: build-only fragment의 정리 순서 또는 검사 입력이 변경될 때.
+
+## FAIL-0011 — pnpm 실행 파일만 직접 호출하고 자식 PATH는 제공하지 않음
+
+- Status: rejected
+- Tags: pnpm, build, path, reproducibility
+- Attempt: PATH에 `pnpm`이 없는 환경에서 pnpm의 JavaScript entrypoint로 `build` script만 실행했다.
+- Symptom: 상위 script는 시작하지만 내부의 `pnpm favicon:build`에서 `pnpm: command not found`가 발생했다.
+- Why it failed: package script가 다시 `pnpm`을 호출하는데 자식 프로세스가 같은 실행 파일을 찾을 수 없었다.
+- Adopted replacement: 저장소의 `packageManager`와 일치하는 pnpm bin 디렉터리를 자식 PATH에도 제공한다.
+- Evidence: `package.json`의 `packageManager`와 `build` script.
+- Retry only if: build script가 package-manager 재호출을 제거하거나 실행 환경이 pnpm을 안정적으로 제공할 때.

@@ -926,7 +926,18 @@
 
 .ceal-inline-form {
   grid-area: auto;
+  position: relative;
+  align-self: start;
+  overflow: hidden;
   margin: 0;
+  padding: clamp(32px, 4vw, 48px);
+  border: 1px solid rgba(137, 184, 235, 0.48);
+  border-radius: 32px;
+  color: var(--ax-v2-ink);
+  background: linear-gradient(155deg, #fff 0%, #f7faff 100%);
+  box-shadow:
+    0 32px 80px rgba(0, 20, 55, 0.3),
+    0 8px 24px rgba(0, 38, 91, 0.12);
 }
 
 @media (max-width: 1080px) {

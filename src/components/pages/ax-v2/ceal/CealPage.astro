@@ -277,14 +277,14 @@ const { leadContext } = Astro.props;
     class="ceal-section ceal-cta ax-v2-contact-section"
     id="request"
     aria-labelledby="ceal-cta-title"
-    data-ceal-contact-section
+    data-lead-request-section
   >
     <div class="ceal-shell ceal-cta-grid">
       <div class="ceal-cta-copy" data-reveal>
         <p class="ceal-cta-product">{c.cta.product}</p>
         <h2 id="ceal-cta-title"><AxLines values={c.cta.heading} /></h2>
         <h3>{c.cta.start}</h3>
-        <a class="ceal-cta-pill" href="#request" data-ceal-contact-jump>
+        <a class="ceal-cta-pill" href="#request" data-lead-request-jump>
           <strong>{c.cta.action}</strong>
           <span>{c.cta.url}</span>
         </a>
@@ -306,41 +306,8 @@ const { leadContext } = Astro.props;
   </section>
 </div>
 
-<script is:inline>
-  (() => {
-    const requestHash = '#request';
-
-    const focusRequestName = () => {
-      if (window.location.hash !== requestHash) return;
-      const section = document.querySelector('[data-ceal-contact-section]');
-      const nameInput = section?.querySelector('input[name="name"]');
-      if (!(nameInput instanceof HTMLInputElement)) return;
-      requestAnimationFrame(() => nameInput.focus({ preventScroll: true }));
-    };
-
-    const bindRequestJump = () => {
-      const jump = document.querySelector('[data-ceal-contact-jump]');
-      if (!(jump instanceof HTMLAnchorElement) || jump.dataset.bound === 'true') return;
-      jump.dataset.bound = 'true';
-      jump.addEventListener('click', () => {
-        if (window.location.hash !== requestHash) {
-          window.history.pushState(null, '', requestHash);
-        }
-        focusRequestName();
-      });
-    };
-
-    bindRequestJump();
-    focusRequestName();
-    window.addEventListener('hashchange', focusRequestName);
-    document.addEventListener('astro:page-load', () => {
-      bindRequestJump();
-      focusRequestName();
-    });
-  })();
-</script>
-
 <script>
+  import '../../../forms/leadRequestSectionClient';
   import { initCealRings } from './ceal-rings';
 
   initCealRings();

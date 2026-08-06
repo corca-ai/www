@@ -13,6 +13,7 @@ type WidgetState = 'compact' | 'expanded' | 'mobile-mini';
 
 const MOBILE_QUERY = '(max-width: 720px)';
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+const BUBBLE_DURATION_MS = 3000;
 const COLLISION_SELECTOR =
   '#request, footer, [data-ax-floating-exclusion], h1, h2, h3, h4, p, a, button, form, input, textarea, img, video';
 
@@ -126,24 +127,33 @@ function initializeWidget(widget: HTMLElement) {
     if (bubbleCollides()) return;
     bubbleTimer = window.setTimeout(
       () => bubble.classList.remove('is-visible'),
-      mobile.matches ? 4000 : 6000,
+      BUBBLE_DURATION_MS,
     );
   };
 
+  const heroIsAboveCompactBoundary = () => {
+    if (!hero) return false;
+    const siteHeader = document.querySelector<HTMLElement>('body > header');
+    const compactBoundary = siteHeader?.getBoundingClientRect().bottom ?? 0;
+    return hero.getBoundingClientRect().bottom > compactBoundary;
+  };
+
+  const syncHeroMode = () => {
+    const nextHeroVisible = heroIsAboveCompactBoundary();
+    if (nextHeroVisible === heroVisible) return;
+    heroVisible = nextHeroVisible;
+    updateMode(heroVisible ? 'hero' : 'compact');
+    if (!heroVisible) showBubbleTemporarily();
+  };
+
   if (hero && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        heroVisible = Boolean(entry?.isIntersecting);
-        updateMode(heroVisible ? 'hero' : 'compact');
-        if (!heroVisible) showBubbleTemporarily();
-      },
-      { threshold: 0.08 },
-    );
+    const observer = new IntersectionObserver(syncHeroMode, { threshold: 0 });
     observer.observe(hero);
   } else if (!hero) {
     updateMode('compact');
     showBubbleTemporarily();
   }
+  syncHeroMode();
 
   avatar.addEventListener('click', () => {
     updateMode('open');
@@ -167,6 +177,7 @@ function initializeWidget(widget: HTMLElement) {
   window.addEventListener(
     'scroll',
     () => {
+      syncHeroMode();
       const delta = Math.abs(window.scrollY - previousScrollY);
       previousScrollY = window.scrollY;
       if (mode === 'open' && delta > 12) updateMode(heroVisible ? 'hero' : 'compact');
@@ -174,7 +185,14 @@ function initializeWidget(widget: HTMLElement) {
     },
     { passive: true },
   );
-  window.addEventListener('resize', scheduleCollisionCheck, { passive: true });
+  window.addEventListener(
+    'resize',
+    () => {
+      syncHeroMode();
+      scheduleCollisionCheck();
+    },
+    { passive: true },
+  );
 
   const handleMediaChange = () => {
     widget.dataset.reducedMotion = String(reducedMotion.matches);

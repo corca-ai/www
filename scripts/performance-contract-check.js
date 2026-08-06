@@ -105,10 +105,13 @@ assert(
   'AX Launch Talk widget must respect reduced motion',
 );
 assert(
-  /@media \(max-width: 720px\)[\s\S]*?\.ax-launch-talk-widget\[data-mode='hero'\] \.ax-launch-talk-mobile-mini/.test(
+  /@media \(max-width: 720px\)[\s\S]*?\.ax-launch-talk-widget\[data-mode='hero'\] \.ax-launch-talk-mobile-hero/.test(
     launchTalkCss,
-  ),
-  'AX Launch Talk must use the compact mobile hero card',
+  ) &&
+    /@media \(max-width: 720px\)[\s\S]*?\.ax-launch-talk-widget\[data-mode='compact'\] \.ax-launch-talk-mobile-mini/.test(
+      launchTalkCss,
+    ),
+  'AX Launch Talk must use a mobile hero circle and a post-hero banner',
 );
 assert(
   !launchTalkClient.includes('setInterval') &&

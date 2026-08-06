@@ -56,10 +56,9 @@ code therefore cannot expose a broken subscription form.
 5. Run the Cron manually once to establish its RSS baseline, then publish one
    test post and run it again. Check D1 `newsletter_deliveries` for a single
    `sent` row and use the email's one-click unsubscribe link.
-6. Only after the test succeeds, set `newsletter_settings.public_enabled` to
-   `true` in D1 (with the current ISO timestamp). This is the explicit release
-   switch for the public form; leave it absent or `false` to keep the form
-   hidden.
+6. Apply `migrations/0003_enable_newsletter_public.sql` with the newsletter
+   release deployment. It is the explicit release switch for the public form;
+   until that migration is applied, the form remains hidden.
 7. Apply `migrations/0002_newsletter_delivery_retries.sql` to add the delivery
    retry timestamp before deploying this code in a new environment. It is
    already applied to the production `corca-www-newsletter` database. In AWS,

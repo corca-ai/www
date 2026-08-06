@@ -63,12 +63,17 @@ export default {
   },
   async scheduled(_event, env, ctx): Promise<void> {
     ctx.waitUntil(
-      runNewsletterDaily(env).then((result) => {
+      runNewsletterDaily(env, { fetcher: newsletterRssFetcher(env) }).then((result) => {
         console.log('Newsletter daily run completed', result);
       }),
     );
   },
 } satisfies ExportedHandler<WorkerEnv>;
+
+function newsletterRssFetcher(env: WorkerEnv): typeof fetch {
+  if (env.NEWSLETTER_RSS_URL) return fetch;
+  return (input, init) => env.ASSETS.fetch(new Request(input, init));
+}
 
 function retiredRssResponse(): Response {
   return new Response(null, {

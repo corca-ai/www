@@ -372,7 +372,10 @@ export async function sendSesEmail(
     headers: { ...headers, Authorization: authorization },
     method: 'POST',
   });
-  if (!response.ok) throw new Error(`SES SendEmail failed (${response.status})`);
+  if (!response.ok) {
+    const detail = (await response.text()).replace(/\s+/g, ' ').trim().slice(0, 1_000);
+    throw new Error(`SES SendEmail failed (${response.status})${detail ? `: ${detail}` : ''}`);
+  }
   const payload = (await response.json()) as { MessageId?: unknown };
   const messageId = String(payload.MessageId || '');
   if (!messageId) throw new Error('SES SendEmail returned no MessageId');

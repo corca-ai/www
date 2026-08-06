@@ -310,8 +310,8 @@ locale             제출 시점의 언어
 
 ## 참고 문서
 
-- [AX 페이지 운영 기준](./ax.md)
-- [Git-native Agent workflow](./agent-workflow.md)
-- [SEO 콘텐츠 거버넌스](./seo-content-governance.md)
-- [배포 운영 문서](./deployment.md)
-- [Ceal 콘텐츠 정본](../src/components/pages/ax-v2/ceal/CEAL_CONTENTS.md)
+- AX 페이지 구현과 운영 기준은 [AX 페이지 문서](./ax.md)를 따른다.
+- 작업 재개와 Agent 역할 분리는 [Git-native Agent workflow](./agent-workflow.md)를 따른다.
+- 검색 노출과 메타데이터 검증은 [SEO 콘텐츠 거버넌스](./seo-content-governance.md)를 따른다.
+- PR 이후 배포 절차는 [배포 운영 문서](./deployment.md)를 따른다.
+- Ceal의 승인된 원문은 [Ceal 콘텐츠 정본](../src/components/pages/ax-v2/ceal/CEAL_CONTENTS.md)이 소유한다.

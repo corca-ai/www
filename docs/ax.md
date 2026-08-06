@@ -43,6 +43,9 @@ implementation and verified Git history.
 | SEO metadata and route registration | `src/i18n/pageMeta.ts` and `src/staticPages.ts` |
 | Service structured data | `src/i18n/structuredData.ts` |
 | Consultation endpoint | `worker/axConsultations.ts` |
+| AX-family Launch Talk widget | `src/components/ax-launch-talk/` |
+| Launch Talk click endpoint | `worker/axLaunchTalkLeads.ts` |
+| Shared AX lead validation and email helpers | `worker/axLeadShared.ts` |
 
 The page deliberately does not render its own global header or footer. Add or
 change shared navigation in the normal site sources; keep AX-only section links
@@ -150,6 +153,49 @@ and retain the message under Corca's configured retention practices and their
 own policies. The forms show a required, concise processing notice. The
 localized privacy pages remain published with `noindex` metadata but are not
 linked from the current AX lead form.
+
+## AX Launch Talk floating lead
+
+Every public AX-family pathname (`/ax`, localized variants and future
+`/ax/*` routes) receives one `AxLaunchTalkWidget` from `BaseLayout`. Route
+ownership is decided from the actual pathname rather than `basePath` because
+the frozen `/ax-backup` page intentionally canonicalizes to `/ax` and must not
+receive the widget. Each AX page places one `data-ax-floating-hero` marker on
+its Hero. A missing marker degrades to the compact avatar instead of assuming
+that an arbitrary section is the Hero.
+
+Desktop and tablet show the Figma-derived card while the Hero intersects the
+viewport and collapse it to the avatar and temporary speech bubble afterward.
+Mobile uses a horizontal mini card in the Hero and the 56px avatar below it.
+The avatar can reopen the card; outside activation, Escape or subsequent
+scroll collapses it again. The speech bubble alone is suppressed when it would
+cover interactive or meaningful page content. The native Calendar anchor is
+never delayed or cancelled. Safe-area insets, keyboard focus and
+`prefers-reduced-motion` are part of the component contract.
+
+Every Launch Talk Calendar CTA on an AX-family page emits the non-PII GA4 event
+`ax_launch_talk_click` and independently sends a keepalive JSON request to
+`POST /api/ax/launch-talk-leads`. The payload contains the stable page context,
+actual pathname, locale, widget state and the same tab-first acquisition
+evidence used by the consultation form. It contains no name, email, query,
+hash or full referrer URL. GA or email failure must not interfere with the
+native new-tab Calendar navigation.
+
+The Worker sends one `contact+ax@corca.ai` notification for each valid click
+and labels it `Google Calendar 예약 페이지 이동`. This is an intent signal,
+not proof that an appointment was completed, and it has no Reply-To address.
+The endpoint requires same-origin browser metadata, strict AX-family page
+context and a fixed `ax-launch-talk` lead type. Cloudflare's
+`AX_LAUNCH_TALK_RATE_LIMITER` binding permits approximately six valid requests
+per network/browser key per minute; excess requests return 429 without sending
+email while Calendar and GA client behavior continue. The limiter is abuse
+mitigation, not an exact global counter.
+
+Do not reuse `/api/ax/consultations` for this click lead or emit
+`generate_lead`: that event remains reserved for a successfully delivered
+consultation form. Run `pnpm test:ax-attribution` and
+`pnpm check:ax-launch-talk-contract` to verify the fake-email, path, locale,
+PII, limiter and rendered-widget contracts without sending a real message.
 
 Each Lead Form page may declare `leadContext: { pageId, contentType }` in its
 route or page manifest. The existing route `basePath` supplies the

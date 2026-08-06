@@ -1,8 +1,31 @@
 import { type AxTopicId, axTopicIds } from '../src/components/pages/ax/contract.ts';
+import {
+  type AxLeadFieldErrors,
+  type AxLeadLocale,
+  type AxLeadUtmParameters,
+  axLeadRecipient,
+  axLeadSender,
+  escapeHtml,
+  formatAxLeadTimestamp,
+  formatKoreaDateTime,
+  isAxLeadLocale,
+  isRecord,
+  jsonError,
+  jsonSuccess,
+  normalizeAxAttribution,
+  normalizeAxPageContext,
+  normalizeAxUtm,
+  readLimitedBody,
+  renderAxEmailRows,
+  renderAxEmailShell,
+  sourceMedium,
+  stringValue,
+  type ValidAxAttribution,
+  type ValidAxPageContext,
+} from './axLeadShared.ts';
 
 export type AxConsultationEnv = Pick<Env, 'AX_EMAIL'>;
 
-const locales = ['ko', 'en', 'ja', 'zh'] as const;
 const topicLabels: Record<AxTopicId, string> = {
   strategy_discovery: 'AX 전략·과제 발굴',
   decision_map: '2주 의사결정 지도',
@@ -22,54 +45,31 @@ const consultingInterestLabels: Record<string, string> = {
   other: '기타',
 };
 const consultingInterestIds = Object.keys(consultingInterestLabels);
-type Locale = (typeof locales)[number];
-type FieldErrors = Record<string, string>;
-type UtmParameters = Partial<Record<'source' | 'medium' | 'campaign' | 'term' | 'content', string>>;
-
-interface ValidAttribution {
-  initialReferrerHost: string;
-  landingPath: string;
-}
-
-interface ValidPageContext {
-  basePath: string;
-  contentType: string;
-  pageId: string;
-  pagePath: string;
-}
-
 interface ValidConsultation {
-  attribution: ValidAttribution;
+  attribution: ValidAxAttribution;
   interests: string[];
   email: string;
-  locale: Locale;
+  locale: AxLeadLocale;
   name: string;
   otherInterest: string;
-  pageContext?: ValidPageContext;
+  pageContext?: ValidAxPageContext;
   reason: string;
   topic: AxTopicId | '';
   utm: string;
-  utmParameters: UtmParameters;
+  utmParameters: AxLeadUtmParameters;
 }
 
 type ValidationResult =
   | { ok: true; value: ValidConsultation }
   | {
       code: 'FORM_EXPIRED' | 'FORM_SUBMITTED_TOO_QUICKLY' | 'VALIDATION_ERROR';
-      fields?: FieldErrors;
+      fields?: AxLeadFieldErrors;
       ok: false;
     };
 
-const consultationRecipient = 'contact+ax@corca.ai';
-const consultationSender = 'ax@corca.ai';
 const maxBodyBytes = 32 * 1024;
 const maxFormAgeMs = 24 * 60 * 60 * 1000;
 const minFormTimeMs = 2_000;
-const noStoreHeaders = {
-  'Cache-Control': 'no-store, max-age=0',
-  'Content-Type': 'application/json; charset=utf-8',
-  'X-Content-Type-Options': 'nosniff',
-};
 
 export async function handleAxConsultation(
   request: Request,
@@ -84,7 +84,7 @@ export async function handleAxConsultation(
     return jsonError(415, 'UNSUPPORTED_MEDIA_TYPE');
   }
 
-  const body = await readLimitedBody(request);
+  const body = await readLimitedBody(request, maxBodyBytes);
   if (body.status === 'too_large') return jsonError(413, 'PAYLOAD_TOO_LARGE');
   if (body.status === 'unreadable') return jsonError(400, 'INVALID_JSON');
 
@@ -127,10 +127,10 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   const topic = stringValue(payload.topic);
   const locale = stringValue(payload.locale);
   const startedAt = parseStartedAt(payload.started_at);
-  const utm = normalizeUtm(payload.utm);
-  const attribution = normalizeAttribution(payload.attribution);
-  const pageContext = normalizePageContext(payload);
-  const fields: FieldErrors = {};
+  const utm = normalizeAxUtm(payload.utm);
+  const attribution = normalizeAxAttribution(payload.attribution);
+  const pageContext = normalizeAxPageContext(payload);
+  const fields: AxLeadFieldErrors = {};
 
   if (!name || name.length > 80) fields.name = 'INVALID_NAME';
   if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) {
@@ -161,7 +161,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
   if (locale === 'zh' && payload.cross_border_consent !== true) {
     fields.cross_border_consent = 'CROSS_BORDER_CONSENT_REQUIRED';
   }
-  if (!isLocale(locale)) fields.locale = 'INVALID_LOCALE';
+  if (!isAxLeadLocale(locale)) fields.locale = 'INVALID_LOCALE';
   if (startedAt === null) fields.started_at = 'INVALID_STARTED_AT';
   if (!utm.valid) fields.utm = 'INVALID_UTM';
   if (!attribution.valid) fields.attribution = 'INVALID_ATTRIBUTION';
@@ -183,7 +183,7 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
       attribution: attribution.value,
       email,
       interests,
-      locale: locale as Locale,
+      locale: locale as AxLeadLocale,
       name,
       otherInterest,
       ...(pageContext.value ? { pageContext: pageContext.value } : {}),
@@ -197,10 +197,6 @@ function validateConsultation(payload: Record<string, unknown>, now: number): Va
 
 function isConsultationTopic(value: string): value is AxTopicId {
   return (axTopicIds as readonly string[]).includes(value);
-}
-
-function isLocale(value: string): value is Locale {
-  return (locales as readonly string[]).includes(value);
 }
 
 function parseStartedAt(value: unknown): number | null {
@@ -218,137 +214,19 @@ function parseStartedAt(value: unknown): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-function normalizeUtm(value: unknown): {
-  parameters: UtmParameters;
-  valid: boolean;
-  value: string;
-} {
-  if (value === undefined || value === null || value === '') {
-    return { parameters: {}, valid: true, value: '' };
-  }
-  if (typeof value === 'string') {
-    const text = value.trim();
-    return { parameters: {}, valid: text.length <= 1_000, value: text.slice(0, 1_000) };
-  }
-  if (!isRecord(value)) return { parameters: {}, valid: false, value: '' };
-
-  const entries: string[] = [];
-  const parameters: UtmParameters = {};
-  for (const key of ['source', 'medium', 'campaign', 'term', 'content']) {
-    const entry = value[key];
-    if (entry === undefined || entry === null || entry === '') continue;
-    if (typeof entry !== 'string' || entry.length > 200) {
-      return { parameters: {}, valid: false, value: '' };
-    }
-    const normalized = entry.trim();
-    if (!normalized) continue;
-    parameters[key as keyof UtmParameters] = normalized;
-    entries.push(`${key}=${normalized}`);
-  }
-  const text = entries.join(' · ');
-  return {
-    parameters,
-    valid: text.length <= 1_000,
-    value: text.slice(0, 1_000),
-  };
-}
-
-function normalizeAttribution(value: unknown): {
-  valid: boolean;
-  value: ValidAttribution;
-} {
-  const empty = { initialReferrerHost: '', landingPath: '' };
-  if (value === undefined || value === null || value === '') {
-    return { valid: true, value: empty };
-  }
-  if (!isRecord(value)) return { valid: false, value: empty };
-
-  const initialReferrerHost = stringValue(value.initial_referrer_host).toLowerCase();
-  const landingPath = stringValue(value.landing_path);
-  const validHost =
-    !initialReferrerHost ||
-    (initialReferrerHost.length <= 253 &&
-      /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/u.test(
-        initialReferrerHost,
-      ));
-  const validPath =
-    !landingPath ||
-    (landingPath.length <= 512 &&
-      landingPath.startsWith('/') &&
-      !landingPath.startsWith('//') &&
-      !landingPath.includes('?') &&
-      !landingPath.includes('#'));
-
-  return {
-    valid: validHost && validPath,
-    value: validHost && validPath ? { initialReferrerHost, landingPath } : empty,
-  };
-}
-
-function normalizePageContext(value: Record<string, unknown>): {
-  valid: boolean;
-  value?: ValidPageContext;
-} {
-  const keys = ['page_id', 'page_path', 'base_path', 'content_type'] as const;
-  if (keys.every((key) => value[key] === undefined)) return { valid: true };
-
-  const pageId = stringValue(value.page_id);
-  const pagePath = stringValue(value.page_path);
-  const basePath = stringValue(value.base_path);
-  const contentType = stringValue(value.content_type);
-  const validToken = (entry: string) =>
-    entry.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(entry);
-  const validPath = (entry: string) =>
-    entry.length <= 512 &&
-    entry.startsWith('/') &&
-    !entry.startsWith('//') &&
-    !entry.includes('?') &&
-    !entry.includes('#');
-
-  if (
-    !validToken(pageId) ||
-    !validToken(contentType) ||
-    !validPath(pagePath) ||
-    !validPath(basePath)
-  ) {
-    return { valid: false };
-  }
-
-  return { valid: true, value: { basePath, contentType, pageId, pagePath } };
-}
-
-function formSourceMedium(input: ValidConsultation): string {
-  if (Object.keys(input.utmParameters).length > 0) {
-    return `${input.utmParameters.source || '(not set)'} / ${
-      input.utmParameters.medium || '(not set)'
-    }`;
-  }
-
-  const host = input.attribution.initialReferrerHost;
-  if (!host) return '(direct) / (none)';
-  if (/^(?:www\.)?google\.(?:[a-z]{2,3}|(?:co|com)\.[a-z]{2})$/u.test(host)) {
-    return 'google / organic';
-  }
-  return `${host.replace(/^www\./u, '')} / referral`;
-}
-
 async function sendConsultationEmail(
   input: ValidConsultation,
   env: AxConsultationEnv,
 ): Promise<'failed' | 'sent'> {
   const submittedDate = new Date();
-  const submittedAt = new Intl.DateTimeFormat('ko-KR', {
-    dateStyle: 'long',
-    timeStyle: 'short',
-    timeZone: 'Asia/Seoul',
-  }).format(submittedDate);
+  const submittedAt = formatKoreaDateTime(submittedDate);
   const topicLabel = input.topic ? topicLabels[input.topic] : '';
   const interestLabels = input.interests.map(
     (interest) => consultingInterestLabels[interest] ?? interest,
   );
   const interestSummary = interestLabels.join(', ');
-  const consultationTimestamp = formatConsultationTimestamp(submittedDate);
-  const sourceMedium = formSourceMedium(input);
+  const consultationTimestamp = formatAxLeadTimestamp(submittedDate);
+  const sourceMediumValue = sourceMedium(input);
   const previousSite = input.attribution.initialReferrerHost || '확인되지 않음';
   const pageContextLines = input.pageContext
     ? [
@@ -369,7 +247,7 @@ async function sendConsultationEmail(
     ...pageContextLines,
     `페이지 언어: ${input.locale}`,
     `${interestSummary ? '선택 이유' : '문의 내용'}: ${input.reason || '입력하지 않음'}`,
-    `유입 경로: ${sourceMedium}`,
+    `유입 경로: ${sourceMediumValue}`,
     `이전 사이트: ${previousSite}`,
     ...(input.attribution.landingPath
       ? [`최초 방문 페이지: ${input.attribution.landingPath}`]
@@ -396,29 +274,24 @@ async function sendConsultationEmail(
       interestSummary ? '선택 이유' : '문의 내용',
       escapeHtml(input.reason || '입력하지 않음').replace(/\n/g, '<br />'),
     ],
-    ['유입 경로', escapeHtml(sourceMedium)],
+    ['유입 경로', escapeHtml(sourceMediumValue)],
     ['이전 사이트', escapeHtml(previousSite)],
     ...(input.attribution.landingPath
       ? [['최초 방문 페이지', escapeHtml(input.attribution.landingPath)]]
       : []),
     ...(input.utm ? [['UTM', escapeHtml(input.utm)]] : []),
     ['접수 시각', escapeHtml(submittedAt)],
-  ]
-    .map(
-      ([heading, value]) =>
-        `<tr><th style="width:120px;text-align:left;vertical-align:top;padding:12px;border-top:1px solid #dce4ee">${heading}</th><td style="padding:12px;border-top:1px solid #dce4ee">${value}</td></tr>`,
-    )
-    .join('');
-  const html = `<div style="font-family:Arial,'Apple SD Gothic Neo',sans-serif;color:#10213d;line-height:1.65;max-width:680px;margin:0 auto;padding:32px"><p style="font-size:13px;font-weight:700;letter-spacing:.08em;color:#056eb9;margin:0 0 12px">CORCA AX</p><h1 style="font-size:28px;line-height:1.25;margin:0 0 28px">새 상담 요청이 접수되었습니다.</h1><table style="width:100%;border-collapse:collapse;font-size:15px"><tbody>${rows}</tbody></table></div>`;
+  ];
+  const html = renderAxEmailShell('새 상담 요청이 접수되었습니다.', renderAxEmailRows(rows));
 
   try {
     await env.AX_EMAIL.send({
-      from: { email: consultationSender, name: 'Corca AX' },
+      from: { email: axLeadSender, name: 'Corca AX' },
       html,
       ...(input.email ? { replyTo: input.email } : {}),
       subject: `[Corca AX 상담 요청 #${consultationTimestamp}] ${interestSummary || topicLabel || '새 상담 요청'}`,
       text,
-      to: consultationRecipient,
+      to: axLeadRecipient,
     });
     return 'sent';
   } catch (error) {
@@ -433,101 +306,7 @@ async function sendConsultationEmail(
   }
 }
 
-function formatConsultationTimestamp(date: Date): string {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    day: '2-digit',
-    hour: '2-digit',
-    hourCycle: 'h23',
-    minute: '2-digit',
-    month: '2-digit',
-    second: '2-digit',
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-  }).formatToParts(date);
-  const timestampParts = ['year', 'month', 'day', 'hour', 'minute', 'second'];
-
-  return timestampParts
-    .map((type) => parts.find((part) => part.type === type)?.value ?? '')
-    .join('');
-}
-
-async function readLimitedBody(
-  request: Request,
-): Promise<{ status: 'ok'; text: string } | { status: 'too_large' } | { status: 'unreadable' }> {
-  const contentLength = Number(request.headers.get('Content-Length'));
-  if (Number.isFinite(contentLength) && contentLength > maxBodyBytes)
-    return { status: 'too_large' };
-  if (!request.body) return { status: 'ok', text: '' };
-
-  const reader = request.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let size = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      size += value.byteLength;
-      if (size > maxBodyBytes) {
-        await reader.cancel();
-        return { status: 'too_large' };
-      }
-      chunks.push(value);
-    }
-    const bytes = new Uint8Array(size);
-    let offset = 0;
-    for (const chunk of chunks) {
-      bytes.set(chunk, offset);
-      offset += chunk.byteLength;
-    }
-    return { status: 'ok', text: new TextDecoder('utf-8', { fatal: true }).decode(bytes) };
-  } catch {
-    return { status: 'unreadable' };
-  } finally {
-    reader.releaseLock();
-  }
-}
-
-function jsonSuccess(): Response {
-  return new Response(JSON.stringify({ ok: true }), { headers: noStoreHeaders, status: 200 });
-}
-
-function jsonError(
-  status: number,
-  code: string,
-  fields?: FieldErrors,
-  extraHeaders: Record<string, string> = {},
-): Response {
-  return new Response(
-    JSON.stringify({
-      error: { code, ...(fields && Object.keys(fields).length ? { fields } : {}) },
-      ok: false,
-    }),
-    { headers: { ...noStoreHeaders, ...extraHeaders }, status },
-  );
-}
-
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>'"]/g, (character) => {
-    const entities: Record<string, string> = {
-      '"': '&quot;',
-      '&': '&amp;',
-      "'": '&#39;',
-      '<': '&lt;',
-      '>': '&gt;',
-    };
-    return entities[character] || character;
-  });
-}
-
-function stringValue(value: unknown): string {
-  return typeof value === 'string' ? value.trim() : '';
-}
-
 function stringArray(value: unknown): string[] | null {
   if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) return null;
   return value.map((item) => item.trim()).filter(Boolean);
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }

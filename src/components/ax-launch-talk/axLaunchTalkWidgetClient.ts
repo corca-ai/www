@@ -147,9 +147,11 @@ function initializeWidget(widget: HTMLElement) {
 
   avatar.addEventListener('click', () => {
     updateMode('open');
-    window.requestAnimationFrame(() => {
-      card.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
-    });
+    window.setTimeout(() => {
+      if (mode === 'open') {
+        card.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
+      }
+    }, 0);
   });
 
   document.addEventListener('pointerdown', (event) => {

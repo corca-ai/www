@@ -64,6 +64,8 @@ for (const token of [
   "fetch('/api/ax/launch-talk-leads'",
   'keepalive: true',
   "const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'",
+  "window.setTimeout(() => {\n      if (mode === 'open')",
+  'focus({ preventScroll: true })',
 ]) {
   if (!client.includes(token)) fail(`widget client is missing ${token}`);
 }

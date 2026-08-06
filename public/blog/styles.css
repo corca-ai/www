@@ -432,6 +432,7 @@ body {
 .featured-post,
 .recent-section,
 .saved-section,
+.newsletter-signup,
 .toolbar,
 .topic-map,
 .archive-section,
@@ -3766,6 +3767,123 @@ main:has(.static-post-view) {
   display: none;
 }
 
+.newsletter-signup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+  gap: 40px;
+  align-items: center;
+  margin: 0 0 88px;
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid #d9e4f2;
+  border-radius: 16px;
+  background: #eaf2fb;
+  color: #1a2352;
+}
+
+.newsletter-signup .eyebrow {
+  margin: 0 0 8px;
+  color: #315b8c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.newsletter-signup h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.newsletter-signup > div > p:last-child {
+  margin: 12px 0 0;
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.newsletter-signup form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+
+.newsletter-email-field input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #b8c9dd;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1a2352;
+  padding: 0 14px;
+}
+
+.newsletter-email-field input:focus-visible,
+.newsletter-signup button:focus-visible,
+.newsletter-consent-field input:focus-visible {
+  outline: 3px solid rgba(49, 91, 140, 0.28);
+  outline-offset: 2px;
+}
+
+.newsletter-signup button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 8px;
+  background: #1a2352;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0 20px;
+}
+
+.newsletter-signup button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.newsletter-consent-field,
+.newsletter-status {
+  grid-column: 1 / -1;
+}
+
+.newsletter-consent-field {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.newsletter-consent-field input {
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0;
+}
+
+.newsletter-status {
+  min-height: 1.45em;
+  margin: 0;
+  color: #315b8c;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.newsletter-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.static-post-view > .newsletter-signup-article {
+  width: min(100%, 768px);
+  margin: clamp(56px, 8vw, 88px) auto 0;
+}
+
 .topic-map,
 .posts-section {
   margin: 0 0 96px;
@@ -4037,6 +4155,12 @@ main:has(.static-post-view) {
   .post-list {
     grid-template-columns: 1fr;
     row-gap: 46px;
+  }
+
+  .newsletter-signup {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 64px;
   }
 
   .post-card h3 {

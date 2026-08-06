@@ -7,9 +7,10 @@
 import { canonicalUrl } from '../src/canonical';
 import { SITE_ORIGIN } from '../src/site';
 import { handleAxConsultation } from './axConsultations';
+import { handleNewsletterRequest, type NewsletterEnv, runNewsletterDaily } from './newsletter';
 import { withStaticAssetCacheHeaders } from './staticAssetHeaders.js';
 
-interface WorkerEnv extends Env {
+interface WorkerEnv extends Env, NewsletterEnv {
   CORCA_NOTION_WEBHOOK_SECRET?: string;
   GITHUB_DISPATCH_TOKEN?: string;
   GITHUB_DISPATCH_REPOSITORY?: string;
@@ -17,6 +18,7 @@ interface WorkerEnv extends Env {
 
 const notionPublishWebhookPattern = /^\/api\/notion\/publish\/?$/;
 const axConsultationPattern = /^\/api\/ax\/consultations\/?$/;
+const newsletterPattern = /^\/api\/newsletter\/(?:status|subscribe|confirm|unsubscribe|events)\/?$/;
 const adminPathPattern = /^\/(?:api\/admin|blog\/admin)(?:\/|$)/;
 const retiredRssPattern = /^\/rss\.xml\/?$/;
 const githubDispatchRepository = 'corca-ai/www';
@@ -38,6 +40,10 @@ export default {
       return handleAxConsultation(request, env);
     }
 
+    if (newsletterPattern.test(url.pathname)) {
+      return handleNewsletterRequest(request, env);
+    }
+
     if (notionPublishWebhookPattern.test(url.pathname)) {
       return handleNotionPublishWebhook(request, env);
     }
@@ -54,6 +60,13 @@ export default {
 
     const response = await env.ASSETS.fetch(request);
     return withStaticAssetCacheHeaders(request, response);
+  },
+  async scheduled(_event, env, ctx): Promise<void> {
+    ctx.waitUntil(
+      runNewsletterDaily(env).then((result) => {
+        console.log('Newsletter daily run completed', result);
+      }),
+    );
   },
 } satisfies ExportedHandler<WorkerEnv>;
 

@@ -34,7 +34,7 @@
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
     <script type="application/ld+json" data-corca-managed="post-structured-data">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"오퍼레이션팀의 새로운 동료, Ceal","description":"오퍼레이션팀이 Ceal을 활용해 법인카드, 설문, 생일·입사기념일 공지 같은 반복 운영 업무를 자동화한 사례를 소개합니다.","image":"https://www.corca.ai/blog/assets/medium-import/ceal-operations-team-figure-01.png","thumbnailUrl":"https://www.corca.ai/blog/assets/medium-import/ceal-operations-team-figure-01.png","url":"https://www.corca.ai/blog/ceal-operations-team","keywords":["씰"],"articleSection":"제품","wordCount":1663,"datePublished":"2026-05-13","dateModified":"2026-05-13","author":{"@type":"Organization","name":"김선영(HR Manager)"},"publisher":{"@type":"Organization","name":"Corca"},"inLanguage":"ko","timeRequired":"PT4M","isPartOf":{"@type":"Blog","name":"블로그","url":"https://www.corca.ai/blog"},"mainEntityOfPage":"https://www.corca.ai/blog/ceal-operations-team"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.corca.ai/"},{"@type":"ListItem","position":2,"name":"블로그","item":"https://www.corca.ai/blog"},{"@type":"ListItem","position":3,"name":"오퍼레이션팀의 새로운 동료, Ceal","item":"https://www.corca.ai/blog/ceal-operations-team"}]}]}</script>
-    <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="icon" href="https://www.corca.ai/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="/blog/styles.css?v=2ebd16ddc945">
   </head>
@@ -123,6 +123,26 @@
 </section>
         </aside>
         </div>
+      <section id="newsletter" class="newsletter-signup newsletter-signup-article" aria-labelledby="newsletter-title" hidden>
+        <div>
+          <p class="eyebrow">CORCA BLOG</p>
+          <h2 id="newsletter-title">새 글을 메일로 받아보세요</h2>
+          <p>코르카 블로그에 새 글이 발행되면 알려드릴게요. 언제든 수신을 중단할 수 있습니다.</p>
+        </div>
+        <form data-newsletter-form action="/api/newsletter/subscribe" method="post">
+          <label class="newsletter-email-field">
+            <span class="sr-only">이메일 주소</span>
+            <input name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required>
+          </label>
+          <label class="newsletter-consent-field">
+            <input name="consent" type="checkbox" required>
+            <span>이메일로 새 글 소식을 받는 데 동의합니다.</span>
+          </label>
+          <input class="newsletter-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit">구독하기</button>
+          <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite"></p>
+        </form>
+      </section>
         <nav class="post-list" aria-label="최신 글 더보기">
         <article class="post-card">
           <a class="post-card-link" href="/blog/ceal-survey-interview-team-skill">

@@ -20,6 +20,18 @@
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   },
+  // Newsletter subscriber data and delivery history are isolated from the
+  // existing blog analytics database. The daily trigger is 09:00 KST (UTC).
+  "d1_databases": [
+    {
+      "binding": "NEWSLETTER_DB",
+      "database_name": "corca-www-newsletter",
+      "database_id": "a4301d72-c89e-43b1-8b69-1abca47b229a"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 0 * * *"]
+  },
   // The AX consultation endpoint can send only from ax@corca.ai and only to
   // the verified Corca inbox. The visitor's address is used as Reply-To.
   "send_email": [

@@ -99,6 +99,12 @@ host and no trailing slash except for the root path.
 Blog data is deployed as Cloudflare Workers Static Assets. There is no runtime
 database for published posts.
 
+The newsletter is the deliberate exception: it never stores post content, but
+uses a dedicated D1 database for opt-in subscribers and delivery history. Its
+daily Worker job reads the production Korean RSS feed after a post has passed
+the normal Notion → pull request → deployment flow. See [Blog newsletter](newsletter.md)
+for the setup boundary and operational procedure.
+
 - Public reads use static files such as `/blog/index.json` and
   `/blog/<slug>/index.html`.
 - The old `/blog/admin` editor and `/api/admin/*` routes are retired. Notion is

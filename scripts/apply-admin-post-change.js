@@ -872,6 +872,11 @@ async function renderBlogIndexPages(postRecordsByLocale) {
         /(<section id="featuredPost"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.latest)}$2`,
       )
+      .replace(/\n\s*<section id="newsletter"[\s\S]*?<\/section>/, '')
+      .replace(
+        /(<section id="featuredPost"[^>]*><\/section>)/,
+        `$1${locale === 'ko' ? `\n${renderNewsletterSignup()}` : ''}`,
+      )
       .replace(
         /(<section id="recentReads"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.recent)}$2`,
@@ -1225,6 +1230,31 @@ function renderIndexAbout(labels) {
       </section>`;
 }
 
+function renderNewsletterSignup(placement = 'index') {
+  const className =
+    placement === 'article' ? 'newsletter-signup newsletter-signup-article' : 'newsletter-signup';
+  return `      <section id="newsletter" class="${className}" aria-labelledby="newsletter-title" hidden>
+        <div>
+          <p class="eyebrow">CORCA BLOG</p>
+          <h2 id="newsletter-title">새 글을 메일로 받아보세요</h2>
+          <p>코르카 블로그에 새 글이 발행되면 알려드릴게요. 언제든 수신을 중단할 수 있습니다.</p>
+        </div>
+        <form data-newsletter-form action="/api/newsletter/subscribe" method="post">
+          <label class="newsletter-email-field">
+            <span class="sr-only">이메일 주소</span>
+            <input name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required>
+          </label>
+          <label class="newsletter-consent-field">
+            <input name="consent" type="checkbox" required>
+            <span>이메일로 새 글 소식을 받는 데 동의합니다.</span>
+          </label>
+          <input class="newsletter-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit">구독하기</button>
+          <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite"></p>
+        </form>
+      </section>`;
+}
+
 function renderIndexNoscript(records, locale, labels) {
   const cards = records
     .map(
@@ -1402,7 +1432,7 @@ ${renderStaticTableOfContents(toc, locale)}
 ${renderStaticRecommendations(recommendations, locale)}
         </aside>
         </div>
-        ${pageNav}
+${locale === 'ko' ? `${renderNewsletterSignup('article')}\n` : ''}        ${pageNav}
       </section>
     </main>${shell.afterMain}</body>
 </html>

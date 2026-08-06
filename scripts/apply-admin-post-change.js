@@ -1407,7 +1407,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
     <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, pageUrl, articleSection, locale))}</script>
-    <link rel="icon" href="https://www.corca.ai/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://www.corca.ai/favicons/corca-ai-48.png" type="image/png" sizes="48x48">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="${escapeAttribute(blogStylesHref)}">
   </head>

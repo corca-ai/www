@@ -58,21 +58,26 @@ accessibility contract:
 
 ## Favicon discovery contract
 
-- `assets/brand/favicon-symbol.png` is the only approved favicon source. It is
-  the white Corca dolphin+i symbol on the blue brand background.
-- The build generates a stable root `https://www.corca.ai/favicon.ico` with
-  16px, 32px and 48px PNG entries. Keep this URL crawlable and do not rename it;
-  search engines may retain an older favicon until they recrawl the same URL.
+- Figma node `46:17` exported to `assets/brand/favicon-symbol.svg` is the only
+  approved favicon source. It is the white Corca dolphin+i symbol on the blue
+  brand background; the build pins its SHA-256 so an unrelated icon cannot
+  silently replace it.
 - Every public page emits exactly one search favicon declaration: the standard
-  absolute `rel="icon"` URL `https://www.corca.ai/favicon.ico`. Do not add a
-  second PNG or `shortcut icon` candidate. Apple/PWA icons remain separate but
-  are generated from the same approved source. The blog build copies this same
-  shared head contract, and the final build scans every public HTML file.
-- Browser/PWA PNG assets remain generated from the same source. A favicon
-  change requires an explicit brand decision, regenerated assets and visual
-  inspection at 15px or 16px as well as the source size.
+  absolute PNG URL `https://www.corca.ai/favicons/corca-ai-48.png` with
+  `sizes="48x48"`. Do not add a second search icon or `shortcut icon` candidate.
+  The stable root `/favicon.ico` remains a crawlable 16/32/48px legacy fallback.
+- The legacy `/favicons/favicon-{16,32,48}.png`, Apple and Android filenames are
+  permanent compatibility aliases generated from the same source. Do not
+  delete them: open browser tabs and search caches may continue requesting them.
+- Apple touch 180px, PWA `any` 192/512px and separately padded `maskable`
+  192/512px icons are generated from the same source. The blog build copies the
+  shared head contract, and the final build checks every public HTML and every
+  compatibility asset.
+- A favicon change requires an explicit brand decision, regenerated assets and
+  visual inspection at 15px or 16px, Apple touch size and Android mask crops.
 
-Reference: [Google Images SEO best practices](https://developers.google.com/search/docs/appearance/google-images?hl=ko#descriptive-alt-text-descriptive-titles-captions-filenames).
+References: [Google favicon guidance](https://developers.google.com/search/docs/appearance/favicon-in-search),
+[Naver favicon markup guidance](https://searchadvisor.naver.com/guide/markup-favicon).
 
 ## Performance invariants
 

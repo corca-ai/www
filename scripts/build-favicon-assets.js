@@ -1,30 +1,36 @@
 import { createHash } from 'node:crypto';
-import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const source = join(root, 'assets/brand/favicon-symbol.png');
+const source = join(root, 'assets/brand/favicon-symbol.svg');
 const faviconDir = join(root, 'public/favicons');
-const officialSourceSha256 = '0ae77ebc24831733f02e4a86ff0eae0f51d61d22e804a1dec116a5959c858be8';
+const officialSourceSha256 = '4e9be581cd5bf84e7ad16b1fea495ecb56352f7d965dbeaf1d9dfc40f64de002';
 
 const assets = [
   ['corca-ai-16.png', 16],
   ['corca-ai-32.png', 32],
   ['corca-ai-48.png', 48],
+  ['corca-ai-96.png', 96],
   ['corca-ai-apple-touch-180.png', 180],
   ['corca-ai-192.png', 192],
   ['corca-ai-512.png', 512],
 ];
 
-const legacyAssets = [
-  'favicon-16.png',
-  'favicon-32.png',
-  'favicon-48.png',
-  'apple-touch-icon.png',
-  'icon-192.png',
-  'icon-512.png',
+const maskableAssets = [
+  ['corca-ai-maskable-192.png', 192],
+  ['corca-ai-maskable-512.png', 512],
+];
+
+const compatibilityAssets = [
+  ['corca-ai-16.png', 'favicon-16.png'],
+  ['corca-ai-32.png', 'favicon-32.png'],
+  ['corca-ai-48.png', 'favicon-48.png'],
+  ['corca-ai-apple-touch-180.png', 'apple-touch-icon.png'],
+  ['corca-ai-192.png', 'icon-192.png'],
+  ['corca-ai-512.png', 'icon-512.png'],
 ];
 
 const icoAssetNames = ['corca-ai-16.png', 'corca-ai-32.png', 'corca-ai-48.png'];
@@ -53,14 +59,8 @@ const createPngIco = (images) => {
   return Buffer.concat([header, ...images.map(({ data }) => data)]);
 };
 
-const roundedSquareMask = (size) =>
-  Buffer.from(
-    `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg"><rect width="${size}" height="${size}" rx="${Math.round(size * 0.18)}" fill="#fff"/></svg>`,
-  );
-
-const sourceSha256 = createHash('sha256')
-  .update(await readFile(source))
-  .digest('hex');
+const sourceBuffer = await readFile(source);
+const sourceSha256 = createHash('sha256').update(sourceBuffer).digest('hex');
 if (sourceSha256 !== officialSourceSha256) {
   throw new Error(
     `Refusing to generate favicons from an unapproved source: ${sourceSha256}. ` +
@@ -69,16 +69,42 @@ if (sourceSha256 !== officialSourceSha256) {
 }
 
 await mkdir(faviconDir, { recursive: true });
-await Promise.all(legacyAssets.map((name) => rm(join(faviconDir, name), { force: true })));
 
 await Promise.all(
   assets.map(([name, size]) =>
-    sharp(source)
+    sharp(sourceBuffer)
       .resize(size, size, { kernel: sharp.kernel.lanczos3 })
       .ensureAlpha()
-      .composite([{ input: roundedSquareMask(size), blend: 'dest-in' }])
       .png({ compressionLevel: 9, palette: false })
       .toFile(join(faviconDir, name)),
+  ),
+);
+
+await Promise.all(
+  maskableAssets.map(async ([name, size]) => {
+    const safeSize = Math.round(size * 0.8);
+    const safeIcon = await sharp(sourceBuffer)
+      .resize(safeSize, safeSize, { kernel: sharp.kernel.lanczos3 })
+      .ensureAlpha()
+      .png({ compressionLevel: 9, palette: false })
+      .toBuffer();
+    await sharp({
+      create: {
+        width: size,
+        height: size,
+        channels: 4,
+        background: '#0061BC',
+      },
+    })
+      .composite([{ input: safeIcon, gravity: 'centre' }])
+      .png({ compressionLevel: 9, palette: false })
+      .toFile(join(faviconDir, name));
+  }),
+);
+
+await Promise.all(
+  compatibilityAssets.map(([currentName, compatibilityName]) =>
+    cp(join(faviconDir, currentName), join(faviconDir, compatibilityName)),
   ),
 );
 
@@ -101,4 +127,7 @@ await Promise.all([
   cp(join(faviconDir, 'corca-ai-192.png'), join(root, 'public/blog/assets/favicon.png')),
 ]);
 
-console.log(`Generated ${assets.length} optimized favicon assets and favicon.ico from ${source}.`);
+console.log(
+  `Generated ${assets.length} favicon assets, ${maskableAssets.length} maskable assets, ` +
+    `${compatibilityAssets.length} compatibility aliases and favicon.ico from ${source}.`,
+);

@@ -6,10 +6,16 @@ export interface TeamInterview {
   slug: string;
   title: string;
   description: string;
+  excerpt: string;
   date: string;
   cover: string;
   coverAlt?: string;
   source: 'team-interview';
+}
+
+interface TeamInterviewPost extends Omit<TeamInterview, 'excerpt'> {
+  excerpt?: string;
+  searchText?: string;
 }
 
 const blogIndexPaths: Record<Lang, string> = {
@@ -19,7 +25,7 @@ const blogIndexPaths: Record<Lang, string> = {
   zh: 'public/zh/blog/index.json',
 };
 
-function isTeamInterview(value: unknown): value is TeamInterview {
+function isTeamInterview(value: unknown): value is TeamInterviewPost {
   if (!value || typeof value !== 'object') return false;
   const post = value as Record<string, unknown>;
   return (
@@ -27,6 +33,31 @@ function isTeamInterview(value: unknown): value is TeamInterview {
     ['slug', 'title', 'description', 'date', 'cover'].every(
       (key) => typeof post[key] === 'string' && post[key].trim().length > 0,
     )
+  );
+}
+
+function interviewExcerpt(searchText: string | undefined, fallback: string) {
+  const text = String(searchText || '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const questionMarker = /(?:^|\s)(?:Q\s*\d*\s*[.．:：)）]|질문\s*[:：]|問\s*[:：]|问\s*[:：])/u;
+  const firstQuestion = text.search(questionMarker);
+  const body = firstQuestion >= 0 ? text.slice(firstQuestion) : text;
+  const sentences = body
+    .split(/(?<=[.!?…。！？])\s+/u)
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.length >= 35 && sentence.length <= 240)
+    .filter((sentence) => !/^https?:\/\/\S+$/i.test(sentence))
+    .filter(
+      (sentence) =>
+        !/^(?:Q\s*\d*\s*[.．:：)）]|질문\s*[:：]|問\s*[:：]|问\s*[:：])/u.test(sentence),
+    );
+  const answers = sentences.filter((sentence) => !/[?？]$/.test(sentence));
+
+  return (
+    answers[Math.floor(answers.length / 2)] ||
+    sentences[Math.floor(sentences.length / 2)] ||
+    fallback
   );
 }
 
@@ -41,5 +72,9 @@ export async function getTeamInterviews(lang: Lang): Promise<TeamInterview[]> {
 
   return value
     .filter(isTeamInterview)
+    .map((post) => ({
+      ...post,
+      excerpt: post.excerpt?.trim() || interviewExcerpt(post.searchText, post.description),
+    }))
     .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title, 'ko'));
 }

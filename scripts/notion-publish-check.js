@@ -148,6 +148,12 @@ second preserved code-like line</pre>
                 'The first interview answer verifies that question headings appear in the table of contents.',
               ),
             }),
+            block('paragraph', {
+              rich_text: linkedText(
+                'https://example.com/team-interview',
+                'https://example.com/team-interview',
+              ),
+            }),
             block('heading_3', { rich_text: text('Q2. Another team interview question') }),
             block('paragraph', {
               rich_text: text('The second interview answer verifies more than one question link.'),
@@ -345,6 +351,10 @@ second preserved code-like line</pre>
     posts.find((post) => post.slug === 'team-interview-fixture')?.source,
     'team-interview',
   );
+  assert.equal(
+    posts.find((post) => post.slug === 'team-interview-fixture')?.excerpt,
+    'The second interview answer verifies more than one question link.',
+  );
   assert.equal(posts.find((post) => post.slug === 'notion-body-fixture')?.source, 'blog');
   assert.equal(
     posts.some((post) => post.slug === 'already-published-fixture'),
@@ -366,9 +376,10 @@ second preserved code-like line</pre>
     join(workDir, 'public/blog/team-interview-fixture/index.html'),
     'utf8',
   );
-  assert.match(
+  assert.doesNotMatch(
     teamInterviewPage,
-    /<h1>Team interview fixture<\/h1>\s*<p>Checks that an optional team interview database publishes through the same blog flow\.\.\.<\/p>/,
+    /<h1>Team interview fixture<\/h1>\s*<p>/,
+    'team interview details omit the Notion description from the visible header',
   );
   assert.match(teamInterviewPage, /<h3 id="section-1">Q1\. Team interview question/);
   assert.match(teamInterviewPage, /<h3 id="section-2">Q2\. Another team interview question/);

@@ -700,6 +700,7 @@ async function readBasePostRecords() {
       taxonomyContext,
     );
     const cover = resolvePostCover(parsed.metadata.cover, parsed.articleHtml);
+    const postSource = normalizePostSource(parsed.metadata.source || 'blog');
     const post = {
       slug,
       title,
@@ -711,10 +712,13 @@ async function readBasePostRecords() {
       wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
       language: normalizeLanguage(parsed.metadata.language || 'ko'),
       coverAlt: String(parsed.metadata.coverAlt || '').trim(),
-      source: normalizePostSource(parsed.metadata.source || 'blog'),
+      source: postSource,
       section: normalizePostSection(parsed.metadata.section, tags, taxonomyContext),
       searchText: stripTags(parsed.articleHtml),
     };
+    if (postSource === 'team-interview') {
+      post.excerpt = teamInterviewExcerpt(parsed.articleHtml, description);
+    }
 
     validatePost(post);
     records.push({
@@ -794,6 +798,9 @@ async function localizePostRecord(baseRecord, locale) {
     ),
     searchText: stripTags(parsed.articleHtml),
   };
+  if (post.source === 'team-interview') {
+    post.excerpt = teamInterviewExcerpt(parsed.articleHtml, description);
+  }
   validatePost(post);
   return { post, articleHtml: parsed.articleHtml, source, sourcePath: translationPath };
 }
@@ -1384,7 +1391,7 @@ function renderStaticPostPage(post, articleHtml, posts, locale, availableLocales
   const pageNav = latestPostNav(post, posts, locale);
   const articleSection = post.section || post.tags[0] || '코르카';
   const imageAlt = post.coverAlt || `${post.title} ${localeLabels[locale].imageAltSuffix}`;
-  const visibleDescription = displayPostDescription(post);
+  const visibleDescription = post.source === 'team-interview' ? '' : post.description;
   const articleAuthorMeta = post.author
     ? `    <meta property="article:author" content="${escapeAttribute(post.author)}">\n`
     : '';
@@ -1432,8 +1439,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
         <article id="article" class="article static-article">
           <header class="article-header">
             <h1>${escapeHtml(post.title)}</h1>
-            <p>${escapeHtml(visibleDescription)}</p>
-            <div class="article-meta">
+${visibleDescription ? `            <p>${escapeHtml(visibleDescription)}</p>\n` : ''}            <div class="article-meta">
               <span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
 ${visibleAuthor}            </div>
           </header>
@@ -1653,12 +1659,6 @@ function tableOfContents(articleHtml, includeQuestionHeadings = false) {
     .filter((item) => item.id && item.text);
   if (!items.length) return '';
   return `<ol>\n${items.map((item) => `              <li><a href="#${escapeAttribute(item.id)}">${escapeHtml(item.text)}</a></li>`).join('\n')}\n            </ol>`;
-}
-
-function displayPostDescription(post) {
-  const description = String(post.description || '').trim();
-  if (post.source !== 'team-interview' || !description) return description;
-  return `${description.replace(/(?:\.{1,3}|…)+$/u, '')}...`;
 }
 
 function prepareArticleHtml(html, includeQuestionHeadings = false) {
@@ -2291,6 +2291,24 @@ function stripTags(value) {
       .replace(/\s+/g, ' ')
       .trim(),
   );
+}
+
+function teamInterviewExcerpt(articleHtml, fallback) {
+  const sentences = [...String(articleHtml || '').matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+    .filter((match) => !/^<a\b[^>]*>[\s\S]*?<\/a>$/i.test(match[1].trim()))
+    .flatMap((match) => stripTags(match[1]).split(/(?<=[.!?…。！？])\s+/u))
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.length >= 35 && sentence.length <= 240)
+    .filter((sentence) => !/^https?:\/\/\S+$/i.test(sentence))
+    .filter(
+      (sentence) =>
+        !/^(?:Q\s*\d*\s*[.．:：)）]|질문\s*\d*\s*[.．:：)）]|質問\s*\d*\s*[.．:：)）]|問題\s*\d*\s*[.．:：)）]|问\s*\d*\s*[.．:：)）])/u.test(
+          sentence,
+        ),
+    )
+    .filter((sentence) => !/[?？]$/.test(sentence));
+
+  return sentences[Math.floor(sentences.length / 2)] || fallback;
 }
 
 function escapeHtml(value) {

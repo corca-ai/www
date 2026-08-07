@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "bounded_review_delegation": "granted",
+  "scopes": ["setup", "quality", "critique", "release", "issue"],
+  "recorded_by": "user",
+  "note": "\uc0ac\uc6a9\uc790\uac00 \ud300 \uc778\ud130\ubdf0 Notion DB \uc9c0\uc6d0 PR\uc758 \ub3c5\ub9bd \uac80\ud1a0\ub97c \uc2b9\uc778\ud568 (2026-08-07)."
+}

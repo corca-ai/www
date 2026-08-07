@@ -15,11 +15,17 @@ editions and delivery rows.
 
 - `worker/newsletter.ts` owns subscribe, confirmation, unsubscribe, RSS
   discovery, delivery queueing, bounded delivery retry, SES feedback handling,
-  and AWS SES SigV4 mail delivery.
+  and AWS SES SigV4 mail delivery. `worker/newsletter-email.ts` owns the
+  responsive shared HTML card used by the confirmation and new-post messages;
+  it receives each flow's dynamic title, CTA URL and optional unsubscribe URL.
+- `public/corca-logo-email.png` is the PNG logo served by the deployed site for
+  that email template. Use its absolute site URL rather than the SVG logo:
+  email clients have inconsistent SVG support.
 - `worker/index.ts` reads the default `/rss` feed directly from the Worker
   Assets binding during scheduled runs, avoiding a self-request through the
   public custom domain. `NEWSLETTER_RSS_URL` remains the explicit override for
-  an external feed.
+  an external feed. This RSS fetcher is not used for SES delivery: mail always
+  uses the Worker global `fetch` to reach AWS.
 - `migrations/0001_newsletter.sql` owns D1 tables for subscribers, editions,
   deliveries and the RSS baseline marker. The unique edition/subscriber pair is
   the duplicate-send guard.

@@ -14,6 +14,17 @@
   word-break: keep-all;
 }
 
+/* AX's Korean composition deliberately wraps only at authored boundaries.
+   Restore native CJK wrapping for Japanese and Chinese instead of inheriting
+   that Korean-only rule; `strict` also keeps prohibited punctuation away from
+   line starts and ends. */
+html:lang(ja) .ax-v2-page,
+html:lang(zh-CN) .ax-v2-page {
+  line-break: strict;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .ax-v2-page *,
 .ax-v2-page *::before,
 .ax-v2-page *::after {
@@ -1486,7 +1497,7 @@ body:has(.ax-v2-dialog[open]) {
 
   .ax-v2-accordion-item button span {
     color: #70b8ff;
-    font-size: 13px;
+    font-size: inherit;
   }
 
   .ax-v2-accordion-item button i {

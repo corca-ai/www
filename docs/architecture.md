@@ -33,7 +33,10 @@ property.
   hreflang alternates, the canonical Google Analytics measurement ID and a
   per-page JSON-LD `@graph`. `src/components/CommonHead.astro` owns shared
   application metadata, fonts and the Microsoft Clarity loader.
-- `src/content/` — news and colleague entries as schema-validated YAML collections.
+- `src/content/` — schema-validated YAML news collection.
+- `src/teamInterviews.ts` — build-time reader for the public blog index; it
+  exposes only entries published from the dedicated team-interview Notion
+  database to the People page and its About preview.
 - `public/blog/` — the integrated Corca Blog static subsite, generated from the
   separate `corca-blog-pages` project with `/blog` as its base path. It carries
   the original blog HTML, CSS, client app, assets, post pages, RSS feed and JSON

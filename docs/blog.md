@@ -107,6 +107,11 @@ for the setup boundary and operational procedure.
 
 - Public reads use static files such as `/blog/index.json` and
   `/blog/<slug>/index.html`.
+- Every public index record carries an internal publication-source key. The
+  Notion publisher assigns `team-interview` only to rows from the dedicated
+  team-interview database (and `blog` to the general blog database). The
+  `/about/colleagues` page consumes only the `team-interview` records, so its
+  cards and detail links change in the same content PR as the team interview.
 - The old `/blog/admin` editor and `/api/admin/*` routes are retired. Notion is
   the only supported editorial surface for publish, edit and delete requests.
 - Generated source and translation artifacts under `/blog/admin/` remain in the
@@ -177,6 +182,12 @@ the existing `/api/notion/publish` endpoint with the existing webhook secret.
 No second Worker endpoint, route or blog template is required: the webhook page
 ID is matched across both configured sources and the generated article joins
 the normal `/blog` index, feeds, locale aliases and sitemap.
+
+The generated blog index also preserves the non-sensitive source key
+`team-interview`. It is the build-time contract for `/about/colleagues`; do not
+manually maintain people cards or duplicate a team-interview post in a YAML
+collection. A delete request removes the generated post from that index, and
+therefore removes its People card in the same pull request.
 
 Rows requested for publication or update need a `Slug`/`슬러그` or Notion title;
 that effective published slug must be unique across both databases. Delete rows

@@ -51,27 +51,14 @@ localized aliases, RSS, JSON feed and sitemap in sync. Verify `/blog`,
 `/en/blog`, `/ja/blog`, `/zh/blog`, `/blog/<slug>`, `/rss` and
 `/blog/feed.json` before shipping.
 
-## Add a colleague
+## Publish a team interview
 
-Team members work the same way under `src/content/colleagues/`, one file each.
-Each carries an `order` for its position in the grid, the `image` id, a `story`
-link out to corca.team, and a `role` and `quote` translated per locale:
-
-```yaml
-order: 16
-image: 2fe9a6_def456
-story: https://corca.team/abcd1234
-role:
-  ko: "역할"
-  en: "Role"
-  ja: "役割"
-  zh: "角色"
-quote:
-  ko: "한마디"
-  en: "A line"
-  ja: "一言"
-  zh: "一句话"
-```
+The People page is populated from posts published through the dedicated
+team-interview Notion database, not from `src/content/colleagues/`. Follow the
+[team-interview database workflow](blog.md#team-interview-database): create,
+update or delete the Notion row using the normal publication status. The
+generated content PR updates the blog index and `/about/colleagues` together;
+each card links to that post's localized `/blog/<slug>` detail page.
 
 ## Add a locale
 

@@ -47,7 +47,10 @@ try {
         if (args.dryRun) {
           validateDeletePayload({ slug });
         } else {
-          runAdminPostDelete({ slug });
+          runAdminPostDelete({
+            slug,
+            notionSource: page._corcaNotionSource?.key || 'blog',
+          });
         }
         processed.push({
           action,
@@ -71,7 +74,12 @@ try {
         if (args.dryRun) {
           validatePublishPayload({ source, metadata, slug });
         } else {
-          runAdminPostUpsert({ source, metadata, slug });
+          runAdminPostUpsert({
+            source,
+            metadata,
+            slug,
+            notionSource: page._corcaNotionSource?.key || 'blog',
+          });
         }
 
         processed.push({
@@ -293,7 +301,7 @@ function validateDeletePayload({ slug }) {
   }
 }
 
-function runAdminPostUpsert({ source, metadata, slug }) {
+function runAdminPostUpsert({ source, metadata, slug, notionSource }) {
   validatePublishPayload({ source, metadata, slug });
   runAdminPostChange({
     action: 'upsert',
@@ -303,14 +311,15 @@ function runAdminPostUpsert({ source, metadata, slug }) {
     metadata: {
       ...metadata,
       slug,
+      source: notionSource,
     },
     contentBase64: Buffer.from(source.content, 'utf8').toString('base64'),
   });
 }
 
-function runAdminPostDelete({ slug }) {
+function runAdminPostDelete({ slug, notionSource }) {
   validateDeletePayload({ slug });
-  runAdminPostChange({ action: 'delete', slug });
+  runAdminPostChange({ action: 'delete', slug, source: notionSource });
 }
 
 function runAdminPostChange(payload) {

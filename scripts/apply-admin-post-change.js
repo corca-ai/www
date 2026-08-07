@@ -317,6 +317,7 @@ async function upsertPost(value) {
       uploadedCover || normalizeCover(metadata.cover || parsed?.metadata.cover || defaultCover),
     language: normalizeLanguage(metadata.language || parsed?.metadata.language || 'ko'),
     coverAlt: String(metadata.coverAlt || parsed?.metadata.coverAlt || '').trim(),
+    source: normalizePostSource(metadata.source || parsed?.metadata.source || 'blog'),
     section,
     wordCount: estimateWordCount(articleHtml),
   };
@@ -327,6 +328,7 @@ async function upsertPost(value) {
   }
 
   validatePost({ slug, ...post });
+  await assertPostSourceOwnership(slug, post.source);
   await mkdir(sourcesDir, { recursive: true });
   await writeFile(join(sourcesDir, `${slug}.html`), renderPostSource(post, articleHtml));
   await writePostTranslations(post, articleHtml, slug);
@@ -391,6 +393,9 @@ async function deleteBodyImages(value, slug) {
 async function deletePost(value) {
   const slug = normalizeSlug(value.slug || '');
   if (!slug) fail('Admin post delete requires a slug.');
+  const source = normalizePostSource(value.source || 'blog');
+
+  await assertPostSourceOwnership(slug, source);
 
   await rm(join(sourcesDir, `${slug}.html`), { force: true });
   await rm(join(postsDir, slug), { recursive: true, force: true });
@@ -407,6 +412,20 @@ async function deletePost(value) {
     });
   }
   console.log(`Admin post deleted: ${slug}`);
+}
+
+async function assertPostSourceOwnership(slug, source) {
+  const existing = await readFile(join(sourcesDir, `${slug}.html`), 'utf8').catch(() => '');
+  if (!existing.trim()) return;
+
+  const existingSource = normalizePostSource(
+    parsePostSource(existing, `${slug}.html`).metadata.source || 'blog',
+  );
+  if (existingSource !== source) {
+    fail(
+      `Post slug "${slug}" already belongs to ${existingSource}; ${source} cannot update or delete it.`,
+    );
+  }
 }
 
 async function writePostTranslations(post, articleHtml, slug) {
@@ -692,6 +711,7 @@ async function readBasePostRecords() {
       wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
       language: normalizeLanguage(parsed.metadata.language || 'ko'),
       coverAlt: String(parsed.metadata.coverAlt || '').trim(),
+      source: normalizePostSource(parsed.metadata.source || 'blog'),
       section: normalizePostSection(parsed.metadata.section, tags, taxonomyContext),
       searchText: stripTags(parsed.articleHtml),
     };
@@ -1738,6 +1758,7 @@ function renderPostSource(metadata, articleHtml) {
     author: String(metadata.author || '').trim(),
     cover: normalizeCover(metadata.cover),
     language,
+    source: normalizePostSource(metadata.source || 'blog'),
   };
   if (metadata.coverAlt) post.coverAlt = String(metadata.coverAlt).trim();
   post.section = localizePostTopic(
@@ -1900,6 +1921,12 @@ function normalizeMetadata(value) {
       typeof item === 'string' ? item.trim() : item,
     ]),
   );
+}
+
+function normalizePostSource(value) {
+  const source = String(value || '').trim();
+  if (source === 'blog' || source === 'team-interview') return source;
+  fail(`Post metadata source must be blog or team-interview: ${source || '(missing)'}`);
 }
 
 function normalizeFormat(value) {

@@ -329,6 +329,11 @@ second preserved code-like line</pre>
     true,
   );
   assert.equal(
+    posts.find((post) => post.slug === 'team-interview-fixture')?.source,
+    'team-interview',
+  );
+  assert.equal(posts.find((post) => post.slug === 'notion-body-fixture')?.source, 'blog');
+  assert.equal(
     posts.some((post) => post.slug === 'already-published-fixture'),
     false,
   );
@@ -339,6 +344,10 @@ second preserved code-like line</pre>
   assert.equal(
     enPosts.some((post) => post.slug === 'notion-html-fixture'),
     true,
+  );
+  assert.equal(
+    enPosts.find((post) => post.slug === 'team-interview-fixture')?.source,
+    'team-interview',
   );
   const notionBodySource = await readFile(
     join(workDir, 'public/blog/admin/post-sources/notion-body-fixture.html'),
@@ -773,6 +782,57 @@ second preserved code-like line</pre>
   );
   assert.match(await readFile(updatesPath, 'utf8'), /Deleted notion-html-fixture/);
   assert.match(await readFile(updatesPath, 'utf8'), /삭제 완료/);
+
+  for (const status of ['수정 요청', '삭제 요청']) {
+    await writeFile(
+      teamInterviewPagesPath,
+      JSON.stringify(
+        {
+          results: [
+            page({
+              id: teamInterviewPageId,
+              title: 'Cross-source ownership fixture',
+              slug: 'notion-body-fixture',
+              description:
+                'Checks that a team-interview row cannot update or delete a general blog post with the same slug.',
+              language: 'ko',
+              status,
+              fileUrl: pathToFileURL(htmlPath).href,
+            }),
+          ],
+        },
+        null,
+        2,
+      ),
+    );
+
+    assert.throws(
+      () =>
+        execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+          cwd: workDir,
+          encoding: 'utf8',
+          env: {
+            ...process.env,
+            BLOG_ADMIN_ROOT: workDir,
+            NOTION_TOKEN: 'secret_fixture',
+            NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
+            NOTION_FIXTURE_PAGES_FILE: pagesPath,
+            NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+            NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewPagesPath,
+            NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+            NOTION_FIXTURE_UPDATES_FILE: updatesPath,
+            NOTION_ALLOW_FILE_URLS: '1',
+            NOTION_POST_UPDATE_STATUS: '수정 요청',
+            NOTION_POST_DELETE_STATUS: '삭제 요청',
+            NOTION_SKIP_UPDATES: '1',
+            CORCA_SITE_URL: 'https://www.corca.ai',
+            BLOG_TRANSLATION_PROVIDER: 'fixture',
+          },
+        }),
+      /already belongs to blog/,
+      `${status} rows cannot mutate a slug owned by the general blog database`,
+    );
+  }
 
   console.log('Notion publish check passed.');
 } finally {

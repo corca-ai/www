@@ -167,3 +167,35 @@ test('signs the SES v2 request before sending it', async () => {
   assert.equal(request?.headers.get('x-amz-date'), '20260805T000000Z');
   assert.match(await request?.text(), /"FromEmailAddress":"newsletter@corca\.ai"/);
 });
+
+test('retains safe SES response diagnostics when delivery is rejected', async () => {
+  await assert.rejects(
+    () =>
+      sendSesEmail(
+        {
+          NEWSLETTER_AWS_ACCESS_KEY_ID: 'AKIDEXAMPLE',
+          NEWSLETTER_AWS_REGION: 'ap-northeast-2',
+          NEWSLETTER_AWS_SECRET_ACCESS_KEY: 'secret',
+          NEWSLETTER_FROM_EMAIL: 'newsletter@corca.ai',
+        },
+        {
+          html: '<p>안녕하세요</p>',
+          subject: '테스트',
+          text: '안녕하세요',
+          to: 'reader@example.com',
+        },
+        {
+          fetcher: async () =>
+            new Response('', {
+              headers: {
+                server: 'awselb/2.0',
+                'x-amzn-requestid': 'request-123',
+              },
+              status: 405,
+              statusText: 'Method Not Allowed',
+            }),
+        },
+      ),
+    /SES SendEmail failed \(405\).*x-amzn-requestid=request-123.*server=awselb\/2\.0/,
+  );
+});

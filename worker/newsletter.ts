@@ -374,7 +374,11 @@ export async function sendSesEmail(
   });
   if (!response.ok) {
     const detail = (await response.text()).replace(/\s+/g, ' ').trim().slice(0, 1_000);
-    throw new Error(`SES SendEmail failed (${response.status})${detail ? `: ${detail}` : ''}`);
+    const diagnostics = sesResponseDiagnostics(response);
+    console.warn('SES SendEmail rejected', diagnostics);
+    throw new Error(
+      `SES SendEmail failed (${response.status})${detail ? `: ${detail}` : ''}${diagnostics ? ` [${diagnostics}]` : ''}`,
+    );
   }
   const payload = (await response.json()) as { MessageId?: unknown };
   const messageId = String(payload.MessageId || '');
@@ -761,6 +765,24 @@ function awsTimestamp(date: Date): string {
 
 function normalizeHeader(value: string): string {
   return String(value).trim().replace(/\s+/g, ' ');
+}
+
+function sesResponseDiagnostics(response: Response): string {
+  const fields = [
+    ['url', response.url],
+    ['statusText', response.statusText],
+    ['x-amzn-requestid', response.headers.get('x-amzn-requestid')],
+    ['x-amzn-errortype', response.headers.get('x-amzn-errortype')],
+    ['server', response.headers.get('server')],
+    ['via', response.headers.get('via')],
+    ['allow', response.headers.get('allow')],
+    ['location', response.headers.get('location')],
+  ] as const;
+  return fields
+    .filter(([, value]) => Boolean(value))
+    .map(([name, value]) => `${name}=${normalizeHeader(value || '')}`)
+    .join(', ')
+    .slice(0, 1_000);
 }
 
 function constantTimeEqual(left: string, right: string): boolean {

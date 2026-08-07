@@ -19,7 +19,8 @@ in front of you:
 | operate the Korean blog newsletter, its D1 schema, Cron and SES handoff | [Blog newsletter](newsletter.md) |
 | update the localized Corca AX page, assets, consultation form, or Worker delivery settings | [Corca AX page](ax.md) |
 | add the immutable Lead Form or reusable `#request` consultation section to a page or blog post | [Lead Form Agent manual](lead-form-agent-manual.md) |
-| continue the current site or AX V2 work in a new task with verified Git history | [2026-07-28 site and AX V2 handoff](handoffs/2026-07-28-corca-site-handoff.md) |
+| coordinate a token-efficient page workflow or multiple Agent roles | [Git-native Agent workflow](agent-workflow.md) |
+| explain the Markdown-driven Corca page production system and its product direction | [Corca.ai website builder v0.5](corca-ai-website-builder-v0.5.md) |
 | plan or implement the next `/ax` version without changing the frozen backup | [AX redesign handoff](ax-redesign-handoff.md) |
 | verify the exact approved Korean AX headings, copy, line breaks, links, and figures | [AX Korean content lock v2](ax-content-plan-v2.md) |
 | add or update news, blog posts, colleagues, static pages, locales, domains, or analytics | [Runbook](runbook.md) |

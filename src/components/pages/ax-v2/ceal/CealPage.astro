@@ -1,0 +1,315 @@
+---
+import type { LeadPageContext } from '../../../../lead/pageContext';
+import LeadForm from '../../../forms/LeadForm.astro';
+import AxLines from '../AxLines.astro';
+import { axV2Assets } from '../content';
+import { cealContent as c } from './content';
+import '../ax-v2.css';
+import './ceal.css';
+
+interface Props {
+  leadContext: LeadPageContext;
+}
+
+const { leadContext } = Astro.props;
+---
+
+<div class="ax-v2-page ceal-page" data-ceal-page>
+  <section class="ceal-hero" aria-labelledby="ceal-hero-title">
+    <div class="ceal-hero-glow" aria-hidden="true"></div>
+    <div class="ceal-shell ceal-hero-grid">
+      <div class="ceal-product-lockup" data-reveal>
+        <p class="ceal-product-brand">{c.hero.brand}</p>
+        <p class="ceal-product-name">{c.hero.product}</p>
+        <p class="ceal-product-descriptor"><AxLines values={c.hero.descriptors} /></p>
+        <img
+          src={axV2Assets.partnerNetworkPortrait}
+          width="100"
+          height="115"
+          alt={c.hero.partner}
+        />
+      </div>
+      <div class="ceal-hero-copy" data-reveal>
+        <h1 id="ceal-hero-title">
+          {c.hero.heading.map((line, index) => (
+            <>
+              {index > 0 && <br />}
+              <span class:list={{ 'is-blue': index < 2 }}>{line}</span>
+            </>
+          ))}
+        </h1>
+        <p>{c.hero.statement}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-problem" aria-labelledby="ceal-problem-title">
+    <div class="ceal-shell ceal-narrow">
+      <div class="ceal-section-heading ceal-center" data-reveal>
+        <h2 id="ceal-problem-title"><AxLines values={c.problem.heading} /></h2>
+        <p>{c.problem.lead}</p>
+      </div>
+      <div class="ceal-problem-list" data-reveal>
+        {c.problem.items.map((item) => (
+          <article>
+            <h3><strong>{item.label}:</strong> {item.body}</h3>
+          </article>
+        ))}
+      </div>
+      <div class="ceal-problem-arrow" aria-hidden="true"></div>
+      <div class="ceal-solution-lockup" data-reveal>
+        <img
+          src={axV2Assets.partnerNetworkPortrait}
+          width="100"
+          height="115"
+          alt=""
+        />
+        <h3><span class="ceal-solution-credential">{c.problem.solution[0]}</span><br /><AxLines values={c.problem.solution.slice(1)} /></h3>
+      </div>
+      <p class="ceal-footnote">• {c.problem.footnote}</p>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-architecture" aria-labelledby="ceal-architecture-title">
+    <div class="ceal-shell">
+      <div class="ceal-section-heading ceal-center" data-reveal>
+        <h2 id="ceal-architecture-title"><AxLines values={c.architecture.heading} /></h2>
+      </div>
+
+      <div
+        class="ax-v2-ceal-diagrams ceal-architecture-diagrams is-sequence-visible"
+        data-ceal-diagrams
+        data-reveal
+      >
+        <figure class="ax-v2-ceal-before">
+          <figcaption>
+            <h3>{c.architecture.before}</h3>
+            <span>{c.architecture.beforeBadge}</span>
+          </figcaption>
+          <div class="ax-v2-ceal-node-row">
+            {c.architecture.agents.map((agent) => <span>{agent}</span>)}
+          </div>
+          <div class="ax-v2-chaos-rails" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="ax-v2-ceal-node-row">
+            {c.architecture.systems.map((system) => <span>{system}</span>)}
+          </div>
+          <ul class="ax-v2-ceal-notes">
+            {c.architecture.beforeNotes.map((note) => <li>{note}</li>)}
+          </ul>
+          <p class="ceal-diagram-footnote">• {c.architecture.agentFootnote}</p>
+        </figure>
+
+        <div class="ax-v2-ceal-transition ceal-architecture-transition">
+          <span>{c.architecture.transition}</span>
+          <i aria-hidden="true"></i>
+        </div>
+
+        <figure class="ax-v2-ceal-after">
+          <figcaption>
+            <h3>{c.architecture.after}</h3>
+            <span>{c.architecture.afterBadge}</span>
+          </figcaption>
+          <div class="ax-v2-ceal-node-row">
+            {c.architecture.agents.map((agent) => <span>{agent}</span>)}
+          </div>
+          <div class="ax-v2-order-rails ax-v2-order-rails-top" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <strong class="ax-v2-ceal-gateway">
+            {c.architecture.gateway}
+            <small>{c.architecture.onPremises}</small>
+          </strong>
+          <div class="ax-v2-order-rails ax-v2-order-rails-bottom" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="ax-v2-ceal-node-row">
+            {c.architecture.systems.map((system) => <span>{system}</span>)}
+          </div>
+          <ul class="ax-v2-ceal-notes">
+            {c.architecture.afterNotes.map((note) => <li>{note}</li>)}
+          </ul>
+          <p class="ceal-diagram-footnote">• {c.architecture.gatewayFootnote}</p>
+        </figure>
+      </div>
+
+      <p class="ceal-closing ceal-architecture-closing" data-reveal>
+        <AxLines values={c.architecture.closing} />
+      </p>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-benefits" aria-labelledby="ceal-benefits-title">
+    <div class="ceal-shell">
+      <div class="ceal-section-heading" data-reveal>
+        <p class="ceal-eyebrow">{c.benefits.eyebrow}</p>
+        <h2 id="ceal-benefits-title"><AxLines values={c.benefits.heading} /></h2>
+      </div>
+      <div class="ceal-benefit-grid">
+        {c.benefits.items.map((item, index) => (
+          <article data-reveal style={'--reveal-delay: ' + index * 0.06 + 's'}>
+            <h3><AxLines values={item.title} /></h3>
+            <div class="ceal-benefit-copy">
+              {item.paragraphs.map((paragraph) => <p><AxLines values={paragraph} /></p>)}
+            </div>
+            {'footnote' in item && <p class="ceal-footnote">• {item.footnote}</p>}
+          </article>
+        ))}
+      </div>
+      <p class="ceal-closing" data-reveal><AxLines values={c.benefits.closing} /></p>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-process" aria-labelledby="ceal-process-title">
+    <div class="ceal-shell">
+      <div class="ceal-section-heading ceal-center" data-reveal>
+        <h2 id="ceal-process-title"><AxLines values={c.process.heading} /></h2>
+      </div>
+      <p class="ceal-process-label" data-reveal>{c.process.label}</p>
+      <ol class="ceal-process-list">
+        {c.process.stages.map((stage, index) => (
+          <li data-reveal style={'--reveal-delay: ' + index * 0.06 + 's'}>
+            <h3>{stage.title}</h3>
+            <strong>{stage.duration}</strong>
+            <ul>{stage.bullets.map((bullet) => <li>{bullet}</li>)}</ul>
+          </li>
+        ))}
+      </ol>
+      <ul class="ceal-process-notes" data-reveal>
+        {c.process.notes.map((note) => <li>{note}</li>)}
+      </ul>
+      <p class="ceal-closing" data-reveal><AxLines values={c.process.closing} /></p>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-differentiation" aria-labelledby="ceal-differentiation-title">
+    <div class="ceal-rings-layer" data-ceal-rings aria-hidden="true"></div>
+    <div class="ceal-shell">
+      <div class="ceal-section-heading ceal-center" data-reveal>
+        <p class="ceal-eyebrow">{c.differentiation.eyebrow}</p>
+        <h2 id="ceal-differentiation-title"><AxLines values={c.differentiation.heading} /></h2>
+        <p class="ceal-section-lead">
+          {c.differentiation.support.map((line, index) => (
+            <>
+              {index > 0 && <br />}
+              {index === c.differentiation.support.length - 1 ? <strong>{line}</strong> : line}
+            </>
+          ))}
+        </p>
+      </div>
+      <div class="ceal-differentiation-grid">
+        <article class="ceal-build-card" data-reveal>
+          <header>
+            <h3>{c.differentiation.direct.title}</h3>
+            <span>{c.differentiation.direct.badge}</span>
+          </header>
+          <ul>
+            {c.differentiation.direct.notes.map((note) => <li><span aria-hidden="true">✕</span>{note}</li>)}
+          </ul>
+        </article>
+        <article class="ceal-build-card is-ceal" data-reveal>
+          <header>
+            <h3>{c.differentiation.ceal.title}</h3>
+            <span>{c.differentiation.ceal.badge}</span>
+          </header>
+          <ul>
+            {c.differentiation.ceal.notes.map((note) => <li><span aria-hidden="true">✓</span>{note}</li>)}
+          </ul>
+        </article>
+      </div>
+      <p class="ceal-closing" data-reveal><AxLines values={c.differentiation.closing} /></p>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-context" aria-labelledby="ceal-context-title">
+    <div class="ceal-shell">
+      <div class="ceal-section-heading ceal-center" data-reveal>
+        <p class="ceal-eyebrow">{c.context.eyebrow}</p>
+        <h2 id="ceal-context-title"><AxLines values={c.context.heading} /></h2>
+      </div>
+      <ol class="ceal-context-list">
+        {c.context.steps.map((step, index) => (
+          <li data-reveal style={'--reveal-delay: ' + index * 0.08 + 's'}>
+            <h3>{step.title}</h3>
+            <p><AxLines values={step.body} /></p>
+          </li>
+        ))}
+      </ol>
+      <p class="ceal-closing" data-reveal><AxLines values={c.context.closing} /></p>
+    </div>
+  </section>
+
+  <section class="ceal-section ceal-economics" aria-labelledby="ceal-economics-title">
+    <div class="ceal-shell">
+      <div class="ceal-section-heading ceal-center" data-reveal>
+        <h2 id="ceal-economics-title"><AxLines values={c.economics.heading} /></h2>
+        <p class="ceal-section-lead"><AxLines values={c.economics.support} /></p>
+      </div>
+      <div class="ceal-economics-grid">
+        <article class="ceal-subscription-card" data-reveal>
+          <h3>{c.economics.subscription.heading}</h3>
+          <div>
+            <strong>{c.economics.subscription.title}</strong>
+            <p><AxLines values={c.economics.subscription.body} /></p>
+          </div>
+        </article>
+        <div class="ceal-savings" data-reveal>
+          <h3>{c.economics.savingsHeading}</h3>
+          <ol>
+            {c.economics.savings.map((saving, index) => (
+              <li>
+                <span>{index + 1}</span>
+                <div>
+                  <strong>{saving.title}</strong>
+                  <p>{saving.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+      <p class="ceal-closing" data-reveal><AxLines values={c.economics.closing} /></p>
+    </div>
+  </section>
+
+  <section
+    class="ceal-section ceal-cta ax-v2-contact-section"
+    id="request"
+    aria-labelledby="ceal-cta-title"
+    data-lead-request-section
+  >
+    <div class="ceal-shell ceal-cta-grid">
+      <div class="ceal-cta-copy" data-reveal>
+        <p class="ceal-cta-product">{c.cta.product}</p>
+        <h2 id="ceal-cta-title"><AxLines values={c.cta.heading} /></h2>
+        <h3>{c.cta.start}</h3>
+        <a class="ceal-cta-pill" href="#request" data-lead-request-jump>
+          <strong>{c.cta.action}</strong>
+          <span>{c.cta.url}</span>
+        </a>
+        <div class="ceal-cta-trust">
+          <img
+            src={axV2Assets.partnerNetworkPortrait}
+            width="100"
+            height="115"
+            alt=""
+          />
+          <p>{c.cta.partner}<br />{c.cta.source}</p>
+        </div>
+        <a class="ceal-cta-brand" href="/" aria-label="Corca"><span></span></a>
+      </div>
+      <div class="ax-v2-inline-form ceal-inline-form" data-reveal>
+        <LeadForm id="ceal" lang="ko" compact pageContext={leadContext} />
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  import '../../../forms/leadRequestSectionClient';
+  import { initCealRings } from './ceal-rings';
+
+  initCealRings();
+  document.addEventListener('astro:page-load', initCealRings);
+</script>

@@ -64,8 +64,8 @@ const origin = site.origin;
 const canonical = absoluteUrl(basePath, lang, origin);
 const ogImageUrl = new URL(ogImage, site).href;
 const imageAlt = ogImageAlt ?? ogTitle;
-const isAxPage = basePath === '/ax';
-const showsAxLaunchTalk = isAxFamilyPath(Astro.url.pathname);
+const isAxPage = isAxFamilyPath(Astro.url.pathname);
+const showsAxLaunchTalk = isAxPage;
 // Per the SEO meta policy (issue #15): indexable pages get plain "index, follow"
 // (no author on general pages); 404 stays out. Publisher is the brand name, per
 // locale (Korean pages get "코르카" as the issue specifies).

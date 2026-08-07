@@ -18,9 +18,10 @@ The Korean page that existed before AX V2 is preserved at
 `/ax-backup`. It is intentionally `noindex, nofollow`, is absent from every
 sitemap and canonicalizes to `/ax`. Its implementation lives in
 `AxLegacy.astro` and `components/pages/ax/`; do not edit those files for the new
-design. Read the [2026-07-28 site and AX V2
-handoff](handoffs/2026-07-28-corca-site-handoff.md) for the current
-implementation and verified Git history.
+design. The [2026-07-28 site and AX V2
+handoff](handoffs/2026-07-28-corca-site-handoff.md) is historical context only;
+routine work must use the ownership map below, current code and current Git
+history instead.
 
 ## Ownership map
 
@@ -35,6 +36,7 @@ implementation and verified Git history.
 | Lead Form and request-section styles | `src/components/forms/lead-form.css`, `lead-request-section.css` |
 | AX V2 motion and dialog behavior | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | AX V2 page-scoped styles | `src/components/pages/ax-v2/ax-v2.css` |
+| Ceal Korean test route, source copy and page styles | `src/pages/ax/ceal.astro` and `src/components/pages/ax-v2/ceal/` |
 | Frozen 2026-07-22 page composition | `src/components/pages/AxLegacy.astro` |
 | Frozen Korean backup wrapper | `src/components/pages/AxBackup.astro` and `src/pages/ax-backup.astro` |
 | Frozen legacy copy, contract, behavior and styles | `src/components/pages/ax/` |
@@ -58,6 +60,23 @@ advance the stable `/ax` date in `sitemapMetadata.ts`. The two unlinked OpenAI
 Select Partner badges use the same descriptive, localized alternative text per
 locale. `pnpm check:ax-seo-contract` verifies this rendered four-locale contract
 after a production build.
+
+### Ceal test route
+
+`/ax/ceal` is a Korean-only, `noindex` composition test. It is not registered in
+the localized static-page registry, does not emit hreflang alternates and is not
+included in the sitemap. Its visible copy is governed by
+`src/components/pages/ax-v2/ceal/CEAL_CONTENTS.md`, which preserves the approved PDF
+text without rewriting, summarizing or automatic translation. The structured
+copy module imports that ledger and fails the build if the two visible-text
+sequences diverge.
+
+The route reuses the existing shared header, breadcrumb, footer and `LeadForm`
+without changing their markup. Its lead context is `page_id=ceal`,
+`content_type=ax-ceal` and `base_path=/ax/ceal`; the client records the actual
+browser pathname as `page_path` at submission time. Do not promote this route
+to an indexable four-locale page until the owner approves localized metadata
+and finished EN, JA and ZH copy. Never auto-translate the Korean source ledger.
 
 At widths up to 720px, AX uses one self-hosted, route-specific Pretendard
 variable subset instead of the full variable font or the old 92-slice dynamic

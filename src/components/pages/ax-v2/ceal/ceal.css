@@ -1,0 +1,1362 @@
+.ceal-page {
+  --ceal-blue: #0969da;
+  --ceal-blue-bright: #2997ff;
+  --ceal-blue-deep: #1437d7;
+  --ceal-navy: #001b3f;
+  --ceal-ink: #101828;
+  --ceal-muted: #5f6b7a;
+  --ceal-line: #d9e2ee;
+  --ceal-paper: #f5f7fa;
+  --ceal-shell: 1200px;
+  color: var(--ceal-ink);
+  background: #fff;
+}
+
+.ceal-page *,
+.ceal-page *::before,
+.ceal-page *::after {
+  box-sizing: border-box;
+}
+
+.ceal-shell {
+  width: min(calc(100% - 64px), var(--ceal-shell));
+  margin-inline: auto;
+}
+
+.ceal-narrow {
+  max-width: 1040px;
+}
+
+.ceal-section {
+  padding: clamp(112px, 10vw, 176px) 0;
+}
+
+.ceal-section-heading {
+  max-width: 980px;
+}
+
+.ceal-section-heading.ceal-center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.ceal-section-heading h2 {
+  margin: 0;
+  font-size: clamp(44px, 5.4vw, 76px);
+  font-weight: 790;
+  line-height: 1.06;
+  letter-spacing: -0.055em;
+}
+
+.ceal-section-heading > p:not(.ceal-eyebrow) {
+  margin: 34px 0 0;
+  color: var(--ceal-muted);
+  font-size: clamp(18px, 1.8vw, 25px);
+  line-height: 1.62;
+}
+
+.ceal-center > p:not(.ceal-eyebrow) {
+  margin-inline: auto;
+}
+
+.ceal-eyebrow {
+  margin: 0 0 26px;
+  color: var(--ceal-blue);
+  font-size: 17px;
+  font-weight: 760;
+  letter-spacing: -0.025em;
+}
+
+.ceal-section-lead strong {
+  color: var(--ceal-ink);
+  font-weight: 780;
+}
+
+.ceal-footnote,
+.ceal-diagram-footnote {
+  color: #8291a5;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.ceal-closing {
+  margin: clamp(72px, 8vw, 116px) auto 0;
+  color: var(--ceal-ink);
+  font-size: clamp(30px, 3.7vw, 52px);
+  font-weight: 720;
+  line-height: 1.16;
+  letter-spacing: -0.045em;
+  text-align: center;
+}
+
+/* Hero */
+.ceal-hero {
+  min-height: calc(100svh - 66px);
+  position: relative;
+  display: grid;
+  align-items: center;
+  overflow: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 13% 12%, rgba(41, 151, 255, 0.28), transparent 34%),
+    linear-gradient(150deg, #dff7ff 0%, #eefaff 42%, #fff 72%);
+}
+
+.ceal-hero::after {
+  content: '';
+  width: min(55vw, 760px);
+  aspect-ratio: 1;
+  position: absolute;
+  right: -18%;
+  bottom: -48%;
+  z-index: -2;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(9, 105, 218, 0.16), rgba(41, 151, 255, 0.04) 54%, transparent 72%);
+}
+
+.ceal-hero-glow {
+  width: clamp(340px, 46vw, 720px);
+  height: clamp(340px, 46vw, 720px);
+  position: absolute;
+  left: -16%;
+  bottom: -42%;
+  z-index: -1;
+  border: 1px solid rgba(9, 105, 218, 0.1);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 72px rgba(41, 151, 255, 0.035),
+    0 0 0 144px rgba(41, 151, 255, 0.025);
+}
+
+.ceal-hero-grid {
+  padding-block: clamp(72px, 9vw, 132px);
+  display: grid;
+  grid-template-columns: minmax(280px, 0.76fr) minmax(0, 1.35fr);
+  gap: clamp(64px, 8vw, 132px);
+  align-items: center;
+}
+
+.ceal-product-lockup {
+  min-height: 480px;
+  padding-right: clamp(34px, 5vw, 72px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(16, 24, 40, 0.72);
+}
+
+.ceal-product-brand {
+  margin: 0;
+  color: var(--ceal-blue);
+  font-size: clamp(42px, 5vw, 72px);
+  font-weight: 820;
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.ceal-product-name {
+  margin: 22px 0 0;
+  color: #1964d6;
+  font-size: clamp(60px, 7vw, 104px);
+  font-weight: 820;
+  line-height: 0.88;
+  letter-spacing: -0.06em;
+}
+
+.ceal-product-descriptor {
+  margin: 28px 0 0;
+  color: #164fc4;
+  font-size: clamp(15px, 1.45vw, 20px);
+  font-weight: 540;
+  line-height: 1.42;
+  letter-spacing: 0.08em;
+}
+
+.ceal-product-lockup img {
+  width: 82px;
+  height: auto;
+  margin-top: 52px;
+}
+
+.ceal-hero-copy h1 {
+  margin: 0;
+  color: #060606;
+  font-size: clamp(52px, 6.15vw, 92px);
+  font-weight: 810;
+  line-height: 1.08;
+  letter-spacing: -0.065em;
+}
+
+.ceal-hero-copy h1 .is-blue {
+  color: var(--ceal-blue);
+}
+
+.ceal-hero-copy p {
+  margin: clamp(54px, 6vw, 92px) 0 0;
+  color: var(--ceal-blue);
+  font-size: clamp(30px, 4vw, 58px);
+  font-weight: 790;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+}
+
+/* Problem */
+.ceal-problem {
+  background: #fff;
+}
+
+.ceal-problem-list {
+  margin-top: clamp(54px, 6vw, 84px);
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--ceal-line);
+}
+
+.ceal-problem-list article {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--ceal-line);
+}
+
+.ceal-problem-list h3 {
+  margin: 0;
+  color: #1d62d7;
+  font-size: clamp(22px, 2.35vw, 34px);
+  font-weight: 560;
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+  text-align: center;
+}
+
+.ceal-problem-list h3 strong {
+  font-weight: 790;
+}
+
+.ceal-problem-arrow {
+  width: 112px;
+  height: 84px;
+  margin: 52px auto 36px;
+  position: relative;
+  background: linear-gradient(180deg, rgba(41, 151, 255, 0), rgba(20, 55, 215, 0.6));
+  clip-path: polygon(22% 0, 78% 0, 78% 50%, 100% 50%, 50% 100%, 0 50%, 22% 50%);
+}
+
+.ceal-solution-lockup {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ceal-solution-lockup img {
+  width: 92px;
+  height: auto;
+  margin-top: 5px;
+}
+
+.ceal-solution-lockup h3 {
+  margin: 0;
+  color: var(--ceal-blue-deep);
+  font-size: clamp(32px, 4.2vw, 60px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
+}
+
+.ceal-solution-credential {
+  font-weight: 500;
+}
+
+.ceal-problem .ceal-footnote {
+  width: fit-content;
+  margin: 34px auto 0;
+}
+
+/* Architecture */
+.ceal-architecture {
+  background: linear-gradient(180deg, #f4fbff 0%, #e8f5ff 100%);
+}
+
+.ceal-architecture .ceal-section-heading h2 {
+  font-size: clamp(42px, 5vw, 68px);
+}
+
+.ceal-architecture-diagrams.ax-v2-ceal-diagrams {
+  width: 100%;
+  margin-top: clamp(64px, 7vw, 96px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.ceal-architecture-diagrams figure {
+  min-height: 0;
+  padding: clamp(20px, 2.4vw, 30px);
+  box-shadow: 0 22px 60px rgba(18, 63, 111, 0.08);
+}
+
+.ceal-architecture-diagrams figcaption h3 {
+  margin: 0;
+  color: var(--ceal-muted);
+  font-size: clamp(21px, 2vw, 29px);
+  font-weight: 770;
+}
+
+.ceal-architecture-diagrams .ax-v2-ceal-after figcaption h3 {
+  color: var(--ceal-blue-deep);
+}
+
+.ceal-architecture-diagrams .ax-v2-ceal-notes {
+  margin-top: 22px;
+  font-size: 12px;
+}
+
+.ceal-diagram-footnote {
+  margin: 26px 0 0;
+  padding-top: 0;
+}
+
+.ceal-architecture-transition i {
+  width: 66px;
+  height: 46px;
+  margin: 0;
+  display: block;
+  background: linear-gradient(90deg, rgba(41, 151, 255, 0), #1437d7);
+  clip-path: polygon(0 28%, 66% 28%, 66% 0, 100% 50%, 66% 100%, 66% 72%, 0 72%);
+}
+
+.ceal-architecture-transition {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ceal-architecture-closing {
+  color: var(--ceal-blue-deep);
+}
+
+/* Benefits */
+.ceal-benefits {
+  background: #fff;
+}
+
+.ceal-benefit-grid {
+  margin-top: clamp(64px, 7vw, 100px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px;
+}
+
+.ceal-benefit-grid article {
+  min-width: 0;
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid #172235;
+}
+
+.ceal-benefit-grid h3 {
+  min-height: 104px;
+  margin: 16px 0 0;
+  color: var(--ceal-blue-deep);
+  font-size: clamp(25px, 2.3vw, 34px);
+  font-weight: 790;
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+
+.ceal-benefit-copy {
+  margin-top: 24px;
+}
+
+.ceal-benefit-copy p {
+  margin: 0 0 24px;
+  color: #253041;
+  font-size: 17px;
+  line-height: 1.62;
+}
+
+.ceal-benefit-grid .ceal-footnote {
+  margin: auto 0 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--ceal-line);
+}
+
+/* Process */
+.ceal-process {
+  background: linear-gradient(180deg, #eefaff 0%, #dff6ff 100%);
+}
+
+.ceal-process-label {
+  margin: clamp(58px, 7vw, 92px) 0 28px;
+  font-size: 20px;
+  font-weight: 770;
+}
+
+.ceal-process-list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  list-style: none;
+}
+
+.ceal-process-list > li {
+  min-height: 340px;
+  padding: 28px 24px;
+  position: relative;
+  border: 1px solid rgba(76, 126, 178, 0.18);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 42px rgba(20, 74, 124, 0.08);
+}
+
+.ceal-process-list > li:not(:last-child)::after {
+  content: '';
+  width: 30px;
+  height: 22px;
+  position: absolute;
+  right: -28px;
+  top: 50%;
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(41, 151, 255, 0), #1437d7);
+  clip-path: polygon(0 28%, 65% 28%, 65% 0, 100% 50%, 65% 100%, 65% 72%, 0 72%);
+  transform: translateY(-50%);
+}
+
+.ceal-process-list h3 {
+  margin: 14px 0 34px;
+  color: var(--ceal-blue-deep);
+  font-size: 28px;
+  font-weight: 790;
+}
+
+.ceal-process-list strong {
+  display: block;
+  color: #10151e;
+  font-size: 18px;
+  font-weight: 780;
+}
+
+.ceal-process-list ul {
+  margin: 22px 0 0;
+  padding: 0;
+  color: #566376;
+  font-size: 14px;
+  line-height: 1.6;
+  list-style: none;
+}
+
+.ceal-process-list ul li {
+  padding-left: 16px;
+  position: relative;
+}
+
+.ceal-process-list ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #1769e0;
+  font-weight: 800;
+}
+
+.ceal-process-list ul li + li {
+  margin-top: 6px;
+}
+
+.ceal-process-notes {
+  margin: 30px 0 0;
+  padding: 0;
+  color: #718198;
+  font-size: 13px;
+  line-height: 1.65;
+  list-style: none;
+}
+
+.ceal-process-notes li::before {
+  content: '•';
+  margin-right: 8px;
+}
+
+/* Differentiation */
+.ceal-differentiation {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #f5f8fc;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(61, 157, 255, 0.4), transparent 36%),
+    radial-gradient(circle at 18% 72%, rgba(17, 91, 225, 0.3), transparent 40%),
+    linear-gradient(145deg, #041b3d 0%, #073168 45%, #083c78 70%, #041e43 100%);
+}
+
+.ceal-differentiation::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 58% 28% at 50% 17%, rgba(5, 31, 68, 0.88), transparent 88%),
+    linear-gradient(
+      180deg,
+      rgba(4, 28, 64, 0.28) 0%,
+      rgba(6, 49, 104, 0.14) 43%,
+      rgba(3, 25, 58, 0.28) 100%
+    );
+  content: '';
+  pointer-events: none;
+}
+
+.ceal-rings-layer {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  filter: saturate(0.88) contrast(0.96);
+  mask-image: radial-gradient(ellipse 82% 74% at 50% 52%, #000 0 60%, transparent 100%);
+  transition: opacity 900ms ease;
+  -webkit-mask-image: radial-gradient(ellipse 82% 74% at 50% 52%, #000 0 60%, transparent 100%);
+}
+
+.ceal-rings-layer[data-rings-ready='true'] {
+  opacity: 0.4;
+}
+
+.ceal-rings-layer .vanta-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.ceal-differentiation > .ceal-shell {
+  position: relative;
+  z-index: 2;
+}
+
+.ceal-differentiation .ceal-eyebrow {
+  color: #70b8ff;
+}
+
+.ceal-differentiation .ceal-section-heading h2 {
+  color: #f5f8fc;
+  text-shadow: 0 4px 32px rgba(2, 9, 19, 0.94);
+}
+
+.ceal-differentiation .ceal-section-lead {
+  color: #c2cbd7;
+  text-shadow: 0 2px 18px rgba(2, 9, 19, 0.96);
+}
+
+.ceal-differentiation .ceal-section-lead strong {
+  color: #fff;
+}
+
+.ceal-differentiation-grid {
+  margin-top: clamp(64px, 7vw, 96px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.ceal-build-card {
+  padding: clamp(28px, 4vw, 48px);
+  border: 1px solid #28384d;
+  border-radius: 30px;
+  background: rgba(13, 27, 45, 0.95);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.ceal-build-card.is-ceal {
+  position: relative;
+  border-color: rgba(80, 164, 255, 0.9);
+  outline: 1px solid rgba(112, 184, 255, 0.22);
+  outline-offset: 7px;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(41, 151, 255, 0.2), transparent 42%),
+    linear-gradient(145deg, rgba(11, 50, 100, 0.98), rgba(10, 31, 65, 0.98));
+  box-shadow:
+    0 26px 76px rgba(0, 80, 190, 0.3),
+    0 0 78px rgba(41, 151, 255, 0.22),
+    0 0 150px rgba(23, 105, 224, 0.14);
+}
+
+.ceal-build-card header {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ceal-build-card h3 {
+  margin: 0;
+  color: #d6dee9;
+  font-size: clamp(27px, 3vw, 42px);
+  font-weight: 770;
+}
+
+.ceal-build-card.is-ceal h3 {
+  color: #fff;
+}
+
+.ceal-build-card header span {
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: #9ca9b9;
+  background: #1b2b3f;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ceal-build-card.is-ceal header span {
+  color: #fff;
+  background: #1769e0;
+}
+
+.ceal-build-card ul {
+  margin: 42px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+  color: #aab7c7;
+  font-size: 17px;
+  line-height: 1.5;
+  list-style: none;
+}
+
+.ceal-build-card li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.ceal-build-card li span {
+  color: #76869a;
+  font-weight: 800;
+}
+
+.ceal-build-card.is-ceal li {
+  color: #e5eef9;
+}
+
+.ceal-build-card.is-ceal li span {
+  color: #70b8ff;
+}
+
+.ceal-differentiation .ceal-closing {
+  color: #f5f8fc;
+  text-shadow: 0 4px 28px rgba(2, 9, 19, 0.98);
+}
+
+/* Context layer */
+.ceal-context {
+  background: #fff;
+}
+
+.ceal-context-list {
+  margin: clamp(66px, 8vw, 108px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(42px, 6vw, 86px);
+  list-style: none;
+}
+
+.ceal-context-list li {
+  aspect-ratio: 1;
+  padding: 42px;
+  position: relative;
+  display: grid;
+  place-content: center;
+  border: 1px solid #d4e4f7;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f8fbff, #eaf3ff);
+  box-shadow:
+    0 28px 60px rgba(9, 105, 218, 0.12),
+    inset 0 0 46px rgba(41, 151, 255, 0.06);
+  text-align: center;
+}
+
+.ceal-context-list li:not(:last-child)::after {
+  content: '';
+  width: clamp(42px, 5vw, 70px);
+  height: 38px;
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  background: linear-gradient(90deg, rgba(41, 151, 255, 0), #1437d7);
+  clip-path: polygon(0 30%, 68% 30%, 68% 0, 100% 50%, 68% 100%, 68% 70%, 0 70%);
+  transform: translateY(-50%);
+}
+
+.ceal-context-list h3 {
+  margin: 0;
+  color: var(--ceal-blue-deep);
+  font-size: clamp(27px, 3vw, 40px);
+  font-weight: 790;
+}
+
+.ceal-context-list p {
+  margin: 30px 0 0;
+  color: #526177;
+  font-size: clamp(16px, 1.55vw, 21px);
+  line-height: 1.42;
+}
+
+/* Economics */
+.ceal-economics {
+  background: linear-gradient(180deg, #f8fafc, #eef5ff);
+}
+
+.ceal-economics-grid {
+  margin-top: clamp(64px, 7vw, 96px);
+  display: grid;
+  grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(42px, 6vw, 88px);
+  align-items: center;
+}
+
+.ceal-subscription-card h3,
+.ceal-savings > h3 {
+  margin: 0 0 24px;
+  font-size: 22px;
+  font-weight: 770;
+}
+
+.ceal-subscription-card > div {
+  min-height: 330px;
+  padding: clamp(32px, 4vw, 52px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid #cbdcf2;
+  border-radius: 30px;
+  background: linear-gradient(145deg, #f7fbff, #e8f2ff);
+  box-shadow: 0 26px 64px rgba(9, 105, 218, 0.14);
+}
+
+.ceal-subscription-card strong {
+  color: var(--ceal-blue);
+  font-size: clamp(35px, 4vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.ceal-subscription-card p {
+  margin: 24px 0 0;
+  color: #27364b;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.ceal-savings ol {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+  list-style: none;
+}
+
+.ceal-savings li {
+  min-height: 118px;
+  padding: 26px;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+  border: 1px solid #d1dceb;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(39, 66, 98, 0.08);
+}
+
+.ceal-savings li > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #fff;
+  background: #1769e0;
+  font-size: 22px;
+}
+
+.ceal-savings strong {
+  color: var(--ceal-blue);
+  font-size: clamp(19px, 2vw, 27px);
+  font-weight: 780;
+}
+
+.ceal-savings p {
+  margin: 6px 0 0;
+  color: #344258;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* CTA and existing Lead Form */
+.ceal-cta {
+  scroll-margin-top: 66px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(112, 184, 255, 0.22), transparent 34%),
+    linear-gradient(145deg, #092a66 0%, #1437d7 54%, #3961f2 100%);
+}
+
+.ceal-cta::before {
+  content: '';
+  width: 520px;
+  height: 520px;
+  position: absolute;
+  right: -180px;
+  top: -180px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 70px rgba(255, 255, 255, 0.025),
+    0 0 0 140px rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.ceal-cta-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(440px, 1.18fr);
+  gap: clamp(54px, 7vw, 100px);
+  align-items: start;
+}
+
+.ceal-cta-product {
+  margin: 0;
+  color: #b8e2ff;
+  font-size: 20px;
+  font-weight: 730;
+}
+
+.ceal-cta-copy h2 {
+  margin: 34px 0 0;
+  color: #fff;
+  font-size: clamp(44px, 5.4vw, 74px);
+  font-weight: 790;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+}
+
+.ceal-cta-copy h3 {
+  margin: 54px 0 0;
+  color: #fff;
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 600;
+}
+
+.ceal-cta-pill {
+  width: min(100%, 390px);
+  margin-top: 34px;
+  padding: 16px 28px;
+  display: grid;
+  justify-items: center;
+  border-radius: 999px;
+  color: var(--ceal-blue-deep);
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0, 18, 71, 0.3);
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.ceal-cta-pill:hover {
+  box-shadow: 0 24px 62px rgba(0, 18, 71, 0.4);
+  transform: translateY(-2px);
+}
+
+.ceal-cta-pill strong {
+  font-size: 21px;
+  font-weight: 790;
+}
+
+.ceal-cta-pill span {
+  margin-top: 2px;
+  color: #1769e0;
+  font-size: 16px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ceal-cta-trust {
+  margin-top: 54px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.ceal-cta-trust img {
+  width: 68px;
+  height: auto;
+}
+
+.ceal-cta-trust p {
+  margin: 0;
+  color: #d6e8ff;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.ceal-cta-brand {
+  width: 120px;
+  height: 34px;
+  margin-top: 48px;
+  display: inline-flex;
+}
+
+.ceal-cta-brand span {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #fff;
+  -webkit-mask: url('/corca-logo.svg') no-repeat center / contain;
+  mask: url('/corca-logo.svg') no-repeat center / contain;
+}
+
+.ceal-inline-form {
+  grid-area: auto;
+  position: relative;
+  align-self: start;
+  overflow: hidden;
+  margin: 0;
+  padding: clamp(32px, 4vw, 48px);
+  border: 1px solid rgba(137, 184, 235, 0.48);
+  border-radius: 32px;
+  color: var(--ax-v2-ink);
+  background: linear-gradient(155deg, #fff 0%, #f7faff 100%);
+  box-shadow:
+    0 32px 80px rgba(0, 20, 55, 0.3),
+    0 8px 24px rgba(0, 38, 91, 0.12);
+}
+
+@media (max-width: 1080px) {
+  .ceal-benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 64px;
+  }
+
+  .ceal-benefit-grid h3 {
+    min-height: 76px;
+  }
+
+  .ceal-process-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ceal-process-list > li:not(:last-child)::after {
+    display: none;
+  }
+
+  .ceal-context-list {
+    gap: 34px;
+  }
+
+  .ceal-context-list li {
+    padding: 30px;
+  }
+
+  .ceal-context-list li:not(:last-child)::after {
+    width: 36px;
+    left: calc(100% + 1px);
+  }
+}
+
+@media (max-width: 900px) {
+  .ceal-hero-grid {
+    grid-template-columns: 0.72fr 1.28fr;
+    gap: 46px;
+  }
+
+  .ceal-product-lockup {
+    min-height: 420px;
+    padding-right: 36px;
+  }
+
+  .ceal-architecture-diagrams.ax-v2-ceal-diagrams {
+    width: min(100%, 680px);
+    margin-inline: auto;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .ceal-architecture-diagrams figure {
+    min-height: 0;
+  }
+
+  .ceal-architecture-transition {
+    min-height: 70px;
+  }
+
+  .ceal-architecture-transition i {
+    transform: rotate(90deg);
+  }
+
+  .ceal-economics-grid,
+  .ceal-cta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ceal-cta-copy {
+    text-align: center;
+  }
+
+  .ceal-cta-pill,
+  .ceal-cta-trust {
+    margin-inline: auto;
+  }
+
+  .ceal-cta-brand {
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 900px) {
+  .ceal-architecture-transition {
+    min-height: 112px;
+    gap: 12px;
+  }
+
+  .ceal-architecture-transition span {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .ceal-architecture-transition i {
+    width: 46px;
+    height: 48px;
+    transform: none;
+    background: linear-gradient(180deg, rgba(41, 151, 255, 0.12), #1437d7);
+    clip-path: polygon(28% 0, 72% 0, 72% 54%, 100% 54%, 50% 100%, 0 54%, 28% 54%);
+  }
+}
+
+@media (max-width: 720px) {
+  .ceal-shell {
+    width: min(calc(100% - 40px), var(--ceal-shell));
+  }
+
+  .ceal-section {
+    padding: 96px 0;
+  }
+
+  .ceal-section-heading h2 {
+    font-size: clamp(36px, 10.5vw, 48px);
+    line-height: 1.1;
+  }
+
+  .ceal-section-heading > p:not(.ceal-eyebrow) {
+    margin-top: 26px;
+    font-size: 18px;
+  }
+
+  .ceal-eyebrow {
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+
+  .ceal-closing {
+    margin-top: 72px;
+    font-size: clamp(28px, 8.3vw, 38px);
+  }
+
+  .ceal-hero {
+    min-height: auto;
+  }
+
+  .ceal-hero-grid {
+    padding-block: 72px 88px;
+    grid-template-columns: 1fr;
+    gap: 68px;
+  }
+
+  .ceal-product-lockup {
+    min-height: 0;
+    padding: 0 0 48px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(16, 24, 40, 0.45);
+  }
+
+  .ceal-product-brand {
+    font-size: 42px;
+  }
+
+  .ceal-product-name {
+    margin-top: 16px;
+    font-size: 68px;
+  }
+
+  .ceal-product-descriptor {
+    margin-top: 22px;
+    font-size: 15px;
+  }
+
+  .ceal-product-lockup img {
+    width: 70px;
+    margin-top: 34px;
+  }
+
+  .ceal-hero-copy h1 {
+    font-size: clamp(42px, 12vw, 60px);
+  }
+
+  .ceal-hero-copy p {
+    margin-top: 42px;
+    font-size: clamp(30px, 9vw, 42px);
+  }
+
+  .ceal-problem-list {
+    margin-top: 46px;
+  }
+
+  .ceal-problem-list article {
+    padding: 20px 0;
+  }
+
+  .ceal-problem-list h3 {
+    font-size: 21px;
+    text-align: left;
+  }
+
+  .ceal-problem-arrow {
+    width: 86px;
+    height: 66px;
+    margin-top: 42px;
+  }
+
+  .ceal-solution-lockup {
+    align-items: flex-start;
+  }
+
+  .ceal-solution-lockup img {
+    width: 68px;
+  }
+
+  .ceal-solution-lockup h3 {
+    font-size: 31px;
+  }
+
+  .ceal-problem .ceal-footnote {
+    margin-top: 28px;
+  }
+
+  .ceal-architecture .ceal-section-heading h2 {
+    font-size: clamp(34px, 9.8vw, 45px);
+  }
+
+  .ceal-architecture-diagrams.ax-v2-ceal-diagrams {
+    margin-top: 54px;
+  }
+
+  .ceal-architecture-diagrams figure {
+    padding: 20px;
+  }
+
+  .ceal-architecture-diagrams figcaption {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ceal-architecture-diagrams .ax-v2-ceal-node-row span {
+    min-height: 54px;
+    font-size: 10px;
+  }
+
+  .ceal-diagram-footnote {
+    margin-top: 20px;
+    padding-top: 0;
+    font-size: 11px;
+  }
+
+  .ceal-benefit-grid,
+  .ceal-process-list,
+  .ceal-differentiation-grid,
+  .ceal-context-list {
+    grid-template-columns: 1fr;
+  }
+
+  .ceal-benefit-grid {
+    margin-top: 54px;
+    gap: 48px;
+  }
+
+  .ceal-benefit-grid h3 {
+    min-height: 0;
+    font-size: 30px;
+  }
+
+  .ceal-benefit-copy p {
+    font-size: 16px;
+  }
+
+  .ceal-process-label {
+    margin-top: 50px;
+  }
+
+  .ceal-process-list {
+    gap: 18px;
+  }
+
+  .ceal-process-list > li {
+    min-height: 0;
+  }
+
+  .ceal-process-list h3 {
+    margin-bottom: 24px;
+  }
+
+  .ceal-differentiation-grid {
+    margin-top: 54px;
+  }
+
+  .ceal-build-card {
+    padding: 26px 22px;
+  }
+
+  .ceal-build-card header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ceal-build-card ul {
+    margin-top: 32px;
+    font-size: 15px;
+  }
+
+  .ceal-context-list {
+    width: min(100%, 440px);
+    margin: 54px auto 0;
+    gap: 54px;
+  }
+
+  .ceal-context-list li {
+    padding: 48px;
+  }
+
+  .ceal-context-list li:not(:last-child)::after {
+    width: 46px;
+    height: 36px;
+    left: 50%;
+    top: calc(100% + 10px);
+    transform: translateX(-50%) rotate(90deg);
+  }
+
+  .ceal-context-list h3 {
+    font-size: 32px;
+  }
+
+  .ceal-context-list p {
+    font-size: 17px;
+  }
+
+  .ceal-economics-grid {
+    margin-top: 54px;
+    gap: 54px;
+  }
+
+  .ceal-subscription-card > div {
+    min-height: 260px;
+  }
+
+  .ceal-savings li {
+    padding: 20px;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .ceal-savings li > span {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 19px;
+  }
+
+  .ceal-savings strong {
+    font-size: 19px;
+  }
+
+  .ceal-cta-grid {
+    gap: 52px;
+  }
+
+  .ceal-cta-product {
+    font-size: 17px;
+  }
+
+  .ceal-cta-copy h2 {
+    font-size: clamp(42px, 12vw, 58px);
+  }
+
+  .ceal-cta-copy h3 {
+    margin-top: 42px;
+    font-size: 34px;
+  }
+
+  .ceal-cta-pill {
+    padding-inline: 20px;
+  }
+
+  .ceal-cta-trust {
+    justify-content: center;
+  }
+
+  .ceal-inline-form {
+    padding: 26px 20px;
+    border-radius: 26px;
+  }
+}
+
+@media (max-width: 420px) {
+  .ceal-shell {
+    width: min(calc(100% - 32px), var(--ceal-shell));
+  }
+
+  .ceal-product-brand {
+    font-size: 36px;
+  }
+
+  .ceal-product-name {
+    font-size: 60px;
+  }
+
+  .ceal-solution-lockup {
+    gap: 16px;
+  }
+
+  .ceal-solution-lockup img {
+    width: 58px;
+  }
+
+  .ceal-solution-lockup h3 {
+    font-size: 28px;
+  }
+
+  .ceal-context-list li {
+    padding: 38px;
+  }
+
+  .ceal-savings li {
+    grid-template-columns: 1fr;
+  }
+
+  .ceal-savings li > span {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 720px), (prefers-reduced-motion: reduce) {
+  .ceal-rings-layer {
+    display: none;
+  }
+}

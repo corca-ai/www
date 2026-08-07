@@ -717,7 +717,7 @@ async function readBasePostRecords() {
       searchText: stripTags(parsed.articleHtml),
     };
     if (postSource === 'team-interview') {
-      post.excerpt = teamInterviewExcerpt(parsed.articleHtml, description);
+      post.excerpt = firstTeamInterviewAnswer(parsed.articleHtml, description);
     }
 
     validatePost(post);
@@ -799,7 +799,7 @@ async function localizePostRecord(baseRecord, locale) {
     searchText: stripTags(parsed.articleHtml),
   };
   if (post.source === 'team-interview') {
-    post.excerpt = teamInterviewExcerpt(parsed.articleHtml, description);
+    post.excerpt = firstTeamInterviewAnswer(parsed.articleHtml, description);
   }
   validatePost(post);
   return { post, articleHtml: parsed.articleHtml, source, sourcePath: translationPath };
@@ -2293,22 +2293,23 @@ function stripTags(value) {
   );
 }
 
-function teamInterviewExcerpt(articleHtml, fallback) {
-  const sentences = [...String(articleHtml || '').matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
-    .filter((match) => !/^<a\b[^>]*>[\s\S]*?<\/a>$/i.test(match[1].trim()))
-    .flatMap((match) => stripTags(match[1]).split(/(?<=[.!?…。！？])\s+/u))
-    .map((sentence) => sentence.trim())
-    .filter((sentence) => sentence.length >= 35 && sentence.length <= 240)
-    .filter((sentence) => !/^https?:\/\/\S+$/i.test(sentence))
-    .filter(
-      (sentence) =>
-        !/^(?:Q\s*\d*\s*[.．:：)）]|질문\s*\d*\s*[.．:：)）]|質問\s*\d*\s*[.．:：)）]|問題\s*\d*\s*[.．:：)）]|问\s*\d*\s*[.．:：)）])/u.test(
-          sentence,
-        ),
-    )
-    .filter((sentence) => !/[?？]$/.test(sentence));
+function firstTeamInterviewAnswer(articleHtml, fallback) {
+  const html = String(articleHtml || '');
+  const headings = [...html.matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)];
+  const firstQuestion =
+    headings.find((heading) =>
+      /^(?:Q\s*\d*\s*[.．:：)）]|질문|質問|問|问)/u.test(stripTags(heading[1])),
+    ) || headings[0];
+  if (!firstQuestion || firstQuestion.index === undefined) return fallback;
 
-  return sentences[Math.floor(sentences.length / 2)] || fallback;
+  const answerHtml = html
+    .slice(firstQuestion.index + firstQuestion[0].length)
+    .split(/<h[23]\b/i)[0];
+  const answer = [...answerHtml.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+    .map((paragraph) => stripTags(paragraph[1]))
+    .find((paragraph) => paragraph && !/^https?:\/\/\S+$/i.test(paragraph));
+
+  return answer || fallback;
 }
 
 function escapeHtml(value) {

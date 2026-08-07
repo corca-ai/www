@@ -353,7 +353,7 @@ second preserved code-like line</pre>
   );
   assert.equal(
     posts.find((post) => post.slug === 'team-interview-fixture')?.excerpt,
-    'The second interview answer verifies more than one question link.',
+    'The first interview answer verifies that question headings appear in the table of contents.',
   );
   assert.equal(posts.find((post) => post.slug === 'notion-body-fixture')?.source, 'blog');
   assert.equal(

@@ -15,7 +15,6 @@ export interface TeamInterview {
 
 interface TeamInterviewPost extends Omit<TeamInterview, 'excerpt'> {
   excerpt?: string;
-  searchText?: string;
 }
 
 const blogIndexPaths: Record<Lang, string> = {
@@ -36,31 +35,6 @@ function isTeamInterview(value: unknown): value is TeamInterviewPost {
   );
 }
 
-function interviewExcerpt(searchText: string | undefined, fallback: string) {
-  const text = String(searchText || '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  const questionMarker = /(?:^|\s)(?:Q\s*\d*\s*[.．:：)）]|질문\s*[:：]|問\s*[:：]|问\s*[:：])/u;
-  const firstQuestion = text.search(questionMarker);
-  const body = firstQuestion >= 0 ? text.slice(firstQuestion) : text;
-  const sentences = body
-    .split(/(?<=[.!?…。！？])\s+/u)
-    .map((sentence) => sentence.trim())
-    .filter((sentence) => sentence.length >= 35 && sentence.length <= 240)
-    .filter((sentence) => !/^https?:\/\/\S+$/i.test(sentence))
-    .filter(
-      (sentence) =>
-        !/^(?:Q\s*\d*\s*[.．:：)）]|질문\s*[:：]|問\s*[:：]|问\s*[:：])/u.test(sentence),
-    );
-  const answers = sentences.filter((sentence) => !/[?？]$/.test(sentence));
-
-  return (
-    answers[Math.floor(answers.length / 2)] ||
-    sentences[Math.floor(sentences.length / 2)] ||
-    fallback
-  );
-}
-
 // The Notion publisher regenerates this index whenever a team-interview row is
 // created, updated, or deleted. This page surface intentionally consumes only
 // entries carrying that database-owned source marker.
@@ -74,7 +48,7 @@ export async function getTeamInterviews(lang: Lang): Promise<TeamInterview[]> {
     .filter(isTeamInterview)
     .map((post) => ({
       ...post,
-      excerpt: post.excerpt?.trim() || interviewExcerpt(post.searchText, post.description),
+      excerpt: post.excerpt?.trim() || post.description,
     }))
     .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title, 'ko'));
 }

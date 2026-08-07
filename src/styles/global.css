@@ -112,16 +112,44 @@ body {
 
 /* Modern-baseline typography niceties (Baseline 2024+). Headings use `pretty`
    (not `balance`): the live corca.ai headings wrap greedily, whereas `balance`
-   equalises line lengths and would split Korean words mid-line (e.g. 경쟁력). */
-/* `word-break: keep-all` stops Korean/CJK from breaking mid-word (Wix corca.ai
-   wraps only at spaces); without it headings split words like 경쟁력 / 인정받았습니다. */
+   equalises line lengths and would split Korean words mid-line (e.g. 경쟁력).
+   Japanese and Chinese body copy overrides `pretty` below so long translations
+   do not depend on engine-specific line selection. */
 h1, h2, h3 {
   text-wrap: pretty;
-  word-break: keep-all;
 }
 p {
   text-wrap: pretty;
+}
+
+/* Korean follows the source site's space-delimited wrapping. Japanese and
+   Simplified Chinese do not: both normally wrap between CJK characters, with
+   strict kinsoku punctuation handling. Applying `keep-all` to those locales
+   turns a sentence into one large intrinsic-width token and can widen a grid
+   beyond the mobile viewport (WebKit and Blink then fail in different places). */
+html:lang(ko) h1,
+html:lang(ko) h2,
+html:lang(ko) h3,
+html:lang(ko) p {
   word-break: keep-all;
+}
+
+html:lang(ja) h1,
+html:lang(ja) h2,
+html:lang(ja) h3,
+html:lang(ja) p,
+html:lang(zh-CN) h1,
+html:lang(zh-CN) h2,
+html:lang(zh-CN) h3,
+html:lang(zh-CN) p {
+  line-break: strict;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+html:lang(ja) p,
+html:lang(zh-CN) p {
+  text-wrap: wrap;
 }
 
 /* Headings on KO/EN/JA pages use the same Pretendard stack as the body (the
@@ -201,6 +229,13 @@ h1, h2, h3, .font-head {
      take the min of the two; the 50%−560 term then caps content at 1120px on
      wide screens; 20px floor. */
   padding-inline: var(--container-c-gutter);
+}
+
+/* Grid items default to `min-width: auto`, which lets an unbroken localized
+   string enlarge the track and the document. Content grids must be allowed to
+   shrink to the available container before their text wraps. */
+.container-c.grid > * {
+  min-width: 0;
 }
 
 /* ---------------------------------------------------------------------------

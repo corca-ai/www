@@ -69,7 +69,12 @@ const heroTitleHtml = (() => {
        sticky bar, so we subtract that 66px here to land the illustration bottom at
        the same on-page position as live. -->
   <div class="container-c relative flex flex-col items-start gap-8 pt-6 pb-14 text-left min-[640px]:pb-6 min-[810px]:min-h-[clamp(654px,calc(75vw_-_66px),894px)] min-[810px]:justify-start min-[810px]:py-0 min-[810px]:pt-[calc(9vw_-_40px)]">
-    <div class="max-[809px]:max-w-[360px] min-[810px]:max-w-[600px]">
+    <div
+      class:list={[
+        'home-hero-copy max-[809px]:max-w-[360px]',
+        lang === 'ja' ? 'min-[810px]:max-w-[680px]' : 'min-[810px]:max-w-[600px]',
+      ]}
+    >
       <h1
         class="text-[40px] font-normal leading-[1.12] tracking-tight min-[640px]:text-[42px] min-[810px]:text-[44px] min-[1024px]:text-[60px]"
         set:html={heroTitleHtml}

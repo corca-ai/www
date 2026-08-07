@@ -1,19 +1,30 @@
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
 import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { promisify } from 'node:util';
 import { browserImageExtension } from './lib/browser-image-format.js';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
+const execFileAsync = promisify(execFile);
 const fixtureRoot = await mkdtemp(join(tmpdir(), 'corca-www-notion-publish-'));
 const workDir = join(fixtureRoot, 'www');
 const bodyPageId = '11111111-2222-3333-4444-555555555555';
 const htmlPageId = '66666666-7777-8888-9999-000000000000';
 const publishedPageId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 const legacyCompletedPageId = 'ffffffff-1111-2222-3333-444444444444';
+const teamInterviewPageId = '12345678-1234-1234-1234-123456789012';
 const pagesPath = join(fixtureRoot, 'pages.json');
+const teamInterviewPagesPath = join(fixtureRoot, 'team-interview-pages.json');
+const teamInterviewMigrationPagesPath = join(fixtureRoot, 'team-interview-migration-pages.json');
+const duplicateSlugTeamPagesPath = join(fixtureRoot, 'team-interview-duplicate-slug-pages.json');
+const missingSlugTitleTeamPagesPath = join(
+  fixtureRoot,
+  'team-interview-missing-slug-title-pages.json',
+);
 const blocksPath = join(fixtureRoot, 'blocks.json');
 const updatesPath = join(fixtureRoot, 'updates.jsonl');
 const htmlPath = join(fixtureRoot, 'notion-html-fixture.html');
@@ -180,6 +191,96 @@ second preserved code-like line</pre>
       2,
     ),
   );
+  await writeFile(
+    teamInterviewPagesPath,
+    JSON.stringify(
+      {
+        results: [
+          page({
+            id: teamInterviewPageId,
+            title: 'Team interview fixture',
+            slug: 'team-interview-fixture',
+            description:
+              'Checks that an optional team interview database publishes through the same blog flow.',
+            language: 'ko',
+            status: '배포 신청',
+            fileUrl: pathToFileURL(htmlPath).href,
+          }),
+          page({
+            id: '12345678-1234-1234-1234-123456789015',
+            title: '///',
+            slug: '',
+            description: 'An unpublished draft must not block a batch publication.',
+            language: 'ko',
+            status: '배포 전',
+          }),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+  await writeFile(
+    duplicateSlugTeamPagesPath,
+    JSON.stringify(
+      {
+        results: [
+          page({
+            id: '12345678-1234-1234-1234-123456789013',
+            title: 'Duplicate slug fixture',
+            slug: 'notion-body-fixture',
+            description:
+              'Checks that a duplicate slug is rejected before either database is changed.',
+            language: 'ko',
+            status: '배포 신청',
+            fileUrl: pathToFileURL(htmlPath).href,
+          }),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+  await writeFile(
+    teamInterviewMigrationPagesPath,
+    JSON.stringify(
+      {
+        results: [
+          page({
+            id: '12345678-1234-1234-1234-123456789016',
+            title: 'Initial team migration fixture',
+            slug: 'initial-team-migration-fixture',
+            description:
+              'Checks that the one-time team migration includes a completed row without changing its status.',
+            language: 'ko',
+            status: '배포 완료',
+            fileUrl: pathToFileURL(htmlPath).href,
+          }),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+  await writeFile(
+    missingSlugTitleTeamPagesPath,
+    JSON.stringify(
+      {
+        results: [
+          page({
+            id: '12345678-1234-1234-1234-123456789014',
+            title: '',
+            slug: '',
+            description: 'Checks that a post needs a slug or title before publication.',
+            language: 'ko',
+            status: '배포 신청',
+          }),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
 
   execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
     cwd: workDir,
@@ -189,6 +290,8 @@ second preserved code-like line</pre>
       NOTION_TOKEN: 'secret_fixture',
       NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
       NOTION_FIXTURE_PAGES_FILE: pagesPath,
+      NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+      NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewPagesPath,
       NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
       NOTION_FIXTURE_UPDATES_FILE: updatesPath,
       NOTION_ALLOW_FILE_URLS: '1',
@@ -219,6 +322,10 @@ second preserved code-like line</pre>
   );
   assert.equal(
     posts.some((post) => post.slug === 'notion-html-fixture'),
+    true,
+  );
+  assert.equal(
+    posts.some((post) => post.slug === 'team-interview-fixture'),
     true,
   );
   assert.equal(
@@ -401,6 +508,206 @@ second preserved code-like line</pre>
     'https://www.corca.ai/blog/feed.json',
   );
 
+  const updateBytesBeforeTargetedTeamSync = (await readFile(updatesPath, 'utf8')).length;
+  execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+    cwd: workDir,
+    env: {
+      ...process.env,
+      BLOG_ADMIN_ROOT: workDir,
+      NOTION_TOKEN: 'secret_fixture',
+      NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
+      NOTION_FIXTURE_PAGES_FILE: pagesPath,
+      NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+      NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewPagesPath,
+      NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+      NOTION_FIXTURE_UPDATES_FILE: updatesPath,
+      NOTION_ALLOW_FILE_URLS: '1',
+      NOTION_PAGE_ID: teamInterviewPageId,
+      NOTION_POST_READY_STATUS: '',
+      NOTION_POST_UPDATE_STATUS: '수정 요청',
+      NOTION_SKIP_UPDATES: '0',
+      CORCA_SITE_URL: 'https://www.corca.ai',
+      BLOG_TRANSLATION_PROVIDER: 'fixture',
+    },
+    stdio: 'inherit',
+  });
+  const targetedTeamUpdates = (await readFile(updatesPath, 'utf8')).slice(
+    updateBytesBeforeTargetedTeamSync,
+  );
+  assert.match(targetedTeamUpdates, new RegExp(teamInterviewPageId));
+  assert.doesNotMatch(targetedTeamUpdates, new RegExp(bodyPageId));
+  assert.doesNotMatch(targetedTeamUpdates, new RegExp(htmlPageId));
+
+  execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+    cwd: workDir,
+    env: {
+      ...process.env,
+      BLOG_ADMIN_ROOT: workDir,
+      NOTION_TOKEN: 'secret_fixture',
+      NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+      NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewMigrationPagesPath,
+      NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+      NOTION_ALLOW_FILE_URLS: '1',
+      NOTION_TEAM_INTERVIEW_INITIAL_MIGRATION: '1',
+      NOTION_SKIP_UPDATES: '1',
+      CORCA_SITE_URL: 'https://www.corca.ai',
+      BLOG_TRANSLATION_PROVIDER: 'fixture',
+    },
+    stdio: 'inherit',
+  });
+  assert.match(
+    await readFile(join(workDir, 'public/blog/initial-team-migration-fixture/index.html'), 'utf8'),
+    /Initial team migration fixture/,
+  );
+
+  assert.throws(
+    () =>
+      execFileSync(
+        process.execPath,
+        [join(repoRoot, 'scripts/sync-notion-posts.js'), '--dry-run'],
+        {
+          cwd: workDir,
+          env: {
+            ...process.env,
+            BLOG_ADMIN_ROOT: workDir,
+            NOTION_TOKEN: 'secret_fixture',
+            NOTION_BLOG_DATA_SOURCE_ID: 'dada0000-0000-0000-0000-000000000000',
+            NOTION_FIXTURE_PAGES_FILE: pagesPath,
+            NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+            NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: pagesPath,
+            NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+          },
+          stdio: 'pipe',
+        },
+      ),
+    /multiple configured sources/,
+  );
+
+  const updatesBeforeDuplicateSlugSync = await readFile(updatesPath, 'utf8');
+  const postsBeforeDuplicateSlugSync = await readFile(
+    join(workDir, 'public/blog/posts/index.json'),
+    'utf8',
+  );
+  assert.throws(
+    () =>
+      execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+        cwd: workDir,
+        env: {
+          ...process.env,
+          BLOG_ADMIN_ROOT: workDir,
+          NOTION_TOKEN: 'secret_fixture',
+          NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
+          NOTION_FIXTURE_PAGES_FILE: pagesPath,
+          NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+          NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: duplicateSlugTeamPagesPath,
+          NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+          NOTION_FIXTURE_UPDATES_FILE: updatesPath,
+          NOTION_ALLOW_FILE_URLS: '1',
+          NOTION_SKIP_UPDATES: '0',
+        },
+        stdio: 'pipe',
+      }),
+    /Duplicate post slug/,
+  );
+  assert.equal(await readFile(updatesPath, 'utf8'), updatesBeforeDuplicateSlugSync);
+  assert.equal(
+    await readFile(join(workDir, 'public/blog/posts/index.json'), 'utf8'),
+    postsBeforeDuplicateSlugSync,
+  );
+
+  const updatesBeforeMissingSlugTitleSync = await readFile(updatesPath, 'utf8');
+  assert.throws(
+    () =>
+      execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+        cwd: workDir,
+        env: {
+          ...process.env,
+          BLOG_ADMIN_ROOT: workDir,
+          NOTION_TOKEN: 'secret_fixture',
+          NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
+          NOTION_FIXTURE_PAGES_FILE: pagesPath,
+          NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+          NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: missingSlugTitleTeamPagesPath,
+          NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+          NOTION_FIXTURE_UPDATES_FILE: updatesPath,
+          NOTION_SKIP_UPDATES: '0',
+        },
+        stdio: 'pipe',
+      }),
+    /requires Slug\/슬러그 or a title/,
+  );
+  assert.equal(await readFile(updatesPath, 'utf8'), updatesBeforeMissingSlugTitleSync);
+
+  const paginationServer = createServer((request, response) => {
+    const chunks = [];
+    request.on('data', (chunk) => chunks.push(chunk));
+    request.on('end', () => {
+      const payload = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}');
+      const result = payload.start_cursor
+        ? {
+            results: [
+              page({
+                id: '23456789-1234-1234-1234-123456789012',
+                title: 'Paginated duplicate fixture',
+                slug: 'team-interview-fixture',
+                description: 'Duplicate returned after the configured publish limit.',
+                language: 'ko',
+                status: '배포 신청',
+              }),
+            ],
+            has_more: false,
+            next_cursor: null,
+          }
+        : {
+            results: [
+              page({
+                id: '34567891-1234-1234-1234-123456789012',
+                title: 'Paginated primary fixture',
+                slug: 'paginated-primary-fixture',
+                description: 'First page returned before the configured publish limit.',
+                language: 'ko',
+                status: '배포 신청',
+              }),
+            ],
+            has_more: true,
+            next_cursor: 'next-page',
+          };
+      response.writeHead(200, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify(result));
+    });
+  });
+  await new Promise((resolve) => paginationServer.listen(0, '127.0.0.1', resolve));
+  const paginationAddress = paginationServer.address();
+  assert.ok(paginationAddress && typeof paginationAddress !== 'string');
+  try {
+    await assert.rejects(async () => {
+      try {
+        await execFileAsync(
+          process.execPath,
+          [join(repoRoot, 'scripts/sync-notion-posts.js'), '--dry-run'],
+          {
+            cwd: workDir,
+            env: {
+              ...process.env,
+              BLOG_ADMIN_ROOT: workDir,
+              NOTION_TOKEN: 'secret_fixture',
+              NOTION_API_BASE_URL: `http://127.0.0.1:${paginationAddress.port}/v1`,
+              NOTION_BLOG_DATA_SOURCE_ID: 'dada0000-0000-0000-0000-000000000000',
+              NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+              NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewPagesPath,
+              NOTION_POST_LIMIT: '1',
+            },
+            encoding: 'utf8',
+          },
+        );
+      } catch (error) {
+        throw new Error(error.stderr || error.message);
+      }
+    }, /Duplicate post slug/);
+  } finally {
+    await new Promise((resolve) => paginationServer.close(resolve));
+  }
+
   await writeFile(
     pagesPath,
     JSON.stringify(
@@ -429,6 +736,8 @@ second preserved code-like line</pre>
       NOTION_TOKEN: 'secret_fixture',
       NOTION_BLOG_DATABASE_ID: '391dd8f2aea280ab814bc694394a1720',
       NOTION_FIXTURE_PAGES_FILE: pagesPath,
+      NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+      NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewPagesPath,
       NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
       NOTION_FIXTURE_UPDATES_FILE: updatesPath,
       NOTION_ALLOW_FILE_URLS: '1',

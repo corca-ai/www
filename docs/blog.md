@@ -125,7 +125,10 @@ The Notion publishing path can be run manually from GitHub Actions or triggered
 by a Notion automation webhook.
 
 - `workflow_dispatch` on `Publish Notion Posts` opens a pull request for all
-  ready Notion pages that produce static file changes.
+  ready Notion pages that produce static file changes. Select
+  `commit_to_source_branch` only when deliberately backfilling an existing
+  content or feature PR: it commits the generated static files directly to the
+  branch selected in the manual-run form instead.
 - `POST /api/notion/publish` validates `X-Corca-Webhook-Secret` or a bearer
   token against `CORCA_NOTION_WEBHOOK_SECRET`, then dispatches the
   `notion-post-publish` GitHub event.
@@ -135,12 +138,18 @@ by a Notion automation webhook.
 - Required Notion database variable: `NOTION_BLOG_DATABASE_URL` or
   `NOTION_BLOG_DATABASE_ID`. `NOTION_BLOG_DATA_SOURCE_ID` can be used when the
   newer Notion Data Source API is configured.
+- Optional team-interview database variable: set one of
+  `NOTION_TEAM_INTERVIEW_DATABASE_URL`, `NOTION_TEAM_INTERVIEW_DATABASE_ID` or
+  `NOTION_TEAM_INTERVIEW_DATA_SOURCE_ID`. When present, it is queried alongside
+  the primary blog database and uses the identical static-blog publication
+  path. Leaving all three unset preserves the single-database behavior.
 - Optional GitHub Action variables:
   `NOTION_POST_READY_STATUS`, `NOTION_POST_UPDATE_STATUS`,
   `NOTION_POST_DELETE_STATUS`, `NOTION_POST_PUBLISHING_STATUS`,
   `NOTION_POST_PUBLISHED_STATUS`, `NOTION_POST_DELETING_STATUS`,
   `NOTION_POST_DELETED_STATUS`, `NOTION_POST_ERROR_STATUS`,
-  `NOTION_SKIP_UPDATES` and `NOTION_RECENT_READY_MINUTES`.
+  `NOTION_SKIP_UPDATES`, `NOTION_RECENT_READY_MINUTES` and
+  `NOTION_POST_LIMIT` (default: `50`).
 - Required Worker secrets for webhook-triggered publishing:
   `CORCA_NOTION_WEBHOOK_SECRET` and `GITHUB_DISPATCH_TOKEN`.
 - Optional GitHub Actions secret: `CONTENT_CHANGE_TOKEN`, used instead of the
@@ -153,6 +162,40 @@ and the main-branch Cloudflare deployment completes.
 
 `NOTION_BLOG_DATABASE` is not read by this repository. Use
 `NOTION_BLOG_DATABASE_URL` or `NOTION_BLOG_DATABASE_ID` instead.
+
+### Team Interview Database
+
+The team-interview table may live anywhere in Notion, including as a database
+embedded under a toggle on the same Notion page as the primary blog table. It
+is still a separate Notion database/data source and must be shared with the
+same Notion integration.
+
+Use the same properties, property types and status labels as the primary blog
+database. Configure its URL, database ID or data source ID with one optional
+`NOTION_TEAM_INTERVIEW_*` variable above, then send its Notion automation to
+the existing `/api/notion/publish` endpoint with the existing webhook secret.
+No second Worker endpoint, route or blog template is required: the webhook page
+ID is matched across both configured sources and the generated article joins
+the normal `/blog` index, feeds, locale aliases and sitemap.
+
+Rows requested for publication or update need a `Slug`/`슬러그` or Notion title;
+that effective published slug must be unique across both databases. Delete rows
+must retain their `Slug`/`슬러그`. Draft rows outside the publication lifecycle do
+not block a batch sync. The sync reads the configured sources completely and
+rejects a missing or duplicate publication value before it updates Notion or
+writes static blog files, so resolve the source rows before retrying publication.
+
+For an initial bulk migration, add all source rows to the team-interview table,
+run `Publish Notion Posts` manually with `team_interview_initial_migration`.
+That one-time mode processes only team-interview rows whose `공개 URL` is empty,
+regardless of their current completion status, and does not change any Notion
+status. It avoids triggering the normal status-change webhook for every migrated
+row. Pair it with `commit_to_source_branch` to include the generated files in an
+existing feature PR; otherwise the workflow creates the usual content-sync PR.
+It processes up to `NOTION_POST_LIMIT` rows (default `50`); set that GitHub
+Actions variable high enough for a one-pass migration or run the workflow again
+for remaining rows. After the migration, use the existing Notion webhook and
+status-change process for each new or edited interview.
 
 ### Notion Edits And Deletes
 

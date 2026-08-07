@@ -4017,6 +4017,27 @@ main:has(.static-post-view) {
   outline: none;
 }
 
+/* Team interviews use portrait source photos; crop them into the shared 16:9 card frame. */
+:is(.featured-card, .post-card, .post-pagination-card .related-thumbnail) img:is(
+  [src$="ax-lead-baehwidong-cover.png"],
+  [src$="better-team-operation-cover.jpg"],
+  [src$="ceo-team-happiness-cover.png"],
+  [src$="cto-kang-gyuyoung-cover.png"],
+  [src$="first-growth-marketer-cover.jpg"],
+  [src$="first-step-at-corca-cover.jpg"],
+  [src$="growth-and-relationships-cover.jpg"],
+  [src$="ios-engineer-business-sense-cover.jpg"],
+  [src$="operation-lead-team-support-cover.jpg"],
+  [src$="product-designer-positive-energy-cover.jpg"],
+  [src$="product-designer-work-cover.png"],
+  [src$="product-lead-zero-to-one-cover.jpg"],
+  [src$="ux-engineer-cover.jpg"]
+) {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+}
+
 .post-card:hover img,
 .post-card:focus-within img {
   transform: none;

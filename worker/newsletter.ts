@@ -77,7 +77,7 @@ export async function handleNewsletterRequest(
 
 export async function runNewsletterDaily(
   env: NewsletterEnv,
-  options: { fetcher?: typeof fetch; now?: Date } = {},
+  options: { mailerFetcher?: typeof fetch; now?: Date; rssFetcher?: typeof fetch } = {},
 ): Promise<NewsletterRunResult> {
   const database = env.NEWSLETTER_DB;
   const tokenSecret = requiredTokenSecret(env);
@@ -89,9 +89,12 @@ export async function runNewsletterDaily(
   }
 
   const now = options.now || new Date();
-  const rssResponse = await (options.fetcher || fetch)(env.NEWSLETTER_RSS_URL || newsletterRssUrl, {
-    headers: { Accept: 'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8' },
-  });
+  const rssResponse = await (options.rssFetcher || fetch)(
+    env.NEWSLETTER_RSS_URL || newsletterRssUrl,
+    {
+      headers: { Accept: 'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8' },
+    },
+  );
   if (!rssResponse.ok) throw new Error(`Newsletter RSS fetch failed (${rssResponse.status})`);
   const items = parseRssItems(await rssResponse.text());
   const timestamp = now.toISOString();
@@ -229,11 +232,10 @@ export async function runNewsletterDaily(
       delivery.delivery_id,
     );
     try {
-      const messageId = await sendSesEmail(
-        env,
-        buildPostMessage(env, delivery, unsubscribeToken),
-        options,
-      );
+      const messageId = await sendSesEmail(env, buildPostMessage(env, delivery, unsubscribeToken), {
+        fetcher: options.mailerFetcher,
+        now: options.now,
+      });
       await database
         .prepare(
           `UPDATE newsletter_deliveries

@@ -1,0 +1,115 @@
+---
+import type { Lang } from '../../i18n/ui';
+import type { LeadPageContext } from '../../lead/pageContext';
+import { leadRequestVariants } from '../../lead/leadRequestContract.js';
+import LeadForm from './LeadForm.astro';
+import {
+  leadRequestCopy,
+  type LeadRequestCopyKey,
+} from './leadFormContent';
+
+export type LeadRequestVariant = (typeof leadRequestVariants)[number];
+
+interface Props {
+  lang: Lang;
+  pageContext?: LeadPageContext | undefined;
+  variant: LeadRequestVariant;
+  copyKey: LeadRequestCopyKey;
+  formId?: string | undefined;
+  class?: string | undefined;
+}
+
+const {
+  lang,
+  pageContext,
+  variant,
+  copyKey,
+  formId = 'request',
+  class: className,
+} = Astro.props;
+const copy = leadRequestCopy(copyKey, lang);
+const showDirectContact = variant !== 'article';
+---
+
+<!-- corca-lead-request:start -->
+<section
+  class:list={['lead-request-section', `lead-request-section--${variant}`, className]}
+  id="request"
+  aria-labelledby={`${formId}-section-title`}
+  data-lead-request-section
+  data-lead-request-variant={variant}
+  data-lead-request-copy={copyKey}
+>
+  <div class="lead-request-shell lead-request-grid">
+    <div class="lead-request-copy" data-reveal>
+      <h2 id={`${formId}-section-title`}>
+        {copy.heading.map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            <span class:list={{ 'lead-request-gradient-text': index >= Math.floor(copy.heading.length / 2) }}>
+              {line}
+            </span>
+          </>
+        ))}
+      </h2>
+      <p>
+        {copy.body.map((line, index) => (
+          <>
+            {index > 0 && <br />}
+            {line}
+          </>
+        ))}
+      </p>
+    </div>
+    {showDirectContact && (
+      <div class="lead-request-direct-contact" data-reveal>
+        {copy.launchTalk && (
+          <div class="lead-request-launch-talk">
+            <p class="lead-request-launch-kicker">{copy.launchTalk.kicker}</p>
+            <h3>{copy.launchTalk.title}</h3>
+            <p class="lead-request-launch-body">
+              {copy.launchTalk.body.map((line, index) => (
+                <>
+                  {index > 0 && <br />}
+                  {line}
+                </>
+              ))}
+            </p>
+            <a
+              class="lead-request-launch-link"
+              href={copy.launchTalk.ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-ax-launch-talk-context
+              data-ax-launch-talk-cta
+              data-widget-state="expanded"
+              data-locale={lang}
+              data-lead-page={pageContext?.pageId}
+              data-page-base-path={pageContext?.basePath}
+              data-content-type={pageContext?.contentType}
+            >
+              {copy.launchTalk.ctaLabel}
+            </a>
+          </div>
+        )}
+        {copy.directLead && <p class="lead-request-direct-intro">{copy.directLead}</p>}
+        {copy.email && copy.emailLabel && (
+          <a class="lead-request-contact-row" href={`mailto:${copy.email}`}>
+            {copy.emailLabel}<strong>{copy.email}</strong>
+          </a>
+        )}
+        <a class="lead-request-contact-row" href="tel:+82269256978">
+          {copy.phoneLabel}<strong>{copy.phone}</strong>
+        </a>
+      </div>
+    )}
+    <div class="lead-request-form-shell" data-reveal>
+      <LeadForm id={formId} lang={lang} compact pageContext={pageContext} />
+    </div>
+  </div>
+</section>
+
+<script>
+  import './leadRequestSectionClient';
+</script>
+<!-- corca-lead-request:end -->

@@ -1,0 +1,338 @@
+/* Reusable outer request section. LeadForm internals are owned by lead-form.css. */
+.lead-request-section {
+  --lead-request-blue: #0969da;
+  --lead-request-ink: #101828;
+  --lead-request-muted: #5f6b7a;
+  --lead-request-shell: 1200px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(104px, 10vw, 168px) 0;
+  color: #fff;
+  background:
+    radial-gradient(circle at 83% 46%, rgba(30, 121, 255, 0.17), transparent 34%),
+    radial-gradient(circle at 13% 18%, rgba(79, 158, 255, 0.09), transparent 31%),
+    linear-gradient(142deg, #07316b 0%, #062b61 44%, #041e49 100%);
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
+.lead-request-section::before,
+.lead-request-section::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: '';
+}
+
+.lead-request-section::before {
+  background:
+    radial-gradient(
+      ellipse 54% 46% at 94% 68%,
+      transparent 59%,
+      rgba(87, 177, 255, 0.11) 60%,
+      rgba(87, 177, 255, 0.035) 61.5%,
+      transparent 64%
+    ),
+    radial-gradient(ellipse 42% 56% at 86% 50%, rgba(58, 151, 255, 0.11), transparent 70%),
+    radial-gradient(ellipse 36% 38% at 48% 48%, rgba(26, 111, 235, 0.08), transparent 74%);
+  filter: saturate(1.14);
+}
+
+.lead-request-section::after {
+  opacity: 0.58;
+  background:
+    radial-gradient(circle at 3% 17%, rgba(255, 255, 255, 0.7) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 8% 76%, rgba(135, 205, 255, 0.66) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 19% 8%, rgba(255, 255, 255, 0.56) 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 34% 86%, rgba(113, 193, 255, 0.54) 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 45% 18%, rgba(255, 255, 255, 0.58) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 48% 67%, rgba(122, 201, 255, 0.48) 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 52% 37%, rgba(255, 255, 255, 0.72) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 57% 92%, rgba(120, 198, 255, 0.5) 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 70% 7%, rgba(255, 255, 255, 0.52) 0 0.8px, transparent 1.4px),
+    radial-gradient(circle at 82% 91%, rgba(139, 208, 255, 0.56) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 92% 22%, rgba(255, 255, 255, 0.68) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 97% 72%, rgba(122, 201, 255, 0.58) 0 0.8px, transparent 1.4px);
+}
+
+.lead-request-section,
+.lead-request-section *,
+.lead-request-section *::before,
+.lead-request-section *::after {
+  box-sizing: border-box;
+}
+
+.lead-request-shell {
+  position: relative;
+  z-index: 1;
+  width: min(calc(100% - 64px), var(--lead-request-shell));
+  margin-inline: auto;
+}
+
+.lead-request-gradient-text {
+  color: #f5f5f7;
+  background: linear-gradient(90deg, #f5f5f7 0%, #b8e2ff 42%, #2997ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lead-request-grid {
+  display: grid;
+  align-items: start;
+}
+
+.lead-request-section--split .lead-request-grid {
+  grid-template-columns: minmax(0, 0.8fr) minmax(420px, 1.2fr);
+  grid-template-areas:
+    'copy form'
+    'direct form';
+  column-gap: clamp(48px, 7vw, 96px);
+  row-gap: 0;
+}
+
+.lead-request-copy {
+  grid-area: copy;
+}
+
+.lead-request-copy,
+.lead-request-direct-contact,
+.lead-request-form-shell {
+  min-width: 0;
+}
+
+.lead-request-copy h2 {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 760;
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+}
+
+.lead-request-copy > p {
+  margin: 34px 0 0;
+  color: #c3d3e7;
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+.lead-request-copy > p br:nth-of-type(2) {
+  display: block;
+  content: '';
+  margin-top: 1em;
+}
+
+.lead-request-direct-contact {
+  grid-area: direct;
+  margin-top: 54px;
+  display: grid;
+  gap: 14px;
+}
+
+.lead-request-direct-intro {
+  margin: 24px 0 0;
+  color: #9fb6d1;
+}
+
+.lead-request-contact-row {
+  padding: 18px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid #345170;
+  color: #fff;
+  text-decoration: none;
+}
+
+.lead-request-direct-contact > .lead-request-contact-row:first-of-type {
+  border-top: 1px solid #345170;
+}
+
+.lead-request-launch-talk {
+  padding-top: 24px;
+  margin-bottom: 14px;
+}
+
+.lead-request-launch-kicker {
+  margin: 0;
+  color: #9fb6d1;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.lead-request-launch-talk h3 {
+  margin: 8px 0 0;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 720;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.lead-request-launch-body {
+  margin: 20px 0 0;
+  color: #c3d3e7;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.lead-request-launch-link {
+  width: fit-content;
+  margin-top: 18px;
+  display: inline-block;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 720;
+  line-height: 1.5;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.lead-request-launch-link:hover {
+  color: #b8e2ff;
+}
+
+.lead-request-form-shell {
+  grid-area: form;
+  position: relative;
+  align-self: start;
+  overflow: hidden;
+  padding: clamp(32px, 4vw, 48px);
+  padding-bottom: clamp(32px, 4vw, 48px);
+  border: 1px solid rgba(137, 184, 235, 0.48);
+  border-radius: 32px;
+  color: var(--lead-request-ink);
+  background: linear-gradient(155deg, #ffffff 0%, #f7faff 100%);
+  box-shadow:
+    0 32px 80px rgba(0, 20, 55, 0.3),
+    0 8px 24px rgba(0, 38, 91, 0.12);
+}
+
+.lead-request-section--stacked {
+  --lead-request-shell: 900px;
+}
+
+.lead-request-section--stacked .lead-request-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'copy'
+    'form'
+    'direct';
+  gap: 48px;
+}
+
+.lead-request-section--stacked .lead-request-copy {
+  text-align: center;
+}
+
+.lead-request-section--stacked .lead-request-form-shell,
+.lead-request-section--stacked .lead-request-direct-contact {
+  width: min(100%, 720px);
+  margin-inline: auto;
+}
+
+.lead-request-section--stacked .lead-request-direct-contact {
+  margin-top: 0;
+}
+
+.lead-request-section--article {
+  --lead-request-shell: 1200px;
+  padding: clamp(72px, 8vw, 112px) 0;
+  color: var(--lead-request-ink);
+  background: #e1eaf7;
+}
+
+.lead-request-section--article .lead-request-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'copy'
+    'form';
+  gap: 44px;
+}
+
+.lead-request-section--article .lead-request-copy {
+  width: min(100%, 760px);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.lead-request-section--article .lead-request-copy > p {
+  color: #475569;
+}
+
+.lead-request-section--article[data-lead-request-copy='blog-article'] .lead-request-copy h2 > span:not(
+    .lead-request-gradient-text
+  ) {
+  color: #004ec7;
+}
+
+.lead-request-section--article[data-lead-request-copy='blog-article'] .lead-request-gradient-text {
+  color: #002eb1;
+  background: linear-gradient(90deg, #002eb1 0%, #008ff2 42%, #4ca8ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lead-request-section--article[data-lead-request-copy='blog-article'] .lead-request-copy > p {
+  color: #215089;
+}
+
+.lead-request-section--article .lead-request-form-shell {
+  width: min(100%, 640px);
+  margin-inline: auto;
+  border-radius: 24px;
+}
+
+@media (max-width: 900px) {
+  .lead-request-section--split .lead-request-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'copy'
+      'form'
+      'direct';
+    gap: 48px;
+  }
+
+  .lead-request-section--split .lead-request-direct-contact {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .lead-request-section::before {
+    opacity: 0.72;
+    background:
+      radial-gradient(
+        ellipse 78% 34% at 92% 76%,
+        transparent 61%,
+        rgba(87, 177, 255, 0.09) 62%,
+        transparent 65%
+      ),
+      radial-gradient(ellipse 74% 38% at 86% 70%, rgba(58, 151, 255, 0.08), transparent 72%);
+  }
+
+  .lead-request-section::after {
+    opacity: 0.34;
+  }
+
+  .lead-request-shell {
+    width: calc(100% - 40px);
+  }
+
+  .lead-request-section {
+    padding: 92px 0;
+  }
+
+  .lead-request-section--article {
+    padding: 72px 0;
+  }
+
+  .lead-request-copy h2 {
+    font-size: 32px;
+  }
+}

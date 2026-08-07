@@ -55,6 +55,28 @@ breadcrumb row as the Astro Footer so their shared container and top alignment
 remain consistent. The generator first removes the home shell's icon-only
 breadcrumb row, then adds exactly one blog-specific trail and desktop badge.
 
+The shared head emits one search favicon declaration: the standard absolute
+`rel="icon"` PNG URL `https://www.corca.ai/favicons/corca-ai-48.png`, plus an
+Apple touch icon generated from the same Figma brand source. Do not add another
+page-specific icon or `shortcut icon` to generated blog HTML. The root ICO and
+older PNG names remain compatibility fallbacks but are not additional head
+candidates. The final build scans every public HTML file and fails when another
+search favicon candidate remains.
+
+Every public blog article receives the shared immutable `article` Lead Request
+Section. `src/lead/blogLeadPages.json` owns this global policy: its
+`page_id_prefix` combines with each locale-neutral slug to create a stable
+`blog-<slug>` ID, and its `content_type`, `variant` and `copy_key` apply to all
+articles. The current `copy_key` is `blog-article`, which keeps the blog-only
+friendly AX prompt separate from the AX page's `ax-consultation` copy. Never paste
+Form HTML into a post. A build-only Astro route renders a
+neutral locale/variant/copy fragment, the blog sync inserts it before `</main>`,
+and then removes the internal route from `dist`. The build rejects duplicate
+`#request` targets, invalid policy values, missing clients and missing locale
+aliases. A future Notion post receives the same section when its static article
+page is generated. Follow the Korean [Lead Form Agent manual](lead-form-agent-manual.md)
+for the exact procedure and contract checks.
+
 - `/blog` loads the blog home page.
 - `/en/blog`, `/ja/blog` and `/zh/blog` load the same public blog content with
   the corresponding main-site navigation language.
@@ -77,8 +99,19 @@ host and no trailing slash except for the root path.
 Blog data is deployed as Cloudflare Workers Static Assets. There is no runtime
 database for published posts.
 
+The newsletter is the deliberate exception: it never stores post content, but
+uses a dedicated D1 database for opt-in subscribers and delivery history. Its
+daily Worker job reads the production Korean RSS feed after a post has passed
+the normal Notion → pull request → deployment flow. See [Blog newsletter](newsletter.md)
+for the setup boundary and operational procedure.
+
 - Public reads use static files such as `/blog/index.json` and
   `/blog/<slug>/index.html`.
+- Every public index record carries an internal publication-source key. The
+  Notion publisher assigns `team-interview` only to rows from the dedicated
+  team-interview database (and `blog` to the general blog database). The
+  `/about/colleagues` page consumes only the `team-interview` records, so its
+  cards and detail links change in the same content PR as the team interview.
 - The old `/blog/admin` editor and `/api/admin/*` routes are retired. Notion is
   the only supported editorial surface for publish, edit and delete requests.
 - Generated source and translation artifacts under `/blog/admin/` remain in the
@@ -97,7 +130,10 @@ The Notion publishing path can be run manually from GitHub Actions or triggered
 by a Notion automation webhook.
 
 - `workflow_dispatch` on `Publish Notion Posts` opens a pull request for all
-  ready Notion pages that produce static file changes.
+  ready Notion pages that produce static file changes. Select
+  `commit_to_source_branch` only when deliberately backfilling an existing
+  content or feature PR: it commits the generated static files directly to the
+  branch selected in the manual-run form instead.
 - `POST /api/notion/publish` validates `X-Corca-Webhook-Secret` or a bearer
   token against `CORCA_NOTION_WEBHOOK_SECRET`, then dispatches the
   `notion-post-publish` GitHub event.
@@ -107,12 +143,18 @@ by a Notion automation webhook.
 - Required Notion database variable: `NOTION_BLOG_DATABASE_URL` or
   `NOTION_BLOG_DATABASE_ID`. `NOTION_BLOG_DATA_SOURCE_ID` can be used when the
   newer Notion Data Source API is configured.
+- Optional team-interview database variable: set one of
+  `NOTION_TEAM_INTERVIEW_DATABASE_URL`, `NOTION_TEAM_INTERVIEW_DATABASE_ID` or
+  `NOTION_TEAM_INTERVIEW_DATA_SOURCE_ID`. When present, it is queried alongside
+  the primary blog database and uses the identical static-blog publication
+  path. Leaving all three unset preserves the single-database behavior.
 - Optional GitHub Action variables:
   `NOTION_POST_READY_STATUS`, `NOTION_POST_UPDATE_STATUS`,
   `NOTION_POST_DELETE_STATUS`, `NOTION_POST_PUBLISHING_STATUS`,
   `NOTION_POST_PUBLISHED_STATUS`, `NOTION_POST_DELETING_STATUS`,
   `NOTION_POST_DELETED_STATUS`, `NOTION_POST_ERROR_STATUS`,
-  `NOTION_SKIP_UPDATES` and `NOTION_RECENT_READY_MINUTES`.
+  `NOTION_SKIP_UPDATES`, `NOTION_RECENT_READY_MINUTES` and
+  `NOTION_POST_LIMIT` (default: `50`).
 - Required Worker secrets for webhook-triggered publishing:
   `CORCA_NOTION_WEBHOOK_SECRET` and `GITHUB_DISPATCH_TOKEN`.
 - Optional GitHub Actions secret: `CONTENT_CHANGE_TOKEN`, used instead of the
@@ -125,6 +167,46 @@ and the main-branch Cloudflare deployment completes.
 
 `NOTION_BLOG_DATABASE` is not read by this repository. Use
 `NOTION_BLOG_DATABASE_URL` or `NOTION_BLOG_DATABASE_ID` instead.
+
+### Team Interview Database
+
+The team-interview table may live anywhere in Notion, including as a database
+embedded under a toggle on the same Notion page as the primary blog table. It
+is still a separate Notion database/data source and must be shared with the
+same Notion integration.
+
+Use the same properties, property types and status labels as the primary blog
+database. Configure its URL, database ID or data source ID with one optional
+`NOTION_TEAM_INTERVIEW_*` variable above, then send its Notion automation to
+the existing `/api/notion/publish` endpoint with the existing webhook secret.
+No second Worker endpoint, route or blog template is required: the webhook page
+ID is matched across both configured sources and the generated article joins
+the normal `/blog` index, feeds, locale aliases and sitemap.
+
+The generated blog index also preserves the non-sensitive source key
+`team-interview`. It is the build-time contract for `/about/colleagues`; do not
+manually maintain people cards or duplicate a team-interview post in a YAML
+collection. A delete request removes the generated post from that index, and
+therefore removes its People card in the same pull request.
+
+Rows requested for publication or update need a `Slug`/`슬러그` or Notion title;
+that effective published slug must be unique across both databases. Delete rows
+must retain their `Slug`/`슬러그`. Draft rows outside the publication lifecycle do
+not block a batch sync. The sync reads the configured sources completely and
+rejects a missing or duplicate publication value before it updates Notion or
+writes static blog files, so resolve the source rows before retrying publication.
+
+For an initial bulk migration, add all source rows to the team-interview table,
+run `Publish Notion Posts` manually with `team_interview_initial_migration`.
+That one-time mode processes only team-interview rows whose `공개 URL` is empty,
+regardless of their current completion status, and does not change any Notion
+status. It avoids triggering the normal status-change webhook for every migrated
+row. Pair it with `commit_to_source_branch` to include the generated files in an
+existing feature PR; otherwise the workflow creates the usual content-sync PR.
+It processes up to `NOTION_POST_LIMIT` rows (default `50`); set that GitHub
+Actions variable high enough for a one-pass migration or run the workflow again
+for remaining rows. After the migration, use the existing Notion webhook and
+status-change process for each new or edited interview.
 
 ### Notion Edits And Deletes
 
@@ -190,10 +272,16 @@ When changing blog files, keep these invariants:
   override more specific blog component styles. Document-level primitives such
   as page background and overflow may remain global.
 - Desktop article pages keep the table of contents to the left of the article
-  and recommended posts to the right. At widths up to 1024px, the table of
-  contents becomes a collapsible control between the article header and body;
-  recommended posts remain after the article. Table of contents clicks scroll
-  to the selected heading without leaving a section hash in the browser URL.
+  and recommended posts to the right, inside `.static-post-content`. This
+  containment makes their sticky range end with the article, before the
+  full-width Lead Request Section and latest-post cards. The latest-post cards
+  use the same `post-list` and `post-card` markup as the blog index; do not add
+  a detail-page-specific card variant. At widths up to 1024px,
+  the table of contents becomes a collapsible control between the article header
+  and body; recommended posts remain after the article. Table of contents clicks
+  scroll to the selected heading without leaving a section hash in the browser
+  URL. General posts list `h2` sections; posts from the team-interview Notion
+  database also list their `h3` question headings.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

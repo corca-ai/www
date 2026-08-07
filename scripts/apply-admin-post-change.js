@@ -29,8 +29,7 @@ const localeLabels = {
     imageAltSuffix: '대표 이미지',
     toc: '목차',
     recommendations: '추천 글',
-    previous: '이전 글',
-    next: '다음 글',
+    latestPosts: '최신 글 더보기',
     postsBreadcrumb: '글',
     dateLocale: 'ko-KR',
   },
@@ -43,8 +42,7 @@ const localeLabels = {
     imageAltSuffix: 'representative image',
     toc: 'Table of contents',
     recommendations: 'Recommended posts',
-    previous: 'Previous post',
-    next: 'Next post',
+    latestPosts: 'Latest posts',
     postsBreadcrumb: 'Posts',
     dateLocale: 'en-US',
   },
@@ -57,8 +55,7 @@ const localeLabels = {
     imageAltSuffix: '代表画像',
     toc: '目次',
     recommendations: 'おすすめ記事',
-    previous: '前の記事',
-    next: '次の記事',
+    latestPosts: '最新の記事',
     postsBreadcrumb: '記事',
     dateLocale: 'ja-JP',
   },
@@ -71,8 +68,7 @@ const localeLabels = {
     imageAltSuffix: '代表图片',
     toc: '目录',
     recommendations: '推荐文章',
-    previous: '上一篇',
-    next: '下一篇',
+    latestPosts: '最新文章',
     postsBreadcrumb: '文章',
     dateLocale: 'zh-CN',
   },
@@ -321,6 +317,7 @@ async function upsertPost(value) {
       uploadedCover || normalizeCover(metadata.cover || parsed?.metadata.cover || defaultCover),
     language: normalizeLanguage(metadata.language || parsed?.metadata.language || 'ko'),
     coverAlt: String(metadata.coverAlt || parsed?.metadata.coverAlt || '').trim(),
+    source: normalizePostSource(metadata.source || parsed?.metadata.source || 'blog'),
     section,
     wordCount: estimateWordCount(articleHtml),
   };
@@ -331,6 +328,7 @@ async function upsertPost(value) {
   }
 
   validatePost({ slug, ...post });
+  await assertPostSourceOwnership(slug, post.source);
   await mkdir(sourcesDir, { recursive: true });
   await writeFile(join(sourcesDir, `${slug}.html`), renderPostSource(post, articleHtml));
   await writePostTranslations(post, articleHtml, slug);
@@ -395,6 +393,9 @@ async function deleteBodyImages(value, slug) {
 async function deletePost(value) {
   const slug = normalizeSlug(value.slug || '');
   if (!slug) fail('Admin post delete requires a slug.');
+  const source = normalizePostSource(value.source || 'blog');
+
+  await assertPostSourceOwnership(slug, source);
 
   await rm(join(sourcesDir, `${slug}.html`), { force: true });
   await rm(join(postsDir, slug), { recursive: true, force: true });
@@ -411,6 +412,20 @@ async function deletePost(value) {
     });
   }
   console.log(`Admin post deleted: ${slug}`);
+}
+
+async function assertPostSourceOwnership(slug, source) {
+  const existing = await readFile(join(sourcesDir, `${slug}.html`), 'utf8').catch(() => '');
+  if (!existing.trim()) return;
+
+  const existingSource = normalizePostSource(
+    parsePostSource(existing, `${slug}.html`).metadata.source || 'blog',
+  );
+  if (existingSource !== source) {
+    fail(
+      `Post slug "${slug}" already belongs to ${existingSource}; ${source} cannot update or delete it.`,
+    );
+  }
 }
 
 async function writePostTranslations(post, articleHtml, slug) {
@@ -685,6 +700,7 @@ async function readBasePostRecords() {
       taxonomyContext,
     );
     const cover = resolvePostCover(parsed.metadata.cover, parsed.articleHtml);
+    const postSource = normalizePostSource(parsed.metadata.source || 'blog');
     const post = {
       slug,
       title,
@@ -696,9 +712,13 @@ async function readBasePostRecords() {
       wordCount: normalizeWordCount(parsed.metadata.wordCount, parsed.articleHtml),
       language: normalizeLanguage(parsed.metadata.language || 'ko'),
       coverAlt: String(parsed.metadata.coverAlt || '').trim(),
+      source: postSource,
       section: normalizePostSection(parsed.metadata.section, tags, taxonomyContext),
       searchText: stripTags(parsed.articleHtml),
     };
+    if (postSource === 'team-interview') {
+      post.excerpt = firstTeamInterviewAnswer(parsed.articleHtml, description);
+    }
 
     validatePost(post);
     records.push({
@@ -778,6 +798,9 @@ async function localizePostRecord(baseRecord, locale) {
     ),
     searchText: stripTags(parsed.articleHtml),
   };
+  if (post.source === 'team-interview') {
+    post.excerpt = firstTeamInterviewAnswer(parsed.articleHtml, description);
+  }
   validatePost(post);
   return { post, articleHtml: parsed.articleHtml, source, sourcePath: translationPath };
 }
@@ -788,15 +811,13 @@ async function renderAllStaticPosts(postRecordsByLocale) {
   for (const locale of supportedLocales) {
     const records = postRecordsByLocale.get(locale) || [];
     const localePosts = records.map((record) => record.post);
-    const postBySlug = new Map(localePosts.map((item) => [item.slug, item]));
     for (const record of records) {
       const post = record.post;
       const outputDir = join(repoRoot, localePaths[locale], post.slug);
       const html = renderStaticPostPage(
         post,
-        prepareArticleHtml(record.articleHtml),
+        prepareArticleHtml(record.articleHtml, post.source === 'team-interview'),
         localePosts,
-        postBySlug,
         locale,
         availableLocalesBySlug,
       );
@@ -878,6 +899,7 @@ async function renderBlogIndexPages(postRecordsByLocale) {
         /(<section id="featuredPost"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.latest)}$2`,
       )
+      .replace(/\n\s*<section id="newsletter"[\s\S]*?<\/section>/, '')
       .replace(
         /(<section id="recentReads"[^>]*aria-label=")[^"]*("[^>]*>)/,
         `$1${escapeAttribute(labels.recent)}$2`,
@@ -1231,6 +1253,29 @@ function renderIndexAbout(labels) {
       </section>`;
 }
 
+function renderNewsletterSignup() {
+  return `      <section id="newsletter" class="newsletter-signup newsletter-signup-article" aria-labelledby="newsletter-title" hidden>
+        <div>
+          <p class="eyebrow">CORCA BLOG</p>
+          <h2 id="newsletter-title">새 글을 메일로 받아보세요</h2>
+          <p>코르카 블로그에 새 글이 발행되면 알려드릴게요. 언제든 수신을 중단할 수 있습니다.</p>
+        </div>
+        <form data-newsletter-form action="/api/newsletter/subscribe" method="post">
+          <label class="newsletter-email-field">
+            <span class="sr-only">이메일 주소</span>
+            <input name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required>
+          </label>
+          <label class="newsletter-consent-field">
+            <input name="consent" type="checkbox" required>
+            <span>이메일로 새 글 소식을 받는 데 동의합니다.</span>
+          </label>
+          <input class="newsletter-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button type="submit">구독하기</button>
+          <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite"></p>
+        </form>
+      </section>`;
+}
+
 function renderIndexNoscript(records, locale, labels) {
   const cards = records
     .map(
@@ -1335,24 +1380,18 @@ function renderBlogIndexSeoLinks(locale) {
   return lines.join('\n');
 }
 
-function renderStaticPostPage(
-  post,
-  articleHtml,
-  posts,
-  postBySlug,
-  locale,
-  availableLocalesBySlug,
-) {
+function renderStaticPostPage(post, articleHtml, posts, locale, availableLocalesBySlug) {
   const shell = getBlogShell(locale, post.slug, availableLocalesBySlug);
   const blogStylesHref = shell.blogStylesHref || '/blog/styles.css';
   const coverUrl = absoluteBlogAsset(post.cover);
   const pageUrl = absoluteSiteUrl(staticPostPath(post, locale));
   const publishedTime = `${post.date}T00:00:00.000Z`;
-  const toc = tableOfContents(articleHtml);
+  const toc = tableOfContents(articleHtml, post.source === 'team-interview');
   const recommendations = recommendationPosts(post, posts);
-  const pageNav = adjacentPostNav(post, posts, postBySlug, locale);
+  const pageNav = latestPostNav(post, posts, locale);
   const articleSection = post.section || post.tags[0] || '코르카';
   const imageAlt = post.coverAlt || `${post.title} ${localeLabels[locale].imageAltSuffix}`;
+  const visibleDescription = post.source === 'team-interview' ? '' : post.description;
   const articleAuthorMeta = post.author
     ? `    <meta property="article:author" content="${escapeAttribute(post.author)}">\n`
     : '';
@@ -1390,17 +1429,17 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
     <link rel="alternate" type="application/rss+xml" title="Corca Blog RSS" href="/rss">
     <link rel="alternate" type="application/feed+json" title="Corca Blog JSON Feed" href="/blog/feed.json">
     <script type="application/ld+json" data-corca-managed="post-structured-data">${JSON.stringify(postStructuredData(post, coverUrl, pageUrl, articleSection, locale))}</script>
-    <link rel="icon" href="/blog/assets/favicon.png" type="image/png">
+    <link rel="icon" href="https://www.corca.ai/favicons/corca-ai-48.png" type="image/png" sizes="48x48">
     <link rel="stylesheet" href="/_astro/BaseLayout.BXVN9hzb.css">
     <link rel="stylesheet" href="${escapeAttribute(blogStylesHref)}">
   </head>
   <body>${shell.beforeMain}<main id="main" tabindex="-1">
       <section class="post-view static-post-view">
+        <div class="static-post-content">
         <article id="article" class="article static-article">
           <header class="article-header">
             <h1>${escapeHtml(post.title)}</h1>
-            <p>${escapeHtml(post.description)}</p>
-            <div class="article-meta">
+${visibleDescription ? `            <p>${escapeHtml(visibleDescription)}</p>\n` : ''}            <div class="article-meta">
               <span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
 ${visibleAuthor}            </div>
           </header>
@@ -1413,7 +1452,8 @@ ${renderStaticTableOfContents(toc, locale)}
         <aside class="toc static-toc recommendations-panel" aria-label="${escapeAttribute(localeLabels[locale].recommendations)}">
 ${renderStaticRecommendations(recommendations, locale)}
         </aside>
-        ${pageNav}
+        </div>
+${locale === 'ko' ? `${renderNewsletterSignup()}\n` : ''}        ${pageNav}
       </section>
     </main>${shell.afterMain}</body>
 </html>
@@ -1582,49 +1622,36 @@ ${recommendations.map((item) => renderRecommendation(item, locale)).join('\n')}
 </section>`;
 }
 
-function adjacentPostNav(post, posts, postBySlug, locale) {
-  const index = posts.findIndex((item) => item.slug === post.slug);
-  const previous = index >= 0 ? posts[index + 1] : null;
-  const next = index > 0 ? posts[index - 1] : null;
-  const cards = [];
-  if (previous && postBySlug.has(previous.slug)) {
-    cards.push(
-      renderAdjacentCard(
-        previous,
-        locale,
-        localeLabels[locale].previous,
-        '←',
-        'post-pagination-previous',
-      ),
-    );
-  }
-  if (next && postBySlug.has(next.slug)) {
-    cards.push(
-      renderAdjacentCard(next, locale, localeLabels[locale].next, '→', 'post-pagination-next'),
-    );
-  }
+function latestPostNav(post, posts, locale) {
+  const cards = posts
+    .filter((candidate) => candidate.slug !== post.slug)
+    .slice(0, 3)
+    .map((candidate) => renderLatestPostCard(candidate, locale));
   return cards.length
-    ? `<nav class="post-pagination" aria-label="글 이동">\n${cards.join('')}\n        </nav>`
+    ? `<nav class="post-list" aria-label="${escapeAttribute(localeLabels[locale].latestPosts)}">\n${cards.join('\n')}\n        </nav>`
     : '';
 }
 
-function renderAdjacentCard(post, locale, label, cue, className) {
+function renderLatestPostCard(post, locale) {
   const thumbnailSrc = `/blog/${String(post.cover || defaultCover).replace(/^\/+/, '')}`;
   const displayTopic = post.tags[0] || post.section || '코르카';
-  return `        <a class="related-card post-pagination-card ${className}" href="${escapeAttribute(staticPostPath(post, locale))}" aria-label="${label}: ${escapeAttribute(post.title)}">
-          <span class="related-cue" aria-hidden="true">${cue}</span>
-          <span class="related-thumbnail" aria-hidden="true">
-            <img src="${escapeAttribute(thumbnailSrc)}" alt="" loading="lazy" decoding="async">
-          </span>
-          <span class="related-copy">
-            <span class="related-meta">${label} · <strong>${escapeHtml(displayTopic)}</strong> · <time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
-            <span class="related-title">${escapeHtml(post.title)}</span>
-          </span>
-        </a>`;
+  return `        <article class="post-card">
+          <a class="post-card-link" href="${escapeAttribute(staticPostPath(post, locale))}">
+            <img src="${escapeAttribute(thumbnailSrc)}" alt="" width="1672" height="941" loading="lazy" decoding="async">
+            <div class="post-card-body">
+              <h3>${escapeHtml(post.title)}</h3>
+              <div class="meta post-card-meta"><span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>${post.author ? ` <span class="meta-item">${escapeHtml(post.author)}</span>` : ''}<span class="meta-item post-card-topic">${escapeHtml(displayTopic)}</span></div>
+              <p>${escapeHtml(post.description)}</p>
+            </div>
+          </a>
+        </article>`;
 }
 
-function tableOfContents(articleHtml) {
-  const items = [...articleHtml.matchAll(/<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi)]
+function tableOfContents(articleHtml, includeQuestionHeadings = false) {
+  const headingPattern = includeQuestionHeadings
+    ? /<h[23]\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h[23]>/gi
+    : /<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi;
+  const items = [...articleHtml.matchAll(headingPattern)]
     .map((match) => ({
       id: match[1],
       text: stripTags(match[2]),
@@ -1634,16 +1661,19 @@ function tableOfContents(articleHtml) {
   return `<ol>\n${items.map((item) => `              <li><a href="#${escapeAttribute(item.id)}">${escapeHtml(item.text)}</a></li>`).join('\n')}\n            </ol>`;
 }
 
-function prepareArticleHtml(html) {
+function prepareArticleHtml(html, includeQuestionHeadings = false) {
   let headingIndex = 0;
+  const headingPattern = includeQuestionHeadings
+    ? /<(h[23])\b([^>]*)>([\s\S]*?)<\/\1>/gi
+    : /<(h2)\b([^>]*)>([\s\S]*?)<\/\1>/gi;
   return normalizeArticleMediaHtml(rewriteBlogAssetUrls(String(html || '').trim())).replace(
-    /<h2\b([^>]*)>([\s\S]*?)<\/h2>/gi,
-    (match, attrs, body) => {
+    headingPattern,
+    (match, tag, attrs, body) => {
       if (/\sid=/.test(attrs)) return match;
       headingIndex += 1;
       const id = `section-${headingIndex}`;
       const text = stripTags(body);
-      return `<h2${attrs} id="${id}">${body}<a class="heading-anchor" href="#${id}" tabindex="-1" aria-label="${escapeAttribute(text)} 섹션 링크"></a></h2>`;
+      return `<${tag}${attrs} id="${id}">${body}<a class="heading-anchor" href="#${id}" tabindex="-1" aria-label="${escapeAttribute(text)} 섹션 링크"></a></${tag}>`;
     },
   );
 }
@@ -1741,6 +1771,7 @@ function renderPostSource(metadata, articleHtml) {
     author: String(metadata.author || '').trim(),
     cover: normalizeCover(metadata.cover),
     language,
+    source: normalizePostSource(metadata.source || 'blog'),
   };
   if (metadata.coverAlt) post.coverAlt = String(metadata.coverAlt).trim();
   post.section = localizePostTopic(
@@ -1903,6 +1934,12 @@ function normalizeMetadata(value) {
       typeof item === 'string' ? item.trim() : item,
     ]),
   );
+}
+
+function normalizePostSource(value) {
+  const source = String(value || '').trim();
+  if (source === 'blog' || source === 'team-interview') return source;
+  fail(`Post metadata source must be blog or team-interview: ${source || '(missing)'}`);
 }
 
 function normalizeFormat(value) {
@@ -2254,6 +2291,25 @@ function stripTags(value) {
       .replace(/\s+/g, ' ')
       .trim(),
   );
+}
+
+function firstTeamInterviewAnswer(articleHtml, fallback) {
+  const html = String(articleHtml || '');
+  const headings = [...html.matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)];
+  const firstQuestion =
+    headings.find((heading) =>
+      /^(?:Q\s*\d*\s*[.．:：)）]|질문|質問|問|问)/u.test(stripTags(heading[1])),
+    ) || headings[0];
+  if (!firstQuestion || firstQuestion.index === undefined) return fallback;
+
+  const answerHtml = html
+    .slice(firstQuestion.index + firstQuestion[0].length)
+    .split(/<h[23]\b/i)[0];
+  const answer = [...answerHtml.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+    .map((paragraph) => stripTags(paragraph[1]))
+    .find((paragraph) => paragraph && !/^https?:\/\/\S+$/i.test(paragraph));
+
+  return answer || fallback;
 }
 
 function escapeHtml(value) {

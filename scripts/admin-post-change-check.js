@@ -569,8 +569,26 @@ This adjacent fixture gives the generated static page a previous-post card so th
     staticPage,
     /<img src="\/blog\/assets\/admin-posts\/admin-edit-fixture-111111111111\.png"/,
   );
-  assert.match(staticPage, /class="related-card post-pagination-card post-pagination-previous"/);
-  assert.match(staticPage, /<span class="related-thumbnail" aria-hidden="true">/);
+  assert.match(staticPage, /<nav class="post-list" aria-label="최신 글 더보기">/);
+  assert.match(
+    staticPage,
+    /<section id="newsletter" class="newsletter-signup newsletter-signup-article"[\s\S]*?<\/section>\s*<nav class="post-list" aria-label="최신 글 더보기">/,
+  );
+  assert.match(
+    staticPage,
+    /<section class="post-view static-post-view">\s*<div class="static-post-content">[\s\S]*?<\/article>[\s\S]*?<aside class="toc static-toc table-of-contents-panel"[\s\S]*?<aside class="toc static-toc recommendations-panel"[\s\S]*?<\/aside>\s*<\/div>\s*<section id="newsletter" class="newsletter-signup newsletter-signup-article"[\s\S]*?<\/section>\s*<nav class="post-list"/,
+  );
+  const latestPostNav = staticPage.match(
+    /<nav class="post-list" aria-label="최신 글 더보기">[\s\S]*?<\/nav>/,
+  )?.[0];
+  assert.ok(latestPostNav);
+  assert.doesNotMatch(latestPostNav, /href="\/blog\/admin-edit-fixture"/);
+  assert.match(latestPostNav, /href="\/blog\/adjacent-thumbnail-fixture"/);
+  assert.equal((latestPostNav.match(/<article class="post-card">/g) || []).length, 1);
+  assert.match(
+    latestPostNav,
+    /<a class="post-card-link" href="\/blog\/adjacent-thumbnail-fixture">/,
+  );
   assert.match(staticPage, /<details class="article-mobile-navigation">/);
   assert.match(staticPage, /<summary>목차<\/summary>/);
   assert.match(
@@ -588,12 +606,13 @@ This adjacent fixture gives the generated static page a previous-post card so th
   assert.doesNotMatch(noTocStaticPage, /<section class="toc-section"/);
   assert.doesNotMatch(noTocStaticPage, /table-of-contents-panel/);
   assert.match(noTocStaticPage, /class="toc static-toc recommendations-panel"/);
-  assert.ok(
-    staticPage.includes(
-      `<img src="/blog/${fallbackThumbnail}" alt="" loading="lazy" decoding="async">`,
-    ),
+  assert.match(noTocStaticPage, /class="newsletter-signup newsletter-signup-article"/);
+  assert.match(
+    staticPage,
+    new RegExp(`<img src="/blog/${fallbackThumbnail}" alt="" width="1672" height="941"`),
   );
-  assert.match(staticPage, /<span class="related-title">Adjacent Thumbnail Fixture<\/span>/);
+  assert.match(latestPostNav, /<h3>Adjacent Thumbnail Fixture<\/h3>/);
+  assert.match(latestPostNav, /<p>[\s\S]+<\/p>/);
   assert.match(staticPage, /\/blog\/assets\/admin-posts\/admin-edit-fixture-[a-f0-9]{12}\.png/);
   assert.equal(
     (
@@ -632,6 +651,7 @@ This adjacent fixture gives the generated static page a previous-post card so th
     assert.match(blogIndex, /id="tableOfContents" class="toc table-of-contents-panel"/);
     assert.match(blogIndex, /id="recommendationsPanel" class="toc recommendations-panel"/);
     assert.match(blogIndex, /<noscript>[\s\S]*?<strong>(?:문라이트|Moonlight)<\/strong>/);
+    assert.doesNotMatch(blogIndex, /data-newsletter-form/);
   }
   const rss = await readFile(join(workDir, 'public/blog/rss.xml'), 'utf8');
   assert.match(rss, /<\?xml-stylesheet type="text\/xsl" href="\/rss\.xsl"\?>/);

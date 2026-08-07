@@ -1,9 +1,17 @@
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { leadRequestCopyKeys, leadRequestVariants } from '../src/lead/leadRequestContract.js';
+import {
+  extractLeadRequestSection,
+  injectBlogLeadRequestSection,
+  resolveBlogLeadDeclaration,
+  validateBlogLeadManifest,
+} from './blog-lead-section.js';
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = join(repoRoot, 'dist');
+const leadRequestBuildRoot = join(distRoot, 'lead-request-fragment');
 // Astro names the shared shell stylesheet after the component that owns the
 // extracted CSS. It used to be BaseLayout and is currently CommonHead. Match
 // either name so a harmless bundling-name change does not break production
@@ -22,6 +30,7 @@ const localeConfigs = [
     homeLabel: '홈',
     blogLabel: '블로그',
     breadcrumbLabel: '현재 위치',
+    latestPostsTitle: '최신 글 더보기',
   },
   {
     locale: 'en',
@@ -32,6 +41,7 @@ const localeConfigs = [
     homeLabel: 'Home',
     blogLabel: 'Blog',
     breadcrumbLabel: 'Breadcrumb',
+    latestPostsTitle: 'Latest posts',
   },
   {
     locale: 'ja',
@@ -42,6 +52,7 @@ const localeConfigs = [
     homeLabel: 'ホーム',
     blogLabel: 'ブログ',
     breadcrumbLabel: 'パンくずリスト',
+    latestPostsTitle: '最新の記事',
   },
   {
     locale: 'zh',
@@ -52,6 +63,7 @@ const localeConfigs = [
     homeLabel: '首页',
     blogLabel: '博客',
     breadcrumbLabel: '面包屑导航',
+    latestPostsTitle: '最新文章',
   },
 ];
 
@@ -62,6 +74,9 @@ const measurementId =
   rootHtml.match(/googletagmanager\.com\/gtag\/js\?id=(G-[A-Z0-9-]{4,32})/i)?.[1] ||
   '';
 const blogAppSource = await readFile(join(distRoot, 'blog/app.js'), 'utf8');
+const blogLeadPolicy = validateBlogLeadManifest(
+  JSON.parse(await readFile(join(repoRoot, 'src/lead/blogLeadPages.json'), 'utf8')),
+);
 const analyticsBootstrapIndex = blogAppSource.indexOf('\ninitAnalytics();');
 const uiBootstrapIndex = blogAppSource.indexOf('\n  init();');
 if (!currentBaseLayoutCss) {
@@ -83,11 +98,22 @@ await assertFileExists(join(distRoot, currentBaseLayoutCss));
 const headerFragments = new Map();
 const footerFragments = new Map();
 const commonHeadFragments = new Map();
+const leadRequestFragments = new Map();
 for (const config of localeConfigs) {
   const pageHtml = await readFile(join(distRoot, config.page), 'utf8');
   headerFragments.set(config.locale, extractBeforeMain(pageHtml, config.page));
   footerFragments.set(config.locale, extractFooter(pageHtml, config.page));
   commonHeadFragments.set(config.locale, extractCommonHead(pageHtml, config.page));
+  for (const variant of leadRequestVariants) {
+    for (const copyKey of leadRequestCopyKeys) {
+      const fragmentPage = `lead-request-fragment/${config.locale}/${variant}/${copyKey}/index.html`;
+      const fragmentHtml = await readFile(join(distRoot, fragmentPage), 'utf8');
+      leadRequestFragments.set(
+        leadRequestFragmentKey(config.locale, variant, copyKey),
+        extractLeadRequestSection(fragmentHtml, fragmentPage),
+      );
+    }
+  }
 }
 
 let updated = 0;
@@ -98,6 +124,8 @@ let commonHeadsSynced = 0;
 let breadcrumbsSynced = 0;
 let analyticsConfigured = 0;
 let analyticsTargets = 0;
+let leadSectionsSynced = 0;
+const leadSectionLocales = new Map();
 for (const config of localeConfigs) {
   const root = join(distRoot, config.root);
   const files = (await htmlFiles(root)).filter((file) => isDeployableBlogPage(root, file));
@@ -117,6 +145,30 @@ for (const config of localeConfigs) {
       commonHeadFragments.get(config.locale),
       relative(repoRoot, file),
     );
+    const leadDeclaration = slug ? resolveBlogLeadDeclaration(blogLeadPolicy, slug) : undefined;
+    next = injectBlogLeadRequestSection(next, {
+      fragment: leadDeclaration
+        ? leadRequestFragments.get(
+            leadRequestFragmentKey(
+              config.locale,
+              leadDeclaration.variant,
+              leadDeclaration.copy_key,
+            ),
+          )
+        : '',
+      slug,
+      locale: config.locale,
+      declaration: leadDeclaration,
+      source: relative(repoRoot, file),
+    });
+    next = addLatestPostNavigationIntro(next, config, relative(repoRoot, file));
+    if (leadDeclaration) {
+      validateStaticArticleLeadLayout(next, relative(repoRoot, file));
+      leadSectionsSynced += 1;
+      const locales = leadSectionLocales.get(slug) ?? new Set();
+      locales.add(config.locale);
+      leadSectionLocales.set(slug, locales);
+    }
     headersSynced += 1;
     footersSynced += 1;
     commonHeadsSynced += 1;
@@ -147,6 +199,26 @@ for (const config of localeConfigs) {
   }
 }
 
+function validateStaticArticleLeadLayout(html, source) {
+  const staticContentStart = html.indexOf('class="static-post-content"');
+  const leadStart = html.indexOf('<!-- corca-lead-request:start -->');
+  const leadEnd = html.indexOf('<!-- corca-lead-request:end -->');
+  const staticContentEnd = html.lastIndexOf('</div>', leadStart);
+  if (staticContentStart < 0 || staticContentEnd < 0 || leadStart < 0 || leadEnd < 0) {
+    fail(`Missing static article/sidebar or Lead Request structure in ${source}.`);
+  }
+  if (
+    !(staticContentStart < staticContentEnd && staticContentEnd < leadStart && leadStart < leadEnd)
+  ) {
+    fail(`Expected article sidebars to end before the Lead Request Section in ${source}.`);
+  }
+
+  const latestPostsStart = html.indexOf('class="article-more-posts"');
+  if (html.includes('class="post-list"') && !(leadEnd < latestPostsStart)) {
+    fail(`Expected latest-post navigation after the Lead Request Section in ${source}.`);
+  }
+}
+
 if (analyticsConfigured !== analyticsTargets) {
   fail(`Configured analytics for ${analyticsConfigured} of ${analyticsTargets} blog page(s).`);
 }
@@ -159,6 +231,16 @@ if (footersSynced !== headerTargets) {
 if (commonHeadsSynced !== headerTargets) {
   fail(`Synced ${commonHeadsSynced} of ${headerTargets} deployable blog page common head(s).`);
 }
+for (const [slug, locales] of leadSectionLocales) {
+  if (locales.size !== localeConfigs.length) {
+    fail(
+      `Blog Lead Form slug ${slug} was found in ${locales.size} of ${localeConfigs.length} locales.`,
+    );
+  }
+}
+
+await rm(leadRequestBuildRoot, { recursive: true, force: true });
+await assertPathMissing(leadRequestBuildRoot);
 
 console.log(`Synced blog shell CSS ${currentBaseLayoutCss} in ${updated} file(s).`);
 console.log(`Synced ${headersSynced} blog page header(s) from src/components/Header.astro.`);
@@ -167,6 +249,8 @@ console.log(
   `Synced ${commonHeadsSynced} blog page common head(s) from src/components/CommonHead.astro.`,
 );
 console.log(`Synced ${breadcrumbsSynced} blog page visual and JSON-LD breadcrumb trail(s).`);
+console.log(`Synced ${leadSectionsSynced} public blog Lead Request Section(s).`);
+console.log('Removed build-only Lead Request fragment routes from dist/.');
 console.log(
   `Configured ${analyticsConfigured} blog page(s) with GA4 measurement ID ${measurementId}.`,
 );
@@ -179,6 +263,10 @@ function extractBeforeMain(html, source) {
     fail(`Could not locate the shared header in ${source}.`);
   }
   return html.slice(bodyOpenEnd + 1, mainStart);
+}
+
+function leadRequestFragmentKey(locale, variant, copyKey) {
+  return `${locale}:${variant}:${copyKey}`;
 }
 
 function replaceBeforeMain(html, header, source) {
@@ -345,6 +433,27 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function addLatestPostNavigationIntro(html, config, source) {
+  if (html.includes('class="article-more-posts"')) return html;
+
+  const navigation = /<nav\b[^>]*\bclass=["'][^"']*\bpost-list\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
+  const match = html.match(navigation);
+  if (!match) return html;
+
+  const headingId = 'article-more-posts-title';
+  const wrapped = `<section class="article-more-posts" aria-labelledby="${headingId}">
+          <header class="article-more-posts-heading">
+            <h2 id="${headingId}">${escapeHtml(config.latestPostsTitle)}</h2>
+          </header>
+${match[0]}
+        </section>`;
+  const next = html.replace(navigation, wrapped);
+  if ((next.match(/class="article-more-posts"/g) || []).length !== 1) {
+    fail(`Expected one adjacent-post navigation section in ${source}.`);
+  }
+  return next;
+}
+
 function replaceFooter(html, footer, source) {
   const mainClose = html.indexOf('</main>');
   const footerStart = mainClose < 0 ? -1 : html.indexOf('<footer', mainClose);
@@ -370,7 +479,7 @@ function replaceCommonHead(html, commonHead, source) {
   next = next.replace(/<link\b[^>]*>/gi, (tag) => {
     const rel = attributeValue(tag, 'rel');
     const href = attributeValue(tag, 'href');
-    if (['icon', 'apple-touch-icon', 'manifest'].includes(rel)) return '';
+    if (['shortcut icon', 'icon', 'apple-touch-icon', 'manifest'].includes(rel)) return '';
     if (rel === 'preload' && href === '/fonts/PretendardVariable.woff2') return '';
     return tag;
   });
@@ -401,16 +510,8 @@ function validateCommonHead(html, source) {
     ['common head start marker', /<!-- corca-common-head:start -->/g],
     ['common head end marker', /<!-- corca-common-head:end -->/g],
     [
-      '16px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-16\.png["'])[^>]*>/gi,
-    ],
-    [
-      '32px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-32\.png["'])[^>]*>/gi,
-    ],
-    [
-      '48px favicon',
-      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']\/favicons\/favicon-48\.png["'])[^>]*>/gi,
+      'absolute canonical favicon',
+      /<link\b(?=[^>]*\brel=["']icon["'])(?=[^>]*\bhref=["']https:\/\/www\.corca\.ai\/favicons\/corca-ai-48\.png["'])[^>]*>/gi,
     ],
     ['apple touch icon', /<link\b(?=[^>]*\brel=["']apple-touch-icon["'])[^>]*>/gi],
     [
@@ -431,6 +532,15 @@ function validateCommonHead(html, source) {
   for (const [label, pattern] of expectedOnce) {
     const count = (html.match(pattern) || []).length;
     if (count !== 1) fail(`Expected one ${label} in ${source}, found ${count}.`);
+  }
+  for (const rel of ['icon', 'apple-touch-icon']) {
+    const count = (
+      html.match(new RegExp(`<link\\b(?=[^>]*\\brel=["']${rel}["'])[^>]*>`, 'gi')) || []
+    ).length;
+    if (count !== 1) fail(`Expected exactly one rel="${rel}" in ${source}, found ${count}.`);
+  }
+  if (/<link\b(?=[^>]*\brel=["']shortcut icon["'])[^>]*>/i.test(html)) {
+    fail(`Legacy rel="shortcut icon" remains in ${source}.`);
   }
   if (html.includes('/blog/assets/favicon.png')) {
     fail(`Legacy blog favicon remains in ${source}.`);
@@ -525,6 +635,15 @@ async function assertFileExists(path) {
     // handled below
   }
   fail(`Expected Astro CSS asset does not exist: ${relative(repoRoot, path)}`);
+}
+
+async function assertPathMissing(path) {
+  try {
+    await stat(path);
+  } catch {
+    return;
+  }
+  fail(`Build-only Lead Request route remains in dist: ${relative(repoRoot, path)}`);
 }
 
 function fail(message) {

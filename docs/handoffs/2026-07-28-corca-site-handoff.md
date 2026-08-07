@@ -84,11 +84,14 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 | EN·JA·ZH override | `i18n/ax-v2-content-localized.ts` |
 | 공통 리드 폼 UI | `src/components/forms/LeadForm.astro` |
 | 공통 폼 전송·검증 | `src/components/forms/leadFormClient.ts` |
+| 공통 `#request` 상담 영역 | `src/components/forms/LeadRequestSection.astro` |
+| Lead Form Agent 실행 계약 | `docs/lead-form-agent-manual.md` |
 | AX V2 동작·모션·dialog | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | 페이지 스타일·반응형 | `src/components/pages/ax-v2/ax-v2.css` |
 | 메타데이터·OG·hreflang | `src/i18n/pageMeta.ts`, `src/staticPages.ts` |
 | Service·Breadcrumb JSON-LD | `src/i18n/structuredData.ts` |
 | 상담 API·메일 | `worker/axConsultations.ts`, `wrangler.jsonc` |
+| AX-family Launch Talk 위젯 | `src/components/ax-launch-talk/` |
 | 전역 Breadcrumb·Footer | `src/components/Breadcrumb.astro`, `src/components/Footer.astro` |
 | 블로그 셸 동기화 | `scripts/sync-blog-shell-assets.js` |
 
@@ -127,6 +130,27 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 
 ### 리드 폼·메일
 
+- `LeadForm.astro`의 Form 내부 DOM, 필드, 카피, validation, 개인정보 문구,
+  버튼, endpoint, GA 이벤트와 UX는 불변 계약이다. 새 페이지는 Form을
+  복사하거나 내부 CSS를 덮어쓰지 않고 공통 컴포넌트를 사용한다.
+  `LeadRequestSection.astro`는 바깥 제목·설명·연락처·배경·정렬만 조정할 수
+  있는 재사용 `#request` 영역이다. `split`·`stacked`·`article` variant와
+  승인된 네 언어 `copyKey`를 사용한다. 적용 절차와 금지 사항은
+  `docs/lead-form-agent-manual.md`가 정본이다.
+- 네 언어 AX V2의 inline 상담 영역은 `ax-launch-talk` copy bundle을 사용한다.
+  Form 불변 계약은 유지하고 locale별 Google Calendar 런치 토크 링크를 밑줄
+  텍스트로 노출하며 직접 이메일 행은 제거하고 전화 상담 행은 유지한다.
+  제목·설명·런치 토크 본문은 언어별 의미 단위 줄바꿈을 명시한다.
+- 모든 공개 정적 블로그 글은 `src/lead/blogLeadPages.json`의
+  `all_public_posts` 전역 policy로 상담 영역을 받는다. 현재 블로그 전용
+  `blog-article` copy key는 AX 페이지의 상담 문구와 분리되어 있다. `page_id_prefix`와
+  slug를 결합해 `blog-<slug>` ID를 만들고, build-only 중립 fragment를 네
+  언어에 적용한 뒤 내부 route를 `dist`에서 삭제한다. 중복 `#request`, 잘못된
+  policy, 누락 client 또는 locale alias를 거부한다. Notion으로 새 글을
+  발행해도 같은 빌드 정책이 적용된다.
+- 정적 글의 데스크톱 목차·추천 글은 `.static-post-content` 안에서 본문과
+  같은 길이로 끝난다. 따라서 sticky 사이드바는 본문이 끝난 뒤의 리드 폼과
+  최신 글 영역까지 내려가지 않으며, 리드 폼 앞에는 별도 여백을 둔다.
 - 현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
   중국어에는 별도의 국외이전 동의가 포함된다.
 - 클라이언트는 `POST /api/ax/consultations`로 JSON을 보낸다.
@@ -159,6 +183,16 @@ shasum -a 256 c55807-to-22b8e37.full.patch
   보고서다. 이 흐름에는 GA Data API나 별도 Property ID 자격증명이
   필요하지 않다.
 - 실제 웹사이트 발송과 수신이 정상 동작함을 사용자가 확인했다.
+- 공개 AX-family pathname에는 `BaseLayout`이 Figma 기반 Launch Talk 위젯을
+  한 번 렌더링한다. 실제 pathname으로 범위를 판정해 `/ax-backup`은
+  제외하고, 각 AX Hero의 `data-ax-floating-hero`를 확장 카드에서 compact
+  avatar로 전환하는 기준으로 쓴다. Hero marker가 없으면 compact로
+  안전하게 degrade한다.
+- Launch Talk Calendar 링크는 항상 native 새 탭 이동을 보장하고, 클릭 시
+  비식별 `ax_launch_talk_click` GA4 event만 보낸다. 클릭은 예약 완료가 아닌
+  마지막 웹 퍼널 신호이므로 Corca API를 호출하거나
+  `contact+ax@corca.ai` 메일을 만들지 않는다. `generate_lead`와
+  `POST /api/ax/consultations`는 기존 Lead Form 성공에만 유지한다.
 
 ### SEO·발견성
 
@@ -170,9 +204,17 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 - 네 언어 SEO 문구와 Kakao용 한국어 OG 문구를 별도로 다듬었다.
 - Footer Breadcrumb는 홈 아이콘, 중간 링크, 링크 없는 굵은 현재
   페이지로 구성된다. 블로그 글의 현재 항목은 포스팅 제목이다.
-- PR #165에서 승인된 Corca Shine 원본으로 favicon을 교체했다. 브라우저
-  16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
-  manifest를 빌드 시 재생성하며, 기존 favicon URL도 같은 원본을 쓴다.
+- Figma 노드 `46:17`의 공식 돌고래+i SVG
+  (`assets/brand/favicon-symbol.svg`)가 favicon 정본이다. 브라우저
+  16·32·48·96px, Apple touch 180px, Android/PWA `any`·`maskable`
+  192·512px PNG와 manifest를 빌드 시 재생성한다.
+- 검색엔진용 정본 URL은
+  `https://www.corca.ai/favicons/corca-ai-48.png`다. 모든 공개 페이지는
+  `sizes="48x48"` 검색용 `rel="icon"` 절대 URL을 한 번만 선언한다. 루트
+  `/favicon.ico`는 16·32·48px fallback이며 별도 head 후보로 선언하지 않는다.
+  삭제된 적이 있던 `/favicons/favicon-{16,32,48}.png` 등 과거 공개 URL도
+  공식 심볼의 호환 alias로 영구 유지한다. 최종 빌드는 모든 공개 HTML,
+  manifest와 현재·호환 아이콘의 favicon 계약을 전수 검사한다.
 
 ### 전역 Footer
 
@@ -218,7 +260,7 @@ shasum -a 256 c55807-to-22b8e37.full.patch
 | [#162](https://github.com/corca-ai/www/pull/162) | `cc14d37` | 전역 관련 | 전역 Breadcrumb와 Footer 개편 |
 | [#163](https://github.com/corca-ai/www/pull/163) | `e8b402e` | 전역 관련 | 반응형 Footer partner layout 개선 |
 | [#164](https://github.com/corca-ai/www/pull/164) | `b4f38e0` | 전역 관련 | Footer Breadcrumb 간격 축소 |
-| [#165](https://github.com/corca-ai/www/pull/165) | `22b8e37` | 전역 관련 | Corca Shine favicon과 기기별 icon manifest 반영 |
+| [#165](https://github.com/corca-ai/www/pull/165) | `22b8e37` | 전역 관련 | 반응형 favicon과 기기별 icon manifest 반영 |
 
 PR 번호와 축약 SHA는 탐색용이다. 정확한 코드 포함 여부는 `git
 merge-base --is-ancestor`와 현재 tree를 함께 확인한다. 특히 #146은

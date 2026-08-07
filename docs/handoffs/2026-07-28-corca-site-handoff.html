@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>Corca site and AX V2 handoff — 2026-07-28</title>
-  <link rel="icon" type="image/png" href="../../assets/brand/favicon-shine.png">
+  <link rel="icon" type="image/svg+xml" href="../../assets/brand/favicon-symbol.svg">
   <style>
     :root {
       color-scheme: light;
@@ -287,6 +287,14 @@ sitemap에 넣지 않는다. 블로그 목록 title과 description은 locale별�
 <td><code>src/components/forms/leadFormClient.ts</code></td>
 </tr>
 <tr>
+<td>공통 <code>#request</code> 상담 영역</td>
+<td><code>src/components/forms/LeadRequestSection.astro</code></td>
+</tr>
+<tr>
+<td>Lead Form Agent 실행 계약</td>
+<td><code>docs/lead-form-agent-manual.md</code></td>
+</tr>
+<tr>
 <td>AX V2 동작·모션·dialog</td>
 <td><code>src/components/pages/ax-v2/ax-v2-client.ts</code></td>
 </tr>
@@ -305,6 +313,10 @@ sitemap에 넣지 않는다. 블로그 목록 title과 description은 locale별�
 <tr>
 <td>상담 API·메일</td>
 <td><code>worker/axConsultations.ts</code>, <code>wrangler.jsonc</code></td>
+</tr>
+<tr>
+<td>AX-family Launch Talk 위젯</td>
+<td><code>src/components/ax-launch-talk/</code></td>
 </tr>
 <tr>
 <td>전역 Breadcrumb·Footer</td>
@@ -351,6 +363,27 @@ grid, 반응형, 모바일 구성에 맞게 배치했다.</li>
 </ul>
 <h3 id="리드-폼-메일">리드 폼·메일</h3>
 <ul>
+<li><code>LeadForm.astro</code>의 Form 내부 DOM, 필드, 카피, validation, 개인정보 문구,
+버튼, endpoint, GA 이벤트와 UX는 불변 계약이다. 새 페이지는 Form을
+복사하거나 내부 CSS를 덮어쓰지 않고 공통 컴포넌트를 사용한다.
+<code>LeadRequestSection.astro</code>는 바깥 제목·설명·연락처·배경·정렬만 조정할 수
+있는 재사용 <code>#request</code> 영역이다. <code>split</code>·<code>stacked</code>·<code>article</code> variant와
+승인된 네 언어 <code>copyKey</code>를 사용한다. 적용 절차와 금지 사항은
+<code>docs/lead-form-agent-manual.md</code>가 정본이다.</li>
+<li>네 언어 AX V2의 inline 상담 영역은 <code>ax-launch-talk</code> copy bundle을 사용한다.
+Form 불변 계약은 유지하고 locale별 Google Calendar 런치 토크 링크를 밑줄
+텍스트로 노출하며 직접 이메일 행은 제거하고 전화 상담 행은 유지한다.
+제목·설명·런치 토크 본문은 언어별 의미 단위 줄바꿈을 명시한다.</li>
+<li>모든 공개 정적 블로그 글은 <code>src/lead/blogLeadPages.json</code>의
+<code>all_public_posts</code> 전역 policy로 상담 영역을 받는다. 현재 블로그 전용
+<code>blog-article</code> copy key는 AX 페이지의 상담 문구와 분리되어 있다. <code>page_id_prefix</code>와
+slug를 결합해 <code>blog-&lt;slug&gt;</code> ID를 만들고, build-only 중립 fragment를 네
+언어에 적용한 뒤 내부 route를 <code>dist</code>에서 삭제한다. 중복 <code>#request</code>, 잘못된
+policy, 누락 client 또는 locale alias를 거부한다. Notion으로 새 글을
+발행해도 같은 빌드 정책이 적용된다.</li>
+<li>정적 글의 데스크톱 목차·추천 글은 <code>.static-post-content</code> 안에서 본문과
+같은 길이로 끝난다. 따라서 sticky 사이드바는 본문이 끝난 뒤의 리드 폼과
+최신 글 영역까지 내려가지 않으며, 리드 폼 앞에는 별도 여백을 둔다.</li>
 <li>현재 폼은 이름, 이메일, 상담 관심사, 상담 사유와 honeypot을 사용한다.
 중국어에는 별도의 국외이전 동의가 포함된다.</li>
 <li>클라이언트는 <code>POST /api/ax/consultations</code>로 JSON을 보낸다.</li>
@@ -383,6 +416,16 @@ Astro와 정적 블로그 전체에 적용된다. AX 모바일에서는 GA와 �
 보고서다. 이 흐름에는 GA Data API나 별도 Property ID 자격증명이
 필요하지 않다.</li>
 <li>실제 웹사이트 발송과 수신이 정상 동작함을 사용자가 확인했다.</li>
+<li>공개 AX-family pathname에는 <code>BaseLayout</code>이 Figma 기반 Launch Talk 위젯을
+한 번 렌더링한다. 실제 pathname으로 범위를 판정해 <code>/ax-backup</code>은
+제외하고, 각 AX Hero의 <code>data-ax-floating-hero</code>를 확장 카드에서 compact
+avatar로 전환하는 기준으로 쓴다. Hero marker가 없으면 compact로
+안전하게 degrade한다.</li>
+<li>Launch Talk Calendar 링크는 항상 native 새 탭 이동을 보장하고, 클릭 시
+비식별 <code>ax_launch_talk_click</code> GA4 event만 보낸다. 클릭은 예약 완료가 아닌
+마지막 웹 퍼널 신호이므로 Corca API를 호출하거나
+<code>contact+ax@corca.ai</code> 메일을 만들지 않는다. <code>generate_lead</code>와
+<code>POST /api/ax/consultations</code>는 기존 Lead Form 성공에만 유지한다.</li>
 </ul>
 <h3 id="seo-발견성">SEO·발견성</h3>
 <ul>
@@ -394,9 +437,17 @@ Astro와 정적 블로그 전체에 적용된다. AX 모바일에서는 GA와 �
 <li>네 언어 SEO 문구와 Kakao용 한국어 OG 문구를 별도로 다듬었다.</li>
 <li>Footer Breadcrumb는 홈 아이콘, 중간 링크, 링크 없는 굵은 현재
 페이지로 구성된다. 블로그 글의 현재 항목은 포스팅 제목이다.</li>
-<li>PR #165에서 승인된 Corca Shine 원본으로 favicon을 교체했다. 브라우저
-16·32·48px, Apple touch 180px, Android/PWA 192·512px PNG와
-manifest를 빌드 시 재생성하며, 기존 favicon URL도 같은 원본을 쓴다.</li>
+<li>Figma 노드 <code>46:17</code>의 공식 돌고래+i SVG
+(<code>assets/brand/favicon-symbol.svg</code>)가 favicon 정본이다. 브라우저
+16·32·48·96px, Apple touch 180px, Android/PWA <code>any</code>·<code>maskable</code>
+192·512px PNG와 manifest를 빌드 시 재생성한다.</li>
+<li>검색엔진용 정본 URL은
+<code>https://www.corca.ai/favicons/corca-ai-48.png</code>다. 모든 공개 페이지는
+<code>sizes=&quot;48x48&quot;</code> 검색용 <code>rel=&quot;icon&quot;</code> 절대 URL을 한 번만 선언한다. 루트
+<code>/favicon.ico</code>는 16·32·48px fallback이며 별도 head 후보로 선언하지 않는다.
+삭제된 적이 있던 <code>/favicons/favicon-{16,32,48}.png</code> 등 과거 공개 URL도
+공식 심볼의 호환 alias로 영구 유지한다. 최종 빌드는 모든 공개 HTML,
+manifest와 현재·호환 아이콘의 favicon 계약을 전수 검사한다.</li>
 </ul>
 <h3 id="전역-footer">전역 Footer</h3>
 <ul>
@@ -580,7 +631,7 @@ OpenAI Select Partner SVG를 공통 컴포넌트로 제공한다.</li>
 <td><a href="https://github.com/corca-ai/www/pull/165">#165</a></td>
 <td><code>22b8e37</code></td>
 <td>전역 관련</td>
-<td>Corca Shine favicon과 기기별 icon manifest 반영</td>
+<td>반응형 favicon과 기기별 icon manifest 반영</td>
 </tr>
 </tbody>
 </table>

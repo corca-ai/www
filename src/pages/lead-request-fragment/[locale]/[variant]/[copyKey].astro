@@ -1,0 +1,52 @@
+---
+import LeadRequestSection, {
+  type LeadRequestVariant,
+} from '../../../../components/forms/LeadRequestSection.astro';
+import type { LeadRequestCopyKey } from '../../../../components/forms/leadFormContent';
+import {
+  leadRequestCopyKeys,
+  leadRequestVariants,
+} from '../../../../lead/leadRequestContract.js';
+import { locales, type Lang } from '../../../../i18n/ui';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return locales.flatMap((locale) =>
+    leadRequestVariants.flatMap((variant) =>
+      leadRequestCopyKeys.map((copyKey) => ({
+        params: { locale, variant, copyKey },
+      })),
+    ),
+  );
+}
+
+const { locale, variant, copyKey } = Astro.params as {
+  locale: Lang;
+  variant: LeadRequestVariant;
+  copyKey: LeadRequestCopyKey;
+};
+const pageContext = {
+  pageId: 'fragment',
+  basePath: '/lead-request-fragment',
+  contentType: 'fragment',
+};
+---
+
+<BaseLayout
+  lang={locale}
+  title="Lead Request build fragment"
+  description="Build-only reusable Lead Request fragment."
+  basePath="/lead-request-fragment"
+  localized={false}
+  noindex
+>
+  <LeadRequestSection
+    lang={locale}
+    pageContext={pageContext}
+    variant={variant}
+    copyKey={copyKey}
+    formId="blog-request"
+  />
+</BaseLayout>

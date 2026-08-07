@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+import '../components/forms/lead-form.css';
+import '../components/forms/lead-request-section.css';
+import '../components/ax-launch-talk/ax-launch-talk-widget.css';
+import AxLaunchTalkWidget from '../components/ax-launch-talk/AxLaunchTalkWidget.astro';
 import CommonHead from '../components/CommonHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -7,6 +11,8 @@ import type { Crumb } from '../i18n/breadcrumbs';
 import { documentLanguage, localeTag, locales, defaultLang, contact, type Lang } from '../i18n/ui';
 import { absoluteUrl } from '../i18n/utils';
 import { SITE_ORIGIN } from '../site';
+import type { LeadPageContext } from '../lead/pageContext';
+import { isAxFamilyPath } from '../ax/axFamily';
 
 const GA_MEASUREMENT_ID = 'G-SZY1B11LXS';
 
@@ -32,6 +38,8 @@ interface Props {
   /** Visible breadcrumb nodes after Home. Home keeps an icon-only footer crumb. */
   breadcrumbs?: Crumb[] | undefined;
   extraFeeds?: { title: string; type: string; href: string }[];
+  /** Stable page identity used by lead surfaces without reading form DOM. */
+  leadContext?: LeadPageContext | undefined;
 }
 
 const {
@@ -48,6 +56,7 @@ const {
   jsonLd = [],
   breadcrumbs,
   extraFeeds = [],
+  leadContext,
 } = Astro.props;
 
 const site = Astro.site ?? new URL(SITE_ORIGIN);
@@ -56,6 +65,7 @@ const canonical = absoluteUrl(basePath, lang, origin);
 const ogImageUrl = new URL(ogImage, site).href;
 const imageAlt = ogImageAlt ?? ogTitle;
 const isAxPage = basePath === '/ax';
+const showsAxLaunchTalk = isAxFamilyPath(Astro.url.pathname);
 // Per the SEO meta policy (issue #15): indexable pages get plain "index, follow"
 // (no author on general pages); 404 stays out. Publisher is the brand name, per
 // locale (Korean pages get "코르카" as the issue specifies).
@@ -218,6 +228,7 @@ const graph = {
       <slot />
     </main>
     <Footer lang={lang} breadcrumbs={breadcrumbs} homeBreadcrumb={basePath === '/'} />
+    {showsAxLaunchTalk && <AxLaunchTalkWidget lang={lang} pageContext={leadContext} />}
 
     <script>
       // Scroll-triggered reveal for [data-reveal] elements (see global.css).

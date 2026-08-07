@@ -31,6 +31,8 @@ implementation and verified Git history.
 | AX V2 EN, JA and ZH overrides | `i18n/ax-v2-content-localized.ts` |
 | Shared lead form markup | `src/components/forms/LeadForm.astro` |
 | Shared form submission and validation | `src/components/forms/leadFormClient.ts` |
+| Reusable `#request` consultation section | `src/components/forms/LeadRequestSection.astro` |
+| Lead Form and request-section styles | `src/components/forms/lead-form.css`, `lead-request-section.css` |
 | AX V2 motion and dialog behavior | `src/components/pages/ax-v2/ax-v2-client.ts` |
 | AX V2 page-scoped styles | `src/components/pages/ax-v2/ax-v2.css` |
 | Frozen 2026-07-22 page composition | `src/components/pages/AxLegacy.astro` |
@@ -41,10 +43,21 @@ implementation and verified Git history.
 | SEO metadata and route registration | `src/i18n/pageMeta.ts` and `src/staticPages.ts` |
 | Service structured data | `src/i18n/structuredData.ts` |
 | Consultation endpoint | `worker/axConsultations.ts` |
+| AX-family Launch Talk widget | `src/components/ax-launch-talk/` |
+| Shared AX lead validation and email helpers | `worker/axLeadShared.ts` |
 
 The page deliberately does not render its own global header or footer. Add or
 change shared navigation in the normal site sources; keep AX-only section links
 inside `Ax.astro`.
+
+AX owns explicit title and description strings for all four locales in
+`pageMeta.ax`. The same strings must remain synchronized across document,
+Open Graph and Twitter metadata; the AX `Service` JSON-LD description is fed
+from the same registry value. Meaningful AX content or metadata changes also
+advance the stable `/ax` date in `sitemapMetadata.ts`. The two unlinked OpenAI
+Select Partner badges use the same descriptive, localized alternative text per
+locale. `pnpm check:ax-seo-contract` verifies this rendered four-locale contract
+after a production build.
 
 At widths up to 720px, AX uses one self-hosted, route-specific Pretendard
 variable subset instead of the full variable font or the old 92-slice dynamic
@@ -110,6 +123,26 @@ encoding it in the asset registry.
 
 ## Consultation form
 
+Read the Korean [Lead Form Agent manual](lead-form-agent-manual.md) before
+attaching the Form to another page. `LeadForm.astro` is an immutable contract:
+page work must not change or copy its internal markup, fields, copy, validation,
+privacy notice, button, endpoint, analytics or UX. The contract check protects
+the markup hash and rejects Form-internal selectors outside `lead-form.css`.
+
+Use `LeadRequestSection.astro` when a page needs the complete heading, direct
+contact and Form section. The component owns the real `id="request"` target and
+the existing focus behavior. `split` preserves the AX layout, `stacked` provides
+a vertical page layout and `article` provides a compact blog layout without
+direct contacts. `copyKey` selects one approved four-locale copy bundle. Only
+the section outside the Form may vary. Form-only use keeps `LeadForm.astro` as
+the closed component.
+
+The four localized AX V2 inline sections use the `ax-launch-talk` copy bundle.
+It keeps the immutable Form unchanged, presents the localized Google Calendar
+lunch-talk link as an underlined text link, removes the direct-email row and
+retains the phone contact row. Each locale owns explicit semantic line breaks
+for the heading, description and launch-talk body.
+
 The four localized AX V2 forms post JSON to
 `POST /api/ax/consultations`. The Worker validates the payload, rejects
 oversized or suspicious submissions and sends the result through the
@@ -119,6 +152,43 @@ and retain the message under Corca's configured retention practices and their
 own policies. The forms show a required, concise processing notice. The
 localized privacy pages remain published with `noindex` metadata but are not
 linked from the current AX lead form.
+
+## AX Launch Talk floating lead
+
+Every public AX-family pathname (`/ax`, localized variants and future
+`/ax/*` routes) receives one `AxLaunchTalkWidget` from `BaseLayout`. Route
+ownership is decided from the actual pathname rather than `basePath` because
+the frozen `/ax-backup` page intentionally canonicalizes to `/ax` and must not
+receive the widget. Each AX page places one `data-ax-floating-hero` marker on
+its Hero. A missing marker degrades to the compact avatar instead of assuming
+that an arbitrary section is the Hero.
+
+Desktop and tablet show the Figma-derived card while the Hero remains visible
+and collapse it to the avatar before the second section heading reaches the
+viewport. The speech bubble stays for three seconds, then fades out. On mobile
+the whole 60px portrait circle is the Calendar link in the Hero; from the second
+section onward, a localized horizontal banner appears and only its blue booking
+control is the Calendar link. The banner portrait and surrounding copy are not
+interactive, preventing accidental taps while scrolling. Desktop and tablet
+avatars can reopen the card; outside activation, Escape or subsequent scroll
+collapses it again. The desktop speech bubble alone is suppressed when it would
+cover interactive or meaningful page content. The native Calendar anchor is
+never delayed or cancelled. Safe-area insets, keyboard focus and
+`prefers-reduced-motion` are part of the component contract.
+
+Every Launch Talk Calendar CTA on an AX-family page emits only the non-PII GA4
+event `ax_launch_talk_click`. Its parameters are the stable `page_id`, actual
+`page_path`, locale-neutral `base_path`, `locale`, `content_type` and visible
+`widget_state`. The native new-tab Calendar navigation is never delayed or
+cancelled, and a missing or blocked Google tag does not interfere with it.
+
+Launch Talk clicks do not call a Corca API and do not send an email to
+`contact+ax@corca.ai`. A click is the last observable website funnel step, not
+proof that an appointment was completed. Do not reuse
+`/api/ax/consultations` or emit `generate_lead`: that endpoint and event remain
+reserved for a successfully delivered consultation form. Run
+`pnpm test:ax-attribution` and `pnpm check:ax-launch-talk-contract` to verify
+the GA-only, localized rendered-widget contract.
 
 Each Lead Form page may declare `leadContext: { pageId, contentType }` in its
 route or page manifest. The existing route `basePath` supplies the

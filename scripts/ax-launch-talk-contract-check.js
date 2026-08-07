@@ -89,6 +89,29 @@ if (client.includes('/api/ax/launch-talk-leads')) {
   fail('Launch Talk clicks must be GA-only and must not call the retired email endpoint');
 }
 
+const widgetStyles = readFileSync(
+  join(root, 'src/components/ax-launch-talk/ax-launch-talk-widget.css'),
+  'utf8',
+);
+if (!/\.ax-launch-talk-widget\s*\{[^}]*pointer-events:\s*none/s.test(widgetStyles)) {
+  fail('fixed widget root must not block page controls behind it');
+}
+if (
+  !/\[data-mode='compact'\] \.ax-launch-talk-mobile-mini\s*\{[^}]*pointer-events:\s*none/s.test(
+    widgetStyles,
+  )
+) {
+  fail('mobile banner content must not block controls behind the fixed widget');
+}
+if (!/\.ax-launch-talk-mobile-mini-cta\s*\{[^}]*pointer-events:\s*auto/s.test(widgetStyles)) {
+  fail('mobile banner Calendar button must remain interactive');
+}
+
+const axStyles = readFileSync(join(root, 'src/components/pages/ax-v2/ax-v2.css'), 'utf8');
+if (!/\.ax-v2-accordion-item button span\s*\{[^}]*font-size:\s*inherit/s.test(axStyles)) {
+  fail('mobile accordion indices must match their button labels');
+}
+
 console.log(
   'AX Launch Talk contract passed: four locales, native Calendar CTA, AX-only scope, assets and GA-only click tracking.',
 );

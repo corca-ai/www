@@ -6,6 +6,7 @@
   z-index: 45;
   color: #101828;
   font-family: inherit;
+  pointer-events: none;
 }
 
 .ax-launch-talk-card,
@@ -283,7 +284,7 @@
 
   .ax-launch-talk-widget[data-mode='compact'] .ax-launch-talk-mobile-mini {
     opacity: 1;
-    pointer-events: auto;
+    pointer-events: none;
     text-decoration: none;
     transform: none;
     visibility: visible;
@@ -344,6 +345,7 @@
     font-size: 15.4px;
     font-weight: 500;
     line-height: 1.18;
+    pointer-events: auto;
     text-align: center;
     text-decoration: none;
   }

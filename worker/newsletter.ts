@@ -233,8 +233,8 @@ export async function runNewsletterDaily(
     );
     try {
       const messageId = await sendSesEmail(env, buildPostMessage(env, delivery, unsubscribeToken), {
-        fetcher: options.mailerFetcher,
-        now: options.now,
+        ...(options.mailerFetcher ? { fetcher: options.mailerFetcher } : {}),
+        ...(options.now ? { now: options.now } : {}),
       });
       await database
         .prepare(

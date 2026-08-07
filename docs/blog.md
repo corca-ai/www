@@ -280,7 +280,8 @@ When changing blog files, keep these invariants:
   the table of contents becomes a collapsible control between the article header
   and body; recommended posts remain after the article. Table of contents clicks
   scroll to the selected heading without leaving a section hash in the browser
-  URL.
+  URL. General posts list `h2` sections; posts from the team-interview Notion
+  database also list their `h3` question headings.
 - Locale alias list and 404 pages should keep their language switcher links
   pointed at `/blog`, `/en/blog`, `/ja/blog` and `/zh/blog`; article pages
   should point at the same slug under each available locale alias.

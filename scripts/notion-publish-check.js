@@ -140,6 +140,20 @@ second preserved code-like line</pre>
             },
           ],
         },
+        [teamInterviewPageId]: {
+          results: [
+            block('heading_3', { rich_text: text('Q1. Team interview question') }),
+            block('paragraph', {
+              rich_text: text(
+                'The first interview answer verifies that question headings appear in the table of contents.',
+              ),
+            }),
+            block('heading_3', { rich_text: text('Q2. Another team interview question') }),
+            block('paragraph', {
+              rich_text: text('The second interview answer verifies more than one question link.'),
+            }),
+          ],
+        },
       },
       null,
       2,
@@ -204,7 +218,6 @@ second preserved code-like line</pre>
               'Checks that an optional team interview database publishes through the same blog flow.',
             language: 'ko',
             status: '배포 신청',
-            fileUrl: pathToFileURL(htmlPath).href,
           }),
           page({
             id: '12345678-1234-1234-1234-123456789015',
@@ -348,6 +361,16 @@ second preserved code-like line</pre>
   assert.equal(
     enPosts.find((post) => post.slug === 'team-interview-fixture')?.source,
     'team-interview',
+  );
+  const teamInterviewPage = await readFile(
+    join(workDir, 'public/blog/team-interview-fixture/index.html'),
+    'utf8',
+  );
+  assert.match(teamInterviewPage, /<h3 id="section-1">Q1\. Team interview question/);
+  assert.match(teamInterviewPage, /<h3 id="section-2">Q2\. Another team interview question/);
+  assert.match(
+    teamInterviewPage,
+    /<section class="toc-section"[^>]*>[\s\S]*?href="#section-1">Q1\. Team interview question<\/a>[\s\S]*?href="#section-2">Q2\. Another team interview question<\/a>/,
   );
   const notionBodySource = await readFile(
     join(workDir, 'public/blog/admin/post-sources/notion-body-fixture.html'),

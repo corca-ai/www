@@ -809,7 +809,7 @@ async function renderAllStaticPosts(postRecordsByLocale) {
       const outputDir = join(repoRoot, localePaths[locale], post.slug);
       const html = renderStaticPostPage(
         post,
-        prepareArticleHtml(record.articleHtml),
+        prepareArticleHtml(record.articleHtml, post.source === 'team-interview'),
         localePosts,
         locale,
         availableLocalesBySlug,
@@ -1379,7 +1379,7 @@ function renderStaticPostPage(post, articleHtml, posts, locale, availableLocales
   const coverUrl = absoluteBlogAsset(post.cover);
   const pageUrl = absoluteSiteUrl(staticPostPath(post, locale));
   const publishedTime = `${post.date}T00:00:00.000Z`;
-  const toc = tableOfContents(articleHtml);
+  const toc = tableOfContents(articleHtml, post.source === 'team-interview');
   const recommendations = recommendationPosts(post, posts);
   const pageNav = latestPostNav(post, posts, locale);
   const articleSection = post.section || post.tags[0] || '코르카';
@@ -1640,8 +1640,11 @@ function renderLatestPostCard(post, locale) {
         </article>`;
 }
 
-function tableOfContents(articleHtml) {
-  const items = [...articleHtml.matchAll(/<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi)]
+function tableOfContents(articleHtml, includeQuestionHeadings = false) {
+  const headingPattern = includeQuestionHeadings
+    ? /<h[23]\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h[23]>/gi
+    : /<h2\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi;
+  const items = [...articleHtml.matchAll(headingPattern)]
     .map((match) => ({
       id: match[1],
       text: stripTags(match[2]),
@@ -1651,16 +1654,19 @@ function tableOfContents(articleHtml) {
   return `<ol>\n${items.map((item) => `              <li><a href="#${escapeAttribute(item.id)}">${escapeHtml(item.text)}</a></li>`).join('\n')}\n            </ol>`;
 }
 
-function prepareArticleHtml(html) {
+function prepareArticleHtml(html, includeQuestionHeadings = false) {
   let headingIndex = 0;
+  const headingPattern = includeQuestionHeadings
+    ? /<(h[23])\b([^>]*)>([\s\S]*?)<\/\1>/gi
+    : /<(h2)\b([^>]*)>([\s\S]*?)<\/\1>/gi;
   return normalizeArticleMediaHtml(rewriteBlogAssetUrls(String(html || '').trim())).replace(
-    /<h2\b([^>]*)>([\s\S]*?)<\/h2>/gi,
-    (match, attrs, body) => {
+    headingPattern,
+    (match, tag, attrs, body) => {
       if (/\sid=/.test(attrs)) return match;
       headingIndex += 1;
       const id = `section-${headingIndex}`;
       const text = stripTags(body);
-      return `<h2${attrs} id="${id}">${body}<a class="heading-anchor" href="#${id}" tabindex="-1" aria-label="${escapeAttribute(text)} 섹션 링크"></a></h2>`;
+      return `<${tag}${attrs} id="${id}">${body}<a class="heading-anchor" href="#${id}" tabindex="-1" aria-label="${escapeAttribute(text)} 섹션 링크"></a></${tag}>`;
     },
   );
 }

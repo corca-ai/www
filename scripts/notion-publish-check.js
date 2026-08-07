@@ -366,6 +366,10 @@ second preserved code-like line</pre>
     join(workDir, 'public/blog/team-interview-fixture/index.html'),
     'utf8',
   );
+  assert.match(
+    teamInterviewPage,
+    /<h1>Team interview fixture<\/h1>\s*<p>Checks that an optional team interview database publishes through the same blog flow\.\.\.<\/p>/,
+  );
   assert.match(teamInterviewPage, /<h3 id="section-1">Q1\. Team interview question/);
   assert.match(teamInterviewPage, /<h3 id="section-2">Q2\. Another team interview question/);
   assert.match(

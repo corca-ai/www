@@ -1384,6 +1384,7 @@ function renderStaticPostPage(post, articleHtml, posts, locale, availableLocales
   const pageNav = latestPostNav(post, posts, locale);
   const articleSection = post.section || post.tags[0] || '코르카';
   const imageAlt = post.coverAlt || `${post.title} ${localeLabels[locale].imageAltSuffix}`;
+  const visibleDescription = displayPostDescription(post);
   const articleAuthorMeta = post.author
     ? `    <meta property="article:author" content="${escapeAttribute(post.author)}">\n`
     : '';
@@ -1431,7 +1432,7 @@ ${post.tags.map((tag) => `    <meta property="article:tag" content="${escapeAttr
         <article id="article" class="article static-article">
           <header class="article-header">
             <h1>${escapeHtml(post.title)}</h1>
-            <p>${escapeHtml(post.description)}</p>
+            <p>${escapeHtml(visibleDescription)}</p>
             <div class="article-meta">
               <span class="meta-item"><time datetime="${post.date}">${formatPostDate(post.date, locale)}</time></span>
 ${visibleAuthor}            </div>
@@ -1652,6 +1653,12 @@ function tableOfContents(articleHtml, includeQuestionHeadings = false) {
     .filter((item) => item.id && item.text);
   if (!items.length) return '';
   return `<ol>\n${items.map((item) => `              <li><a href="#${escapeAttribute(item.id)}">${escapeHtml(item.text)}</a></li>`).join('\n')}\n            </ol>`;
+}
+
+function displayPostDescription(post) {
+  const description = String(post.description || '').trim();
+  if (post.source !== 'team-interview' || !description) return description;
+  return `${description.replace(/(?:\.{1,3}|…)+$/u, '')}...`;
 }
 
 function prepareArticleHtml(html, includeQuestionHeadings = false) {

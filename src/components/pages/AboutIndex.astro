@@ -2,20 +2,20 @@
 import { getCollection } from 'astro:content';
 import type { Lang } from '../../i18n/ui';
 import { localizePath } from '../../i18n/utils';
+import { getTeamInterviews } from '../../teamInterviews';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 
-// News/Colleagues sections mirror their pages' live content: the latest news
-// item (image + headline + date) and the first colleague on the page (photo +
-// role + quote), so this landing never goes stale when content is added.
+// News/People sections mirror their pages' live content: the latest news item
+// and the newest team interview from the blog's team-interview source.
 const asDate = (d: string) => new Date(d.replace(/\//g, '-')).getTime();
-// Both collections are always non-empty (the build fails on an empty locale),
-// so the first entry is guaranteed to exist.
+// News is always non-empty. The people preview gracefully handles an empty
+// team-interview database.
 const latestNews = (await getCollection('news')).map((e) => e.data).sort((a, b) => asDate(b.date) - asDate(a.date))[0]!;
-const firstColleague = (await getCollection('colleagues')).map((e) => e.data).sort((a, b) => a.order - b.order)[0]!;
+const firstTeamInterview = (await getTeamInterviews(lang))[0];
 
 // Company category landing (issue #33): links to the four About sub-pages.
 const dict = {
@@ -71,42 +71,42 @@ const IMAGE_ALT: Record<Lang, Record<string, string>> = {
     '/about/vision-mission': '코르카의 비전과 미션을 표현한 이미지',
     '/about/how-we-work': '코르카 팀이 AX Day에서 함께 일하는 모습',
     '/news': `${latestNews.title.ko} 기사 대표 이미지`,
-    '/about/colleagues': `${firstColleague.role.ko} 인터뷰 사진`,
+    '/about/colleagues': firstTeamInterview?.coverAlt || `${firstTeamInterview?.title || '코르카 사람들'} 대표 이미지`,
   },
   en: {
     '/about/vision-mission': 'Visual representing Corca’s vision and mission',
     '/about/how-we-work': 'Corca team members working together during AX Day',
     '/news': `Featured image for “${latestNews.title.en}”`,
-    '/about/colleagues': `Interview portrait of ${firstColleague.role.en}`,
+    '/about/colleagues': firstTeamInterview?.coverAlt || `Featured image for ${firstTeamInterview?.title || 'Our People'}`,
   },
   ja: {
     '/about/vision-mission': 'Corcaのビジョンとミッションを表すイメージ',
     '/about/how-we-work': 'AX Dayで共に働くCorcaチームの様子',
     '/news': `「${latestNews.title.ja}」の記事画像`,
-    '/about/colleagues': `${firstColleague.role.ja}のインタビュー写真`,
+    '/about/colleagues': firstTeamInterview?.coverAlt || `${firstTeamInterview?.title || 'コルカの人々'}の代表画像`,
   },
   zh: {
     '/about/vision-mission': '展现Corca愿景与使命的图片',
     '/about/how-we-work': 'Corca团队在AX Day协作的场景',
     '/news': `《${latestNews.title.zh}》的文章配图`,
-    '/about/colleagues': `${firstColleague.role.zh}的采访照片`,
+    '/about/colleagues': firstTeamInterview?.coverAlt || `${firstTeamInterview?.title || 'Corca 的伙伴们'} 的代表图片`,
   },
 };
 
 // Representative image per sub-page. vision-mission/how-we-work are fixed
-// (hero bg, AX Day office photo); news/colleagues come from the collections
-// above so they follow the latest content automatically.
+// (hero bg, AX Day office photo); news and people previews follow their
+// respective content sources so future publication changes need no page edit.
 const IMAGES: Record<string, string> = {
   '/about/vision-mission': '/images/pages/2fe9a6_d35d2743fc2342df884222c5a0d125ee.webp',
   '/about/how-we-work': '/images/pages/ax-day.webp',
   '/news': `/images/pages/${latestNews.image}.webp`,
-  '/about/colleagues': `/images/pages/${firstColleague.image}.webp`,
+  '/about/colleagues': firstTeamInterview ? `/blog/${firstTeamInterview.cover}` : '/images/pages/ax-day.webp',
 };
 
 // Live headline + secondary line pulled from the linked page's newest content.
 const EXTRA: Record<string, { title: string; meta: string } | undefined> = {
   '/news': { title: latestNews.title[lang], meta: latestNews.date },
-  '/about/colleagues': { title: firstColleague.role[lang], meta: firstColleague.quote[lang] },
+  '/about/colleagues': firstTeamInterview && { title: firstTeamInterview.title, meta: firstTeamInterview.description },
 };
 ---
 

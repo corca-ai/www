@@ -4,8 +4,7 @@ import { glob } from 'astro/loaders';
 
 // One YAML file per item under src/content/<collection>/. Adding an entry is
 // "drop a file"; the schema forces all four locales so a half-translated item
-// fails the build instead of shipping. `image` is a public /images/pages/ id
-// and `href`/`story` are the outbound links.
+// fails the build instead of shipping. `image` is a public /images/pages/ id.
 const i18n = z.object({ ko: z.string(), en: z.string(), ja: z.string(), zh: z.string() });
 
 const news = defineCollection({
@@ -22,16 +21,4 @@ const news = defineCollection({
   }),
 });
 
-const colleagues = defineCollection({
-  loader: glob({ pattern: '**/*.yaml', base: './src/content/colleagues' }),
-  schema: z.object({
-    order: z.number().int().positive(), // ascending display order
-    showOnPeoplePage: z.boolean().default(true),
-    image: z.string().min(1),
-    story: z.string().url(),
-    role: i18n,
-    quote: i18n,
-  }),
-});
-
-export const collections = { news, colleagues };
+export const collections = { news };

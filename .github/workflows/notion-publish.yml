@@ -2,6 +2,12 @@ name: Publish Notion Posts
 
 on:
   workflow_dispatch:
+    inputs:
+      commit_to_source_branch:
+        description: Commit generated posts directly to the selected branch instead of opening a content PR
+        required: false
+        default: false
+        type: boolean
   repository_dispatch:
     types:
       - notion-post-publish
@@ -66,10 +72,24 @@ jobs:
         id: commit_posts
         env:
           GH_TOKEN: ${{ secrets.CONTENT_CHANGE_TOKEN || github.token }}
+          COMMIT_TO_SOURCE_BRANCH: ${{ inputs.commit_to_source_branch || 'false' }}
         run: |
           if [ -z "$(git status --porcelain -- public/blog public/en/blog public/ja/blog public/zh/blog)" ]; then
             echo "No Notion post changes to commit."
             echo "published=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$COMMIT_TO_SOURCE_BRANCH" = "true" ]; then
+            if [ "$GITHUB_REF_TYPE" != "branch" ]; then
+              echo "Direct publishing is only supported when a branch is selected."
+              exit 1
+            fi
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A public/blog public/en/blog public/ja/blog public/zh/blog
+            git commit -m "content: sync notion posts"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+            echo "published=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           branch="notion-post-sync/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"

@@ -125,7 +125,10 @@ The Notion publishing path can be run manually from GitHub Actions or triggered
 by a Notion automation webhook.
 
 - `workflow_dispatch` on `Publish Notion Posts` opens a pull request for all
-  ready Notion pages that produce static file changes.
+  ready Notion pages that produce static file changes. Select
+  `commit_to_source_branch` only when deliberately backfilling an existing
+  content or feature PR: it commits the generated static files directly to the
+  branch selected in the manual-run form instead.
 - `POST /api/notion/publish` validates `X-Corca-Webhook-Secret` or a bearer
   token against `CORCA_NOTION_WEBHOOK_SECRET`, then dispatches the
   `notion-post-publish` GitHub event.

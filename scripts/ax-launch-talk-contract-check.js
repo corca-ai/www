@@ -33,23 +33,22 @@ for (const [locale, path, pagePath] of [
     'data-content-type="ax-solution"',
     'data-ax-launch-talk-cta',
     'ax-launch-talk-mobile-hero',
-    'ax-launch-talk-mobile-mini-message',
+    'data-ax-floating-compact-boundary',
   ]) {
     if (!html.includes(value)) fail(`${locale} AX is missing ${value}`);
   }
   if (!html.includes('target="_blank"') || !html.includes('rel="noopener noreferrer"')) {
     fail(`${locale} AX Launch Talk CTA must remain a native safe new-tab link`);
   }
-  for (const [className, state] of [
-    ['ax-launch-talk-mobile-hero', 'compact'],
-    ['ax-launch-talk-mobile-mini', 'mobile-mini'],
-  ]) {
-    const wholeSurfaceLink = new RegExp(
-      `<a class="${className}"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="${state}">`,
-    );
-    if (!wholeSurfaceLink.test(html)) {
-      fail(`${locale} ${className} must be one whole-surface Calendar link`);
-    }
+  const heroCircleLink =
+    /<a class="ax-launch-talk-mobile-hero"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="compact">/;
+  if (!heroCircleLink.test(html)) {
+    fail(`${locale} mobile hero circle must remain one whole-surface Calendar link`);
+  }
+  const mobileBannerButton =
+    /<a class="ax-launch-talk-mobile-mini-cta"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="mobile-mini">/;
+  if (!mobileBannerButton.test(html)) {
+    fail(`${locale} mobile banner must track only its blue Calendar button`);
   }
   if (!html.includes(pagePath)) fail(`${locale} AX lost its localized page path`);
 }
@@ -77,7 +76,9 @@ for (const token of [
   "const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'",
   'const BUBBLE_DURATION_MS = 3000',
   "document.querySelector<HTMLElement>('body > header')",
-  'hero.getBoundingClientRect().bottom > compactBoundary',
+  "'[data-ax-floating-compact-boundary]'",
+  'compactBoundary.getBoundingClientRect().top > window.innerHeight',
+  'hero.getBoundingClientRect().bottom > headerBoundary',
   "window.setTimeout(() => {\n      if (mode === 'open')",
   'focus({ preventScroll: true })',
 ]) {

@@ -64,7 +64,7 @@ export default {
   },
   async scheduled(_event, env, ctx): Promise<void> {
     ctx.waitUntil(
-      runNewsletterDaily(env, { fetcher: newsletterRssFetcher(env) }).then((result) => {
+      runNewsletterDaily(env, { rssFetcher: newsletterRssFetcher(env) }).then((result) => {
         console.log('Newsletter daily run completed', result);
       }),
     );

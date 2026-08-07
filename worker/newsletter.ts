@@ -77,7 +77,7 @@ export async function handleNewsletterRequest(
 
 export async function runNewsletterDaily(
   env: NewsletterEnv,
-  options: { fetcher?: typeof fetch; now?: Date } = {},
+  options: { mailerFetcher?: typeof fetch; now?: Date; rssFetcher?: typeof fetch } = {},
 ): Promise<NewsletterRunResult> {
   const database = env.NEWSLETTER_DB;
   const tokenSecret = requiredTokenSecret(env);
@@ -89,9 +89,12 @@ export async function runNewsletterDaily(
   }
 
   const now = options.now || new Date();
-  const rssResponse = await (options.fetcher || fetch)(env.NEWSLETTER_RSS_URL || newsletterRssUrl, {
-    headers: { Accept: 'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8' },
-  });
+  const rssResponse = await (options.rssFetcher || fetch)(
+    env.NEWSLETTER_RSS_URL || newsletterRssUrl,
+    {
+      headers: { Accept: 'application/rss+xml, application/xml;q=0.9, text/xml;q=0.8' },
+    },
+  );
   if (!rssResponse.ok) throw new Error(`Newsletter RSS fetch failed (${rssResponse.status})`);
   const items = parseRssItems(await rssResponse.text());
   const timestamp = now.toISOString();
@@ -229,11 +232,10 @@ export async function runNewsletterDaily(
       delivery.delivery_id,
     );
     try {
-      const messageId = await sendSesEmail(
-        env,
-        buildPostMessage(env, delivery, unsubscribeToken),
-        options,
-      );
+      const messageId = await sendSesEmail(env, buildPostMessage(env, delivery, unsubscribeToken), {
+        ...(options.mailerFetcher ? { fetcher: options.mailerFetcher } : {}),
+        ...(options.now ? { now: options.now } : {}),
+      });
       await database
         .prepare(
           `UPDATE newsletter_deliveries
@@ -374,7 +376,11 @@ export async function sendSesEmail(
   });
   if (!response.ok) {
     const detail = (await response.text()).replace(/\s+/g, ' ').trim().slice(0, 1_000);
-    throw new Error(`SES SendEmail failed (${response.status})${detail ? `: ${detail}` : ''}`);
+    const diagnostics = sesResponseDiagnostics(response);
+    console.warn('SES SendEmail rejected', diagnostics);
+    throw new Error(
+      `SES SendEmail failed (${response.status})${detail ? `: ${detail}` : ''}${diagnostics ? ` [${diagnostics}]` : ''}`,
+    );
   }
   const payload = (await response.json()) as { MessageId?: unknown };
   const messageId = String(payload.MessageId || '');
@@ -761,6 +767,24 @@ function awsTimestamp(date: Date): string {
 
 function normalizeHeader(value: string): string {
   return String(value).trim().replace(/\s+/g, ' ');
+}
+
+function sesResponseDiagnostics(response: Response): string {
+  const fields = [
+    ['url', response.url],
+    ['statusText', response.statusText],
+    ['x-amzn-requestid', response.headers.get('x-amzn-requestid')],
+    ['x-amzn-errortype', response.headers.get('x-amzn-errortype')],
+    ['server', response.headers.get('server')],
+    ['via', response.headers.get('via')],
+    ['allow', response.headers.get('allow')],
+    ['location', response.headers.get('location')],
+  ] as const;
+  return fields
+    .filter(([, value]) => Boolean(value))
+    .map(([name, value]) => `${name}=${normalizeHeader(value || '')}`)
+    .join(', ')
+    .slice(0, 1_000);
 }
 
 function constantTimeEqual(left: string, right: string): boolean {

@@ -19,7 +19,8 @@ editions and delivery rows.
 - `worker/index.ts` reads the default `/rss` feed directly from the Worker
   Assets binding during scheduled runs, avoiding a self-request through the
   public custom domain. `NEWSLETTER_RSS_URL` remains the explicit override for
-  an external feed.
+  an external feed. This RSS fetcher is not used for SES delivery: mail always
+  uses the Worker global `fetch` to reach AWS.
 - `migrations/0001_newsletter.sql` owns D1 tables for subscribers, editions,
   deliveries and the RSS baseline marker. The unique edition/subscriber pair is
   the duplicate-send guard.

@@ -1486,7 +1486,7 @@ body:has(.ax-v2-dialog[open]) {
 
   .ax-v2-accordion-item button span {
     color: #70b8ff;
-    font-size: 13px;
+    font-size: inherit;
   }
 
   .ax-v2-accordion-item button i {

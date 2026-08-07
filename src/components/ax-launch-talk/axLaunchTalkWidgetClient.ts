@@ -45,6 +45,9 @@ function initializeWidget(widget: HTMLElement) {
   widget.dataset.widgetReady = 'true';
 
   const hero = document.querySelector<HTMLElement>('[data-ax-floating-hero]');
+  const compactBoundary = document.querySelector<HTMLElement>(
+    '[data-ax-floating-compact-boundary]',
+  );
   const avatar = widget.querySelector<HTMLButtonElement>('[data-ax-launch-talk-avatar]');
   const card = widget.querySelector<HTMLElement>('[data-ax-launch-talk-card]');
   const bubble = widget.querySelector<HTMLElement>('[data-ax-launch-talk-bubble]');
@@ -104,9 +107,12 @@ function initializeWidget(widget: HTMLElement) {
 
   const heroIsAboveCompactBoundary = () => {
     if (!hero) return false;
+    if (compactBoundary) {
+      return compactBoundary.getBoundingClientRect().top > window.innerHeight;
+    }
     const siteHeader = document.querySelector<HTMLElement>('body > header');
-    const compactBoundary = siteHeader?.getBoundingClientRect().bottom ?? 0;
-    return hero.getBoundingClientRect().bottom > compactBoundary;
+    const headerBoundary = siteHeader?.getBoundingClientRect().bottom ?? 0;
+    return hero.getBoundingClientRect().bottom > headerBoundary;
   };
 
   const syncHeroMode = () => {
@@ -120,6 +126,7 @@ function initializeWidget(widget: HTMLElement) {
   if (hero && 'IntersectionObserver' in window) {
     const observer = new IntersectionObserver(syncHeroMode, { threshold: 0 });
     observer.observe(hero);
+    if (compactBoundary) observer.observe(compactBoundary);
   } else if (!hero) {
     updateMode('compact');
     showBubbleTemporarily();

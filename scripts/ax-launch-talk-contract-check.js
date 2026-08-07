@@ -33,23 +33,22 @@ for (const [locale, path, pagePath] of [
     'data-content-type="ax-solution"',
     'data-ax-launch-talk-cta',
     'ax-launch-talk-mobile-hero',
-    'ax-launch-talk-mobile-mini-message',
+    'data-ax-floating-compact-boundary',
   ]) {
     if (!html.includes(value)) fail(`${locale} AX is missing ${value}`);
   }
   if (!html.includes('target="_blank"') || !html.includes('rel="noopener noreferrer"')) {
     fail(`${locale} AX Launch Talk CTA must remain a native safe new-tab link`);
   }
-  for (const [className, state] of [
-    ['ax-launch-talk-mobile-hero', 'compact'],
-    ['ax-launch-talk-mobile-mini', 'mobile-mini'],
-  ]) {
-    const wholeSurfaceLink = new RegExp(
-      `<a class="${className}"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="${state}">`,
-    );
-    if (!wholeSurfaceLink.test(html)) {
-      fail(`${locale} ${className} must be one whole-surface Calendar link`);
-    }
+  const heroCircleLink =
+    /<a class="ax-launch-talk-mobile-hero"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="compact">/;
+  if (!heroCircleLink.test(html)) {
+    fail(`${locale} mobile hero circle must remain one whole-surface Calendar link`);
+  }
+  const mobileBannerButton =
+    /<a class="ax-launch-talk-mobile-mini-cta"[^>]*data-ax-launch-talk-cta[^>]*data-widget-state="mobile-mini">/;
+  if (!mobileBannerButton.test(html)) {
+    fail(`${locale} mobile banner must track only its blue Calendar button`);
   }
   if (!html.includes(pagePath)) fail(`${locale} AX lost its localized page path`);
 }
@@ -77,7 +76,9 @@ for (const token of [
   "const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'",
   'const BUBBLE_DURATION_MS = 3000',
   "document.querySelector<HTMLElement>('body > header')",
-  'hero.getBoundingClientRect().bottom > compactBoundary',
+  "'[data-ax-floating-compact-boundary]'",
+  'compactBoundary.getBoundingClientRect().top > window.innerHeight',
+  'hero.getBoundingClientRect().bottom > headerBoundary',
   "window.setTimeout(() => {\n      if (mode === 'open')",
   'focus({ preventScroll: true })',
 ]) {
@@ -86,6 +87,29 @@ for (const token of [
 if (client.includes('preventDefault')) fail('Calendar CTA must never prevent native navigation');
 if (client.includes('/api/ax/launch-talk-leads')) {
   fail('Launch Talk clicks must be GA-only and must not call the retired email endpoint');
+}
+
+const widgetStyles = readFileSync(
+  join(root, 'src/components/ax-launch-talk/ax-launch-talk-widget.css'),
+  'utf8',
+);
+if (!/\.ax-launch-talk-widget\s*\{[^}]*pointer-events:\s*none/s.test(widgetStyles)) {
+  fail('fixed widget root must not block page controls behind it');
+}
+if (
+  !/\[data-mode='compact'\] \.ax-launch-talk-mobile-mini\s*\{[^}]*pointer-events:\s*none/s.test(
+    widgetStyles,
+  )
+) {
+  fail('mobile banner content must not block controls behind the fixed widget');
+}
+if (!/\.ax-launch-talk-mobile-mini-cta\s*\{[^}]*pointer-events:\s*auto/s.test(widgetStyles)) {
+  fail('mobile banner Calendar button must remain interactive');
+}
+
+const axStyles = readFileSync(join(root, 'src/components/pages/ax-v2/ax-v2.css'), 'utf8');
+if (!/\.ax-v2-accordion-item button span\s*\{[^}]*font-size:\s*inherit/s.test(axStyles)) {
+  fail('mobile accordion indices must match their button labels');
 }
 
 console.log(

@@ -17,24 +17,32 @@ const content = {
     name: '배휘동',
     role: 'Corca AX Lead',
     bubble: 'AX 고민, 점심 자리에서 풀어보시죠',
+    mobileBubble: ['조직 AX 고민,', '점심 자리에서 풀어보시죠'],
+    mobileCta: ['런치 토크', '예약하기'],
     avatarLabel: 'AX Launch Talk 안내 열기',
   },
   en: {
     name: 'Hwidong Bae',
     role: 'Corca AX Lead',
     bubble: 'Let’s unpack your AX challenges over lunch',
+    mobileBubble: ['Let’s unpack your AX challenges', 'over lunch'],
+    mobileCta: ['Book', 'Launch', 'Talk'],
     avatarLabel: 'Open AX Launch Talk details',
   },
   ja: {
     name: 'Hwidong Bae',
     role: 'Corca AX Lead',
     bubble: 'AXの悩み、ランチで話してみませんか',
+    mobileBubble: ['AXの悩み、', 'ランチで話してみませんか'],
+    mobileCta: ['ランチ', 'トークを', '予約する'],
     avatarLabel: 'AX Launch Talkの案内を開く',
   },
   zh: {
     name: 'Hwidong Bae',
     role: 'Corca AX Lead',
     bubble: '午餐时间，一起聊聊您的AX困惑',
+    mobileBubble: ['午餐时间，', '一起聊聊您的AX困惑'],
+    mobileCta: ['预约', '午餐交流'],
     avatarLabel: '打开AX Launch Talk介绍',
   },
 }[lang];
@@ -115,13 +123,8 @@ const contextAttributes = {
     <span aria-hidden="true"></span>
   </a>
 
-  <a
+  <div
     class="ax-launch-talk-mobile-mini"
-    href={launchTalk.ctaHref}
-    target="_blank"
-    rel="noopener noreferrer"
-    data-ax-launch-talk-cta
-    data-widget-state="mobile-mini"
   >
     <img
       src="/images/pages/ax/launch-talk/hwidong-bae.webp"
@@ -130,14 +133,24 @@ const contextAttributes = {
       alt=""
     />
     <div class="ax-launch-talk-mobile-mini-copy">
-      <strong>AX Launch Talk</strong>
-      <span>{content.name} · {content.role}</span>
+      <strong>
+        {content.mobileBubble.map((line, index) => (
+          <>{index > 0 && <br />}{line}</>
+        ))}
+      </strong>
+      <span><b>{content.name}</b> · {content.role}</span>
     </div>
-    <span class="ax-launch-talk-mobile-mini-cta">
-      {launchTalk.ctaLabel}
-    </span>
-    <p class="ax-launch-talk-mobile-mini-message">{content.bubble}</p>
-  </a>
+    <a
+      class="ax-launch-talk-mobile-mini-cta"
+      href={launchTalk.ctaHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-ax-launch-talk-cta
+      data-widget-state="mobile-mini"
+    >
+      {content.mobileCta.map((line) => <span>{line}</span>)}
+    </a>
+  </div>
 
   <div class="ax-launch-talk-compact">
     <p class="ax-launch-talk-bubble" aria-hidden="true" data-ax-launch-talk-bubble>

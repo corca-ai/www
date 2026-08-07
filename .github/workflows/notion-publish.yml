@@ -44,6 +44,9 @@ jobs:
           NOTION_BLOG_DATABASE_URL: ${{ vars.NOTION_BLOG_DATABASE_URL }}
           NOTION_BLOG_DATABASE_ID: ${{ vars.NOTION_BLOG_DATABASE_ID }}
           NOTION_BLOG_DATA_SOURCE_ID: ${{ vars.NOTION_BLOG_DATA_SOURCE_ID }}
+          NOTION_TEAM_INTERVIEW_DATABASE_URL: ${{ vars.NOTION_TEAM_INTERVIEW_DATABASE_URL }}
+          NOTION_TEAM_INTERVIEW_DATABASE_ID: ${{ vars.NOTION_TEAM_INTERVIEW_DATABASE_ID }}
+          NOTION_TEAM_INTERVIEW_DATA_SOURCE_ID: ${{ vars.NOTION_TEAM_INTERVIEW_DATA_SOURCE_ID }}
           NOTION_POST_READY_STATUS: ${{ vars.NOTION_POST_READY_STATUS }}
           NOTION_POST_UPDATE_STATUS: ${{ vars.NOTION_POST_UPDATE_STATUS }}
           NOTION_POST_DELETE_STATUS: ${{ vars.NOTION_POST_DELETE_STATUS }}
@@ -55,6 +58,7 @@ jobs:
           NOTION_PAGE_ID: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.page_id || '' }}
           NOTION_REQUIRE_RECENT_READY: ${{ github.event_name == 'repository_dispatch' && '1' || '' }}
           NOTION_RECENT_READY_MINUTES: ${{ vars.NOTION_RECENT_READY_MINUTES || '90' }}
+          NOTION_POST_LIMIT: ${{ vars.NOTION_POST_LIMIT || '50' }}
           NOTION_SKIP_UPDATES: ${{ vars.NOTION_SKIP_UPDATES || '1' }}
           CORCA_SITE_URL: ${{ vars.CORCA_SITE_URL || 'https://www.corca.ai' }}
 

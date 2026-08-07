@@ -14,6 +14,7 @@ const processed = [];
 
 try {
   const pages = await queryNotionPages(config);
+  ensureUniquePostSlugs(pages, config);
   const readyPages = pages
     .map((page) => ({ page, action: actionForPage(page, config) }))
     .filter((item) => item.action)
@@ -28,20 +29,21 @@ try {
   await mkdir(workDir, { recursive: true });
 
   for (const { page, action } of readyPages) {
-    const context = pageContext(page, config);
+    const pageConfig = configForPage(page, config);
+    const context = pageContext(page, pageConfig);
     try {
-      await updateNotionResult(page, config, {
+      await updateNotionResult(page, pageConfig, {
         status: statusFor(
           context.statusName,
           action === 'delete' ? 'deleting' : 'publishing',
-          config,
+          pageConfig,
         ),
         message:
           action === 'delete' ? 'Deleting from Notion started.' : 'Publishing from Notion started.',
       });
 
       if (action === 'delete') {
-        const slug = deleteSlugForPage(page, config);
+        const slug = deleteSlugForPage(page, pageConfig);
         if (args.dryRun) {
           validateDeletePayload({ slug });
         } else {
@@ -50,14 +52,15 @@ try {
         processed.push({
           action,
           page,
+          config: pageConfig,
           context,
           slug,
           language: '',
           title: context.title || slug,
         });
       } else {
-        const source = await downloadPageSource(page, config);
-        const metadata = extractPostMetadata(page, config, source);
+        const source = await downloadPageSource(page, pageConfig);
+        const metadata = extractPostMetadata(page, pageConfig, source);
         const slug = normalizeSlug(metadata.slug || metadata.title || source.baseName);
         if (!slug) {
           throw new Error('Slug could not be generated. Add Slug/슬러그 or a title.');
@@ -74,6 +77,7 @@ try {
         processed.push({
           action,
           page,
+          config: pageConfig,
           context,
           slug,
           language: metadata.language,
@@ -81,8 +85,8 @@ try {
         });
       }
     } catch (error) {
-      await updateNotionResult(page, config, {
-        status: statusFor(context.statusName, 'error', config),
+      await updateNotionResult(page, pageConfig, {
+        status: statusFor(context.statusName, 'error', pageConfig),
         message: error.message,
       });
       console.error(`Failed to publish Notion page ${context.title || page.id}: ${error.message}`);
@@ -93,8 +97,8 @@ try {
   if (processed.length > 0 && !args.dryRun) {
     for (const item of processed) {
       if (item.action === 'delete') {
-        await updateNotionResult(item.page, config, {
-          status: statusFor(item.context.statusName, 'deleted', config),
+        await updateNotionResult(item.page, item.config, {
+          status: statusFor(item.context.statusName, 'deleted', item.config),
           clearPublicUrl: true,
           message: `Deleted ${item.slug}.`,
         });
@@ -102,15 +106,15 @@ try {
         const isDeploymentRequest = /배포/.test(item.context.statusName || '');
         await updateNotionResult(
           item.page,
-          config,
+          item.config,
           isDeploymentRequest
             ? {
                 status: item.context.statusName || '배포 신청',
                 message: `Prepared ${item.slug} for deployment.`,
               }
             : {
-                status: statusFor(item.context.statusName, 'published', config),
-                publicUrl: `${config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
+                status: statusFor(item.context.statusName, 'published', item.config),
+                publicUrl: `${item.config.publicBaseUrl}${blogPathForLanguage(item.language)}/${encodeURIComponent(item.slug)}`,
                 message: `Published ${item.slug}.`,
               },
         );
@@ -125,8 +129,29 @@ try {
 }
 
 async function queryNotionPages(config) {
-  if (config.fixturePagesFile) {
-    const fixture = JSON.parse(await readFile(config.fixturePagesFile, 'utf8'));
+  const pages = [];
+  const sourceForPageId = new Map();
+  for (const source of config.sources) {
+    const sourcePages = await queryNotionSourcePages(config, source);
+    for (const page of sourcePages) {
+      const pageId = normalizeNotionId(page.id || '');
+      if (pageId && sourceForPageId.has(pageId)) {
+        fail(
+          `Notion page ${page.id} was returned by multiple configured sources. Configure each source only once.`,
+        );
+      }
+      if (pageId) {
+        sourceForPageId.set(pageId, source);
+      }
+      pages.push({ ...page, _corcaNotionSource: source });
+    }
+  }
+  return pages;
+}
+
+async function queryNotionSourcePages(config, source) {
+  if (source.fixturePagesFile) {
+    const fixture = JSON.parse(await readFile(source.fixturePagesFile, 'utf8'));
     return Array.isArray(fixture) ? fixture : fixture.results || [];
   }
 
@@ -140,16 +165,17 @@ async function queryNotionPages(config) {
       body.start_cursor = cursor;
     }
 
-    const endpoint = config.dataSourceId
-      ? `/data_sources/${config.dataSourceId}/query`
-      : `/databases/${config.databaseId}/query`;
+    const endpoint = source.dataSourceId
+      ? `/data_sources/${source.dataSourceId}/query`
+      : `/databases/${source.databaseId}/query`;
     const response = await notionRequest(config, endpoint, {
       method: 'POST',
       body,
+      notionVersion: source.notionVersion,
     });
     pages.push(...(response.results || []).filter((item) => item.object === 'page'));
     cursor = response.has_more ? response.next_cursor : '';
-  } while (cursor && pages.length < config.limit);
+  } while (cursor);
   return pages;
 }
 
@@ -427,6 +453,30 @@ function deleteSlugForPage(page, config) {
   return normalizeSlug(textProperty(findProperty(properties, config.propertyNames.slug)) || '');
 }
 
+function ensureUniquePostSlugs(pages, config) {
+  const pageForSlug = new Map();
+  for (const page of pages) {
+    const configuredSlug = textProperty(
+      findProperty(page.properties || {}, config.propertyNames.slug),
+    );
+    const title = pageTitle(page.properties || {});
+    if (!configuredSlug && !title) {
+      fail(`Notion page ${page.id} requires Slug/슬러그 or a title before publication.`);
+    }
+    const slug = normalizeSlug(configuredSlug || title);
+    if (!slug) {
+      fail(`Notion page ${page.id} has an invalid Slug/슬러그 or title.`);
+    }
+    const existing = pageForSlug.get(slug);
+    if (existing) {
+      fail(
+        `Duplicate post slug "${slug}" for Notion pages ${existing.id} and ${page.id}. Slugs must be unique across configured sources.`,
+      );
+    }
+    pageForSlug.set(slug, page);
+  }
+}
+
 function publicUrlForPage(page, config) {
   return textProperty(findProperty(page.properties || {}, config.propertyNames.publicUrl)).trim();
 }
@@ -631,7 +681,7 @@ async function notionRequest(config, path, options = {}) {
     method: options.method || 'GET',
     headers: {
       Authorization: `Bearer ${config.token}`,
-      'Notion-Version': config.notionVersion,
+      'Notion-Version': options.notionVersion || config.notionVersion,
       'Content-Type': 'application/json',
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
@@ -1297,26 +1347,22 @@ function loadConfig() {
   if (!token) {
     fail('NOTION_TOKEN is required.');
   }
-  const dataSourceId = normalizeNotionId(process.env.NOTION_BLOG_DATA_SOURCE_ID || '');
-  const databaseId = normalizeNotionId(
-    process.env.NOTION_BLOG_DATABASE_ID ||
-      process.env.NOTION_BLOG_DATABASE_URL ||
-      process.env.NOTION_DATABASE_ID ||
-      '',
-  );
-  if (!dataSourceId && !databaseId) {
+  const sources = notionSourcesFromEnvironment();
+  if (sources.length === 0) {
     fail('Set NOTION_BLOG_DATA_SOURCE_ID or NOTION_BLOG_DATABASE_ID/NOTION_BLOG_DATABASE_URL.');
   }
+  const [primarySource] = sources;
 
   return {
     token,
-    dataSourceId,
-    databaseId,
+    sources,
+    dataSourceId: primarySource.dataSourceId,
+    databaseId: primarySource.databaseId,
     apiBaseUrl: (process.env.NOTION_API_BASE_URL || 'https://api.notion.com/v1').replace(
       /\/+$/,
       '',
     ),
-    notionVersion: process.env.NOTION_VERSION || (dataSourceId ? '2026-03-11' : '2022-06-28'),
+    notionVersion: primarySource.notionVersion,
     publicBaseUrl: (process.env.CORCA_SITE_URL || 'https://corca.local').replace(/\/+$/, ''),
     readyStatuses: envList('NOTION_POST_READY_STATUS', [
       'Ready',
@@ -1432,13 +1478,63 @@ function loadConfig() {
     },
     defaultTags: process.env.NOTION_POST_DEFAULT_TAGS || '코르카',
     skipUpdates: process.env.NOTION_SKIP_UPDATES === '1',
-    fixturePagesFile: process.env.NOTION_FIXTURE_PAGES_FILE || '',
+    fixturePagesFile: primarySource.fixturePagesFile,
     fixtureBlocksFile: process.env.NOTION_FIXTURE_BLOCKS_FILE || '',
     fixtureUpdatesFile: process.env.NOTION_FIXTURE_UPDATES_FILE || '',
     pageId: normalizeNotionId(process.env.NOTION_PAGE_ID || process.env.NOTION_POST_PAGE_ID || ''),
     requireRecentReady: process.env.NOTION_REQUIRE_RECENT_READY === '1',
     recentReadyMinutes: Number(process.env.NOTION_RECENT_READY_MINUTES || 30),
     limit: args.limit || Number(process.env.NOTION_POST_LIMIT || 50),
+  };
+}
+
+function notionSourcesFromEnvironment() {
+  const primary = notionSourceFromEnvironment({
+    dataSource: 'NOTION_BLOG_DATA_SOURCE_ID',
+    database: ['NOTION_BLOG_DATABASE_ID', 'NOTION_BLOG_DATABASE_URL', 'NOTION_DATABASE_ID'],
+    fixture: 'NOTION_FIXTURE_PAGES_FILE',
+  });
+  const teamInterviews = notionSourceFromEnvironment({
+    dataSource: 'NOTION_TEAM_INTERVIEW_DATA_SOURCE_ID',
+    database: ['NOTION_TEAM_INTERVIEW_DATABASE_ID', 'NOTION_TEAM_INTERVIEW_DATABASE_URL'],
+    fixture: 'NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE',
+  });
+
+  const sources = [primary, teamInterviews].filter(Boolean);
+  const sourceKeys = sources.map((source) => source.dataSourceId || source.databaseId);
+  if (new Set(sourceKeys).size !== sourceKeys.length) {
+    fail('NOTION_TEAM_INTERVIEW_* must reference a different Notion database or data source.');
+  }
+  return sources;
+}
+
+function notionSourceFromEnvironment({ dataSource, database, fixture }) {
+  const dataSourceId = normalizeNotionId(process.env[dataSource] || '');
+  const databaseId = normalizeNotionId(
+    database.map((name) => process.env[name]).find(Boolean) || '',
+  );
+  if (!dataSourceId && !databaseId) {
+    return null;
+  }
+  return {
+    dataSourceId,
+    databaseId,
+    fixturePagesFile: process.env[fixture] || '',
+    notionVersion: process.env.NOTION_VERSION || (dataSourceId ? '2026-03-11' : '2022-06-28'),
+  };
+}
+
+function configForPage(page, config) {
+  const source = page?._corcaNotionSource;
+  if (!source) {
+    return config;
+  }
+  return {
+    ...config,
+    dataSourceId: source.dataSourceId,
+    databaseId: source.databaseId,
+    fixturePagesFile: source.fixturePagesFile,
+    notionVersion: source.notionVersion,
   };
 }
 

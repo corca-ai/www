@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  buildConfirmationMessage,
+  buildPostMessage,
   createUnsubscribeToken,
   extractSesSuppressedEmails,
   handleNewsletterRequest,
@@ -11,6 +13,45 @@ import {
   sendSesEmail,
   verifyUnsubscribeToken,
 } from '../worker/newsletter.ts';
+
+test('builds branded, responsive confirmation and edition email bodies from dynamic data', () => {
+  const confirmation = buildConfirmationMessage(
+    { NEWSLETTER_SITE_ORIGIN: 'https://preview.corca.ai' },
+    'reader@example.com',
+    'confirm-token',
+  );
+  assert.match(confirmation.html, /https:\/\/preview\.corca\.ai\/corca-logo-email\.png/);
+  assert.match(confirmation.html, /뉴스레터 구독을 확인해 주세요/);
+  assert.match(confirmation.html, /구독 확인하기/);
+  assert.match(
+    confirmation.html,
+    /https:\/\/preview\.corca\.ai\/api\/newsletter\/confirm\?token=confirm-token/,
+  );
+  assert.match(confirmation.html, /@media only screen/);
+
+  const edition = buildPostMessage(
+    { NEWSLETTER_SITE_ORIGIN: 'https://preview.corca.ai' },
+    {
+      attempts: 0,
+      delivery_id: 'delivery-1',
+      email: 'reader@example.com',
+      id: 'edition-1',
+      post_title: 'AI & <사람>',
+      post_url: 'https://www.corca.ai/blog/ai?source=newsletter&edition=1',
+      subscriber_id: 'subscriber-1',
+    },
+    'unsubscribe-token',
+  );
+  assert.match(edition.html, /AI &amp; &lt;사람&gt;/);
+  assert.match(edition.html, /글 읽기/);
+  assert.match(edition.html, /source=newsletter&amp;edition=1/);
+  assert.match(edition.html, /뉴스레터 수신 거부/);
+  assert.match(
+    edition.html,
+    /https:\/\/preview\.corca\.ai\/api\/newsletter\/unsubscribe\?token=unsubscribe-token/,
+  );
+  assert.doesNotMatch(edition.html, /AI & <사람>/);
+});
 
 test('accepts only plausible newsletter email addresses', () => {
   assert.equal(isNewsletterEmail('reader@example.com'), true);
@@ -126,6 +167,7 @@ test('uses the global mailer fetcher instead of the Assets RSS fetcher', async (
     },
   } as unknown as D1Database;
   const calls: { mailer: string[]; rss: string[] } = { mailer: [], rss: [] };
+  let sesBody = '';
 
   const result = await runNewsletterDaily(
     {
@@ -137,8 +179,9 @@ test('uses the global mailer fetcher instead of the Assets RSS fetcher', async (
       NEWSLETTER_TOKEN_SECRET: 'test-secret',
     },
     {
-      mailerFetcher: async (input) => {
+      mailerFetcher: async (input, init) => {
         calls.mailer.push(String(input));
+        sesBody = String(init?.body || '');
         return new Response(JSON.stringify({ MessageId: 'ses-message-1' }), { status: 200 });
       },
       now: new Date('2026-08-06T00:00:00.000Z'),
@@ -156,6 +199,10 @@ test('uses the global mailer fetcher instead of the Assets RSS fetcher', async (
     'https://email.ap-northeast-2.amazonaws.com/v2/email/outbound-emails',
   ]);
   assert.equal(result.delivered, 1);
+  const sesPayload = JSON.parse(sesBody);
+  assert.match(sesPayload.Content.Simple.Body.Html.Data, /새 글/);
+  assert.match(sesPayload.Content.Simple.Body.Html.Data, /글 읽기/);
+  assert.match(sesPayload.Content.Simple.Body.Html.Data, /뉴스레터 수신 거부/);
 });
 
 test('extracts distinct bounced and complained addresses from SES events', () => {

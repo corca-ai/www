@@ -1,3 +1,5 @@
+import { buildNewsletterEmail } from './newsletter-email.ts';
+
 const newsletterRssUrl = 'https://www.corca.ai/rss';
 const maxBodyBytes = 8 * 1024;
 const maxPendingDeliveriesPerRun = 100;
@@ -655,30 +657,41 @@ async function queryAll<T>(database: D1Database, query: string, values: unknown[
   return result.results || [];
 }
 
-function buildConfirmationMessage(
+export function buildConfirmationMessage(
   env: NewsletterEnv,
   email: string,
   token: string,
 ): NewsletterMessage {
   const confirmUrl = newsletterUrl(env, '/api/newsletter/confirm', token);
   return {
-    html: `<p>코르카 블로그 뉴스레터 구독을 확인해 주세요.</p><p><a href="${escapeHtml(confirmUrl)}">구독 확인하기</a></p>`,
+    html: buildNewsletterEmail({
+      actionLabel: '구독 확인하기',
+      actionUrl: confirmUrl,
+      body: '아래 버튼을 눌러 이메일 주소를 확인해 주세요. 확인을 마치면 다음 Corca 블로그 글부터 메일로 보내드릴게요.',
+      logoUrl: newsletterLogoUrl(env),
+      title: '뉴스레터 구독을 확인해 주세요',
+    }),
     subject: '[Corca] 블로그 뉴스레터 구독 확인',
     text: `코르카 블로그 뉴스레터 구독을 확인해 주세요.\n${confirmUrl}`,
     to: email,
   };
 }
 
-function buildPostMessage(
+export function buildPostMessage(
   env: NewsletterEnv,
   delivery: PendingDelivery,
   unsubscribeToken: string,
 ): NewsletterMessage {
   const unsubscribeUrl = newsletterUrl(env, '/api/newsletter/unsubscribe', unsubscribeToken);
-  const title = escapeHtml(delivery.post_title);
-  const postUrl = escapeHtml(delivery.post_url);
   return {
-    html: `<p>코르카 블로그에 새 글이 발행되었습니다.</p><h1>${title}</h1><p><a href="${postUrl}">글 읽기</a></p><hr><p><a href="${escapeHtml(unsubscribeUrl)}">뉴스레터 수신 거부</a></p>`,
+    html: buildNewsletterEmail({
+      actionLabel: '글 읽기',
+      actionUrl: delivery.post_url,
+      body: 'Corca 블로그에 새 글이 발행되었습니다. 새로운 관점과 이야기를 지금 만나보세요.',
+      logoUrl: newsletterLogoUrl(env),
+      title: delivery.post_title,
+      unsubscribeUrl,
+    }),
     subject: `[Corca Blog] ${delivery.post_title}`,
     text: `코르카 블로그에 새 글이 발행되었습니다.\n\n${delivery.post_title}\n${delivery.post_url}\n\n수신 거부: ${unsubscribeUrl}`,
     to: delivery.email,
@@ -686,8 +699,16 @@ function buildPostMessage(
 }
 
 function newsletterUrl(env: NewsletterEnv, pathname: string, token: string): string {
-  const origin = String(env.NEWSLETTER_SITE_ORIGIN || 'https://www.corca.ai').replace(/\/$/, '');
+  const origin = newsletterSiteOrigin(env);
   return `${origin}${pathname}?token=${encodeURIComponent(token)}`;
+}
+
+function newsletterLogoUrl(env: NewsletterEnv): string {
+  return `${newsletterSiteOrigin(env)}/corca-logo-email.png`;
+}
+
+function newsletterSiteOrigin(env: NewsletterEnv): string {
+  return String(env.NEWSLETTER_SITE_ORIGIN || 'https://www.corca.ai').replace(/\/$/, '');
 }
 
 function hasMailerConfiguration(env: NewsletterEnv): boolean {

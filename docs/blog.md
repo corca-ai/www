@@ -178,18 +178,24 @@ No second Worker endpoint, route or blog template is required: the webhook page
 ID is matched across both configured sources and the generated article joins
 the normal `/blog` index, feeds, locale aliases and sitemap.
 
-Every row needs a `Slug`/`슬러그` or Notion title; that effective published slug
-must be unique across both databases. The sync reads the configured sources
-completely and rejects a missing or duplicate value before it updates Notion or
+Rows requested for publication or update need a `Slug`/`슬러그` or Notion title;
+that effective published slug must be unique across both databases. Delete rows
+must retain their `Slug`/`슬러그`. Draft rows outside the publication lifecycle do
+not block a batch sync. The sync reads the configured sources completely and
+rejects a missing or duplicate publication value before it updates Notion or
 writes static blog files, so resolve the source rows before retrying publication.
 
 For an initial bulk migration, add all source rows to the team-interview table,
-mark the intended rows `배포 신청`, then run `Publish Notion Posts` manually.
-That manual run processes ready rows from both databases and creates one normal
-content-sync pull request. It processes up to `NOTION_POST_LIMIT` rows (default
-`50`); set that GitHub Actions variable high enough for a one-pass migration or
-run the workflow again for remaining rows. After the migration, use the existing
-Notion webhook and status-change process for each new or edited interview.
+run `Publish Notion Posts` manually with `team_interview_initial_migration`.
+That one-time mode processes only team-interview rows whose `공개 URL` is empty,
+regardless of their current completion status, and does not change any Notion
+status. It avoids triggering the normal status-change webhook for every migrated
+row. Pair it with `commit_to_source_branch` to include the generated files in an
+existing feature PR; otherwise the workflow creates the usual content-sync PR.
+It processes up to `NOTION_POST_LIMIT` rows (default `50`); set that GitHub
+Actions variable high enough for a one-pass migration or run the workflow again
+for remaining rows. After the migration, use the existing Notion webhook and
+status-change process for each new or edited interview.
 
 ### Notion Edits And Deletes
 

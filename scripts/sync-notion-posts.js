@@ -14,21 +14,21 @@ const processed = [];
 
 try {
   const pages = await queryNotionPages(config);
-  ensureUniquePostSlugs(pages, config);
   const readyPages = pages
     .map((page) => ({ page, action: actionForPage(page, config) }))
     .filter((item) => item.action)
-    .filter((item) => isPublishCandidateForTrigger(item.page, config))
-    .slice(0, args.limit || config.limit);
+    .filter((item) => isPublishCandidateForTrigger(item.page, config));
+  ensureUniquePostSlugs(readyPages, config);
+  const limitedReadyPages = readyPages.slice(0, args.limit || config.limit);
 
-  if (readyPages.length === 0) {
+  if (limitedReadyPages.length === 0) {
     console.log('No Notion posts are ready to sync.');
     process.exit(0);
   }
 
   await mkdir(workDir, { recursive: true });
 
-  for (const { page, action } of readyPages) {
+  for (const { page, action } of limitedReadyPages) {
     const pageConfig = configForPage(page, config);
     const context = pageContext(page, pageConfig);
     try {
@@ -436,6 +436,13 @@ function actionForPage(page, config) {
   if (config.deleteStatuses.map(normalizeLabel).includes(normalized)) {
     return 'delete';
   }
+  if (
+    config.teamInterviewInitialMigration &&
+    page?._corcaNotionSource?.key === 'team-interview' &&
+    !publicUrlForPage(page, config)
+  ) {
+    return 'upsert';
+  }
   if (config.updateStatuses.map(normalizeLabel).includes(normalized)) {
     return 'upsert';
   }
@@ -453,17 +460,20 @@ function deleteSlugForPage(page, config) {
   return normalizeSlug(textProperty(findProperty(properties, config.propertyNames.slug)) || '');
 }
 
-function ensureUniquePostSlugs(pages, config) {
+function ensureUniquePostSlugs(candidates, config) {
   const pageForSlug = new Map();
-  for (const page of pages) {
+  for (const { page, action } of candidates) {
     const configuredSlug = textProperty(
       findProperty(page.properties || {}, config.propertyNames.slug),
     );
     const title = pageTitle(page.properties || {});
-    if (!configuredSlug && !title) {
+    if (action === 'delete' && !configuredSlug) {
+      fail(`Notion page ${page.id} requires Slug/슬러그 before deletion.`);
+    }
+    if (action !== 'delete' && !configuredSlug && !title) {
       fail(`Notion page ${page.id} requires Slug/슬러그 or a title before publication.`);
     }
-    const slug = normalizeSlug(configuredSlug || title);
+    const slug = normalizeSlug(configuredSlug || (action === 'delete' ? '' : title));
     if (!slug) {
       fail(`Notion page ${page.id} has an invalid Slug/슬러그 or title.`);
     }
@@ -1478,6 +1488,7 @@ function loadConfig() {
     },
     defaultTags: process.env.NOTION_POST_DEFAULT_TAGS || '코르카',
     skipUpdates: process.env.NOTION_SKIP_UPDATES === '1',
+    teamInterviewInitialMigration: process.env.NOTION_TEAM_INTERVIEW_INITIAL_MIGRATION === '1',
     fixturePagesFile: primarySource.fixturePagesFile,
     fixtureBlocksFile: process.env.NOTION_FIXTURE_BLOCKS_FILE || '',
     fixtureUpdatesFile: process.env.NOTION_FIXTURE_UPDATES_FILE || '',
@@ -1490,11 +1501,13 @@ function loadConfig() {
 
 function notionSourcesFromEnvironment() {
   const primary = notionSourceFromEnvironment({
+    key: 'blog',
     dataSource: 'NOTION_BLOG_DATA_SOURCE_ID',
     database: ['NOTION_BLOG_DATABASE_ID', 'NOTION_BLOG_DATABASE_URL', 'NOTION_DATABASE_ID'],
     fixture: 'NOTION_FIXTURE_PAGES_FILE',
   });
   const teamInterviews = notionSourceFromEnvironment({
+    key: 'team-interview',
     dataSource: 'NOTION_TEAM_INTERVIEW_DATA_SOURCE_ID',
     database: ['NOTION_TEAM_INTERVIEW_DATABASE_ID', 'NOTION_TEAM_INTERVIEW_DATABASE_URL'],
     fixture: 'NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE',
@@ -1508,7 +1521,7 @@ function notionSourcesFromEnvironment() {
   return sources;
 }
 
-function notionSourceFromEnvironment({ dataSource, database, fixture }) {
+function notionSourceFromEnvironment({ key, dataSource, database, fixture }) {
   const dataSourceId = normalizeNotionId(process.env[dataSource] || '');
   const databaseId = normalizeNotionId(
     database.map((name) => process.env[name]).find(Boolean) || '',
@@ -1517,6 +1530,7 @@ function notionSourceFromEnvironment({ dataSource, database, fixture }) {
     return null;
   }
   return {
+    key,
     dataSourceId,
     databaseId,
     fixturePagesFile: process.env[fixture] || '',

@@ -8,6 +8,11 @@ on:
         required: false
         default: false
         type: boolean
+      team_interview_initial_migration:
+        description: Publish team-interview rows without changing their existing completed status
+        required: false
+        default: false
+        type: boolean
   repository_dispatch:
     types:
       - notion-post-publish
@@ -66,6 +71,7 @@ jobs:
           NOTION_RECENT_READY_MINUTES: ${{ vars.NOTION_RECENT_READY_MINUTES || '90' }}
           NOTION_POST_LIMIT: ${{ vars.NOTION_POST_LIMIT || '50' }}
           NOTION_SKIP_UPDATES: ${{ vars.NOTION_SKIP_UPDATES || '1' }}
+          NOTION_TEAM_INTERVIEW_INITIAL_MIGRATION: ${{ inputs.team_interview_initial_migration && '1' || '' }}
           CORCA_SITE_URL: ${{ vars.CORCA_SITE_URL || 'https://www.corca.ai' }}
 
       - name: Create Notion sync pull request

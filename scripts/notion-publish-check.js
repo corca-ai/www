@@ -19,6 +19,7 @@ const legacyCompletedPageId = 'ffffffff-1111-2222-3333-444444444444';
 const teamInterviewPageId = '12345678-1234-1234-1234-123456789012';
 const pagesPath = join(fixtureRoot, 'pages.json');
 const teamInterviewPagesPath = join(fixtureRoot, 'team-interview-pages.json');
+const teamInterviewMigrationPagesPath = join(fixtureRoot, 'team-interview-migration-pages.json');
 const duplicateSlugTeamPagesPath = join(fixtureRoot, 'team-interview-duplicate-slug-pages.json');
 const missingSlugTitleTeamPagesPath = join(
   fixtureRoot,
@@ -205,6 +206,14 @@ second preserved code-like line</pre>
             status: '배포 신청',
             fileUrl: pathToFileURL(htmlPath).href,
           }),
+          page({
+            id: '12345678-1234-1234-1234-123456789015',
+            title: '///',
+            slug: '',
+            description: 'An unpublished draft must not block a batch publication.',
+            language: 'ko',
+            status: '배포 전',
+          }),
         ],
       },
       null,
@@ -224,6 +233,27 @@ second preserved code-like line</pre>
               'Checks that a duplicate slug is rejected before either database is changed.',
             language: 'ko',
             status: '배포 신청',
+            fileUrl: pathToFileURL(htmlPath).href,
+          }),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+  await writeFile(
+    teamInterviewMigrationPagesPath,
+    JSON.stringify(
+      {
+        results: [
+          page({
+            id: '12345678-1234-1234-1234-123456789016',
+            title: 'Initial team migration fixture',
+            slug: 'initial-team-migration-fixture',
+            description:
+              'Checks that the one-time team migration includes a completed row without changing its status.',
+            language: 'ko',
+            status: '배포 완료',
             fileUrl: pathToFileURL(htmlPath).href,
           }),
         ],
@@ -507,6 +537,28 @@ second preserved code-like line</pre>
   assert.match(targetedTeamUpdates, new RegExp(teamInterviewPageId));
   assert.doesNotMatch(targetedTeamUpdates, new RegExp(bodyPageId));
   assert.doesNotMatch(targetedTeamUpdates, new RegExp(htmlPageId));
+
+  execFileSync(process.execPath, [join(repoRoot, 'scripts/sync-notion-posts.js')], {
+    cwd: workDir,
+    env: {
+      ...process.env,
+      BLOG_ADMIN_ROOT: workDir,
+      NOTION_TOKEN: 'secret_fixture',
+      NOTION_TEAM_INTERVIEW_DATABASE_ID: 'c0ffee00-0000-0000-0000-000000000000',
+      NOTION_TEAM_INTERVIEW_FIXTURE_PAGES_FILE: teamInterviewMigrationPagesPath,
+      NOTION_FIXTURE_BLOCKS_FILE: blocksPath,
+      NOTION_ALLOW_FILE_URLS: '1',
+      NOTION_TEAM_INTERVIEW_INITIAL_MIGRATION: '1',
+      NOTION_SKIP_UPDATES: '1',
+      CORCA_SITE_URL: 'https://www.corca.ai',
+      BLOG_TRANSLATION_PROVIDER: 'fixture',
+    },
+    stdio: 'inherit',
+  });
+  assert.match(
+    await readFile(join(workDir, 'public/blog/initial-team-migration-fixture/index.html'), 'utf8'),
+    /Initial team migration fixture/,
+  );
 
   assert.throws(
     () =>
